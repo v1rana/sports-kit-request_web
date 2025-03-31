@@ -1,0 +1,42 @@
+body{background:#fafafc}
+
+h1,h2,h3,h4,h5,h6{font-family: "Jost", sans-serif;}
+a{text-decoration:none; font-family: "Noto Sans", sans-serif;}
+
+.bg-primary, .btn-primary{background:#225395 !important}
+.bg-secondary, .btn-secondary{background:#f1f1e6 !important}
+.btn-secondary{color:rgba(0,0,0,0.3); border-color:rgba(0,0,0,0.1)}
+.btn-secondary:hover{color:#000; border-color:#000}
+
+
+
+header{background:#225395;}
+.logo img{display: inline-block;vertical-align: middle;margin: 0 4px 0 0;max-width:70px; width:100%}
+.logo .logo_text { color:#fff;display: inline-block;vertical-align: middle;}
+.logo .logo_text .site_name_english, .logo .logo_text h1.h1-logo {font-style: normal;font-size:20px;margin: 0;font-weight: 700;}
+
+
+.navbar a{color:#fff}
+
+.form-floating>.form-control:focus, .form-floating>.form-control:not(:placeholder-shown){padding-top:1.234rem;height:calc(3rem + 2px)}
+.form-floating>.form-control:focus~label, .form-floating>.form-control:not(:placeholder-shown)~label, .form-floating>.form-select~label{opacity:1;padding: 5px 10px;left: 3px; background:#fff;top:-9px;height:auto;}
+
+
+.form-floating>.form-control {height: calc(3rem + 2px);}
+.form-floating>label{padding:0.7rem .75rem}
+.form-control:focus{box-shadow: none;border:1px solid #000}
+
+
+
+#img-upload {position: relative;width: 150px;background: #eee;height: 150px;}
+.btn-file {position: relative;overflow: hidden;}
+.btn-file input[type=file] {position: absolute;top: 0;right: 0;min-width: 100%;min-height: 100%;font-size: 100px;text-align: right;filter: alpha(opacity = 0);opacity: 0;outline: none;background: white;cursor: inherit;display: block;}
+
+form .form-control{background:rgba(0,0,0,0.03);}
+form p, .form-label{margin-bottom:0; color:rgba(0,0,0,.6);font-weight:bold;font-size:11px; text-transform:uppercase;width:100%; display:block;letter-spacing: 0.4px;}
+.page-title{ background: #877555;color: #fff;padding: 15px;}
+
+section h4 .btn{padding: 3px 15px;}
+
+footer{background:#000; color:#fff; position: fixed; width:100%;bottom:0;padding:10px 0; font-size:12px; left:0}
+footer p{margin:0}

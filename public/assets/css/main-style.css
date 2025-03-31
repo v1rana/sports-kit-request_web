@@ -1,0 +1,85 @@
+body{background:#fafafc}
+
+h1,h2,h3,h4,h5,h6{font-family: "Jost", sans-serif;color:#5f788a}
+a{text-decoration:none; font-family: "Noto Sans", sans-serif;}
+
+.bg-primary, .btn-primary{background:#225395 !important}
+.bg-secondary, .btn-secondary{background:#f1f1e6 !important}
+.bg-success, .btn-success{background:#4bbc8e !important;color:#fff !important; }
+.btn-secondary{color:rgba(0,0,0,0.3); border-color:rgba(0,0,0,0.1)}
+.btn-success {border-color:rgba(0,0,0,0.1)}
+.btn-secondary:hover{color:#000; border-color:#000}
+
+header{background:#225395;}
+.content-area header{background:#2f4858;}
+.content-area header button{color:#fff; transition: all linear 0.3s 0s}
+.content-area header button:focus{border:none; box-shadow:none}
+.content-area header .navbar-toggler.collapsed{transform:rotate(180deg);}
+header a.btn {font-size: 14px;transition: all linear 0.3s 0s;}
+header a.btn span {display: none;transition: all linear 0.3s 0s;}
+header a.btn:hover span {display: inline-block;}
+.logo img{display: inline-block;vertical-align: middle;margin: 0 4px 0 0;max-width:70px; width:100%}
+.logo .logo_text { color:#fff;display: inline-block;vertical-align: middle;}
+.logo .logo_text .site_name_english, .logo .logo_text h1.h1-logo {color:#fff;font-style: normal;font-size:20px;margin: 0;font-weight: 700;}
+
+.main {flex: 1 auto;align-items: stretch;overflow: hidden;position: relative;}
+aside.show {margin-left: 0;}
+aside {width: 100%;max-width: 220px;min-width: 220px;background: #5f788a;box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);transition: margin-left .3s ease-in-out, left .3s ease-in-out, margin-right .3s ease-in-out, right .3s ease-in-out;display: block;}
+aside .logo-area{padding: 9px;border-bottom:1px dashed rgba(255,255,255,0.3)}
+aside .logo img{max-width:60px;}
+.main.collapse {display: block;min-width: 84px;max-width: 84px;width: auto;}
+aside.collapsing{transition:width .35s ease}
+aside.main li a span{display: none}
+aside .nav-link{color:rgba(255,255,255,0.6);font-size:14px;}
+aside ul li{margin:3px 0;}
+aside .nav-link i{font-size: 18px;margin-right:10px;}
+aside.main .nav-link{font-size:18px;text-align:center}
+aside .nav-link:focus,aside .nav-link:hover{color:#fff}
+aside .nav-item.active {position: relative; padding-left: 10px; border:none;}
+aside .nav-item.active:after {top: 0;border-radius: 4px 4px;content: "";position: absolute;right: 10px;
+    width: 92%;background: rgba(255,255,255,0.2);height: 100%;z-index: 0;}
+aside .nav-item.active .nav-link{color:#fff;position:relative; z-index:9}
+
+.navbar a{color:#fff}
+.content-area {display: flex;flex-direction: column;min-width: 0;transition: margin-left .3s ease-in-out, left .3s ease-in-out, margin-right .3s ease-in-out, right .3s ease-in-out;
+width: 100%;min-height: 81vh;}
+.content-area header .row{padding:22px 0}
+
+
+
+#img-upload {position: relative;width: 150px;background: #eee;height: 150px;}
+.btn-file {position: relative;overflow: hidden;}
+.btn-file input[type=file] {position: absolute;top: 0;right: 0;min-width: 100%;min-height: 100%;font-size: 100px;text-align: right;filter: alpha(opacity = 0);opacity: 0;outline: none;background: white;cursor: inherit;display: block;}
+
+form .form-control{background:rgba(0,0,0,0.03);font-size:12px;}
+form p, .form-label, .request-default-info label{margin-bottom:0; color:#5f788a;font-weight:bold;font-size:11px; text-transform:uppercase;width:100%; display:block;letter-spacing: 0.4px;}
+.page-title{ background: #877555;color: #fff;padding: 15px;}
+select.form-control{appearance: auto; -moz-appearance: auto;-webkit-appearance: auto;}
+section h4 .btn{padding: 3px 15px;}
+
+.table{margin-bottom:0}
+.table th, .table td{font-size:13px; padding: 5px;}
+.table .btn {padding: 0;font-size: 12px;width: 24px;height: 24px; line-height: 22px;}
+ form .table input{font-size:13px;}
+
+.bg-success h5{color:#fff}
+.modal label{font-size:12px;margin-bottom:0}
+.modal p{margin-bottom:0;color:#888}
+.modal .card{border:none}
+.modal .card .card-body{padding: 10px}
+.modal .card h4{color:#eb9928;margin-bottom:0; font-size:20px;}
+
+.games-authorised-sec .row > div:nth-child(-n+4) {border-top: 1px solid #eee;}
+.games-authorised-sec .row > div:nth-child(4n+1) {border-left: 1px solid #eee;}
+.games-authorised-sec .row > div {border-right: 1px solid #eee;border-bottom: 1px solid #eee;}
+
+.request-default-info > div > div > input {font-size:16px;border: none;background: transparent;padding: 0;text-transform: uppercase;font-weight: 500;}
+.request-default-info > div > div{background:#f1f1e6; padding :10px;border-left: 1px dashed #ccc;}
+.request-default-info > div:first-child > div{border-left:none}
+.request-form > div {border: 1px dashed #eee;padding: 22px 10px;margin-bottom: -1px !important;}
+.request-form > div input[type="number"]{padding: 0px 10px;}
+.request-default-info label + h5{color:#000}
+
+
+footer{background:#2f4858; color:#fff;width:100%;bottom:0;padding:10px 0; font-size:12px; left:0}
+footer p{margin:0}
