@@ -10,6 +10,9 @@ return new class extends Migration {
             $table->id();
             $table->string('hq_name')->unique();
             $table->enum('status', ['approve', 'reject']);
+            $table->string('mob');
+            $table->string('otp');
+            $table->string('expires_at');
             $table->timestamps(); // Automatically creates created_at & updated_at
         });
     }

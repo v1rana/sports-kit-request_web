@@ -7,38 +7,36 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
-					<h4 class="">Vendor List <a href="" class="btn btn-secondary float-end"><i class="fa-solid fa-arrow-left-long"></i> Back</a></h4>
-					<div class=" bg-white shadow mb-5">
-						<div class="row justify-content-between border-bottom align-items-center">
-							<div class="col-12">
-								<table class="table table-bordered bg-white table-hover">
-									<thead>
-										<tr class="bg-primary text-white">
-											<th>Sr. No.</th>
-											<th>Name</th>
-											<th>Designation</th>
-                                            <th>Block</th>
-											<th>District</th>
-                                            <th>Area Name</th>
-											<th>Sports Request Details</th>
-											<th>Availability Of FoP/Hall/Poles</th>
-                                            <th>Tentative Players</th>
-                                            <th>Date Of Last Issued Sports</th>
-                                            <th>Status</th>
-                                            <!--<th>Action</th>-->
-										</tr>
-									</thead>
-									<tbody>
-                                    @foreach($sportsRequests as $index => $request)
-                    <tr>
-                        <td>{{ $index + 1 }}.</td>
-                        <td></td>
-                        <td>{{ $request['designation'] }}</td>
-                        <td>{{ $request['block'] }}</td>
-                        <td>{{ $request['district'] }}</td>
-                        <td>{{ $request['area_name'] }}</td>
-                        
-                        <td>
+<h4 class="">Vendor List <a href="" class="btn btn-secondary float-end"><i class="fa-solid fa-arrow-left-long"></i> Back</a></h4>
+<div class=" bg-white shadow mb-5">
+	<div class="table-responsive">
+		<table class="table table-bordered bg-white table-hover">
+			<thead>
+				<tr class="bg-primary text-white">
+					<th>Sr. No.</th>
+					<th>Name</th>
+					<th>Designation</th>
+					<th>Block</th>
+					<th>District</th>
+					<th>Area Name</th>
+					<th>Sports Request Details</th>
+					<th>Availability Of FoP/Hall/Poles</th>
+					<th>Tentative Players</th>
+					<th>Date Of Last Issued Sports</th>
+					<th>Status</th>
+					<!--<th>Action</th>-->
+				</tr>
+			</thead>
+			<tbody>
+				@foreach($sportsRequests as $index => $request)
+				<tr>
+					<td>{{ $index + 1 }}.</td>
+					<td></td>
+					<td>{{ $request['designation'] }}</td>
+					<td>{{ $request['block'] }}</td>
+					<td>{{ $request['district'] }}</td>
+					<td>{{ $request['area_name'] }}</td>
+					<td>
                             @php
                                 $equipmentList = json_decode($request['sports_equipment'], true);
                             @endphp
@@ -51,50 +49,21 @@
                             @else
                                 <span>No equipment data</span>
                             @endif
-                        </td>
-                        <td>{{ $request['fop_available'] }}</td>
-                        <td>{{ $request['players_count'] }}</td>
-                        <td>{{ date('d-m-Y', strtotime($request['last_issued_date'])) }}</td>
-                        <td>{{ $request['status'] }}</td>
-                        <!--<td>
-                            <a href="#" class="btn btn-success"><i class="fa-solid fa-info"></i></a>
-                            <a href="#" class="btn btn-dark"><i class="fa-solid fa-pencil"></i></a>
-                            <a href="#" class="btn btn-danger"><i class="fa-solid fa-trash"></i></a>
-                            <form action="{{ route('assign.vendor.store') }}" method="POST">
-        @csrf
-        <input type="hidden" name="request_id" value="{{ $request->id }}">
-
-        <label for="vendor">Select Vendor:</label>
-        <select style="width:160px;" name="vendor_id" id="vendor" class="form-control" required 
-            {{ $request->vendor_id ? 'disabled' : '' }}>
-            @if(!$request->vendor_id)
-            <option value="">-- Select Vendor --</option>
-            @endif
-            @foreach($vendors as $vendor)
-                <option value="{{ $vendor->id }}" 
-                    {{ $request->vendor_id == $vendor->id ? 'selected' : '' }}>
-                    {{ $vendor->vendor_name }}
-                </option>
-            @endforeach
-        </select>
-
-        @if(!$request->vendor_id)
-            <button style="width:160px;" type="submit" class="btn btn-success mt-3">Assign Vendor</button>
-        @else
-            <p class="text-info mt-2">Vendor already assigned.</p>
-        @endif
-    </form>
-
-                        </td>-->
-                    </tr>
-                    @endforeach
-                                    </tbody>
-								</table>
-								
-							</div>	
-						</div>	
-					</div>			
+					</td>
+					<td>{{ $request['fop_available'] }}</td>
+					<td>{{ $request['players_count'] }}</td>
+					<td>{{ date('d-m-Y', strtotime($request['last_issued_date'])) }}</td>
+					<td>{{ $request['status'] }}</td>
+                       
+				</tr>
+				@endforeach
+			</tbody>
+		</table>
+	</div>	
+</div>	
+</div>			
 				
+					
 
             
      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

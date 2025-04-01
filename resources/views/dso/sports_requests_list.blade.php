@@ -7,102 +7,153 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
-					<h4 class="">Sports Kit Requisition List <a href="" class="btn btn-secondary float-end"><i class="fa-solid fa-arrow-left-long"></i> Back</a></h4>
-					<div class=" bg-white shadow mb-5">
-						<div class="row justify-content-between border-bottom align-items-center">
-							<div class="col-12">
-								<table class="table table-bordered bg-white table-hover">
-									<thead>
-										<tr class="bg-primary text-white">
-											<th>Sr. No.</th>
-											<th>Name</th>
-											<th>Designation</th>
-                                            <th>Block</th>
-											<th>District</th>
-                                            <th>Area Name</th>
-											<th>Sports Request Details</th>
-											<th>Availability Of FoP/Hall/Poles</th>
-                                            <th>Tentative Players</th>
-                                            <th>Date Of Last Issued Sports</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-										</tr>
-									</thead>
-									<tbody>
-    @foreach($sportsRequests as $index => $request)
-        <tr>
-            <td>{{ $index + 1 }}.</td>
-            <td>{{ $request->applicant_name ?? 'N/A' }}</td>
-            <td>{{ $request->designation }}</td>
-            <td>{{ $request->block }}</td>
-            <td>{{ $request->district }}</td>
-            <td>{{ $request->area_name }}</td>
+<h4 class="">Sports Kit Requisition List <a href="" class="btn btn-secondary float-end"><i class="fa-solid fa-arrow-left-long"></i> Back</a></h4>
+<div class=" bg-white shadow mb-5 p-2">
+			<table class="table table-bordered bg-white table-hover">
+				<thead>
+					<tr class="bg-primary text-white">
+						<th>Sr. No.</th>
+						<th>Designation</th>
+						<th>District</th>
+						<th>Sports Request Details</th>
+						<th>Availability Of FoP/Hall/Poles</th>
+						<th>Tentative Players</th>
+						<th>Date Of Last Issued Sports</th>
+						<th>Application Status</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+				@foreach($sportsRequests as $index => $request)
+				<tr>
+					<td>{{ $index + 1 }}.</td>
+					<td>{{ $request->designation }}</td>
+					<td>{{ $request->district }}</td>
+					<td>
+						@php
+							$equipmentList = json_decode($request->sports_equipment, true);
+						@endphp
+						@if(is_array($equipmentList))
+							<ul>
+								@foreach($equipmentList as $equipment)
+									<li>{{ $equipment['name'] }} - {{ $equipment['equipment'] }} (Qty: {{ $equipment['quantity'] }})</li>
+								@endforeach
+							</ul>
+						@else
+							<span>No equipment data</span>
+						@endif
+           	 		</td>
             
-            <td>
-                @php
-                    $equipmentList = json_decode($request->sports_equipment, true);
-                @endphp
-                @if(is_array($equipmentList))
-                    <ul>
-                        @foreach($equipmentList as $equipment)
-                            <li>{{ $equipment['name'] }} - {{ $equipment['equipment'] }} (Qty: {{ $equipment['quantity'] }})</li>
-                        @endforeach
-                    </ul>
-                @else
-                    <span>No equipment data</span>
-                @endif
-            </td>
-            
-            <td>{{ $request->fop_available }}</td>
-            <td>{{ $request->players_count }}</td>
-            <td>
-                {{ $request->last_issued_date ? date('d-m-Y', strtotime($request->last_issued_date)) : 'N/A' }}
-            </td>
-            <td>
-                <strong>
-                    @if($request->status == 'Approved')
-                        <span class="badge rounded-pill bg-success">✅ Approved</span>
-					@elseif($request->status == 'Rejected')
-                        <span class="badge rounded-pill bg-danger">❌ Rejected</span>
-					@elseif($request->status == 'Verified')
-                        <span class="badge rounded-pill bg-success">✔ Verified</span>
-                    @elseif($request->status == 'Not Verified')
-                        <span class="badge rounded-pill bg-danger">❌ Not Verified</span>
-                    @else
-                        <span class="badge rounded-pill bg-warning text-dark">⏳ Pending</span>
-                    @endif
-                </strong>
-            </td>
+					<td>{{ $request->fop_available }}</td>
+					<td>{{ $request->players_count }}</td>
+					<td>
+						{{ $request->last_issued_date ? date('d-m-Y', strtotime($request->last_issued_date)) : 'N/A' }}
+					</td>
+					<td>
+						<strong>
+							@if($request->status == 'Approved')
+								<span class="badge rounded-pill bg-success w-100"><i class="fa-solid fa-thumbs-up"></i> Approved</span> <br /><a href="#" class="btn btn-primary w-100 h-100" data-bs-toggle="modal" data-bs-target="#requestDisclosure">Request for disclosure</a>
+							@elseif($request->status == 'Rejected')
+								<span class="badge rounded-pill bg-danger w-100"><i class="fa-solid fa-ban"></i> Rejected</span>
+							@elseif($request->status == 'Verified')
+								<span class="badge rounded-pill bg-primary w-100"><i class="fa-solid fa-check"></i> Verified</span>
+							@elseif($request->status == 'Not Verified')
+								<span class="badge rounded-pill bg-warning w-100"><i class="fa-solid fa-xmark"></i> Not Verified</span>
+							@else
+								<span class="badge rounded-pill bg-info w-100"><i class="fa-solid fa-hourglass-half"></i> Pending</span>
+							@endif
+						</strong>
+					</td>
 
-			<td>
-                @if($request->status == 'Pending')
-                    <form action="{{ route('dso.verify', $request->id) }}" method="POST" style="display:inline;">
-                        @csrf
-						<button type="submit" style="width:160px;" class="btn btn-success">
-                     Verified
-                </button>
-                    </form>
+					<td>
+						@if($request->status == 'Pending')
+							<form action="{{ route('dso.verify', $request->id) }}" method="POST" style="display:inline;">
+								@csrf
+								<button type="submit" class="btn btn-success w-100 mb-2">
+							Verify
+						</button>
+							</form>
 
-                    <form action="{{ route('dso.not_verify', $request->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        <button type="submit" style="width:160px;" class="btn btn-danger">
-                            Not Verified
-                        </button>
-                    </form>
-                @endif
-            </td>
-        </tr>
-    @endforeach
-</tbody>
-
-
-								</table>
+							<form action="{{ route('dso.not_verify', $request->id) }}" method="POST" style="display:inline;">
+								@csrf
+								<button type="submit" class="btn btn-danger w-100">
+									Not Verify
+								</button>
+							</form>
+						@endif
+					</td>
+				</tr>
+				@endforeach
+				</tbody>
+			</table>
 								
-							</div>	
-						</div>	
-					</div>			
+		
+</div>			
 				
+<div class="modal fade" id="requestDisclosure" tabindex="-1" aria-labelledby="requestDisclosureLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+    	<div class="modal-content">
+    		<div class="modal-header">
+       			<h5 class="modal-title" id="requestDisclosureLabel">Request Closure: Disbursal Receipt </h5>
+       			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+     		<div class="modal-body">
+				<form>
+					<div  class="row">
+						<div class="col-3 mb-2">
+							<label>Date of Issue</label>
+							<h6>25 March 2025 08:08AM</h56>
+						</div>
+						<div class="col-4 mb-2">
+							<label>Firm Name</label>
+							<h6>XYZ Firm Name</h6>
+						</div>
+						<div class="col-3 mb-2">
+							<label>Name of the Owner</label>
+							<h6>Firm Owner Name</h6>
+						</div>
+						<div class="col mb-2">
+							<label>Mobile Number</label>
+							<h6>987654345</h56>
+						</div>
+					</div>
+					<hr class="mt-0" />
+					<div class="row">
+						<div class="col">
+							<label><strong>Source of Fund</label></strong><br />
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="fundSource" id="fundSourceDSE">
+								<label class="form-check-label" for="fundSourceDSE">
+									Sourced by DSE 
+								</label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="fundSource" id="fundSourceHQ" checked>
+								<label class="form-check-label" for="fundSourceHQ">
+									Sourced by HQ
+								</label>
+							</div>
+						</div>
+						<div class="col">
+							<label><strong>Amount of procurement</strong></label>
+							<input type="text" class="form-control" />
+						</div>
+						<div class="col">
+							<label><strong>Bill no. and Voucher no. </strong></label>
+							<input type="text" class="form-control mb-2" />
+							<input type="file" class="form-control" />
+						</div>
+					</div>
 
+				</form>       
+      		</div>
+     		<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+     		</div>
+   		</div>
+ 	</div>
+</div>
             
      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg modal-dialog-centered">
@@ -194,8 +245,6 @@
     </div>
 	
     @endsection
-    <script src="{{ url('assets/js/jquery.min.js') }}"></script>
-		<script src="{{ url('assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 	<script>
         function readURL(input) {
             if (input.files && input.files[0]) {

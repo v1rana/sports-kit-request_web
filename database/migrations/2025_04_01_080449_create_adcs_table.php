@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -7,13 +6,13 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
-        Schema::create('dsos', function (Blueprint $table) {
+        Schema::create('adcs', function (Blueprint $table) { // Ensure correct table name
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
-            $table->string('district'); // DSO's assigned district
-            $table->enum('status', ['Active', 'Inactive'])->default('Active');
+            $table->string('designation');
+            $table->string('district');
             $table->string('mob');
+            $table->enum('status', ['Active', 'Inactive'])->default('Active');
             $table->string('otp');
             $table->string('expires_at');
             $table->timestamps();
@@ -22,6 +21,6 @@ return new class extends Migration {
 
     public function down()
     {
-        Schema::dropIfExists('dsos');
+        Schema::dropIfExists('adcs');
     }
 };

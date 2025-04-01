@@ -1,14 +1,14 @@
-@extends('layouts.dso_main')
+@extends('adc_main')
 
 @section('content')
 
     <!-- Main Content -->
     <div class="content dashboard-area">
         
-        <!-- Top Navbar -->
-        <div class="row header-area align-items-end">
+         <!-- Top Navbar -->
+         <div class="row header-area align-items-end">
             <div class="col-7">
-                <h3 class="mb-0 text-dark">Welcome, <strong>Nisha</strong></h3>
+                <h3 class="mb-0 text-dark">Welcome, <strong>ADC USER</strong></h3>
             </div>
             <div class="col-5 text-end">
                 <h6 class="mb-0"><i class="fa-solid fa-location-dot"></i> Bhiwani</h6>
@@ -26,28 +26,7 @@
             </div>
             <div class="col-8">
                 <div class="row application-details">
-                    <div class="col-md-4">
-                        <div class="p-3 rounded  text-center shadow text-white mb-3">
-                            <h2 class="text-white">{{ $totalVerified }}</h2>
-                            <small class="text-white">Verified</small>
-                            <i class="fa-solid fa-thumbs-up"></i>
-                        </div>
-                    </div>
-            
-                    <div class="col-md-4">
-                        <div class="p-3 rounded text-center bg-warning shadow text-white mb-3">
-                            <h2 class="text-white">{{ $totalNotVerified }}</h2>
-                            <small class="text-white">Not Verified</small>
-                            <i class="fa-solid fa-xmark"></i>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="p-3 rounded text-center bg-info shadow text-white mb-3">
-                            <h2 class="text-white">{{ $totalPending }}</h2>
-                            <small class="text-white">Pending</small>
-                            <i class="fa-solid fa-hourglass-half"></i>
-                        </div>
-                    </div>
+                    
                     <div class="col-md-4">
                         <div class="p-3 rounded text-center bg-success shadow text-white mb-3">
                             <h2 class="text-white">{{ $totalApproved }}</h2>

@@ -19,8 +19,11 @@ class SportsKitRequisitionController extends Controller {
         // Fetch total rejected applications
         $totalRejected = SportsKitRequisition::where('status', 'Rejected')->count();
         $totalPending = SportsKitRequisition::where('status', 'Pending')->count();
+        $totalVerified = SportsKitRequisition::where('status', 'Verified')->count();
+        $totalNotVerified = SportsKitRequisition::where('status', 'Not Verified')->count();
+        $totalDisbursed = SportsKitRequisition::where('status', 'Disbursed')->count();
 
-        return view('gm.dashboard', compact('totalApplications', 'totalApproved', 'totalRejected', 'totalPending'));
+        return view('gm.dashboard', compact('totalApplications', 'totalApproved', 'totalRejected', 'totalPending', 'totalVerified', 'totalNotVerified', 'totalDisbursed'));
     }
 
     public function index()
