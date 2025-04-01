@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use HqsSeeder;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -19,11 +20,11 @@ class DatabaseSeeder extends Seeder
         $this->call(VendorSeeder::class);
         $this->call(SportsSeeder::class);
         $this->call(SportVendorSeeder::class);
-        $this->call(DSOSeeder::class);
+        $this->call(DsoSeeder::class);
         
         $this->call(GramPanchayatSarpanchSeeder::class);
         $this->call(AdcSeeder::class);
-        $this->call(HQSeeder::class);
+        // $this->call(HqsSeeder::class);
        
         // User::factory()->create([
         //     'name' => 'Test User',
