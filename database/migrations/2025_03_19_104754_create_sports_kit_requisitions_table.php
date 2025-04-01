@@ -21,8 +21,8 @@ return new class extends Migration {
             $table->enum('verification_status', ['Verified', 'Not Verified']);
             $table->enum('approval_status', ['Approved', 'Rejected']);
             $table->enum('status', ['Pending', 'Verified', 'Not Verified'])->default('Pending');
-            $table->foreignId('vendor_id')->nullable()->constrained('vendors')->onDelete('set null');
-            $table->timestamp('vendor_assign_date')->nullable()->after('vendor_id');
+            // $table->foreignId('vendor_id')->nullable()->constrained('vendors')->onDelete('set null');
+            $table->timestamp('vendor_assign_date')->nullable();
             $table->timestamp('verification_datetime')->nullable();
             $table->timestamp('approval_rejection_datetime')->nullable();
             $table->timestamps(); // Created at & Updated at
