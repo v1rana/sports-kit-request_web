@@ -8,10 +8,13 @@
         {{ session('success') }}
     </div>
 @endif
+<style>
+    .modal-body label{font-size:14px}
+</style>
 
 <section>
     <div class="mt-5 text-center">
-        <h2>Welcome, <strong class="text-primary">{{ session()->get('sports_person_name')  ?? '' }}</strong></h2>
+        <h2>Welcome, <strong class="text-primary">{{ session()->get('user_name') ?? '' }}</strong></h2>
         <p>We are proud of your achievements</p>
     </div>
     <div class="d-flex justify-content-center flex-wrap">
@@ -29,7 +32,7 @@
     <div class="table-responsive">
         @php $i = 1; @endphp
         @if($otpData->isNotEmpty())
-        <table class="table table-striped table-hover table-bordered text-center" style="margin: auto;">
+        <table class="table table-striped table-hover bg-white table-bordered text-center" style="margin: auto;">
             <thead class="table-dark">
                 <tr>
                     <th>Sr. No.</th>
@@ -61,7 +64,7 @@
 								'{{ $data->domicile_state }}', 
 								'{{ $data->plays_for_statte_org }}',
 								'{{ $data->name_sports_discipline }}', 
-								'{{ $data->tournament_name }}', 
+								'{{ $data->tournament }}', 
 								'{{ $data->month_year }}', 
 								'{{ $data->venue_of_tournament }}',
 								'{{ $data->organising_authority }}', 
@@ -73,7 +76,7 @@
 								'{{ url('storage/' . ($data->sports_certificate ?? 'default.jpg')) }}', 
 								'{{ url('storage/' . ($data->more_than25_photo ?? 'default.jpg')) }}'
 							)">
-							👁️ View
+							👁️ View Details
 						</button>
                     </td>
                 </tr>
@@ -90,107 +93,117 @@
 
 <!-- Bootstrap Modal -->
 <!-- Bootstrap Modal -->
-<div class="modal fade show" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-modal="true" role="dialog">
+<div class="modal fade show applicant-details-modal" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-modal="true" role="dialog">
     <div class="modal-dialog modal-xl">
         <div class="modal-content shadow-lg rounded-4 border-0">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title fw-bold" id="detailsModalLabel">Sports Person Details</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body p-4">
+            <div class="modal-body">
                 <div class="container">
                     <!-- Profile Photo -->
-                    <div class="row text-center">
-                        <div class="col-12 mb-3">
-                            <img id="modalProfilePic" src="" class="rounded-circle border shadow" width="120" height="120" alt="Profile Photo">
+                    <div class="card mb-4"><div class="card-body bg-light">
+                    <div class="row">
+                        <div class="col-10 mb-3">
+                            <div class="row">
+                                <div class="col-xs-12 col-sm-6 col-md-3 mb-3">
+                                    <label class="text-muted fw-bold">1. NAME OF SPORTSPERSON</label>
+                                    <h5 class="" id="modalName"></h5>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-3 mb-3">
+                                <label class="text-muted fw-bold">2. AADHAAR NO.</label>
+                                    <h5 id="adhar_no"></h5>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-3 mb-3">
+                                <label class="text-muted fw-bold">3. MOBILE NO.</label>
+                                    <h5 id="modalPhone"></h5>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-3 mb-3">
+                                    <label class="text-muted fw-bold">4. DISTRICT</label>
+                                    <h5 id="belongTo"></h5>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-3 mb-3">
+                                    <label class="text-muted fw-bold">5. DOMICILE STATE</label>
+                                    <h5 id="domiState"></h5>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-3 mb-3">
+                                    <label class="text-muted fw-bold">6. PLAYS FOR </label>
+                                    <h5 id="organisation"></h5>
+                                </div>
+                                <div class="col-xs-12 col-sm-6 col-md-6 mb-3">
+                                     <label class="text-muted fw-bold">7. NAME OF SPORTS DISCIPLINE</label>
+                                    <h5 id="sport_displ"></h5>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="row text-center">
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">1. NAME OF SPORTSPERSON</h6>
-                            <p class="fw-semibold" id="modalName"></p>
+                        <div class="col-2 mb-3 text-end">
+                            <img id="modalProfilePic" src="" class="  border shadow" height="100%" width="100%" alt="Profile Photo">
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">2. AADHAAR NO.</h6>
-                            <p class="fw-semibold" id="adhar_no"></p>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">3. MOBILE NO.</h6>
-                            <p class="fw-semibold" id="modalPhone"></p>
-                        </div>
-                    </div>
-					<div class="row text-center">
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">4. NAME OF DISTRICT SPORTSPERSON BELONGS TO</h6>
-                            <p class="fw-semibold" id="belongTo"></p>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">5. DOMICILE STATE</h6>
-                            <p class="fw-semibold" id="domiState"></p>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">6. PLAYS FOR (NAME OF STATE/ORGANIZATION)</h6>
-                            <p class="fw-semibold" id="organisation"></p>
-                        </div>
-                    </div>
-					<div class="row text-center">
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">7. NAME OF SPORTS DISCIPLINE</h6>
-                            <p class="fw-semibold" id="sport_displ"></p>
-                        </div>
-                    </div>
+                    </div></div></div>
 
                     <!-- Sports Details -->
                     <h5 class="fw-bold mb-3">Best Sports Achievement</h5>
-                    <div class="row text-center">
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">I. NAME OF TOURNAMENT</h6>
-                            <p class="fw-semibold" id="nameOfTounmnt"></p>
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label class="text-muted fw-bold">I. NAME OF TOURNAMENT</label>
+                            <h5 class="fw-semibold" id="nameOfTounmnt"></h5>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">II. MONTH & YEAR</h6>
-                            <p class="fw-semibold" id="month_year"></p>
+                        <div class="col-md-9 mb-3">
+                            <label class="text-muted fw-bold">II. ORGANIZING AUTHORITY</label>
+                            <h5 class="fw-semibold" id="ornAthority"></h5>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">III. VENUE OF TOURNAMENT</h6>
-                            <p class="fw-semibold" id="vanueOfTournam"></p>
+                        <div class="col-md-3 mb-3">
+                            <label class="text-muted fw-bold">III. MONTH & YEAR</label>
+                            <h5 class="fw-semibold" id="month_year"></h5>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">IV. ORGANIZING AUTHORITY</h6>
-                            <p class="fw-semibold" id="ornAthority"></p>
+                        <div class="col-md-3 mb-3">
+                            <label class="text-muted fw-bold">IV. VENUE OF TOURNAMENT</label>
+                            <h5 class="fw-semibold" id="vanueOfTournam"></h5>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">V. TOURNAMENT TYPE</h6>
-                            <p class="fw-semibold" id="tounType"></p>
+                        <div class="col-md-3 mb-3">
+                            <label class="text-muted fw-bold">V. TOURNAMENT TYPE</label>
+                            <h5 class="fw-semibold" id="tounType"></h5>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">VI. MEDAL WON (IF ANY) </h6>
-                            <p class="fw-semibold" id="modalMedal"></p>
+                        <div class="col-md-3 mb-3">
+                            <label class="text-muted fw-bold">VI. MEDAL WON </label>
+                            <h5 class="fw-semibold" id="modalMedal"></h5>
                         </div>
-						<div class="col-md-4 mb-3">
-                            <h6 class="text-muted">VII. PARTICIPATION LEVEL (IN CASE OF TEAM GAME ONLY) </h6>
-                            <p class="fw-semibold" id="patiLevel"></p>
+						<div class="col-md-3 mb-3">
+                            <label class="text-muted fw-bold">VII. PARTICIPATION LEVEL</label>
+                            <h5 class="fw-semibold" id="patiLevel"></h5>
                         </div>
                     </div>
+                    <hr />
 
                     <!-- Attachments -->
                     <h5 class="fw-bold mb-3">Attachments</h5>
-                    <div class="row text-center">
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">AADHAAR CARD (PDF/JPG)</h6>
-                            <a id="modalAadhaar" href="#" target="_blank">View</a>
+                    <div class="row">
+                        <div class="col-3 mb-3">
+                            <div class="card"><div class="card-body p-0 text-center">
+                            <p class="text-muted p-3 mb-0">1. AADHAAR CARD (PDF/JPG)</p><a id="modalAadhaar" class="btn btn-success w-100" href="#" target="_blank">View</a>
+                            </div>
+                            </div>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">DOMICILE UPLOAD (PDF/JPG)</h6>
-                            <a id="modalDomicile" href="#" target="_blank">View</a>
+                        
+                        
+                        <div class="col-3 mb-3">
+                            <div class="card"><div class="card-body p-0 text-center">
+                            <p class="text-muted p-3 mb-0">2. DOMICILE UPLOAD (PDF/JPG)</p> <a id="modalDomicile" class="btn btn-success w-100" href="#" target="_blank">View</a>
+                            </div>
+                            </div>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">ACHIEVMENT CERTIFICATE UPLOAD (PDF/JPG)</h6>
-                            <a id="modalSportsCert" href="#" target="_blank">View</a>
+                        <div class="col-3 mb-3">
+                            <div class="card"><div class="card-body p-0 text-center">
+                            <p class="text-muted p-3 mb-0">3. ACHIEVMENT CERTIFICATE UPLOAD (PDF/JPG) </p><a id="modalSportsCert" class="btn btn-success w-100" href="#" target="_blank">View</a>
+                            </div>
+                            </div>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <h6 class="text-muted">CERTIFICATE FOR AS PROOF FOR PLAYING MORE THAN 25% OF MATCHES. (PDF/JPG)</h6>
-                            <a id="more_than25_photo" href="#" target="_blank">View</a>
+                        <div class="col-3 mb-3">
+                            <div class="card"><div class="card-body p-0  text-center">
+                            <p class="text-muted p-3 mb-0">4. CERTIFICATE FOR AS PROOF FOR PLAYING MORE THAN 25% OF MATCHES. (PDF/JPG)</p><a id="more_than25_photo" class="btn btn-success w-100" href="#" target="_blank">View</a>
+                            </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -118,6 +118,11 @@ max-width: 240px;background-position: right 6px center}
 .declaration-area label{color:#000; text-transform: none;font-weight: normal}
 .bg-dispersment{background:#51308e !important}
 
+.applicant-details-modal .card-body p {
+    height: 104px;
+    float: left;
+    background: rgba(0,0,0,0.04);
+}
 
 footer{background:#2f4858; color:#fff;width:100%;bottom:0;padding:10px 0; font-size:12px; left:0}
 footer p{margin:0}

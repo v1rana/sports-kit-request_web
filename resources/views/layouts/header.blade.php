@@ -6,7 +6,7 @@
 						<img class="" id="logo" src="{{ url('assets/job_app/images/logo-sports.png') }}" alt="Sports Haryana Govt">
 						<div class="logo_text">
 							<strong lang="">खेल विभाग हरियाणा</strong>
-                            <h1 class="h1-logo">Sports Department , Government of Haryana</h1>
+                            <h1 class="h1-logo">Sports Department</h1>
 							<span class="logo-sub-title">Let the young minds grow to the full potential</span>
 						</div>
 					</a>

@@ -50,7 +50,7 @@ $(document).ready(function() {
 					$('#organising_authority').empty().append('<option value="">--Select--</option>'); 
 					
 					$.each(response, function(key, value) {
-						$('#organising_authority').append('<option value="' + key + '">' + value + '</option>');
+						$('#organising_authority').append('<option value="' + value + '">' + value + '</option>');
 					});
 				},
 				error: function(xhr, status, error) {
