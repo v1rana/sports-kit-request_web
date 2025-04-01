@@ -18,6 +18,15 @@ class DatabaseSeeder extends Seeder
         $this->call(CategoryWiseGradationsSeeder::class);
         $this->call(SportsNameSeeder::class);
         
+        $this->call(VendorSeeder::class);
+        $this->call(SportsSeeder::class);
+        $this->call(SportVendorSeeder::class);
+        $this->call(DSOSeeder::class);
+        
+        $this->call(GramPanchayatSarpanchSeeder::class);
+        $this->call(AdcSeeder::class);
+        $this->call(HQSeeder::class);
+       
         // User::factory()->create([
         //     'name' => 'Test User',
         //     'email' => 'test@example.com',

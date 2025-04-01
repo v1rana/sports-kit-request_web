@@ -8,8 +8,11 @@ return new class extends Migration {
     public function up() {
         Schema::create('hq_sports_requests', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->foreignId('hq_id')->constrained('hqs')->onDelete('cascade'); 
             $table->foreignId('sports_kit_requisition_id')->constrained('sports_kit_requisitions')->onDelete('cascade');
+            $table->string('otp')->nullable();
+            $table->string('expires_at')->nullable();
             $table->enum('status', ['approved', 'rejected'])->default('approved');
             $table->timestamps();
         });
