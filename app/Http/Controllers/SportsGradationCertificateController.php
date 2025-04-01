@@ -1,13 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Http\Request;
 use App\Models\sports_gradation_certificate;
 use App\Models\SportsGradationUser;
 use App\Models\State;
 use App\Models\GetDistricts;
 use App\Models\GetSportName;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\CategoryWiseGradation;
 use Carbon\Carbon;
@@ -92,7 +93,17 @@ class SportsGradationCertificateController extends Controller
         }
 
         $mobile_no = session()->get('mobile_no');
-        $otpData = sports_gradation_certificate::where('mobile_no', $mobile_no)->get();
+        
+        //$otpData = sports_gradation_certificate::where('mobile_no', $mobile_no)->get();
+
+        $otpData = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
+        ->where('sports_gradation_certificates.mobile_no', $mobile_no)
+        ->whereIn('category_wise_gradations.gradation', ['C', 'D'])
+         ->orderBy('sports_gradation_certificates.created_at', 'desc')
+         ->select('sports_gradation_certificates.*', 'category_wise_gradations.gradation', 'category_wise_gradations.tournament', 'category_wise_gradations.organising_authority as authority')
+         ->get();
+
+
         return view('main')->with(['otpData' => $otpData]);
     }
 
@@ -123,10 +134,32 @@ class SportsGradationCertificateController extends Controller
 
     public function viewAppliedCertificate()
     {
+        // $mobile = '9058736489';
+        // $certificate = 'CET-45BC';
+
+        // // Generate a dynamic URL using route() helper
+        // $currentURL = route('verify.certificate', ['mobile' => $mobile, 'certificate' => $certificate]);
+
+        //  // Generate the QR code
+        // $qrCode = QrCode::size(300)->generate($currentURL);
+
+        // $fileName = 'qrcodes/' . $certificate . '.png';
+        // Storage::disk('public')->put($fileName, $qrCode);
+
+        // // Get QR Code URL
+        // $qrCodeUrl = asset('storage/' . $fileName);
+
+        // return $qrCode;
+
         $mobile_no = session()->get('mobile_no');
         $otpData = sports_gradation_certificate::where('mobile_no', $mobile_no) // ✅ Corrected this line
         ->first();
         return view('viewAppliedCertificate')->with(['otpData' => $otpData]);
+    }
+
+    public function verifyCertificate($mobile, $certificate)
+    {
+        return "Verifying certificate: {$certificate} for mobile: {$mobile}";
     }
 
     public function loginOtpVerify(Request $request)

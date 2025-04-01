@@ -2,14 +2,10 @@
 	<div class="container-fluid">
 		<div class="row justify-content-between py-1 border-bottom align-items-center">
 			<div class="col-3">
-				<div class="logo">
-					<a href="#" title="Go to home" class="site_logo" rel="home">
-						<img class="" id="logo" src="{{ url('assets/job_app/dash/images/logo-sports.png') }}" alt="Sports Haryana Govt">
-						<div class="logo_text">
-							<h1 class="h1-logo">Sports Department</h1>								
-						</div>
-					</a>
-				</div>
+			    <div class="d-flex align-items-center gap-3  py-3 px-4">
+                    <img id="logo" src="http://127.0.0.1:8000/assets/job_app/dash/images/logo-sports.png" alt="Sports Haryana Govt" class="img-fluid" style="height: 60px;">
+                    <h1 class="fs-4 fw-bold m-0 text-primary text-white">Sports Department</h1>
+                </div>
 			</div>
 			<div class="col-9">
 				<nav class="navbar navbar-expand-lg ">

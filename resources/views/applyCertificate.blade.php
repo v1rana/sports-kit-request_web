@@ -16,8 +16,8 @@
 				<div class="row justify-content-between py-1 border-bottom align-items-center">
 					<div class="col-12">
 						<form action="{{ route('sports.store') }}" method="POST" enctype="multipart/form-data" class="px-5 py-2">
-						@csrf	<div class="row">
-								<div class="col-xs-12 col-sm-6 col-md-4 mb-3">
+						@csrf	<div class="row justify-content-end">
+								<div class="col-xs-12 col-sm-6 col-md-4 mb-3 text-end">
 									<div class="form-group ">
 										<label class="form-label" for="img-upload">Upload Self-attested Photo</label>
 										<img id="img-upload" src="{{ url('storage/' . ($otpData->profile_picture ?? 'default.jpg')) }}" class="mb-1" />
@@ -30,8 +30,7 @@
 											<input type="text" name="img" class="form-control" readonly>
 										</div>
 									</div>
-								</div>
-								<div class="clearfix"></div>
+								</div></div><div class="row">
 								<div class="col-xs-12 col-sm-6 col-md-4 mb-3">
 									<label for="name" class="form-label">1. Name of Sportsperson<span class="text-danger">*</spna></label>
 									<input type="text" class="form-control" required id="name" name="name" value="{{ $otpData->sports_person_name ?? '' }}" readonly oninput="this.value=this.value.replace(/[^A-Za-z\s]/g,'');">
@@ -159,39 +158,43 @@
 									</div>
 								</div>
 							</div>
-							<div class="col-12 mt-4">
-								<h5>Attachment</h5>
+							<div class="col-12 mt-4 attachment-upload-area">
+								<h5>Attachments</h5>
 								<!-- Aadhaar Card -->
-								<div class="mb-3">
-									<label for="aadhaar_card" class="form-label">Aadhaar Card (PDF/JPG) <span class="text-danger">*</span></label>
-									<input type="file" class="form-control" id="aadhaar_card" name="aadhaar_card" accept=".pdf,.jpg,.jpeg,.png" required onchange="previewFile(event, 'aadhaarPreview')">
-									<div id="aadhaarPreview" class="preview-container"></div>
-								</div>
+								<div class="row">
+									<div class="col mb-3 border-end">
+										<label for="aadhaar_card" class="form-label">Aadhaar Card (PDF/JPG) <span class="text-danger">*</span></label>
+										<input type="file" class="form-control" id="aadhaar_card" name="aadhaar_card" accept=".pdf,.jpg,.jpeg,.png" required onchange="previewFile(event, 'aadhaarPreview')">
+										<div id="aadhaarPreview" class="preview-container"></div>
+									</div>
 
-								<!-- Domicile Certificate -->
-								<div class="mb-3">
-									<label for="domicile_certificate" class="form-label">Domicile Upload (PDF/JPG) <span class="text-danger">*</span></label>
-									<input type="file" class="form-control" id="domicile_certificate" name="domicile_certificate" accept=".pdf,.jpg,.jpeg,.png" required onchange="previewFile(event, 'domicilePreview')">
-									<div id="domicilePreview" class="preview-container"></div>
-								</div>
+									<!-- Domicile Certificate -->
+									<div class="col mb-3 border-end">
+										<label for="domicile_certificate" class="form-label">Domicile Upload (PDF/JPG) <span class="text-danger">*</span></label>
+										<input type="file" class="form-control" id="domicile_certificate" name="domicile_certificate" accept=".pdf,.jpg,.jpeg,.png" required onchange="previewFile(event, 'domicilePreview')">
+										<div id="domicilePreview" class="preview-container"></div>
+									</div>
 
-								<!-- Sports Achievement Certificate -->
-								<div class="mb-3">
-									<label for="sports_certificate" class="form-label">Achievment Certificate Upload (PDF/JPG) <span class="text-danger">*</span></label>
-									<input type="file" class="form-control" id="sports_certificate" name="sports_certificate" accept=".pdf,.jpg,.jpeg,.png" required onchange="previewFile(event, 'sportsPreview')">
-									<div id="sportsPreview" class="preview-container"></div>
-								</div>
+									<!-- Sports Achievement Certificate -->
+									<div class="col mb-3 border-end">
+										<label for="sports_certificate" class="form-label">Achievement Certificate Upload (PDF/JPG) <span class="text-danger">*</span></label>
+										<input type="file" class="form-control" id="sports_certificate" name="sports_certificate" accept=".pdf,.jpg,.jpeg,.png" required onchange="previewFile(event, 'sportsPreview')">
+										<div id="sportsPreview" class="preview-container"></div>
+									</div>
 
-								<!-- Self-Attested Photograph -->
-								<div class="mb-3">
-									<label for="self_attested_photo" class="form-label">Certificate for as Proof for Playing more than 25% of matches. (PDF/JPG)<span class="text-danger">*</span></label>
-									<input type="file" class="form-control" id="more_than25_photo" name="more_than25_photo" accept=".pdf,.jpg,.jpeg,.png" required onchange="previewFile(event, 'photoPreview')">
-									<div id="photoPreview" class="preview-container"></div>
+									<!-- Self-Attested Photograph -->
+									<div class="col mb-3">
+										<label for="self_attested_photo" class="form-label">Certificate for as Proof for Playing more than 25% of matches. (PDF/JPG)<span class="text-danger">*</span></label>
+										<input type="file" class="form-control" id="more_than25_photo" name="more_than25_photo" accept=".pdf,.jpg,.jpeg,.png" required onchange="previewFile(event, 'photoPreview')">
+										<div id="photoPreview" class="preview-container"></div>
+									</div>
 								</div>
 							</div>
-							<div class="col-12 mt-4" style="background-color: bisque;padding: 21px 0px;">    
+							<div class="col-12 mt-4 shadow" style="background-color: bisque;padding: 21px 0px;">    
+								<h4 class="form-check-label ps-4">Declaration</h4>
+							
 								<div class="form-check">
-								✅ <label class="form-check-label" for="declare1">
+							✅ <label class="form-check-label" for="declare1">
 										I certify that I am currently a domicile/resident of Haryana.
 									</label>
 								</div>

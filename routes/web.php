@@ -73,6 +73,9 @@ Route::middleware(['auth.session'])->group(function () {
     Route::get('/view.applied.certificate', [SportsGradationCertificateController::class, 'viewAppliedCertificate'])->name('view.applied.certificate');
     // Logout should be POST to prevent CSRF attacks
     Route::get('/get.organising.authority', [SportsGradationCertificateController::class, 'getOrganisingAuthority'])->name('get.organising.authority');
+
+    Route::get('/verify-certificate/{mobile}/{certificate}', [SportsGradationCertificateController::class, 'verifyCertificate'])
+    ->name('verify.certificate');
     
     Route::post('/logout', [SportsGradationCertificateController::class, 'logout'])->name('logout');
 });
