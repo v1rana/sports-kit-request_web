@@ -10,26 +10,26 @@
     <div class="d-flex flex-column flex-shrink-0 py-3 ps-0">
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="{{ route('dso.sports_kit.dashboard') }}" 
+                <a href="{{ route('hq.sports_kit.dashboard') }}" 
                 
-                   class="nav-link {{ request()->routeIs('dso.sports_kit.dashboard') ? 'active' : '' }}">
+                   class="nav-link {{ request()->routeIs('hq.sports_kit.dashboard') ? 'active' : '' }}">
                     <i class="fa-solid fa-house"></i> <span>Dashboard</span>
                 </a>
             </li>
-           
             
+            <!--<li class="nav-item">
+                <a href="{{ route('sports_kit.form') }}" 
+                   class="nav-link {{ request()->routeIs('sports_kit.form') ? 'active' : '' }}">
+                    <i class="fa-regular fa-rectangle-list"></i> <span> Kit Requisition Form</span>
+                </a>
+            </li>-->
             <li class="nav-item">
-                <a href="{{ route('dso.sports.requests') }}" 
-                   class="nav-link {{ request()->routeIs('dso.sports.requests') ? 'active' : '' }}">
+                <a href="{{ route('hq.sports.requests') }}" 
+                   class="nav-link {{ request()->routeIs('hq.sports.requests') ? 'active' : '' }}">
                     <i class="fa-regular fa-rectangle-list"></i> <span> Kit Request List</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="{{ route('dso.grad.list') }}" 
-                   class="nav-link {{ request()->routeIs('dso.grad.list') ? 'active' : '' }}">
-                   <i class="fa-solid fa-address-card"></i> <span>Gradation (C & D) Applications List</span>
-                </a>
-            </li>
+           
         </ul>
     </div>
 </aside>

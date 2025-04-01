@@ -25,6 +25,7 @@ return new class extends Migration {
             $table->timestamp('vendor_assign_date')->nullable();
             $table->timestamp('verification_datetime')->nullable();
             $table->timestamp('approval_rejection_datetime')->nullable();
+            $table->timestamp('vendor_assign_date')->nullable();
             $table->timestamps(); // Created at & Updated at
         });
     }

@@ -48,7 +48,7 @@
 			<header>
 				<div class="container-fluid">
 					<div class="row justify-content-between border-bottom align-items-center">
-						<div class="col-5 logo d-flex">
+						<div class="col-6 logo d-flex">
 							<button class="navbar-toggler d-block" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
 								<i class="fa-solid fa-angles-left"></i>
 							</button>
@@ -56,7 +56,7 @@
 								<h1 class="h1-logo">Sports Department , Government of Haryana</h1>								
 							</div>
 						</div>
-						<div class="col-7 text-end">
+						<div class="col-6 text-end">
 							<a href="#" class="btn btn-danger"><i class="fa-solid fa-power-off"></i> <span>Log Out</span></a>
 						</div>
 					</div>

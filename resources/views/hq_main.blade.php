@@ -23,7 +23,7 @@
 	<div class="main">
     
     <div class="d-flex">
-        @include('layouts.sidebar')  <!-- ✅ Sidebar Included -->
+        @include('layouts.hq_sidebar')  <!-- ✅ Sidebar Included -->
         
         <div class="container mt-4">
             @yield('content')

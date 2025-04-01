@@ -26,13 +26,30 @@ class DSOController extends Controller
 
         // Fetch total rejected applications
         $totalRejected = SportsKitRequisition::where('status', 'Rejected')->count();
-        return view('dso.dashboard', compact('totalApplications', 'totalApproved', 'totalRejected'));
+        $totalPending = SportsKitRequisition::where('status', 'Pending')->count();
+        $totalVerified = SportsKitRequisition::where('status', 'Verified')->count();
+        $totalNotVerified = SportsKitRequisition::where('status', 'Not Verified')->count();
+        $totalDisbursed = SportsKitRequisition::where('status', 'Disbursed')->count();
+        return view('dso.dashboard', compact('totalApplications', 'totalApproved', 'totalRejected', 'totalPending', 'totalVerified', 'totalNotVerified', 'totalDisbursed'));
     }
 
     public function grad_list(){
         //return "hi";
          // Fetch total application count
-        $sportsCertificates = sports_gradation_certificate::orderBy('created_at', 'desc')->get();
+         $sportsCertificates = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
+         ->whereIn('category_wise_gradations.gradation', ['C', 'D'])
+         ->orderBy('sports_gradation_certificates.created_at', 'desc')
+         ->select('sports_gradation_certificates.*', 'category_wise_gradations.gradation', 'category_wise_gradations.tournament', 'category_wise_gradations.organising_authority as authority')
+         ->get();
+
+         // Format Month-Year after fetching results
+foreach ($sportsCertificates as $certificate) {
+    if (!empty($certificate->month_year)) {
+        $certificate->formatted_month_year = \Carbon\Carbon::createFromFormat('Y-m', $certificate->month_year)->format('F Y');
+    } else {
+        $certificate->formatted_month_year = 'N/A';
+    }
+}
         return view('dso.grad_list', compact('sportsCertificates'));
 
     }
@@ -139,6 +156,35 @@ class DSOController extends Controller
        return redirect()->back()->with('error', 'Request marked as not verified!');
    }
 
+   public function ApproveRequest($id)
+   {
+    $request = sports_gradation_certificate::find($id);
 
+    if (!$request) {
+        return redirect()->back()->with('error', 'Request not found!');
+    }
 
+    $request->status = 'Approved';
+    //$request->status = 'Verified'; // Update status
+    $request->approve_reject_datetime = now();
+    $request->save();
+
+       return redirect()->back()->with('success', 'Request Approved successfully!');
+   }
+
+   public function RejectRequest($id)
+   {
+    $request = sports_gradation_certificate::find($id);
+
+    if (!$request) {
+        return redirect()->back()->with('error', 'Request not found!');
+    }
+
+    $request->status = 'Rejected';
+    //$request->status = 'Verified'; // Update status
+    $request->approve_reject_datetime = now();
+    $request->save();
+
+       return redirect()->back()->with('success', 'Request Rejected successfully!');
+   }
 }

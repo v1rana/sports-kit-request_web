@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\HQ;
 use App\Models\HQSportsRequest;
 use App\Models\SportsKitRequisition;
+use App\Models\Vendor;
 
 class HQController extends Controller
 {
@@ -13,26 +14,52 @@ class HQController extends Controller
     public function index()
     {
         $sportsRequests = SportsKitRequisition::with('hqSportsRequest')
-        ->where('verification_status', 'Verified') // Only fetch verified requests
+        ->where('status', 'Approved') // Only fetch verified requests
         ->get();
 
-        return view('hq.sports_requests_list', compact('sportsRequests'));
+        $vendors = Vendor::all();
+
+        return view('hq.sports_requests_list', compact('sportsRequests','vendors'));
+    }
+
+    public function dashboard() {
+      // Fetch total application count
+      $totalApplications = SportsKitRequisition::count();
+
+      // Fetch total approved applications
+      $totalApproved = SportsKitRequisition::where('status', 'Approved')->count();
+
+      // Fetch total rejected applications
+      $totalRejected = SportsKitRequisition::where('status', 'Rejected')->count();
+      $totalPending = SportsKitRequisition::where('status', 'Pending')->count();
+      $totalVerified = SportsKitRequisition::where('status', 'Verified')->count();
+      $totalNotVerified = SportsKitRequisition::where('status', 'Not Verified')->count();
+      $totalDisbursed = SportsKitRequisition::where('status', 'Disbursed')->count();
+
+        return view('hq.dashboard', compact('totalApplications', 'totalApproved', 'totalRejected', 'totalPending', 'totalVerified', 'totalNotVerified', 'totalDisbursed'));
     }
 
     // Assign HQ to a sports requisition request
-    public function assignHQ(Request $request)
-    {
-        $request->validate([
-            'hq_id' => 'required|exists:hqs,id',
-            'sports_kit_requisition_id' => 'required|exists:sports_kit_requisitions,id',
-            'status' => 'required|in:approved,rejected',
-        ]);
+    public function assignVendor(Request $request)
+{
+    // Validate request
+    $request->validate([
+        'request_id' => 'required|exists:sports_kit_requisitions,id',
+        'vendor_id' => 'required|exists:vendors,id',
+    ]);
 
-        HQSportsRequest::updateOrCreate(
-            ['sports_kit_requisition_id' => $request->sports_kit_requisition_id],
-            ['hq_id' => $request->hq_id, 'status' => $request->status]
-        );
+    // Find the requisition request
+    $requisition = SportsKitRequisition::find($request->request_id);
 
-        return redirect()->back()->with('success', 'HQ assigned successfully!');
+    if (!$requisition) {
+        return redirect()->back()->with('error', 'Request not found!');
     }
+
+    // Assign vendor & update status
+    $requisition->vendor_id = $request->vendor_id;
+    $requisition->vendor_assign_date = now();
+    $requisition->save();
+
+    return redirect()->back()->with('success', 'Vendor assigned successfully!');
+}
 }

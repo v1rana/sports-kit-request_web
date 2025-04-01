@@ -29,5 +29,20 @@
             @yield('content')
         </div>
     </div>
+    <footer>
+				<div class="container-fluid">
+					<div class="row justify-content-center">
+						<div class="col-xs-12 col-sm-8">
+							<p>All rights reserved. Powered by <strong>Citizen Resources Information Department, Haryana</strong></p>
+						</div>
+						<div class="col-xs-12 col-sm-4 text-end">
+							<div class="visitor-counter">
+							
+								<strong>Visitor Count</strong> <span>130361</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</footer>
 </body>
 </html>

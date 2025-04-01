@@ -143,7 +143,7 @@
                         </div>
                         
                         <div class="col-12">
-    <div class="alert alert-danger">
+    <div class="alert alert-danger declaration-area">
         <h6 class="text-danger">Declaration by Applicant</h6>
         <p>
             It is certified that proper Field of Play (FoP) for the requisite sports is available, and I have not received any sports items during the last two financial years. The photographs attached with the application are the latest. All the above particulars given by me are true and correct. Nothing has been concealed by me. False information or concealment of material information in the application form by me will render me ineligible in the future for said scheme and may invite penal consequences.
@@ -152,14 +152,14 @@
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="declaration_place" class="form-label"><strong>Place:</strong></label>
-                <input type="text" class="form-control" id="declaration_place" name="declaration_place" placeholder="Enter Place" required>
+                <input type="text" class="form-control" id="declaration_place" name="declaration_place" placeholder="Enter Place" value="BABARWAS" required>
             </div>
             <div class="col-md-4 mb-3">
                 
             </div>
             <div class="col-md-4 mb-3">
                 <label for="declaration_signature" class="form-label"><strong>Signature of Applicant Official Stamp (if applicable)</strong></label>
-                <input type="text" class="form-control" id="declaration_signature" name="declaration_signature" placeholder="Enter Full Name" required>
+                <input type="text" class="form-control" id="declaration_signature" name="declaration_signature" placeholder="Enter Full Name" value="Rajender singh" required>
             </div>
         </div>
 

@@ -1,4 +1,4 @@
-@extends('layouts.dso_main')
+@extends('hq_main')
 
 @section('content')
 
@@ -8,10 +8,20 @@
         <!-- Top Navbar -->
         <div class="row header-area align-items-end">
             <div class="col-7">
-                <h3 class="mb-0 text-dark">Welcome, <strong>Nisha</strong></h3>
+                <h3 class="mb-0 text-dark">Welcome, <strong>HQ User</strong></h3>
             </div>
             <div class="col-5 text-end">
-                <h6 class="mb-0"><i class="fa-solid fa-location-dot"></i> Bhiwani</h6>
+                <h6 class="mb-0 d-flex justify-content-end align-items-center"><i class="fa-solid fa-location-dot"></i> 
+                    <select class="form-control">
+                        <option>--Select--</option>
+                        <option selected>Ambala</option>
+                        <option>Bhiwani</option>
+                        <option>Gurugram</option>
+                        <option>Jind</option>
+                        <option>Kurukshetra</option>
+                        <option>Mahendargarh</option>
+                    </select>
+                </h6>
             </div>
         </div>
         <hr />
