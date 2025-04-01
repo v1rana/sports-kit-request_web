@@ -13,8 +13,8 @@ return new class extends Migration {
             $table->string('district');
             $table->string('mob');
             $table->enum('status', ['Active', 'Inactive'])->default('Active');
-            $table->string('otp');
-            $table->string('expires_at');
+            $table->string('otp')->nullable();
+            $table->string('expires_at')->nullable();
             $table->timestamps();
         });
     }
