@@ -50,7 +50,7 @@
             })
             .then(response => response.json())  // Convert response to JSON
             .then(data => {
-                //console.log(data);  // Log response to console
+                console.log(data);  // Log response to console
                 //alert(data.message);  // Show response message
             })
             .catch(error => {
