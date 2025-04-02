@@ -42,21 +42,11 @@ class SportsKitRequisitionController extends Controller {
 
     // Store the requisition request
     public function store(Request $request) {
-// return $request->validate();exit;
-        // $request->merge([
-        //     'sports_equipment' => array_filter($request->input('sports_equipment', []), function ($equipment) {
-        //         return isset($equipment['name'], $equipment['equipment'], $equipment['quantity']) 
-        //             && !empty($equipment['name']) 
-        //             && !empty($equipment['equipment']) 
-        //             && !empty($equipment['quantity']);
-        //     }),
-        //     'sports_photos' => array_filter($request->input('sports_photos', []), function ($photo) {
-        //         return isset($photo['date'], $photo['photo']) 
-        //             && !empty($photo['date']) 
-        //             && is_file($photo['photo']); // Ensure it's a file
-        //     }),
-        // ]);
-        $request->validate([
+        // Debugging: Log request data (optional, remove in production)
+        \Log::info('Request Data:', $request->all());
+        
+        // Validate the request
+        $validatedData = $request->validate([
             'district' => 'required|string|max:100',
             'block' => 'required|string|max:100',
             'area_name' => 'required|string|max:100',
@@ -67,7 +57,7 @@ class SportsKitRequisitionController extends Controller {
             'sports_equipment.*.quantity' => 'required|integer|min:1',
             'sports_photos' => 'nullable|array',
             'sports_photos.*.date' => 'required_with:sports_photos|string',
-            'sports_photos.*.photo' => 'required_with:sports_photos|file|image|mimes:jpg,jpeg,png|max:2048',
+            'sports_photos.*.photo' => 'sometimes|file|image|mimes:jpg,jpeg,png|max:2048',
             'fop_available' => 'required|string|max:50',
             'players_count' => 'required|integer|min:1',
             'last_issued_date' => 'nullable|date'
@@ -76,7 +66,8 @@ class SportsKitRequisitionController extends Controller {
         // Handle Image Uploads
         $photoPaths = [];
         if ($request->hasFile('sports_photos')) {
-            foreach ($request->sports_photos as $key => $photoData) {
+            $sportsPhotos = (array) $request->sports_photos; // Ensure it's an array
+            foreach ($sportsPhotos as $key => $photoData) {
                 if (isset($photoData['photo']) && isset($photoData['date'])) {
                     $photoPaths[] = [
                         'date' => $photoData['date'],
@@ -89,20 +80,21 @@ class SportsKitRequisitionController extends Controller {
         // Store Data
         SportsKitRequisition::create([
             'applicant_id' => '1',
-            'district' => $request->district,
-            'block' => $request->block,
-            'area_name' => $request->area_name,
-            'designation' => $request->designation,
-            'sports_equipment' => json_encode((array) $request->sports_equipment), // Ensure it's an array before encoding
-            'sports_photos' => !empty($photoPaths) ? json_encode($photoPaths) : null, // Store only if photos exist
-            'fop_available' => $request->fop_available,
-            'players_count' => $request->players_count,
-            'last_issued_date' => $request->last_issued_date,
+            'district' => $validatedData['district'],
+            'block' => $validatedData['block'],
+            'area_name' => $validatedData['area_name'],
+            'designation' => $validatedData['designation'],
+            'sports_equipment' => json_encode((array) $validatedData['sports_equipment']),
+            'sports_photos' => !empty($photoPaths) ? json_encode($photoPaths) : null,
+            'fop_available' => $validatedData['fop_available'],
+            'players_count' => $validatedData['players_count'],
+            'last_issued_date' => $validatedData['last_issued_date'],
             'status' => 'Pending'
-                ]);
-
+        ]);
+    
         return redirect('/sports-kit')->with('success', 'Request submitted successfully!');
     }
+    
 
     public function list() {
         
