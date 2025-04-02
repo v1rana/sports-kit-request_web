@@ -26,7 +26,13 @@
             </div>
             <div class="col-8">
                 <div class="row application-details">
-                    
+                <div class="col-md-4">
+                        <div class="p-3 rounded text-center bg-dispersment  shadow text-white mb-3">
+                            <h2 class="text-white">{{ $totalVerified }}</h2>
+                            <small class="text-white">Total Verified</small>
+                            <i class="fa-solid fa-table"></i>
+                        </div>
+                    </div>
                     <div class="col-md-4">
                         <div class="p-3 rounded text-center bg-success shadow text-white mb-3">
                             <h2 class="text-white">{{ $totalApproved }}</h2>

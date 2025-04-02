@@ -19,7 +19,7 @@ class ADCController extends Controller
 
     public function dashboard() {
         // Fetch total application count
-        $totalApplications = SportsKitRequisition::whereIn('status', ['Approved', 'Rejected', 'Disbursed'])->count();
+        $totalApplications = SportsKitRequisition::whereIn('status', ['Approved', 'Rejected', 'Disbursed', 'Verified'])->count();
 
 
         // Fetch total approved applications
@@ -28,7 +28,8 @@ class ADCController extends Controller
         // Fetch total rejected applications
         $totalRejected = SportsKitRequisition::where('status', 'Rejected')->count();
         $totalDisbursed = SportsKitRequisition::where('status', 'Disbursed')->count();
-        return view('adc.dashboard', compact('totalApplications', 'totalApproved', 'totalRejected', 'totalDisbursed'));
+        $totalVerified = SportsKitRequisition::where('status', 'Verified')->count();
+        return view('adc.dashboard', compact('totalApplications', 'totalApproved', 'totalRejected', 'totalDisbursed','totalVerified'));
     }
 
 
