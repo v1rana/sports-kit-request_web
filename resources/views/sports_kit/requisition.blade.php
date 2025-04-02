@@ -215,16 +215,28 @@ const equipmentLimits = {
 
 // Function to update the Equipment dropdown based on selected sport
 function updateEquipmentOptions(sportSelect) {
-    let parentDiv = sportSelect.closest('.d-flex'); // Correctly find parent
+    let parentDiv = sportSelect.closest('.d-flex'); 
     if (!parentDiv) return;
 
     let equipmentSelect = parentDiv.querySelector('select[name*="[equipment]"]');
     let quantityInput = parentDiv.querySelector('input[name*="[quantity]"]');
-
+    
     if (!equipmentSelect || !quantityInput) return;
 
     let selectedSport = sportSelect.value;
-    equipmentSelect.innerHTML = '<option value="" selected disabled>Select Equipment</option>'; // Reset options
+    
+    // Get all selected sports
+    let selectedSports = Array.from(document.querySelectorAll('select[name*="[name]"]'))
+        .map(select => select.value);
+
+    // Enforce Wrestling/Judo condition
+    if (selectedSports.includes("Wrestling") && selectedSports.includes("Judo")) {
+        alert("You can only request equipment for either Wrestling or Judo, not both.");
+        sportSelect.value = ""; // Reset selection
+        return;
+    }
+
+    equipmentSelect.innerHTML = '<option value="" selected disabled>Select Equipment</option>'; 
 
     if (selectedSport in equipmentLimits) {
         Object.keys(equipmentLimits[selectedSport]).forEach(equipment => {
@@ -240,6 +252,7 @@ function updateEquipmentOptions(sportSelect) {
     quantityInput.value = "";
     quantityInput.removeAttribute("max");
 }
+
 
 // Function to enforce quantity limits
 function updateQuantityLimit(equipmentSelect) {
@@ -277,7 +290,18 @@ function updateQuantityLimit(equipmentSelect) {
 // Function to add a new Equipment row
 function addEquipment() {
     let list = document.getElementById('equipment-list');
-    let count = document.querySelectorAll('.d-flex').length;
+    let count = document.querySelectorAll('#equipment-list .d-flex').length;
+    
+    // Get all selected sports
+    let selectedSports = Array.from(document.querySelectorAll('select[name*="[name]"]'))
+        .map(select => select.value);
+    
+    // Prevent adding both Wrestling and Judo
+    if (selectedSports.includes("Wrestling") && selectedSports.includes("Judo")) {
+        alert("You can only request equipment for either Wrestling or Judo, not both.");
+        return;
+    }
+
     let newItem = document.createElement('div');
     newItem.classList.add('d-flex', 'mb-2');
 
@@ -295,25 +319,20 @@ function addEquipment() {
                 <option value="Cricket">Cricket</option>
             </select>
         </div>
-
         <div class="col mb-0 px-1">
             <select name="sports_equipment[${count}][equipment]" class="form-control" required onchange="updateQuantityLimit(this)">
                 <option value="" selected disabled>Select Equipment</option>
             </select>
         </div>
-
         <div class="col mb-0 px-1">
             <input type="number" name="sports_equipment[${count}][quantity]" class="form-control" placeholder="Quantity" required min="1">
         </div>
-
         <div class="col-3 mb-0 px-1">
             <input type="file" name="sports_photos[${count}][photo]" class="form-control" accept="image/*">
         </div>
-        
         <div class="col mb-0 px-1">
             <input type="date" name="sports_photos[${count}][date]" class="form-control">
         </div>
-
         <div class="col-1 mb-0 px-1 text-end">
             <button type="button" class="btn btn-danger" onclick="removeEquipment(this)">
                 <i class="fa-solid fa-trash"></i>
@@ -322,6 +341,7 @@ function addEquipment() {
     `;
     list.appendChild(newItem);
 }
+
 
 // Function to remove equipment row
 function removeEquipment(button) {
