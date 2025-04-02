@@ -73,6 +73,13 @@
                         </div>
                     </div>
                     <div class="col-md-4">
+                        <div class="p-3 rounded text-center bg-success  shadow text-white mb-3">
+                            <h2 class="text-white">{{ $totalsportsCertificatesCount }}</h2>
+                            <small class="text-white">Total Gradation(C & D) </small>
+                            <i class="fa-solid fa-table"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="p-3 rounded text-center bg-dispersment  shadow text-white mb-3">
                             <h2 class="text-white">{{ $totalDisbursed }}</h2>
                             <small class="text-white">Total Disbursement</small>

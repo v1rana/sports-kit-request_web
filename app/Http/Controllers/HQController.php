@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\HQ;
 use App\Models\HQSportsRequest;
 use App\Models\SportsKitRequisition;
+use App\Models\sports_gradation_certificate;
 use App\Models\Vendor;
 
 class HQController extends Controller
@@ -23,8 +24,19 @@ class HQController extends Controller
     }
 
     public function dashboard() {
-      // Fetch total application count
-      $totalApplications = SportsKitRequisition::count();
+       // Fetch total application count
+       $totalApplications = SportsKitRequisition::count() + sports_gradation_certificate::join(
+        'category_wise_gradations',
+        'sports_gradation_certificates.tournament_name',
+        '=',
+        'category_wise_gradations.id'
+    )
+    ->whereIn('category_wise_gradations.gradation', ['C', 'D'])
+    ->count();
+
+    $totalsportsCertificatesCount = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
+->whereIn('category_wise_gradations.gradation', ['C', 'D'])
+->count();
 
       // Fetch total approved applications
       $totalApproved = SportsKitRequisition::where('status', 'Approved')->count();
@@ -36,7 +48,7 @@ class HQController extends Controller
       $totalNotVerified = SportsKitRequisition::where('status', 'Not Verified')->count();
       $totalDisbursed = SportsKitRequisition::where('status', 'Disbursed')->count();
 
-        return view('hq.dashboard', compact('totalApplications', 'totalApproved', 'totalRejected', 'totalPending', 'totalVerified', 'totalNotVerified', 'totalDisbursed'));
+        return view('hq.dashboard', compact('totalApplications','totalsportsCertificatesCount', 'totalApproved', 'totalRejected', 'totalPending', 'totalVerified', 'totalNotVerified', 'totalDisbursed'));
     }
 
     // Assign HQ to a sports requisition request

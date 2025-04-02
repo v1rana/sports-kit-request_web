@@ -19,7 +19,18 @@ class DSOController extends Controller
 
     public function dashboard() {
         // Fetch total application count
-        $totalApplications = SportsKitRequisition::count();
+        $totalApplications = SportsKitRequisition::count() + sports_gradation_certificate::join(
+            'category_wise_gradations',
+            'sports_gradation_certificates.tournament_name',
+            '=',
+            'category_wise_gradations.id'
+        )
+        ->whereIn('category_wise_gradations.gradation', ['C', 'D'])
+        ->count();
+    
+        $totalsportsCertificatesCount = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
+    ->whereIn('category_wise_gradations.gradation', ['C', 'D'])
+    ->count();
 
         // Fetch total approved applications
         $totalApproved = SportsKitRequisition::where('status', 'Approved')->count();
@@ -30,7 +41,7 @@ class DSOController extends Controller
         $totalVerified = SportsKitRequisition::where('status', 'Verified')->count();
         $totalNotVerified = SportsKitRequisition::where('status', 'Not Verified')->count();
         $totalDisbursed = SportsKitRequisition::where('status', 'Disbursed')->count();
-        return view('dso.dashboard', compact('totalApplications', 'totalApproved', 'totalRejected', 'totalPending', 'totalVerified', 'totalNotVerified', 'totalDisbursed'));
+        return view('dso.dashboard', compact('totalApplications','totalsportsCertificatesCount', 'totalApproved', 'totalRejected', 'totalPending', 'totalVerified', 'totalNotVerified', 'totalDisbursed'));
     }
 
     public function grad_list(){
