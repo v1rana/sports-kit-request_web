@@ -85,6 +85,6 @@ Route::middleware(['auth.session'])->group(function () {
 });
 
 
-Route::get('job/{any?}', function($any = null) { 
-    return view('job/app', ['any' => $any]);
+Route::get('hosp/{any?}', function($any = null) { 
+    return view('hosp/app', ['any' => $any]);
 })->where('any', '.*');
