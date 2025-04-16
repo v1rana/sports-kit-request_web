@@ -7,100 +7,95 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
-					<h4 class="">Sports Kit Requisition List <a href="" class="btn btn-secondary float-end"><i class="fa-solid fa-arrow-left-long"></i> Back</a></h4>
-					<div class=" bg-white shadow mb-5">
-						<div class="row justify-content-between border-bottom align-items-center">
-							<div class="col-12">
-								<table class="table table-bordered bg-white table-hover">
-									<thead>
-										<tr class="bg-primary text-white">
-											<th>Sr. No.</th>
-											<th>Name</th>
-											<th>Designation</th>
-                                            <th>Block</th>
-											<th>District</th>
-                                            <th>Area Name</th>
-											<th>Sports Request Details</th>
-											<th>Availability Of FoP/Hall/Poles</th>
-                                            <th>Tentative Players</th>
-                                            <th>Date Of Last Issued Sports</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-										</tr>
-									</thead>
-									<tbody>
-    @foreach($sportsRequests as $index => $request)
-        <tr>
-            <td>{{ $index + 1 }}.</td>
-            <td>{{ $request->applicant_name ?? 'N/A' }}</td>
-            <td>{{ $request->designation }}</td>
-            <td>{{ $request->block }}</td>
-            <td>{{ $request->district }}</td>
-            <td>{{ $request->area_name }}</td>
-            
-            <td>
-                @php
-                    $equipmentList = json_decode($request->sports_equipment, true);
-                @endphp
-                @if(is_array($equipmentList))
-                    <ul>
-                        @foreach($equipmentList as $equipment)
-                            <li>{{ $equipment['name'] }} - {{ $equipment['equipment'] }} (Qty: {{ $equipment['quantity'] }})</li>
-                        @endforeach
-                    </ul>
-                @else
-                    <span>No equipment data</span>
-                @endif
-            </td>
-            
-            <td>{{ $request->fop_available }}</td>
-            <td>{{ $request->players_count }}</td>
-            <td>
-                {{ $request->last_issued_date ? date('d-m-Y', strtotime($request->last_issued_date)) : 'N/A' }}
-            </td>
-            <td>
-                <strong>
-                    @if($request->status == 'Approved')
-                        <span class="text-success">Approved</span>
-					@elseif($request->status == 'Rejected')
-                        <span class="text-success">Rejected</span>
-					@elseif($request->status == 'Verified')
-                        <span class="text-success">Verified</span>
-                    @elseif($request->status == 'Not Verified')
-                        <span class="text-danger">Not Verified</span>
-                    @else
-                        <span class="text-warning">Pending</span>
-                    @endif
-                </strong>
-            </td>
+<h4 class="">Sports Kit Requisition List <a href="" class="btn btn-secondary float-end"><i class="fa-solid fa-arrow-left-long"></i> Back</a></h4>
+<div class=" bg-white shadow mb-5">
+		<div class="table-responsive">
+			<table class="table table-bordered bg-white table-hover">
+				<thead>
+					<tr class="bg-primary text-white">
+						<th>Sr. No.</th>
+						<th>Name</th>
+						<th>Designation</th>
+						<th>Block</th>
+						<th>District</th>
+						<th>Area Name</th>
+						<th>Sports Request Details</th>
+						<th>Availability Of FoP/Hall/Poles</th>
+						<th>Tentative Players</th>
+						<th>Date Of Last Issued Sports</th>
+						<th>Status</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach($sportsRequests as $index => $request)
+					<tr>
+						<td>{{ $index + 1 }}.</td>
+						<td>{{ $request->applicant_name ?? 'N/A' }}</td>
+						<td>{{ $request->designation }}</td>
+						<td>{{ $request->block }}</td>
+						<td>{{ $request->district }}</td>
+						<td>{{ $request->area_name }}</td>
+						
+						<td>
+							@php
+								$equipmentList = json_decode($request->sports_equipment, true);
+							@endphp
+							@if(is_array($equipmentList))
+								<ul>
+									@foreach($equipmentList as $equipment)
+										<li>{{ $equipment['name'] }} - {{ $equipment['equipment'] }} (Qty: {{ $equipment['quantity'] }})</li>
+									@endforeach
+								</ul>
+							@else
+								<span>No equipment data</span>
+							@endif
+						</td>
+						
+						<td>{{ $request->fop_available }}</td>
+						<td>{{ $request->players_count }}</td>
+						<td>
+							{{ $request->last_issued_date ? date('d-m-Y', strtotime($request->last_issued_date)) : 'N/A' }}
+						</td>
+						<td>
+							<strong>
+								@if($request->status == 'Approved')
+									<span class="text-success">Approved</span>
+								@elseif($request->status == 'Rejected')
+									<span class="text-success">Rejected</span>
+								@elseif($request->status == 'Verified')
+									<span class="text-success">Verified</span>
+								@elseif($request->status == 'Not Verified')
+									<span class="text-danger">Not Verified</span>
+								@else
+									<span class="text-warning">Pending</span>
+								@endif
+							</strong>
+						</td>
+						<td>
+							@if($request->status == 'Pending')
+								<form action="{{ route('dso.verify', $request->id) }}" method="POST" style="display:inline;">
+									@csrf
+									<button type="submit" style="width:160px;" class="btn btn-success">
+										Verified
+									</button>
+								</form>
 
-			<td>
-                @if($request->status == 'Pending')
-                    <form action="{{ route('dso.verify', $request->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        <button type="submit" style="width:160px;" class="btn btn-success">
-                            Verified
-                        </button>
-                    </form>
-
-                    <form action="{{ route('dso.not_verify', $request->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        <button type="submit" style="width:160px;" class="btn btn-danger">
-                            Not Verified
-                        </button>
-                    </form>
-                @endif
-            </td>
-        </tr>
-    @endforeach
-</tbody>
-
-
-								</table>
-								
-							</div>	
-						</div>	
-					</div>			
+								<form action="{{ route('dso.not_verify', $request->id) }}" method="POST" style="display:inline;">
+									@csrf
+									<button type="submit" style="width:160px;" class="btn btn-danger">
+										Not Verified
+									</button>
+								</form>
+							@endif
+						</td>
+					</tr>
+					@endforeach
+				</tbody>
+			</table>
+		</div>	
+	</div>	
+</div>			
 				
 
             

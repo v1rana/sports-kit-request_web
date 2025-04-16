@@ -27,7 +27,8 @@ class SportsKitRequisition extends Model {
         'verification_status',
         'approval_status',
         'verification_datetime',
-        'approval_rejection_datetime'
+        'approval_rejection_datetime',
+        'vendor_assign_date'
     ];
 
     public $timestamps = true; 

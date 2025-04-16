@@ -13,10 +13,10 @@ class DSO extends Authenticatable
     protected $table = 'dsos';
 
     protected $fillable = [
-        'name', 'email', 'password', 'district', 'status'
+        'name', 'email', 'district', 'status','mob','otp','expires_at'
     ];
 
-    protected $hidden = ['password'];
+    //protected $hidden = ['password'];
 
     public function sportsRequests()
     {

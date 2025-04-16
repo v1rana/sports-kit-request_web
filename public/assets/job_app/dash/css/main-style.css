@@ -44,5 +44,17 @@ form p, .form-label{margin-bottom:0; color:rgba(0,0,0,.6);font-weight:bold;font-
 
 section h4 .btn{padding: 3px 15px;}
 
+
+.applicant-details-modal .row .card{border: none;}
+.applicant-details-modal .card-body p {
+    height: 104px;
+    float: left;width:100%;
+    background: rgba(0,0,0,0.04);
+}
+
+.applicant-details-modal .card-body p + a{border-radius: 0 0 5px 5px}
+
+.attachment-upload-area label{height: 33px;}
+
 footer{background:#000; color:#fff; position: fixed; width:100%;bottom:0;padding:10px 0; font-size:12px; left:0}
 footer p{margin:0}

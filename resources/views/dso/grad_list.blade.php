@@ -23,12 +23,7 @@
                     <th>Sr. No.</th>
                     <th>Certificate No</th>
                     <th>Sports Person Name</th>
-                    <th>Aadhaar No</th>
-                    <th>Email</th>
-                    <th>DOB</th>
                     <th>Gender</th>
-                    <th>Mobile No</th>
-                    <th>District</th>
                     <th>State</th>
                     <th>Sports Discipline</th>
                     <th>Tournament Name</th>
@@ -38,9 +33,9 @@
                     <th>Tournament Type</th>
                     <th>Medal Won</th>
                     <th>Participation Level</th>
-                    <th>Granted Grade</th>
-                    <th>Profile Picture</th>
                     <th>Action</th>
+                    <th>Download PDF</th>
+                    <th>Upload Certificate</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,38 +44,68 @@
                     <td>{{ $index + 1 }}</td>
                     <td>{{ $certificate->certificate_no }}</td>
                     <td>{{ $certificate->sports_person_name }}</td>
-                    <td>{{ $certificate->aadhaar_no }}</td>
-                    <td>{{ $certificate->email }}</td>
-                    <td>{{ date('d-m-Y', strtotime($certificate->dob)) }}</td>
                     <td>{{ $certificate->gender }}</td>
-                    <td>{{ $certificate->mobile_no }}</td>
-                    <td>{{ $certificate->district_sportsperson_belongs }}</td>
                     <td>{{ $certificate->domicile_state }}</td>
                     <td>{{ $certificate->name_sports_discipline }}</td>
-                    <td>{{ $certificate->tournament_name }}</td>
-                    <td>{{ $certificate->month_year }}</td>
+                    <td>{{ $certificate->tournament }}</td>
+                    <td>{{ \Carbon\Carbon::createFromFormat('Y-m', $certificate->month_year)->format('F Y') }}</td>
                     <td>{{ $certificate->venue_of_tournament }}</td>
-                    <td>{{ $certificate->organising_authority }}</td>
+                    <td>{{ $certificate->authority }}</td>
                     <td>{{ $certificate->tournament_type }}</td>
                     <td>{{ $certificate->medal_won }}</td>
                     <td>{{ $certificate->participation_level }}</td>
-                    <td>{{ $certificate->granted_grade }}</td>
                     <td>
-                        @if($certificate->profile_picture)
-                            <img src="{{ asset('storage/' . $certificate->profile_picture) }}" alt="Profile" class="img-thumbnail" width="50">
-                        @else
-                            N/A
-                        @endif
-                    </td>
-                    <td>
-                        <a href="" class="btn btn-primary btn-sm">View</a>
-                        <a href="" class="btn btn-warning btn-sm">Edit</a>
-                        <form action="" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    </td>
+                        <strong>
+                            @if($certificate->status == 'Approved')
+                                <span class="badge rounded-pill bg-success"><i class="fa-solid fa-thumbs-up"></i> Approved</span>
+                            @elseif($certificate->status == 'Rejected')
+                                <span class="badge rounded-pill bg-danger"><i class="fa-solid fa-ban"></i>  Rejected</span>
+                            @else
+                                <span class="badge rounded-pill bg-info"><i class="fa-solid fa-hourglass-half"></i> Pending</span>
+                            @endif
+                        </strong>
+                @if($certificate->status == 'Pending')
+                    <form action="{{ route('dso.approve', $certificate->id) }}" method="POST" style="display:inline;">
+                        @csrf
+						<button type="submit"  class="btn btn-success w-100 mb-2">
+                     Approved
+                </button>
+                    </form>
+
+                    <form action="{{ route('dso.reject', $certificate->id) }}" method="POST" style="display:inline;">
+                        @csrf
+                        <button type="submit" class="btn btn-danger w-100">
+                            Rejected
+                        </button>
+                    </form>
+                @endif
+            </td>
+			<td>
+				<form action="{{ route('dso.certificates.downloadPDF') }}" method="POST" style="display:inline;">
+					@csrf
+					<button type="submit" class="btn btn-danger w-100">
+						PDF
+					</button>
+                </form>
+			</td>
+			<td>
+    @if($certificate->certificate_pdf)
+        <a href="{{ asset('storage/' . $certificate->certificate_pdf) }}" target="_blank" class="btn btn-primary w-100 mb-2">
+            View Certificate
+        </a>
+    @else
+        <form action="{{ route('dso.certificates.uploadPDF') }}" method="POST" enctype="multipart/form-data" style="display:inline;">
+            @csrf
+            <input type="file" name="certificate_pdf" accept="application/pdf" required class="form-control mb-2">
+            <input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
+            <button type="submit" class="btn btn-danger w-100">
+                Upload Certificate
+            </button>
+        </form>
+    @endif
+</td>
+
+
                 </tr>
                 @endforeach
             </tbody>

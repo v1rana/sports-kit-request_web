@@ -3,9 +3,9 @@
 @section('content')
 <div class="container mt-4">
     <h4 class="">Sports Kit Requisition Form 
-        <a href="{{ url('/sports-kit') }}" class="btn btn-secondary float-end">
+        <!--<a href="{{ url('/sports-kit') }}" class="btn btn-secondary float-end">
             <i class="fa-solid fa-arrow-left-long"></i> Back
-        </a>
+        </a>-->
     </h4>
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -30,7 +30,7 @@
                         <div class="col-3 mb-3 px-0">
                         <div>
                             <label>2. Designation</label>
-                            <input type="text" class="form-control" name="designation" value="Gram Panchayat" required>
+                            <input type="text" class="form-control" name="designation" value="Gram Sarpanch" required>
                             </div> 
                             </div>
                         <div class="col mb-3 px-0">
@@ -90,10 +90,10 @@
                             <input type="number" name="sports_equipment[0][quantity]" class="form-control" placeholder="Quantity" required>
                         </div>
                         <div class="col-3 mb-0 px-1">
-                            <input type="file" class="form-control" name="sports_photos[0][photo]" accept="image/*" />
+                            <input type="file" class="form-control" name="sports_equipment[0][photo]" accept="image/*" />
                         </div>
                         <div class="col mb-0 px-1">
-                            <input type="date" class="form-control" name="sports_photos[0][date]" />
+                            <input type="date" class="form-control" name="sports_equipment[0][date]" />
                         </div>
                         <div class="col-1 mb-0 px-1 text-end">
                             <!--button type="button" class="btn btn-danger" onclick="removeEquipment(this)"><i class="fa-solid fa-trash"></i></button-->
@@ -143,7 +143,7 @@
                         </div>
                         
                         <div class="col-12">
-    <div class="alert alert-danger">
+    <div class="alert alert-danger declaration-area">
         <h6 class="text-danger">Declaration by Applicant</h6>
         <p>
             It is certified that proper Field of Play (FoP) for the requisite sports is available, and I have not received any sports items during the last two financial years. The photographs attached with the application are the latest. All the above particulars given by me are true and correct. Nothing has been concealed by me. False information or concealment of material information in the application form by me will render me ineligible in the future for said scheme and may invite penal consequences.
@@ -152,14 +152,14 @@
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="declaration_place" class="form-label"><strong>Place:</strong></label>
-                <input type="text" class="form-control" id="declaration_place" name="declaration_place" placeholder="Enter Place" required>
+                <input type="text" class="form-control" id="declaration_place" name="declaration_place" placeholder="Enter Place" value="BABARWAS" required>
             </div>
             <div class="col-md-4 mb-3">
                 
             </div>
             <div class="col-md-4 mb-3">
                 <label for="declaration_signature" class="form-label"><strong>Signature of Applicant Official Stamp (if applicable)</strong></label>
-                <input type="text" class="form-control" id="declaration_signature" name="declaration_signature" placeholder="Enter Full Name" required>
+                <input type="text" class="form-control" id="declaration_signature" name="declaration_signature" placeholder="Enter Full Name" value="Rajender singh" required>
             </div>
         </div>
 
@@ -215,16 +215,28 @@ const equipmentLimits = {
 
 // Function to update the Equipment dropdown based on selected sport
 function updateEquipmentOptions(sportSelect) {
-    let parentDiv = sportSelect.closest('.d-flex'); // Correctly find parent
+    let parentDiv = sportSelect.closest('.d-flex'); 
     if (!parentDiv) return;
 
     let equipmentSelect = parentDiv.querySelector('select[name*="[equipment]"]');
     let quantityInput = parentDiv.querySelector('input[name*="[quantity]"]');
-
+    
     if (!equipmentSelect || !quantityInput) return;
 
     let selectedSport = sportSelect.value;
-    equipmentSelect.innerHTML = '<option value="" selected disabled>Select Equipment</option>'; // Reset options
+    
+    // Get all selected sports
+    let selectedSports = Array.from(document.querySelectorAll('select[name*="[name]"]'))
+        .map(select => select.value);
+
+    // Enforce Wrestling/Judo condition
+    if (selectedSports.includes("Wrestling") && selectedSports.includes("Judo")) {
+        alert("You can only request equipment for either Wrestling or Judo, not both.");
+        sportSelect.value = ""; // Reset selection
+        return;
+    }
+
+    equipmentSelect.innerHTML = '<option value="" selected disabled>Select Equipment</option>'; 
 
     if (selectedSport in equipmentLimits) {
         Object.keys(equipmentLimits[selectedSport]).forEach(equipment => {
@@ -241,9 +253,10 @@ function updateEquipmentOptions(sportSelect) {
     quantityInput.removeAttribute("max");
 }
 
+
 // Function to enforce quantity limits
 function updateQuantityLimit(equipmentSelect) {
-    let parentDiv = equipmentSelect.closest('.d-flex'); // Correctly find parent
+    let parentDiv = equipmentSelect.closest('.d-flex');
     if (!parentDiv) return;
 
     let sportSelect = parentDiv.querySelector('select[name*="[name]"]');
@@ -258,11 +271,8 @@ function updateQuantityLimit(equipmentSelect) {
         let maxQuantity = equipmentLimits[selectedSport][selectedEquipment];
         quantityInput.setAttribute("max", maxQuantity);
         quantityInput.setAttribute("min", 1);
-        
-        // Reset quantity field when equipment changes
-        quantityInput.value = "";
-        
-        // Prevent exceeding max quantity
+        quantityInput.value = maxQuantity; // 🔥 This line pre-fills max quantity
+
         quantityInput.addEventListener("input", function () {
             if (parseInt(this.value) > maxQuantity) {
                 alert(`Maximum quantity for ${selectedEquipment} in ${selectedSport} is ${maxQuantity}.`);
@@ -271,13 +281,26 @@ function updateQuantityLimit(equipmentSelect) {
         });
     } else {
         quantityInput.removeAttribute("max");
+        quantityInput.value = "";
     }
 }
+
 
 // Function to add a new Equipment row
 function addEquipment() {
     let list = document.getElementById('equipment-list');
-    let count = document.querySelectorAll('.d-flex').length;
+    let count = document.querySelectorAll('#equipment-list .d-flex').length;
+    
+    // Get all selected sports
+    let selectedSports = Array.from(document.querySelectorAll('select[name*="[name]"]'))
+        .map(select => select.value);
+    
+    // Prevent adding both Wrestling and Judo
+    if (selectedSports.includes("Wrestling") && selectedSports.includes("Judo")) {
+        alert("You can only request equipment for either Wrestling or Judo, not both.");
+        return;
+    }
+
     let newItem = document.createElement('div');
     newItem.classList.add('d-flex', 'mb-2');
 
@@ -295,25 +318,20 @@ function addEquipment() {
                 <option value="Cricket">Cricket</option>
             </select>
         </div>
-
         <div class="col mb-0 px-1">
             <select name="sports_equipment[${count}][equipment]" class="form-control" required onchange="updateQuantityLimit(this)">
                 <option value="" selected disabled>Select Equipment</option>
             </select>
         </div>
-
         <div class="col mb-0 px-1">
             <input type="number" name="sports_equipment[${count}][quantity]" class="form-control" placeholder="Quantity" required min="1">
         </div>
-
         <div class="col-3 mb-0 px-1">
             <input type="file" name="sports_photos[${count}][photo]" class="form-control" accept="image/*">
         </div>
-        
         <div class="col mb-0 px-1">
             <input type="date" name="sports_photos[${count}][date]" class="form-control">
         </div>
-
         <div class="col-1 mb-0 px-1 text-end">
             <button type="button" class="btn btn-danger" onclick="removeEquipment(this)">
                 <i class="fa-solid fa-trash"></i>
@@ -322,6 +340,7 @@ function addEquipment() {
     `;
     list.appendChild(newItem);
 }
+
 
 // Function to remove equipment row
 function removeEquipment(button) {

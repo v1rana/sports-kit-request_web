@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Equipment Request Form - Sports Haryana </title>
+    <meta charset="UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content=""> 
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Haryana Sports Equipment')</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+	
+	<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+
+    <link rel="stylesheet" href="{{ url('assets/fontawesome/css/all.min.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/bootstrap/css/bootstrap.min.css') }}" />
+    <link rel="stylesheet" href="{{ url('assets/css/main-style.css') }}" />
+    <script src="{{ url('assets/js/jquery.min.js') }}"></script>
+	<script src="{{ url('assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+</head>
+<body>
+	<div class="main">
+    
+    <div class="d-flex">
+      
+         <div class="content-area">
+			<header>
+				<div class="container-fluid">
+					<div class="row justify-content-between border-bottom align-items-center">
+						<div class="col-6 logo d-flex">
+							<button class="navbar-toggler d-block" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+								<i class="fa-solid fa-angles-left"></i>
+							</button>
+							<div class="logo_text">
+								<h1 class="h1-logo">Sports Department , Government of Haryana</h1>								
+							</div>
+						</div>
+						<div class="col-6 text-end">
+							<a href="{{route('login')}}" class="btn btn-danger"><i class="fa-solid fa-power-off"></i> <span>Log Out</span></a>
+						</div>
+					</div>
+				</div>
+			</header>
+        <div class="container-fluid">
+            @yield('content')
+        </div>
+    </div></div>
+    <footer>
+				<div class="container-fluid">
+					<div class="row justify-content-center">
+						<div class="col-xs-12 col-sm-8">
+							<p>All rights reserved. Powered by <strong>Citizen Resources Information Department, Haryana</strong></p>
+						</div>
+						<div class="col-xs-12 col-sm-4 text-end">
+							<div class="visitor-counter">
+							
+								<strong>Visitor Count</strong> <span>130361</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</footer>
+</body>
+</html>

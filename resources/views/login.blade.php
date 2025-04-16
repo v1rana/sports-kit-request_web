@@ -28,7 +28,7 @@
 									@if (session('otp'))
 									<p class="text-danger" id="alert">{{ session('otp') }}</p>
 									@endif
-									
+									<p class="fw-bold mb-1">Apply for Haryana Sports Equipment Policy</p><br>
 									<div class="form-floating">
 									<input type="text" class="form-control required" id="mobile" name="mobile" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
 										<label for="floatingInput">Mobile number</label>

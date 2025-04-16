@@ -19,8 +19,11 @@ class SportsKitRequisitionController extends Controller {
         // Fetch total rejected applications
         $totalRejected = SportsKitRequisition::where('status', 'Rejected')->count();
         $totalPending = SportsKitRequisition::where('status', 'Pending')->count();
+        $totalVerified = SportsKitRequisition::where('status', 'Verified')->count();
+        $totalNotVerified = SportsKitRequisition::where('status', 'Not Verified')->count();
+        $totalDisbursed = SportsKitRequisition::where('status', 'Disbursed')->count();
 
-        return view('gm.dashboard', compact('totalApplications', 'totalApproved', 'totalRejected', 'totalPending'));
+        return view('gm.dashboard', compact('totalApplications', 'totalApproved', 'totalRejected', 'totalPending', 'totalVerified', 'totalNotVerified', 'totalDisbursed'));
     }
 
     public function index()
@@ -32,28 +35,34 @@ class SportsKitRequisitionController extends Controller {
     }
     
     // Show the requisition form
-    public function create() {
+    public function create()
+{
+    $userId = session('user_id'); // Assuming user ID is stored in session
+
+    // Check if application exists for the user
+    $application = SportsKitRequisition::where('district', 'BHIWANI')
+    ->where('block', 'KAIRU')
+    ->where('area_name', 'BABARWAS')
+    ->latest()
+    ->first();
+
+    if ($application) {
         
-         return view('sports_kit.requisition');
+        return view('sports_kit.status', ['application' => $application]);
     }
+
+    // If no application, show the requisition form
+    return view('sports_kit.requisition');
+}
+
 
     // Store the requisition request
     public function store(Request $request) {
-// return $request->validate();exit;
-        // $request->merge([
-        //     'sports_equipment' => array_filter($request->input('sports_equipment', []), function ($equipment) {
-        //         return isset($equipment['name'], $equipment['equipment'], $equipment['quantity']) 
-        //             && !empty($equipment['name']) 
-        //             && !empty($equipment['equipment']) 
-        //             && !empty($equipment['quantity']);
-        //     }),
-        //     'sports_photos' => array_filter($request->input('sports_photos', []), function ($photo) {
-        //         return isset($photo['date'], $photo['photo']) 
-        //             && !empty($photo['date']) 
-        //             && is_file($photo['photo']); // Ensure it's a file
-        //     }),
-        // ]);
-        $request->validate([
+        // Debugging: Log request data (optional, remove in production)
+        \Log::info('Request Data:', $request->all());
+        
+        // Validate the request
+        $validatedData = $request->validate([
             'district' => 'required|string|max:100',
             'block' => 'required|string|max:100',
             'area_name' => 'required|string|max:100',
@@ -62,44 +71,52 @@ class SportsKitRequisitionController extends Controller {
             'sports_equipment.*.name' => 'required|string',
             'sports_equipment.*.equipment' => 'required|string',
             'sports_equipment.*.quantity' => 'required|integer|min:1',
-            'sports_photos' => 'nullable|array',
-            'sports_photos.*.date' => 'required_with:sports_photos|string',
-            'sports_photos.*.photo' => 'required_with:sports_photos|file|image|mimes:jpg,jpeg,png|max:2048',
+            'sports_equipment.*.date' => 'required|date',
+            'sports_equipment.*.photo' => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048',
             'fop_available' => 'required|string|max:50',
             'players_count' => 'required|integer|min:1',
             'last_issued_date' => 'nullable|date'
         ]);
         
-        // Handle Image Uploads
-        $photoPaths = [];
-        if ($request->hasFile('sports_photos')) {
-            foreach ($request->sports_photos as $key => $photoData) {
-                if (isset($photoData['photo']) && isset($photoData['date'])) {
-                    $photoPaths[] = [
-                        'date' => $photoData['date'],
-                        'photo' => $photoData['photo']->store('uploads/photos', 'public')
-                    ];
-                }
-            }
-        }
+       // Process each equipment item
+    $finalEquipments = [];
+
+   foreach ($request->sports_equipment as $index => $equipment) {
+    $photoPath = null;
+
+    if (isset($equipment['photo']) && $equipment['photo'] instanceof \Illuminate\Http\UploadedFile) {
+        $filename = time() . '_' . $equipment['photo']->getClientOriginalName();
+        $equipment['photo']->move(public_path('assets/uploads'), $filename);
+        $photoPath = 'assets/uploads/' . $filename;
+    }
+
+    $finalEquipments[] = [
+        'name' => $equipment['name'],
+        'equipment' => $equipment['equipment'],
+        'quantity' => $equipment['quantity'],
+        'date' => $equipment['date'],
+        'photo' => $photoPath,
+    ];
+}
         
         // Store Data
         SportsKitRequisition::create([
             'applicant_id' => '1',
-            'district' => $request->district,
-            'block' => $request->block,
-            'area_name' => $request->area_name,
-            'designation' => $request->designation,
-            'sports_equipment' => json_encode((array) $request->sports_equipment), // Ensure it's an array before encoding
-            'sports_photos' => !empty($photoPaths) ? json_encode($photoPaths) : null, // Store only if photos exist
-            'fop_available' => $request->fop_available,
-            'players_count' => $request->players_count,
-            'last_issued_date' => $request->last_issued_date,
+            'district' => $validatedData['district'],
+            'block' => $validatedData['block'],
+            'area_name' => $validatedData['area_name'],
+            'designation' => $validatedData['designation'],
+            'sports_equipment' => json_encode($finalEquipments),
+			'sports_photos' => null, // Not used now
+            'fop_available' => $validatedData['fop_available'],
+            'players_count' => $validatedData['players_count'],
+            'last_issued_date' => $validatedData['last_issued_date'],
             'status' => 'Pending'
-                ]);
-
+        ]);
+    
         return redirect('/sports-kit')->with('success', 'Request submitted successfully!');
     }
+    
 
     public function list() {
         

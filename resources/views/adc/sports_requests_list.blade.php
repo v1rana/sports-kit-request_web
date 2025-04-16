@@ -7,92 +7,87 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
-					<h4 class="">Sports Kit Requisition List <a href="" class="btn btn-secondary float-end"><i class="fa-solid fa-arrow-left-long"></i> Back</a></h4>
-					<div class=" bg-white shadow mb-5">
-						<div class="row justify-content-between border-bottom align-items-center">
-							<div class="col-12">
-								<table class="table table-bordered bg-white table-hover">
-									<thead>
-										<tr class="bg-primary text-white">
-											<th>Sr. No.</th>
-											<th>Name</th>
-											<th>Designation</th>
-                                            <th>Block</th>
-											<th>District</th>
-                                            <th>Area Name</th>
-											<th>Sports Request Details</th>
-											<th>Availability Of FoP/Hall/Poles</th>
-                                            <th>Tentative Players</th>
-                                            <th>Date Of Last Issued Sports</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-										</tr>
-									</thead>
-									<tbody>
-                                    @foreach($sportsRequests as $index => $request)
-                    <tr>
-                        <td>{{ $index + 1 }}.</td>
-                        <td></td>
-                        <td>{{ $request['designation'] }}</td>
-                        <td>{{ $request['block'] }}</td>
-                        <td>{{ $request['district'] }}</td>
-                        <td>{{ $request['area_name'] }}</td>
-                        
-                        <td>
-                            @php
-                                $equipmentList = json_decode($request['sports_equipment'], true);
-                            @endphp
-                            @if(is_array($equipmentList))
-                                <ul>
-                                    @foreach($equipmentList as $equipment)
-                                        <li>{{ $equipment['name'] }} - {{ $equipment['equipment'] }} (Qty: {{ $equipment['quantity'] }})</li>
-                                    @endforeach
-                                </ul>
-                            @else
-                                <span>No equipment data</span>
-                            @endif
-                        </td>
-                        <td>{{ $request['fop_available'] }}</td>
-                        <td>{{ $request['players_count'] }}</td>
-                        <td>{{ date('d-m-Y', strtotime($request['last_issued_date'])) }}</td>
-                        
-<td>
-    @if($request->status == 'Approved')
-        <span class="badge bg-success">Approved</span>
-    @elseif($request->status == 'Rejected')
-        <span class="badge bg-danger">Rejected</span>
-    @else
-        <span class="badge bg-warning">Verified</span>
-    @endif
-</td>
-<td>
-    @if($request->status == 'Verified')
-        <form action="{{ route('adc.approve', $request->id) }}" method="POST" style="display:inline;">
-            @csrf
-            <button type="submit" style="width:160px;" class="btn btn-success">
-                Approve
-            </button>
-        </form>
+<h4 class="">Sports Kit Requisition List <a href="" class="btn btn-secondary float-end"><i class="fa-solid fa-arrow-left-long"></i> Back</a></h4>
+<div class=" bg-white shadow mb-5 p-3">
+	<div class="table-responsive">
+	<table class="table table-bordered bg-white table-hover w-100">
+		<thead>
+			<tr class="bg-primary text-white">
+				<th>Sr. No.</th>
+				<th>Name</th>
+				<th>Designation</th>
+				<th>Block</th>
+				<th>District</th>
+				<th>Area Name</th>
+				<th>Sports Request Details</th>
+				<th>Availability Of FoP/Hall/Poles</th>
+				<th>Tentative Players</th>
+				<th>Date Of Last Issued Sports</th>
+				<th>Application Status</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach($sportsRequests as $index => $request)
+			<tr>
+				<td>{{ $index + 1 }}.</td>
+				<td></td>
+				<td>{{ $request['designation'] }}</td>
+				<td>{{ $request['block'] }}</td>
+				<td>{{ $request['district'] }}</td>
+				<td>{{ $request['area_name'] }}</td>                        
+				<td>
+					@php
+						$equipmentList = json_decode($request['sports_equipment'], true);
+					@endphp
+					@if(is_array($equipmentList))
+						<ul>
+							@foreach($equipmentList as $equipment)
+								<li>{{ $equipment['name'] }} - {{ $equipment['equipment'] }} (Qty: {{ $equipment['quantity'] }})</li>
+							@endforeach
+						</ul>
+					@else
+						<span>No equipment data</span>
+					@endif
+				</td>
+				<td>{{ $request['fop_available'] }}</td>
+				<td>{{ $request['players_count'] }}</td>
+				<td>{{ date('d-m-Y', strtotime($request['last_issued_date'])) }}</td>
+				<td>
+					@if($request->status == 'Approved')
+						<span class="badge bg-success"><i class="fa-solid fa-thumbs-up"></i> Approved</span>
+					@elseif($request->status == 'Rejected')
+						<span class="badge bg-danger"><i class="fa-solid fa-ban"></i> Rejected</span>
+					@else
+						<span class="badge bg- bg-primary"><i class="fa-solid fa-check"></i> Verified</span>
+					@endif
+				</td>
+				<td>
+					@if($request->status == 'Verified')
+						<form action="{{ route('adc.approve', $request->id) }}" method="POST" style="display:inline;">
+							@csrf
+							<button type="submit"  class="btn btn-success w-100 mb-2">
+								Approve
+							</button>
+						</form>
 
-        <form action="{{ route('adc.reject', $request->id) }}" method="POST" style="display:inline;">
-            @csrf
-            <button type="submit" style="width:160px;" class="btn btn-danger">
-                Reject
-            </button>
-        </form>
-    
-    @endif
-</td>
-
-
-                    </tr>
-                    @endforeach
-                                    </tbody>
-								</table>
-								
-							</div>	
-						</div>	
-					</div>			
+						<form action="{{ route('adc.reject', $request->id) }}" method="POST" style="display:inline;">
+							@csrf
+							<button type="submit" class="btn btn-danger w-100">
+								Reject
+							</button>
+						</form>
+					
+					@endif
+				</td>
+			</tr>
+			@endforeach
+		</tbody>
+	</table>
+	
+</div>
+</div>			
+</div>			
 				
 
             

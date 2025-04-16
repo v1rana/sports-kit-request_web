@@ -15,9 +15,9 @@ header{background:#225395;}
 .content-area header button{color:#fff; transition: all linear 0.3s 0s}
 .content-area header button:focus{border:none; box-shadow:none}
 .content-area header .navbar-toggler.collapsed{transform:rotate(180deg);}
-header a.btn {font-size: 14px;transition: all linear 0.3s 0s;}
-header a.btn span {display: none;transition: all linear 0.3s 0s;}
-header a.btn:hover span {display: inline-block;}
+header a.btn {font-size: 14px;width: auto;}
+header a.btn span {font-size: 0;opacity: 0;transition: all linear 0.2s 0s;}
+header a.btn:hover span {font-size: 13px;opacity: 1;}
 .logo img{display: inline-block;vertical-align: middle;margin: 0 4px 0 0;max-width:70px; width:100%}
 .logo .logo_text { color:#fff;display: inline-block;vertical-align: middle;}
 .logo .logo_text .site_name_english, .logo .logo_text h1.h1-logo {color:#fff;font-style: normal;font-size:20px;margin: 0;font-weight: 700;}
@@ -30,16 +30,25 @@ aside .logo img{max-width:60px;}
 .main.collapse {display: block;min-width: 84px;max-width: 84px;width: auto;}
 aside.collapsing{transition:width .35s ease}
 aside.main li a span{display: none}
-aside .nav-link{color:rgba(255,255,255,0.6);font-size:14px;}
+aside .nav-link{color:rgba(255,255,255,0.5);font-size:14px;}
 aside ul li{margin:3px 0;}
 aside .nav-link i{font-size: 18px;margin-right:10px;}
 aside.main .nav-link{font-size:18px;text-align:center}
-aside .nav-link:focus,aside .nav-link:hover{color:#fff}
-aside .nav-item.active {position: relative; padding-left: 10px; border:none;}
-aside .nav-item.active:after {top: 0;border-radius: 4px 4px;content: "";position: absolute;right: 10px;
-    width: 92%;background: rgba(255,255,255,0.2);height: 100%;z-index: 0;}
-aside .nav-item.active .nav-link{color:#fff;position:relative; z-index:9}
-
+aside .nav-linka:focus,aside .nav-link:hover{color:#fff}
+aside .nav-item{float:left;width:100%}
+aside .nav-item a.active {position: relative; padding-left: 10px; border:none;}
+aside .nav-item a.active:after {top: 0;border-radius: 4px 4px;content: "";position: absolute;right: 10px;
+    width: 92%;height: 100%;z-index: 0;}
+aside .nav-item .nav-link.active{color:#fff;position:relative; z-index:9;background: rgba(0, 0, 0, 0.1);
+    margin: 0 6px;}
+aside li.nav-item a span {
+    font-size: 13px;
+    display: inline-block;
+    width: calc(100% - 41px);
+    vertical-align: top;
+}
+.table-responsive{min-width: none;height: 350px}
+.table-responsive thead{position: sticky;top:0}
 .navbar a{color:#fff}
 .content-area {display: flex;flex-direction: column;min-width: 0;transition: margin-left .3s ease-in-out, left .3s ease-in-out, margin-right .3s ease-in-out, right .3s ease-in-out;
 width: 100%;min-height: 81vh;}
@@ -80,6 +89,64 @@ section h4 .btn{padding: 3px 15px;}
 .request-form > div input[type="number"]{padding: 0px 10px;}
 .request-default-info label + h5{color:#000}
 
+.content.dashboard-area {min-height:74.3vh}
+.dashboard-area h2{font-size: 38px; margin:0}
+.dashboard-area  >  .row > .col-4 h2{font-size:80px;transition: all linear 0.2s 0s}
+.dashboard-area .application-details div:first-child div{background:#039590}
+.dashboard-area div{position:relative}
+.dashboard-area .row  >div > div i{position:absolute; bottom: 4px;font-size: 90px;color: rgba(255, 255, 255, 0.1);right: 13px;}
+.dashboard-area >  .row > .col-4 i{font-size:170px;color:rgba(255, 255, 255, 0.04);}
+.dashboard-area .application-details  div i,.dashboard-area .row .col-4 i {transition: all linear 0.2s 0s;}
+.dashboard-area .application-details div:hover i{font-size: 70px;color: rgba(255, 255, 255, 0.3);}
+.dashboard-area .row .col-4:hover i {font-size: 140px;color: rgba(255, 255, 255, 0.2);}
+
+.table form select{font-size: 12px;padding: 3px 13px 3px 6px;background-size: 10px;width: 100%;
+max-width: 240px;background-position: right 6px center}
+.header-area select {
+    font-size: 14px;
+    width: 35%;
+    border-top: 0;
+    margin-left: 10px;
+    border-radius: 0;
+    padding: 0;
+    border-left: 0;
+    border-right: 0;
+    background: transparent;
+}
+.header-area select:focus{box-shadow:0 0; background-color: transparent;font-weight:bold}
+.declaration-area p{text-transform: none; color:#000;font-weight: normal; font-size: 14px; margin-bottom: 10px}
+.declaration-area label{color:#000; text-transform: none;font-weight: normal}
+.bg-dispersment{background:#51308e !important}
+
+.applicant-details-modal .card-body p {
+    height: 104px;
+    float: left;
+    background: rgba(0,0,0,0.04);
+}
 
 footer{background:#2f4858; color:#fff;width:100%;bottom:0;padding:10px 0; font-size:12px; left:0}
 footer p{margin:0}
+
+.progress-track{ padding: 0;}
+#progressbar {padding-top: 10px;margin-bottom: 3vh;overflow: hidden;color: rgb(252, 103, 49);padding-left: 0px;margin-top: 1vh}
+#progressbar li {list-style-type: none;font-size:15px;width: calc(100% / 5);float: left;position: relative;font-weight: 400;color: rgb(160, 159, 159);}
+
+#progressbar li:before {content: "";color: rgb(252, 103, 49);color: #fff;width: 12px;height: 12px; display: block; background: #ddd;border-radius: 50%; top:-4px;position:relative}
+
+#progressbar li:after {content: '';height: 2px;background: #ddd;position: absolute;left: 0%;right: 0%;margin-bottom: 2vh;top: 1px;z-index: 1; margin: auto;width:100%;}
+
+#progressbar li.active{color: black;}
+#progressbar li.active:before,#progressbar li.active:after {background: rgb(252, 103, 49);}
+
+.dashboard-stats.nav li button{border:none;color:rgba(0,0,0,0.3);padding: 10px 25px;border-bottom: 2px solid transparent}
+.dashboard-stats.nav li button.active{color:rgb(252, 103, 49);font-weight:500;border-bottom: 2px solid rgb(252, 103, 49);background:rgba(0,0,0,0.03)}
+
+
+@media screen and (max-width: 786px){
+	#progressbar li span{float: left; width: 100%;margin: -20px 0 30px 20px; }
+	#progressbar li {width:100%}
+	#progressbar li:after{height:100%; width: 2px;right: auto;left: 5px}
+	#progressbar li:last-child:after{display:none}
+	
+	
+}

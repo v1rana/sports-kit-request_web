@@ -10,26 +10,26 @@
     <div class="d-flex flex-column flex-shrink-0 py-3 ps-0">
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="{{ route('dso.sports_kit.dashboard') }}" 
+                <a href="{{ route('adc.sports_kit.dashboard') }}" 
                 
-                   class="nav-link {{ request()->routeIs('dso.sports_kit.dashboard') ? 'active' : '' }}">
+                   class="nav-link {{ request()->routeIs('adc.sports_kit.dashboard') ? 'active' : '' }}">
                     <i class="fa-solid fa-house"></i> <span>Dashboard</span>
                 </a>
             </li>
            
             
             <li class="nav-item">
-                <a href="{{ route('dso.sports.requests') }}" 
-                   class="nav-link {{ request()->routeIs('dso.sports.requests') ? 'active' : '' }}">
+                <a href="{{ route('adc.sports.requests') }}" 
+                   class="nav-link {{ request()->routeIs('adc.sports.requests') ? 'active' : '' }}">
                     <i class="fa-regular fa-rectangle-list"></i> <span> Kit Request List</span>
                 </a>
             </li>
-            <li class="nav-item">
+            <!--<li class="nav-item">
                 <a href="{{ route('dso.grad.list') }}" 
                    class="nav-link {{ request()->routeIs('dso.grad.list') ? 'active' : '' }}">
                     <i class="fa-regular fa-rectangle-list"></i> <span>Gradation (C & D)Applications List</span>
                 </a>
-            </li>
+            </li>-->
         </ul>
     </div>
 </aside>
@@ -38,7 +38,7 @@
 			<header>
 				<div class="container-fluid">
 					<div class="row justify-content-between border-bottom align-items-center">
-						<div class="col-5 logo d-flex">
+						<div class="col-7 logo d-flex">
 							<button class="navbar-toggler d-block" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
 								<i class="fa-solid fa-angles-left"></i>
 							</button>
@@ -46,8 +46,8 @@
 								<h1 class="h1-logo">Sports Department , Government of Haryana</h1>								
 							</div>
 						</div>
-						<div class="col-7 text-end">
-							<a href="#" class="btn btn-danger"><i class="fa-solid fa-power-off"></i> <span>Log Out</span></a>
+						<div class="col-5 text-end">
+							<a href="{{route('login')}}" class="btn btn-danger"><i class="fa-solid fa-power-off"></i> <span>Log Out</span></a>
 						</div>
 					</div>
 				</div>
