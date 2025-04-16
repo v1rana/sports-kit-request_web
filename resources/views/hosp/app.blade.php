@@ -16,7 +16,7 @@
     
         <link rel="stylesheet" href="{{ url('assets/job_app/fontawesome/css/all.min.css') }}" />
         <link rel="stylesheet" href="{{ url('assets/job_app/bootstrap/css/bootstrap.min.css') }}" />
-        {{-- <link rel="stylesheet" href="{{ url('assets/job_app/css/login-style.css') }}" /> --}}
+        <link rel="stylesheet" href="{{ url('assets/job_app/css/login-style.css') }}" />
         <link rel="stylesheet" href="{{ url('assets/job_app/css/job-form.css') }}" />
     
         
