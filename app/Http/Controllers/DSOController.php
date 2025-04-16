@@ -251,4 +251,27 @@ foreach ($sportsCertificates as $certificate) {
 		return back()->with('success', 'Certificate uploaded successfully.');
 	}
 
+//     $request->status = 'Approved';
+//     //$request->status = 'Verified'; // Update status
+//     $request->approve_reject_datetime = now();
+//     $request->save();
+
+//        return redirect()->back()->with('success', 'Request Approved successfully!');
+//    }
+
+//    public function RejectRequest($id)
+//    {
+//     $request = sports_gradation_certificate::find($id);
+
+//     if (!$request) {
+//         return redirect()->back()->with('error', 'Request not found!');
+//     }
+
+//     $request->status = 'Rejected';
+//     //$request->status = 'Verified'; // Update status
+//     $request->approve_reject_datetime = now();
+//     $request->save();
+
+//        return redirect()->back()->with('success', 'Request Rejected successfully!');
+//    }
 }

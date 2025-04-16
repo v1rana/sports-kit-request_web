@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>Laravel</title>
+
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+	
+        <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    
+        <link rel="stylesheet" href="{{ url('assets/job_app/fontawesome/css/all.min.css') }}" />
+        <link rel="stylesheet" href="{{ url('assets/job_app/bootstrap/css/bootstrap.min.css') }}" />
+        <link rel="stylesheet" href="{{ url('assets/job_app/css/login-style.css') }}" />
+        <link rel="stylesheet" href="{{ url('assets/job_app/css/job-form.css') }}" />
+    
+        
+        <title>React in Laravel</title>
+        @vite(['resources/js/app.tsx'])
+    </head>
+    <body class="">
+        <div id="app"></div>
+    </body>
+</html>

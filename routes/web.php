@@ -86,3 +86,8 @@ Route::middleware(['auth.session'])->group(function () {
     
     Route::post('/logout', [SportsGradationCertificateController::class, 'logout'])->name('logout');
 });
+
+
+Route::get('hosp/{any?}', function($any = null) { 
+    return view('hosp/app', ['any' => $any]);
+})->where('any', '.*');
