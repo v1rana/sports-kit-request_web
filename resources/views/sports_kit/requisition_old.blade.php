@@ -2,96 +2,7 @@
 
 @section('content')
 <div class="container mt-4">
-
-   <h4 class=""> Registration Form 
-        <!--<a href="{{ url('/sports-kit') }}" class="btn btn-secondary float-end">
-            <i class="fa-solid fa-arrow-left-long"></i> Back
-        </a>-->
-    </h4>
- <form action="{{ url('/sports-kit/store') }}" method="POST" enctype="multipart/form-data" class="px-5 py-2">
-                    @csrf
-
- <!-- Static Information -->
-                    <div class="row request-default-info mb-4">                                
-                        <div class="col-3 mb-3 pe-0">
-                            <div>
-                                <label>1. Name of Head Person </label>
-                                <input type="text" class="form-control" name="name" value="Rajender singh" required>
-                            </div> 
-                        </div>
-                        <div class="col-3 mb-3 px-0">
-                        <div>
-                            <label>2. Designation</label>
-                            <input type="text" class="form-control" name="designation" value="Gram Sarpanch" required>
-                            </div> 
-                            </div>
-                        <div class="col mb-3 px-0">
-                        <div>
-                            <label>3. Block</label>
-                            <input type="text" class="form-control" name="block" value="KAIRU" required>
-                            </div> 
-                            </div>
-                        <div class="col mb-3 px-0">
-                        <div>
-                            <label>4. District</label>
-                            <input type="text" class="form-control" name="district" value="BHIWANI" required>
-                            </div> 
-                            </div>
-                        <div class="col mb-3 ps-0">
-                        <div>
-                            <label>5. Area Name</label>
-                            <input type="text" class="form-control" name="area_name" placeholder="Enter Area Name" value="BABARWAS" required>
-                            </div> 
-                            </div>
-                    </div>
-<!-- Terms & Conditions -->
-                    <div class="row mt-3">
-                        
-                        
-                        
-                        <div class="col-12">
-    <div class="alert alert-danger declaration-area">
-        <h6 class="text-danger">Declaration by Applicant</h6>
-        <p>
-            All the above particulars given by me are true and correct. Nothing has been concealed by me. False information or concealment of material information in the registration form by me will render me ineligible in future for said scheme and department is free to take appropriate action as deemed suitable against me in this regard.
-        </p>
-
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <label for="declaration_place" class="form-label"><strong>Place:</strong></label>
-                <input type="text" class="form-control" id="declaration_place" name="declaration_place" placeholder="Enter Place" value="BABARWAS" required>
-            </div>
-            <div class="col-md-4 mb-3">
-                
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="declaration_signature" class="form-label"><strong>Signature of Applicant Official Stamp (if applicable)</strong></label>
-                <input type="text" class="form-control" id="declaration_signature" name="declaration_signature" placeholder="Enter Full Name" value="Rajender singh" required>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <label for="declaration_date" class="form-label"><strong>Dated:</strong></label>
-                <input type="date" class="form-control" id="declaration_date" name="declaration_date" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" 
-            readonly required>
-            </div>
-        </div>
-
-        
-    </div>
-</div>
-
-                    </div>
-					<hr />
-                    <div class="row mb-3">                    
-                        <div class="col-12 text-end">
-                            <button type="reset" class="btn btn-secondary">Submit/Download</button>
-                            <button type="submit" class="btn btn-primary">Upload</button>
-                        </div>
-                    </div>
- </form>
-    <h4 class=""> Kit Requisition Form 
+    <h4 class="">Sports Kit Requisition Form 
         <!--<a href="{{ url('/sports-kit') }}" class="btn btn-secondary float-end">
             <i class="fa-solid fa-arrow-left-long"></i> Back
         </a>-->
@@ -141,8 +52,6 @@
                             </div> 
                             </div>
                     </div>
-					
-					
 
                     <!-- Sports Kit Requisition -->
                     <div class="mb-3">
