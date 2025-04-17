@@ -1,4 +1,4 @@
-import api from "./api";
+import api, { API_BASE_URL } from "./api";
 
 export const getHOSP = async () => {
     try {
@@ -12,6 +12,8 @@ export const getHOSP = async () => {
 
 export const login = async (data) => {
     try {
+        console.log('API_BASE_URL',API_BASE_URL);
+        
         const response = await api.post("/login",{...data});
         return response.data;
     } catch (error) {
