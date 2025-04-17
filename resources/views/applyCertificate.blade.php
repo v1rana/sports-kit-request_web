@@ -191,33 +191,33 @@
 								</div>
 							</div>
 							<div class="col-12 mt-4 shadow" style="background-color: bisque;padding: 21px 0px;">    
-								<h4 class="form-check-label ps-4">Declaration</h4>
+								<h4 class="form-check-label ps-4"> Declaration</h4>
 							
 								<div class="form-check">
-							✅ <label class="form-check-label" for="declare1">
+							 <label class="form-check-label" for="declare1">
 										I certify that I am currently a domicile/resident of Haryana.
 									</label>
 								</div>
 								<div class="form-check">
-								✅
+								
 									<label class="form-check-label" for="declare2">
 									I certify that I have never played for any State or Union Territory other than Haryana.
 									</label>
 								</div>
 								<div class="form-check">
-								✅
+								
 									<label class="form-check-label" for="declare3">
 									I certify that I have played for Haryana at the National/International Level.
 									</label>
 								</div>
 								<div class="form-check">
-								✅
+								
 									<label class="form-check-label" for="declare4">
 									I certify that I have not been penalized for any unfair practice like age fraud, doping, etc., in the tournament for which cash award is being applied for.
 									</label>
 								</div>
 								<div class="form-check">
-								✅
+								
 									<label class="form-check-label" for="declare5">
 									I certify that I have enclosed the self-attested copies of the documents as per requirements.
 									</label>
@@ -225,9 +225,11 @@
 								<div class="form-check">
 								
 									<label class="form-check-label" for="declare6">
-									✅ I also understand that if any information provided by me for the grant of Gradation Certificate is found to be false or incorrect, then I shall be liable for any penal action.
+									 I also understand that if any information provided by me for the grant of Gradation Certificate is found to be false or incorrect, then I shall be liable for any penal action.
 									</label>
 								</div>
+								<input class="form-check-input" id="medalGold" type="checkbox" value="" name="medalWon" style="margin-top: 5px;font-size: 18px;margin-left: 22px;">
+								<label class="form-check-label" for="medalGold" style="margin-left: 8px;   margin-top: 2px;">  I Agree</label>
 							</div>
 							<hr />
 							<div class="row mb-3">					

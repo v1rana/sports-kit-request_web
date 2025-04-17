@@ -49,9 +49,23 @@
                     <td>{{ $data->certificate_no }}</td>
                     <td>{{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') }}</td>
                     <td>
-                        <span class="badge rounded-pill px-3 py-2" style="background: #ffcc00; color: #333; font-weight: 600;">
-                            ⏳ Pending.....
-                        </span>
+                        @if($data->certificate_pdf == '')
+                            <span class="badge rounded-pill px-3 py-2" style="background: #ffcc00; color: #333; font-weight: 600;">
+                                ⏳ Pending.....
+                            </span>
+                        @elseif($data->certificate_pdf != '')
+                            <span class="badge rounded-pill px-3 py-2" style="background: #28a745; color: #fff; font-weight: 600;">
+                                ✅ Approved
+                            </span>
+                        @elseif($data->certificate_pdf == 'rejected')
+                            <span class="badge rounded-pill px-3 py-2" style="background: #dc3545; color: #fff; font-weight: 600;">
+                                ❌ Rejected
+                            </span>
+                        @else
+                            <span class="badge rounded-pill px-3 py-2" style="background: #6c757d; color: #fff; font-weight: 600;">
+                                ❔ Unknown
+                            </span>
+                        @endif
                     </td>
                     <td>
 					    <button class="btn btn-info btn-sm" 

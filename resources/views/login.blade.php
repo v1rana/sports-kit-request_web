@@ -19,8 +19,8 @@
 							<div class="col-xs-12 col-sm-6 col-md-6">							
 								<h2>Sign in</h2>
 								<h6>to continue with your application</h6>
-								<p class="mt-5">Didn't have an account? <a href="{{ url('/create-account') }}">Create an account</a></p>
-								<p class="mt-2"> HOSP Login <a href="{{ url('/hosp/login') }}"> Click here</a></p>
+								<p class="mt-5">Didn't have an account? <a href="{{ url('/create-account') }}"> - Create an account</a></p>
+								<p class="mt-2"> Haryana Outstanding Sports Persons Jobs  <a href="{{ url('/hosp/login') }}"> - Apply Here</a></p>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-5">
 						        	@if (session('message'))
@@ -29,7 +29,7 @@
 									@if (session('otp'))
 									<p class="text-danger" id="alert">{{ session('otp') }}</p>
 									@endif
-									<p class="fw-bold mb-1">Apply for Haryana Sports Equipment Policy</p><br>
+									<p class="fw-bold mb-1">Click Here to Apply for Sports Gradation Certificate and Haryana Provision of Sports Equipment Requisition</p><br>
 									<div class="form-floating">
 									<input type="text" class="form-control required" id="mobile" name="mobile" maxlength="10" oninput="this.value=this.value.replace(/[^0-9]/g,'');">
 										<label for="floatingInput">Mobile number</label>
