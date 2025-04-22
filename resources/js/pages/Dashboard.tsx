@@ -1,9 +1,25 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm, useFormState } from "react-hook-form";
 const stepsTotal = 5;
 
 const Dashboard = () => {
+    const navigate = useNavigate();
+    const userData = JSON.parse(localStorage.getItem('user')!);
+    const userDetails = userData?.user_details || {};
+    useEffect(() => {
+        // const userData = JSON.parse(localStorage.getItem("user") || "null");
+        if (!userData) {
+            localStorage.clear();
+            navigate("/login");
+        }
+    }, [navigate]);
+    // Get user data from localStorage
+    
+    const logout = () => {
+        localStorage.clear();
+        navigate("/login");
+      }
     const params = new URLSearchParams(window.location.search);
     const step: any = params.get("step") ? parseInt(params.get("step")!) : 1;
     // alert(step)
@@ -152,11 +168,11 @@ const Dashboard = () => {
                                 Service (Group A, B, and C)
                             </p>
                             <div className="float-end m-2">
-                                <Link to="/hosp/login">
-                                    <button className="btn btn-danger me-1">
+                              
+                                    <button className="btn btn-danger me-1" onClick={logout}>
                                         Logout <i className="fa fa-sign-out"></i>
                                     </button>
-                                </Link>
+                                
                             </div>
                         </div>
                     </div>

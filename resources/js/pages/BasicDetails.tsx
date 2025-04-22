@@ -1,15 +1,26 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 const BasicDetails = () => {
     const navigate = useNavigate();
-    
-    // Get user data from localStorage
     const userData = JSON.parse(localStorage.getItem('user')!);
     const userDetails = userData?.user_details || {};
+    useEffect(() => {
+        // const userData = JSON.parse(localStorage.getItem("user") || "null");
+        if (!userData) {
+            localStorage.clear();
+            navigate("/login");
+        }
+    }, [navigate]);
+    // Get user data from localStorage
     
+    const logout = () => {
+        localStorage.clear();
+        navigate("/login");
+      }
+
     const save = () => {
       const loginType = localStorage.getItem('loginType');
       if(loginType == 'equipment') {
@@ -48,7 +59,10 @@ const BasicDetails = () => {
     };
 
     return (
+       
         <div>
+             {userData &&(
+        
             <div className="container d-flex align-items-center min-vh-100">
                 <div className="row g-0 justify-content-center w-100">
                
@@ -61,11 +75,11 @@ const BasicDetails = () => {
                             Let the young minds grow to the full potential
                             </p>
                             <div className="float-end m-2">
-                                <Link to="/hosp/login">
-                                    <button className="btn btn-danger me-1">
+                          
+                                    <button className="btn btn-danger me-1" onClick={logout}>
                                         Logout <i className="fa fa-sign-out"></i>
                                     </button>
-                                </Link>
+                               
                             </div>
                         </div>
                     </div>
@@ -484,7 +498,7 @@ const BasicDetails = () => {
                     </div>
                 </div>
             </div>
-            
+            )}
             <div id="preloader-wrapper">
                 <div id="preloader"></div>
                 <div className="preloader-section section-left"></div>
