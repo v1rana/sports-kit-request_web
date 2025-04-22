@@ -362,6 +362,18 @@
             ]
         };
 
+        const sessionDesignation = "{{ session('first_form_data.designation') }}";
+        const sessionSpecificDesignation = "{{ session('first_form_data.specific_designation') }}";
+
+        // Set initial designation type from session if exists
+        if (sessionDesignation) {
+            designationType.value = sessionDesignation;
+
+            // Manually trigger change to load specific options
+            const event = new Event('change');
+            designationType.dispatchEvent(event);
+        }
+
         designationType.addEventListener('change', function () {
             const selectedType = this.value;
             specificDesignation.innerHTML = '<option value="">-- Select Designation --</option>';  // Clear previous options
@@ -371,12 +383,19 @@
                     const optionElement = document.createElement('option');
                     optionElement.value = opt.value;
                     optionElement.textContent = opt.text;
+
+                    // Check if this should be selected
+                    if (opt.value === sessionSpecificDesignation) {
+                        optionElement.selected = true;
+                    }
+
                     specificDesignation.appendChild(optionElement);
                 });
             }
         });
     });
 </script>
+
 <script>
     // Define equipment options and their max quantity per sport
 const equipmentLimits = {
