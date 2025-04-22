@@ -134,7 +134,7 @@
 						<div class="col-3 mt-3 text-end">
 							<label for="file_upload" class="form-label">Upload Signed Form</label>
 							<input type="file" class="form-control" name="file" id="file_upload" required />
-							<button type="button">Submit Form</button>
+							<button type="button" class="btn btn-primary">Upload File</button>
 						</div>
 					</div>
     
