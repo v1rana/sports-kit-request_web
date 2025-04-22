@@ -143,5 +143,39 @@ class SportsKitRequisitionController extends Controller {
     return redirect()->back()->with('success', 'Vendor assigned successfully!');
 }
 
-   
+    public function uploadform(Request $request)
+    {
+		// Handle the file upload
+    if ($request->hasFile('file')) {
+        $file = $request->file('file');
+        $file->store('uploads'); // Store file logic
+
+        // Save first form data temporarily in session
+        session([
+            'show_second_form' => true,
+            'first_form_data' => $request->only([
+                'name',
+                'district',
+                'block',
+                'designation',
+                'specific_designation',
+                'area_name',
+                'declaration_place',
+                'declaration_signature',
+                'declaration_date',
+            ])
+        ]);
+
+        return redirect()->back()->with('success', 'Form uploaded successfully.');
+    }
+
+    return redirect()->back()->withErrors('File upload failed.');
+    }
+	
+	public function logout(){
+		session()->flush(); // This clears all session data
+    // auth()->logout();   // This logs the user out
+		return redirect('/');
+	}
+	
 }

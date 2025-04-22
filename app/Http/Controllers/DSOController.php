@@ -63,6 +63,7 @@ foreach ($sportsCertificates as $certificate) {
         $certificate->formatted_month_year = 'N/A';
     }
 }
+
         return view('dso.grad_list', compact('sportsCertificates'));
 
     }

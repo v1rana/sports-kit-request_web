@@ -43,7 +43,30 @@
     
     <div class="d-flex">
        
-        
+        <!-- SideBar- aside sec Ends -->
+        <div class="content-area">
+			<header>
+				<div class="container-fluid">
+					<div class="row justify-content-between border-bottom align-items-center">
+						<div class="col-6 logo d-flex">
+							<!--<button class="navbar-toggler d-block" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+								<i class="fa-solid fa-angles-left"></i>
+							</button>
+							<div class="logo_text">
+								<h1 class="h1-logo">Sports Department , Government of Haryana</h1>								
+							</div>-->
+						</div>
+						<div class="col-6 text-end">
+							<form id="logout-form" action="{{ url('/sports-kit/logout') }}" method="POST" style="display: inline;">
+    @csrf
+    <button type="submit" class="btn btn-danger">
+        <i class="fa-solid fa-power-off"></i> <span>Log Out</span>
+    </button>
+</form>
+						</div>
+					</div>
+				</div>
+			</header>
         <div class="container mt-4">
             @yield('content')
         </div>
