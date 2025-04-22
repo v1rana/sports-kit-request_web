@@ -131,7 +131,7 @@
             </ul>
             <table class="signature-date-area">
                 <tr>
-                    <td>Date of form submission <strong class="underline">{{ $otpData->created_at ?? '' }}</strong></td>
+                    <td>Date of form submission <strong class="underline">22-04-2025<!-- {{ $otpData->created_at ?? '' }} --></strong></td>
                     <!--td> <p> <span style="margin-left: 115px;">Signature of Sportsperson:</span> <span class="underline"><strong>{{ $otpData->certificate_no ?? '' }}</strong></span></p></td-->
                 </tr>
             </table>
@@ -139,7 +139,7 @@
             <!--p>Checked. A copy of supporting documents (self-attested) in support of the claim is retained in office.</p-->
 			<table width="100%">
                 <tr>
-                    <td> Date of Issuance:<strong class="underline">{{ $otpData->created_at ?? '' }}</strong></td>
+                    <td> Date of Issuance:<strong class="underline">22-04-2025<!-- {{ $otpData->created_at ?? '' }} --></strong></td>
                     <td style="text-align:right">Granted Grade <strong class="underline" style="width: 50px; text-align:center; padding:0">A</strong> Sports Certificate</td>
                 </tr>
             </table>
