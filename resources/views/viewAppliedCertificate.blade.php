@@ -120,8 +120,8 @@
     
             <h6></h6>
             <ul class="achievement-details">
-                <li style="padding: 5px;display: block;">i). Name of Tournament: <strong class="underline">{{ $otpData->tournament_name ?? '' }}</strong></li>
-                <li style="padding: 5px;display: block;">ii). Date of Event: <strong class="underline">{{ $otpData->month_year ?? '' }}</strong></li>
+                <li style="padding: 5px;display: block;">i). Name of Tournament: <strong class="underline">National School Games/Khelo India/All India Inter University Games/ All India Women Sports/All India Civil Services/All India Police/All India Rural Sports etc.<!-- {{ $otpData->tournament_name ?? '' }} --></strong></li>
+                <li style="padding: 5px;display: block;">ii). Date of Event: <strong class="underline">01-01-2025<!-- {{ $otpData->month_year ?? '' }} --></strong></li>
                 <li style="padding: 5px;display: block;">iii). Venue of Tournament: <strong class="underline">{{ $otpData->venue_of_tournament ?? '' }}</strong></li>
                 <li style="padding: 5px;display: block;">iv). Organizing Authority: <strong class="underline">{{ $otpData->organising_authority ?? '' }}</strong></li>
                 <li style="padding: 5px;display: block;">v). Tournament Type: <strong class="underline">{{$otpData->tournament_type}}</strong></li>

@@ -134,7 +134,7 @@
 						<div class="col-7 mt-3 text-end d-flex align-items-center justify-content-between">
 							<label for="file_upload" class="form-label">Upload Signed Form</label>
 							<input type="file" class="form-control mx-3" name="file" id="file_upload" required />
-							<button type="button" class="btn btn-primary w-50">Upload File</button>
+							<button type="button" class="btn btn-primary w-50" style="font-size:13px;">Upload File</button>
 						</div>
 					</div>
     
