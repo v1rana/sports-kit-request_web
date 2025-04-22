@@ -44,7 +44,9 @@ Route::get('/municipal', [MunicipalBodyMemberController::class, 'index']);
 //Route::middleware(['auth'])->group(function () {
     Route::get('/sports-kit', [SportsKitRequisitionController::class, 'create'])->name('sports_kit.form');
     Route::post('/sports-kit/store', [SportsKitRequisitionController::class, 'store'])->name('sports_kit.store');
-    Route::get('/sports-requests', [SportsKitRequisitionController::class, 'index'])->name('sports.requests');
+	Route::post('/sports-kit/uploadform', [SportsKitRequisitionController::class, 'uploadform'])->name('sports_kit.uploadform');
+    Route::post('/sports-kit/logout', [SportsKitRequisitionController::class, 'logout']);
+	Route::get('/sports-requests', [SportsKitRequisitionController::class, 'index'])->name('sports.requests');
     Route::get('/gm/dashboard', [SportsKitRequisitionController::class, 'dashboard'])->name('sports_kit.dashboard');
     Route::get('/sport-skit/list', [SportsKitRequisitionController::class, 'list'])->name('sports_kit.list');
     Route::post('/assign-vendor', [SportsKitRequisitionController::class, 'storeVendorAssignment'])->name('assign.vendor.store');

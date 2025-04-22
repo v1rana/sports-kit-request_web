@@ -1,5 +1,14 @@
 @extends('gm_main')
-
+<style>
+@media print {
+  #second_form,
+  #downloadButton,
+  #uploadbutton {
+    display: none !important;
+  }
+   
+}
+</style>
 @section('content')
 <div class="container mt-4">
 
@@ -8,41 +17,63 @@
             <i class="fa-solid fa-arrow-left-long"></i> Back
         </a>-->
     </h4>
- <form action="{{ url('/sports-kit/store') }}" method="POST" enctype="multipart/form-data" class="px-5 py-2">
+ <form action="{{ url('/sports-kit/uploadform') }}" method="POST" enctype="multipart/form-data" class="px-5 py-2">
                     @csrf
 
  <!-- Static Information -->
                     <div class="row request-default-info mb-4">                                
                         <div class="col-3 mb-3 pe-0">
                             <div>
-                                <label>1. Name of Head Person </label>
-                                <input type="text" class="form-control" name="name" value="Rajender singh" required>
+                                <label> Name of Head Person </label>
+                                <input type="text" class="form-control" name="name" value="{{ session('first_form_data.name') }}" required>
                             </div> 
                         </div>
-                        <div class="col-3 mb-3 px-0">
+						<div class="col mb-3 px-0">
+                        <div>
+                            <label>District</label>
+                            <input type="text" class="form-control" name="district" value="{{ session('first_form_data.district') }}" required>
+                            </div> 
+                            </div>
+						<div class="col mb-3 px-0">
+                        <div>
+                            <label>Block</label>
+                            <input type="text" class="form-control" name="block" value="{{ session('first_form_data.block') }}" required>
+                            </div> 
+                            </div>
+                        
+                        <!--<div class="col-3 mb-3 px-0">
                         <div>
                             <label>2. Designation</label>
-                            <input type="text" class="form-control" name="designation" value="Gram Sarpanch" required>
+                            <input type="text" class="form-control" name="designation" value="" required>
                             </div> 
-                            </div>
-                        <div class="col mb-3 px-0">
+                            </div>-->
+						
+    <!-- Designation Type Dropdown -->
+    <div class="col-3 mb-3 px-0">
+        <label for="designation_type">Designation Type</label>
+        <select class="form-control" name="designation" id="designation_type" required>
+            <option value="">-- Select Type --</option>
+            <option value="gram" {{ session('first_form_data.designation') == 'gram' ? 'selected' : '' }}>Gram Panchayat</option>
+            <option value="municipal" {{ session('first_form_data.designation') == 'municipal' ? 'selected' : '' }}>Municipal Bodies</option>
+        </select>
+    </div>
+
+    <!-- Specific Designation Dropdown -->
+    <div class="col-3 mb-3 px-2">
+        <label for="specific_designation">Specific Designation</label>
+        <select class="form-control" name="specific_designation" id="specific_designation" required>
+            <option value="">-- Select Designation --</option>
+        </select>
+    </div>
+	 <div class="col mb-3 ps-0">
                         <div>
-                            <label>3. Block</label>
-                            <input type="text" class="form-control" name="block" value="KAIRU" required>
+                            <label>Area Name</label>
+                            <input type="text" class="form-control" name="area_name" placeholder="Enter Area Name" value="{{ session('first_form_data.area_name') }}" required>
                             </div> 
                             </div>
-                        <div class="col mb-3 px-0">
-                        <div>
-                            <label>4. District</label>
-                            <input type="text" class="form-control" name="district" value="BHIWANI" required>
-                            </div> 
-                            </div>
-                        <div class="col mb-3 ps-0">
-                        <div>
-                            <label>5. Area Name</label>
-                            <input type="text" class="form-control" name="area_name" placeholder="Enter Area Name" value="BABARWAS" required>
-                            </div> 
-                            </div>
+	
+                        
+                       
                     </div>
 <!-- Terms & Conditions -->
                     <div class="row mt-3">
@@ -84,13 +115,30 @@
 
                     </div>
 					<hr />
-                    <div class="row mb-3">                    
-                        <div class="col-12 text-end">
-                            <button type="reset" class="btn btn-secondary">Submit/Download</button>
-                            <button type="submit" class="btn btn-primary">Upload</button>
-                        </div>
-                    </div>
+    <div class="row mb-3">
+        <div class="col-12 text-end">
+            <button type="button" class="btn btn-secondary" id="downloadButton" onclick="window.print()">Submit/Download</button>
+			 <label for="file_upload" class="form-label">Upload Signed Form</label>
+            <input type="file" class="form-control" name="file" id="file_upload" required>
+			<input type="submit" class="btn btn-primary" id="uploadbutton" value="Upload">
+
+        </div>
+    </div>
+    
+    <!-- Upload Button for the Signed Form -->
+    <!--<hr />
+    <div class="row mb-3">
+        <div class="col-12">
+            <label for="file_upload" class="form-label">Upload Signed Form</label>
+            <input type="file" class="form-control" name="file" id="file_upload" required>
+        </div>
+        <div class="col-12 text-end">
+            <button type="submit" class="btn btn-primary" id="uploadbutton">Upload</button>
+        </div>
+    </div>-->
  </form>
+<div id="second_form" style="display: {{ session('show_second_form') ? 'block' : 'none' }};">
+
     <h4 class=""> Kit Requisition Form 
         <!--<a href="{{ url('/sports-kit') }}" class="btn btn-secondary float-end">
             <i class="fa-solid fa-arrow-left-long"></i> Back
@@ -278,12 +326,57 @@
                     </div>
 
                 </form>
+				
+            </div>    
             </div>    
         </div>    
     </div>            
 </div>
+</div>
 
 @endsection
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        if ("{{ session('show_second_form') }}") {
+            const secondForm = document.getElementById('second_form');
+            if (secondForm) {
+                secondForm.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const designationType = document.getElementById('designation_type');
+        const specificDesignation = document.getElementById('specific_designation');
+
+        const options = {
+            gram: [
+                { value: 'Sarpanch', text: 'Sarpanch' },
+                { value: 'Gram Sachiv', text: 'Gram Sachiv' }
+            ],
+            municipal: [
+                { value: 'Ward Member', text: 'Ward Member' },
+                { value: 'Councillor', text: 'Councillor' }
+            ]
+        };
+
+        designationType.addEventListener('change', function () {
+            const selectedType = this.value;
+            specificDesignation.innerHTML = '<option value="">-- Select Designation --</option>';  // Clear previous options
+
+            if (options[selectedType]) {
+                options[selectedType].forEach(function (opt) {
+                    const optionElement = document.createElement('option');
+                    optionElement.value = opt.value;
+                    optionElement.textContent = opt.text;
+                    specificDesignation.appendChild(optionElement);
+                });
+            }
+        });
+    });
+</script>
 <script>
     // Define equipment options and their max quantity per sport
 const equipmentLimits = {
@@ -403,8 +496,7 @@ function addEquipment() {
     newItem.innerHTML = `
         <div class="col mb-0 px-1">
             <select name="sports_equipment[${count}][name]" class="form-control" required onchange="updateEquipmentOptions(this)">
-                <option value="" selected disabled>Select Sport</option>
-                <option value="Volleyball">Volleyball</option>
+                <option value="" selected disabled>Select Sport</option>                <option value="Volleyball">Volleyball</option>
                 <option value="Football">Football</option>
                 <option value="Basketball">Basketball</option>
                 <option value="Handball">Handball</option>
@@ -432,8 +524,7 @@ function addEquipment() {
             <button type="button" class="btn btn-danger" onclick="removeEquipment(this)">
                 <i class="fa-solid fa-trash"></i>
             </button>
-        </div>
-    `;
+        </div>`;
 
     list.appendChild(newItem);
 }
@@ -487,5 +578,6 @@ function checkDuplicate(equipmentSelect) {
 
 
 </script>
+
 
 
