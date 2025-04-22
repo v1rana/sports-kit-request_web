@@ -1,11 +1,22 @@
 @extends('gm_main')
 <style>
+@page {
+  size: A4;
+  margin: 0;padding:0
+}
 @media print {
-  #second_form,
-  #downloadButton,
-  #uploadbutton {
+	
+	html,body{padding:0;margin:0; -webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
+  #second_form,.download-doc-area,  #downloadButton,  #uploadbutton, .content-area header {
     display: none !important;
   }
+  label{font-size:13px !important;}
+  .form-control, input{border:none !important; padding:0 !important; font-size:14px !important;background:transparent !important;}
+  .container{max-width:100% !important;}
+  select{appearance: none !important;
+    -moz-appearance: none !important;
+    -webkit-appearance: none !important;}
+  header{border-bottom:1px solid #eee;}
    
 }
 </style>
@@ -17,27 +28,33 @@
             <i class="fa-solid fa-arrow-left-long"></i> Back
         </a>-->
     </h4>
- <form action="{{ url('/sports-kit/uploadform') }}" method="POST" enctype="multipart/form-data" class="px-5 py-2">
+ <form action="{{ url('/sports-kit/uploadform') }}" method="POST" enctype="multipart/form-data" class=" py-2">
                     @csrf
 
  <!-- Static Information -->
-                    <div class="row request-default-info mb-4">                                
-                        <div class="col-3 mb-3 pe-0">
+                    <div class="row mb-4">                                
+                        <div class="col-xs-12 col-sm-4 col-md-3 mb-3">
                             <div>
                                 <label> Name of Head Person </label>
                                 <input type="text" class="form-control" name="name" value="{{ session('first_form_data.name') }}" required>
                             </div> 
                         </div>
-						<div class="col mb-3 px-0">
+						<div class="col-xs-12 col-sm-4 col-md-3 mb-3">
                         <div>
                             <label>District</label>
                             <input type="text" class="form-control" name="district" value="{{ session('first_form_data.district') }}" required>
                             </div> 
                             </div>
-						<div class="col mb-3 px-0">
+						<div class="col-xs-12 col-sm-4 col-md-3 mb-3">
                         <div>
                             <label>Block</label>
                             <input type="text" class="form-control" name="block" value="{{ session('first_form_data.block') }}" required>
+                            </div> 
+						</div>
+						<div class="col-xs-12 col-sm-4 col-md-3 mb-3">
+							<div>
+                            <label>Area Name</label>
+                            <input type="text" class="form-control" name="area_name" placeholder="Enter Area Name" value="{{ session('first_form_data.area_name') }}" required>
                             </div> 
                             </div>
                         
@@ -49,7 +66,7 @@
                             </div>-->
 						
     <!-- Designation Type Dropdown -->
-    <div class="col-3 mb-3 px-0">
+    <div class="col-xs-12 col-sm-4 col-md-3 mb-3">
         <label for="designation_type">Designation Type</label>
         <select class="form-control" name="designation" id="designation_type" required>
             <option value="">-- Select Type --</option>
@@ -59,18 +76,12 @@
     </div>
 
     <!-- Specific Designation Dropdown -->
-    <div class="col-3 mb-3 px-2">
+    <div class="col-xs-12 col-sm-4 col-md-3 mb-3">
         <label for="specific_designation">Specific Designation</label>
         <select class="form-control" name="specific_designation" id="specific_designation" required>
             <option value="">-- Select Designation --</option>
         </select>
     </div>
-	 <div class="col mb-3 ps-0">
-                        <div>
-                            <label>Area Name</label>
-                            <input type="text" class="form-control" name="area_name" placeholder="Enter Area Name" value="{{ session('first_form_data.area_name') }}" required>
-                            </div> 
-                            </div>
 	
                         
                        
@@ -115,15 +126,17 @@
 
                     </div>
 					<hr />
-    <div class="row mb-3">
-        <div class="col-12 text-end">
-            <button type="button" class="btn btn-secondary" id="downloadButton" onclick="window.print()">Submit/Download</button>
-			 <label for="file_upload" class="form-label">Upload Signed Form</label>
-            <input type="file" class="form-control" name="file" id="file_upload" required>
-			<input type="submit" class="btn btn-primary" id="uploadbutton" value="Upload">
-
-        </div>
-    </div>
+					<div class="row mb-3 download-doc-area align-items-end justify-content-end">
+						<div class="col-12 text-end">
+							<button type="button" class="btn btn-success" id="downloadButton" onclick="window.print()">Submit and Download PDF</button>
+							<input type="submit" class="btn btn-primary" id="uploadbutton" value="Upload Signed Form">
+						</div>
+						<div class="col-3 mt-3 text-end">
+							<label for="file_upload" class="form-label">Upload Signed Form</label>
+							<input type="file" class="form-control" name="file" id="file_upload" required />
+							<button type="button" class="btn btn-primary">Upload File</button>
+						</div>
+					</div>
     
     <!-- Upload Button for the Signed Form -->
     <!--<hr />
