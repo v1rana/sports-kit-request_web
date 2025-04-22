@@ -6,7 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import Home from "./pages/Home";
 
-function JobRoutes() {
+function HOSPRoutes() {
     return (
         <Routes>
             <Route path="/" element={<Home />} />
@@ -17,4 +17,4 @@ function JobRoutes() {
     );
 }
 
-export default JobRoutes;
+export default HOSPRoutes;

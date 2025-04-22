@@ -2,13 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // Import your pages
-import JobRoutes from './Routes';
+import HOSPRoutes from './Routes';
+import Login from './pages/Login';
+import BasicDetails from './pages/BasicDetails';
 
 function App() {
     return (
         <Router>
             <Routes>
-            <Route path="/hosp/*" element={<JobRoutes />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/basic-details" element={<BasicDetails />} />
+            <Route path="/hosp/*" element={<HOSPRoutes />} />
             </Routes>
         </Router>
     );

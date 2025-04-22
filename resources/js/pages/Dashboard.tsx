@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm, useFormState } from "react-hook-form";
-const stepsTotal = 6;
+const stepsTotal = 5;
 
 const Dashboard = () => {
     const params = new URLSearchParams(window.location.search);
@@ -191,406 +191,12 @@ const Dashboard = () => {
                             </div>
                             {!isSubmitted && !isSubmitting && (
                                 <div>
-                                    <form
-                                        onSubmit={(e) => e.preventDefault()}
-                                        className="needs-validation row g-3"
-                                        hidden={
-                                            currentStep === 1 ? false : true
-                                        }
-                                    >
-                                        <h3 className="text-center">
-                                            Basic Details
-                                        </h3>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputFullNameEn"
-                                                className="form-label"
-                                            >
-                                                Full Name (English)
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputFullNameEn"
-                                                placeholder="Full Name"
-                                                value={"Gaurav Kumar"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputPassword4"
-                                                className="form-label"
-                                            >
-                                                Full Name (Hindi)
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputPassword4"
-                                                placeholder="Full Name"
-                                                value={"गौरव कुमार"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputEmail4"
-                                                className="form-label"
-                                            >
-                                                Father Name (English)
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputEmail4"
-                                                placeholder="Father Name"
-                                                value={"Rakesh  Kumar"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputPassword4"
-                                                className="form-label"
-                                            >
-                                                Father Name (Hindi)
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputPassword4"
-                                                placeholder="Father Name"
-                                                value={"राकेश कुमार"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputEmail4"
-                                                className="form-label"
-                                            >
-                                                Mother Name (English)
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputEmail4"
-                                                placeholder="Mother Name"
-                                                value={"Lata devi"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputPassword4"
-                                                className="form-label"
-                                            >
-                                                Mother Name (Hindi)
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputPassword4"
-                                                placeholder="Mother Name"
-                                                value={"लता देवी"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputDob"
-                                                className="form-label"
-                                            >
-                                                Date Of Birth
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputDob"
-                                                value={"04/10/1998"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputAge"
-                                                className="form-label"
-                                            >
-                                                Age
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputAge"
-                                                value={"23"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputGender"
-                                                className="form-label"
-                                            >
-                                                Gender
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputGender"
-                                                value={"Male"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputMarital"
-                                                className="form-label"
-                                            >
-                                                Marital Status
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputMarital"
-                                                value={"Married"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <hr />
-                                        <div className="col-12">
-                                            <label
-                                                htmlFor="inputAddress"
-                                                className="form-label"
-                                            >
-                                                Address
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputAddress"
-                                                placeholder="1234 Main St"
-                                                value={"VPO Kameda"}
-                                                readOnly
-                                            />
-                                        </div>
-
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputDistrict"
-                                                className="form-label"
-                                            >
-                                                District
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputDistrict"
-                                                value={"Ambala"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputBlock"
-                                                className="form-label"
-                                            >
-                                                Block
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputBlock"
-                                                value={"BADOLI BL"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputVill"
-                                                className="form-label"
-                                            >
-                                                Ward/Village
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputVill"
-                                                value={"Kameda"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputZip"
-                                                className="form-label"
-                                            >
-                                                Pincode
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputZip"
-                                                value={"133200"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputMobile"
-                                                className="form-label"
-                                            >
-                                                Mobile
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputMobile"
-                                                value={"876543211"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputEmail"
-                                                className="form-label"
-                                            >
-                                                Email
-                                            </label>
-                                            <input
-                                                type="email"
-                                                className="form-control"
-                                                id="inputEmail"
-                                                value={"gauravkr@abc.com"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <hr />
-
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputBenchmark"
-                                                className="form-label"
-                                            >
-                                                Benchmark Disability
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputBenchmark"
-                                                value={"No"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputCaste"
-                                                className="form-label"
-                                            >
-                                                Caste Category
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputCaste"
-                                                value={"General"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputHighest"
-                                                className="form-label"
-                                            >
-                                                Highest Qualification
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputHighest"
-                                                value={"Graduate"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputEngagement"
-                                                className="form-label"
-                                            >
-                                                Current Engagement
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputEngagement"
-                                                value={"Private"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputIncome"
-                                                className="form-label"
-                                            >
-                                                Total Annual Family Income
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputIncome"
-                                                value={"400000"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputVerified"
-                                                className="form-label"
-                                            >
-                                                Income Verified
-                                            </label>
-                                            <input
-                                                type="email"
-                                                className="form-control"
-                                                id="inputVerified"
-                                                value={"Yes"}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputAlternateNo"
-                                                className="form-label"
-                                            >
-                                                Alternate Number
-                                            </label>
-                                            <input
-                                                type="text"
-                                                className="form-control"
-                                                id="inputAlternateNo"
-                                            />
-                                        </div>
-
-                                        <div className="col-md-6">
-                                            <label
-                                                htmlFor="inputAlternateEmail"
-                                                className="form-label"
-                                            >
-                                                Alternate Email
-                                            </label>
-                                            <input
-                                                type="email"
-                                                className="form-control"
-                                                id="inputAlternateEmail"
-                                                value={"gauravkr@abc.com"}
-                                            />
-                                        </div>
-                                    </form>
+                                 
                                     <form
                                         onSubmit={handleSubmit(onSubmit)}
                                         className="needs-validation row g-3"
                                         hidden={
-                                            currentStep === 2 ? false : true
+                                            currentStep === 1 ? false : true
                                         }
                                     >
                                         <h3 className="text-center">Event</h3>
@@ -756,7 +362,7 @@ const Dashboard = () => {
                                     </form>
                                     <form
                                         className="needs-validation row g-3"
-                                        hidden={currentStep !== 3}
+                                        hidden={currentStep !== 2}
                                     >
                                         <h3 className="text-center">
                                             Educational Qualification
@@ -878,7 +484,7 @@ const Dashboard = () => {
                                     <form
                                         className="needs-validation row g-3"
                                         hidden={
-                                            currentStep === 4 ? false : true
+                                            currentStep === 3 ? false : true
                                         }
                                     >
                                         <h3 className="text-center">
@@ -1167,7 +773,7 @@ const Dashboard = () => {
                                     <form
                                         className="needs-validation row g-3"
                                         hidden={
-                                            currentStep === 5 ? false : true
+                                            currentStep === 4 ? false : true
                                         }
                                     >
                                         <h3 className="text-center">
@@ -1196,7 +802,7 @@ const Dashboard = () => {
                                     <form
                                         className="needs-validation row g-3"
                                         hidden={
-                                            currentStep === 6 ? false : true
+                                            currentStep === 5 ? false : true
                                         }
                                     >
                                         <h3 className="text-center">

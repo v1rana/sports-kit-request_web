@@ -37,8 +37,8 @@ class DatabaseSeeder extends Seeder
 
         // job form seeder
 
-        $this->call(Schedule1Seeder::class);
-        $this->call(Schedule2Seeder::class);
+        $this->call(Schedule12Seeder::class);
+        // $this->call(Schedule2Seeder::class);
         $this->call(DisabilityTypesSeeder::class);
         $this->call(MedalsSeeder::class);
         $this->call(GamesSeeder::class);

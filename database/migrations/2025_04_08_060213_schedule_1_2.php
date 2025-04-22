@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('schedule_1', function (Blueprint $table) {
+        Schema::create('schedule_1_2', function (Blueprint $table) {
             $table->id();
-            $table->unsignedTinyInteger('individual_event_id');
+            $table->tinyInteger('event_type')->default(0)->comment('1 for individual,2 for team');
+            $table->unsignedTinyInteger('event_id');
             $table->string('tournament');
             $table->string('organizing_authority');
             $table->string('organizing_authority_abbr');

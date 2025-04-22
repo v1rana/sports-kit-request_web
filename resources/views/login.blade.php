@@ -20,7 +20,7 @@
 								<h2>Sign in</h2>
 								<h6>to continue with your application</h6>
 								<p class="mt-5">Didn't have an account? <a href="{{ url('/create-account') }}"> - Create an account</a></p>
-								<p class="mt-2"> Haryana Outstanding Sports Persons Jobs  <a href="{{ url('/hosp/login') }}"> - Apply Here</a></p>
+								<p class="mt-2"> Haryana Outstanding Sports Persons Jobs  <a href="{{ url('login') }}"> - Apply Here</a></p>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-5">
 						        	@if (session('message'))

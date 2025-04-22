@@ -1,11 +1,11 @@
 <?php
 
-use App\Http\Controllers\Job\AuthController;
+use App\Http\Controllers\hosp\AuthController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-Route::post('/login', [AuthController::class, 'login'])->name('job.login');
+Route::post('/login', [AuthController::class, 'login'])->name('user.login');
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');

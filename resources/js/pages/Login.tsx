@@ -1,13 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { login } from "../services/hosp-service";
+import { getMemberbasicdetailsfromFIDUID, getOTPRequestforMEMID, login, verifyOTPRequestforMEMID } from "../services/hosp-service";
 
 function Login() {
-    const [pppId, setPppId] = useState("");
+  
+    const [pppId, setPppId] = useState("1KQP3440");
+    const [otp_message, setOTPMsg] = useState("");
+    const [txn, setTxn] = useState("");
     const [selectedMember, setSelectedMember] = useState("");
     const [otp, setOtp] = useState("");
     const [isOtpVisible, setIsOtpVisible] = useState(false);
     const [isMembersVisible, setIsMembersVisible] = useState(false);
+    const [members, setMembers] = useState<{ value: string; text: string }[]>([]);
+    const basic_data = {
+        DeptCode: "NIC",
+        ServiceCode: "TestCred",
+        DeptKey: "o2etc739ut",
+        UIDFID: pppId,
+        MemberID:selectedMember,
+        Txn:txn,
+        OTP:otp,
+    };
     const [errors, setErrors] = useState({
         pppId: "",
         selectedMember: "",
@@ -27,18 +40,35 @@ function Login() {
         return "";
     };
 
-    const displayMembers = (event: React.FormEvent) => {
+    const displayMembers = async (event: React.FormEvent) => {
         event.preventDefault();
         const error = validatePppId(pppId);
         if (error) {
             setErrors((prev) => ({ ...prev, pppId: error }));
             return;
         }
+
         setErrors((prev) => ({ ...prev, pppId: "" })); // Clear error
-        setIsMembersVisible(true);
+        try {
+            basic_data.UIDFID = pppId;
+            const response = await getMemberbasicdetailsfromFIDUID(basic_data);
+
+            if (response.status === "Successfull") {
+                setMembers(response.result.dropdown);
+                setIsMembersVisible(true);
+            } else {
+                setErrors((prev) => ({ ...prev, pppId: response.message }));
+                // alert(response.message || "Failed to fetch members.");
+                setIsMembersVisible(false);
+                setMembers([]);
+            }
+        } catch (error) {
+            console.error("Error fetching members:", error);
+            alert("Login failed. Please try again.");
+        }
     };
 
-    const getVerificationCode = (event: React.FormEvent) => {
+    const getVerificationCode = async (event: React.FormEvent) => {
         event.preventDefault();
         if (!selectedMember) {
             setErrors((prev) => ({
@@ -48,28 +78,70 @@ function Login() {
             return;
         }
         setErrors((prev) => ({ ...prev, selectedMember: "" })); // Clear error
-        setIsOtpVisible(true);
+
+        try {
+            basic_data.MemberID = selectedMember;
+            const response = await getOTPRequestforMEMID(basic_data);
+
+            if (response.status === "Successfull") {
+                setOTPMsg(response.result.message)
+                setTxn(response.result.txn)
+                setIsOtpVisible(true);
+            } else {
+                setErrors((prev) => ({ ...prev, selectedMember: response.message }));
+                // alert(response.message || "Failed to fetch members.");
+                setIsOtpVisible(false);
+                setMembers([]);
+            }
+        } catch (error) {
+            console.error("Error Sending Code:", error);
+            alert("Login failed. Please try again.");
+        }
+        
     };
 
     const handleLogin = async (event: React.FormEvent) => {
         event.preventDefault();
-
         const otpError = validateOtp(otp);
         if (otpError) {
             setErrors((prev) => ({ ...prev, otp: otpError }));
             return;
         }
-
+        setErrors((prev) => ({ ...prev, otp: "" })); // Clear error
         try {
-            const login_data = { pppId, selectedMember };
-            const data = await login(login_data);
-            console.log("Login successful:", data);
-            alert("Login Successful!");
-            navigate("/hosp/dashboard");
+            // const login_data = { pppId, selectedMember };
+            // const data = await login(login_data);
+            // console.log("Login successful:", data);
+            // alert("Login Successful!");
+            // navigate("/hosp/dashboard");
+            basic_data.Txn = txn;
+            basic_data.OTP = otp;
+            const response = await verifyOTPRequestforMEMID(basic_data);
+
+            if (response.status === "Successfull") {
+                console.log(response.result);
+               localStorage.setItem('loginType',loginType);
+               const data = await login(response.result);
+               console.log('data',data);
+               
+               localStorage.setItem('user',JSON.stringify(data.user));
+               localStorage.setItem('token',data.token);
+               navigate("/basic-details");
+              
+            } else {
+                setErrors((prev) => ({ ...prev, otp: response.message }));
+               
+            }
         } catch (error) {
             console.error("Login failed:", error);
             alert("Login failed. Please try again.");
         }
+    };
+
+    const [loginType, setLoginType] = useState('');
+
+    const handleLoginTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setLoginType(event.target.value);
     };
 
     return (
@@ -82,11 +154,10 @@ function Login() {
                                 className="covid-image"
                                 src="/assets/job_app/images/logo-sports.png"
                             />
-                            <h3>Haryana Outstanding Sports Persons</h3>
+                            <h3>Sports Department , Government of Haryana</h3>
                             <h5>Login Form</h5>
                             <p>
-                                Appointed to the Haryana Outstanding Sports
-                                Service (Group A, B, and C)
+                            Let the young minds grow to the full potential
                             </p>
                         </div>
                     </div>
@@ -101,8 +172,9 @@ function Login() {
                                 style={{ width: "0%" }}
                             ></div>
                         </div>
-                        <div id="qbox-container">
-                            <form onSubmit={handleLogin}>
+                        <div id="qbox-container" >
+                            <form onSubmit={handleLogin} >
+                                
                                 <div id="steps-container">
                                     <div className=" w-100" id="step1">
                                         <div className="row justify-content-between">
@@ -111,12 +183,67 @@ function Login() {
                                         <h6>to continue with your application</h6>
                                         
                                     </div> */}
+                                     <div className="col-12 mb-4">
+                                     <p>Login to</p>
+                                     <div className="form-check form-check-inline">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    name="loginType"
+                                                    id="equipment"
+                                                    value="equipment"
+                                                    onChange={handleLoginTypeChange}
+                                                    checked={loginType === 'equipment'}
+                                                    
+                                                />
+                                                <label
+                                                    className="form-check-label"
+                                                    htmlFor="equipment"
+                                                >
+                                                     Haryana Sports Equipment
+                                                </label>
+                                            </div>
+                                            <div className="form-check form-check-inline">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    name="loginType"
+                                                    id="gradation"
+                                                    value="gradation"
+                                                    onChange={handleLoginTypeChange}
+                                                    checked={loginType === 'gradation'}
+                                                />
+                                                <label
+                                                    className="form-check-label"
+                                                    htmlFor="gradation"
+                                                >
+                                                     Haryana Sports Gradation
+                                                </label>
+                                            </div>
+                                            <div className="form-check form-check-inline">
+                                                <input
+                                                    className="form-check-input"
+                                                    type="radio"
+                                                    name="loginType"
+                                                    id="hosp"
+                                                    value="hosp"
+                                                    onChange={handleLoginTypeChange}
+                                                    checked={loginType === 'hosp'}
+                                                />
+                                                <label
+                                                    className="form-check-label"
+                                                    htmlFor="hosp"
+                                                >
+                                                    Haryana Outstanding Sports Pserson
+                                                </label>
+                                            </div>
+                                        </div>  
                                             <div className="col-xs-6 col-sm-6 col-md-6">
                                                 <div className="form-floating">
                                                     <input
                                                         type="text"
-                                                        className="form-control required"
                                                        
+                                                        className={`form-control required ${errors.pppId ? 'is-invalid' : ''}`}
                                                         id="pppid"
                                                         name="pppid"
                                                         maxLength={9}
@@ -145,11 +272,12 @@ function Login() {
                                                         PPP ID
                                                     </label>
                                                 </div>
-                                                {errors.pppId && (
+                                                {/* {errors.pppId && (
                                                     <p className="error">
                                                         {errors.pppId}
                                                     </p>
-                                                )}
+                                                )} */}
+                                                 {errors.pppId && <div className="error">{errors.pppId}</div>}
                                             </div>
                                             
                                             <div className="col-xs-6 col-sm-6 col-md-6">
@@ -192,18 +320,12 @@ function Login() {
                                                                 ); // Clear error
                                                             }}
                                                         >
-                                                            <option value="">
-                                                                Select
-                                                            </option>
-                                                            <option value="1">
-                                                                Member 1
-                                                            </option>
-                                                            <option value="2">
-                                                                Member 2
-                                                            </option>
-                                                            <option value="3">
-                                                                Member 3
-                                                            </option>
+                                                           <option value="">-- Select Member --</option>
+                                                            {members.map((member) => (
+                                                                <option key={member.value} value={member.value}>
+                                                                    {member.text}
+                                                                </option>
+                                                            ))}
                                                         </select>
                                                         <label htmlFor="member">
                                                             Select Member
@@ -247,9 +369,7 @@ function Login() {
                                            
                                             <div className="col-9 mt-4">
                                             <small>
-                                                    OTP Sent to your registered
-                                                    mobile No. ******1219. It is
-                                                    Valid for 10 min
+                                                   {otp_message}
                                                 </small>
                                                 <input
                                                     type="text"
@@ -271,8 +391,11 @@ function Login() {
                                                 )}
                                                 Didn't receive OTP?{" "}
                                                 <a
-                                                    href="#"
+                                                    href="javascript:;"
                                                     className="resendOtp"
+                                                    onClick={
+                                                        getVerificationCode
+                                                    }
                                                 >
                                                     Resend code
                                                 </a>
