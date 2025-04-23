@@ -58,6 +58,8 @@ Route::get('/dso/sports-kit', [DSOController::class, 'create'])->name('dso.sport
 Route::get('/dso/dashboard', [DSOController::class, 'dashboard'])->name('dso.sports_kit.dashboard');
 Route::post('/dso/certificates/download-pdf', [DSOController::class, 'viewAppliedCertificate'])->name('dso.certificates.downloadPDF');
 Route::post('/dso/certificates/upload-pdf', [DSOController::class, 'UploadCertificate'])->name('dso.certificates.uploadPDF');
+Route::post('/dso/enquiry/upload-letter', [DSOController::class, 'UploadLetter'])->name('dso.enquiry.UploadLetter');
+Route::post('/dso/enquiry/reply-letter', [DSOController::class, 'RepliedLetter'])->name('dso.enquiry.ReplyLetter');
 
 Route::get('/adc/dashboard', [ADCController::class, 'dashboard'])->name('adc.sports_kit.dashboard');
 Route::get('/dso/gradlist', [DSOController::class, 'grad_list'])->name('dso.grad.list');
@@ -89,12 +91,7 @@ Route::middleware(['auth.session'])->group(function () {
     Route::post('/logout', [SportsGradationCertificateController::class, 'logout'])->name('logout');
 });
 
-Route::get('login', function($any = null) { 
-    return view('hosp/app', ['any' => $any]);
-});
-Route::get('basic-details', function($any = null) { 
-    return view('hosp/app', ['any' => $any]);
-});
+
 Route::get('hosp/{any?}', function($any = null) { 
     return view('hosp/app', ['any' => $any]);
 })->where('any', '.*');

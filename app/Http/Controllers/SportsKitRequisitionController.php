@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SportsKitRequisition;
+use App\Models\UserDetails;
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Auth;
 
@@ -28,32 +29,43 @@ class SportsKitRequisitionController extends Controller {
 
     public function index()
     {
-        // Fetch sports requests with their HQ verification status
         $sportsRequests = SportsKitRequisition::with('hqSportsRequest')->get();
 
         return view('gm.sports_requests_list', compact('sportsRequests'));
     }
     
     // Show the requisition form
-    public function create()
+  public function create()
 {
     $userId = session('user_id'); // Assuming user ID is stored in session
+if(empty($userId)){
+	$userId ='1';
+	$_SESSION['user_id'] = '1';
+}
+	//return $userId;
+    // Get the user details
+    $userDetail = UserDetails::where('user_id', $userId)->first();
 
-    // Check if application exists for the user
-    $application = SportsKitRequisition::where('district', 'BHIWANI')
-    ->where('block', 'KAIRU')
-    ->where('area_name', 'BABARWAS')
-    ->latest()
-    ->first();
+    // Check if application exists for the user (example location-based logic)
+    $application = SportsKitRequisition::where('district', 'FARIDABAD')
+        ->where('block', 'TIGAON BL')
+        ->where('area_name', 'Faridpur')
+        ->latest()
+        ->first();
 
     if ($application) {
-        
-        return view('sports_kit.status', ['application' => $application]);
+        return view('sports_kit.status', [
+            'application' => $application,
+			'userDetail' => $userDetail
+        ]);
     }
 
     // If no application, show the requisition form
-    return view('sports_kit.requisition');
+    return view('sports_kit.requisition', [
+        'userDetail' => $userDetail
+    ]);
 }
+
 
 
     // Store the requisition request

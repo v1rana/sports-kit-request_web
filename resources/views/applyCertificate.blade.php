@@ -78,11 +78,18 @@
 								<div class="col-xs-12 col-sm-6 col-md-4 mb-3">
 									<label for="sportsDiscipline" class="form-label">7. Name of Sports Discipline <span class="text-danger">*</spna></label>
 									<select class="form-control required" id="name_sports_discipline" name="name_sports_discipline" required>
-										<option value="">--Select--</option>
-										<option value="">--Select--</option>
+										<option value="">--Select--</option>	
 										@foreach($GetSportName as $val)									    
 											<option value="{{ $val->name }}">{{ $val->name }}</option>
 										@endforeach
+									</select>
+								</div>
+								<div class="col-xs-12 col-sm-6 col-md-4 mb-3">
+									<label for="sportsDiscipline" class="form-label">Type of Event <span class="text-danger">*</spna></label>
+									<select class="form-control required" id="type_of_event" name="type_of_event" required>
+										<option value="">--Select--</option>
+										<option value="Individual">Individual</option>
+										<option value="Team">Team</option>
 									</select>
 								</div>
 								
@@ -228,7 +235,7 @@
 									 I also understand that if any information provided by me for the grant of Gradation Certificate is found to be false or incorrect, then I shall be liable for any penal action.
 									</label>
 								</div>
-								<input class="form-check-input" id="medalGold" type="checkbox" value="" name="medalWon" style="margin-top: 5px;font-size: 18px;margin-left: 22px;">
+								<input class="form-check-input" id="terms_conditions" type="checkbox" name="terms_conditions" style="margin-top: 5px;font-size: 18px;margin-left: 22px;" required>
 								<label class="form-check-label" for="medalGold" style="margin-left: 8px;   margin-top: 2px;">  I Agree</label>
 							</div>
 							<hr />

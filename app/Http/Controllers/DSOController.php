@@ -251,6 +251,49 @@ foreach ($sportsCertificates as $certificate) {
 
 		return back()->with('success', 'Certificate uploaded successfully.');
 	}
+	
+	public function UploadLetter(Request $request)
+	{
+		//return $request->all();
+		 \Log::info('Request Data:', $request->all());
+		$request->validate([
+			'enquiry_pdf' => 'required|mimes:pdf|max:2048',
+			'certificate_id' => 'required|exists:sports_gradation_certificates,id'
+		]);
+
+		// Upload file
+		$file = $request->file('enquiry_pdf');
+		$filePath = $file->store('uploads/enquiries', 'public');
+
+		//return $filePath;
+		// Save to database
+		$certificate = sports_gradation_certificate::find($request->certificate_id);
+		$certificate->enquiry_pdf = $filePath;
+		$certificate->enquiry_pdf_datetime = now();
+		$certificate->save();
+
+		return back()->with('success', 'Letter uploaded successfully.');
+	}
+	
+	public function RepliedLetter(Request $request)
+	{
+		$request->validate([
+			'replied_pdf' => 'required|mimes:pdf|max:2048',
+			'certificate_id' => 'required|exists:sports_gradation_certificates,id'
+		]);
+
+		// Upload file
+		$file = $request->file('replied_pdf');
+		$filePath = $file->store('uploads/enquiries', 'public');
+
+		// Save to database
+		$certificate = sports_gradation_certificate::find($request->certificate_id);
+		$certificate->replied_pdf = $filePath;
+		$certificate->replied_pdf_datetime = now();
+		$certificate->save();
+
+		return back()->with('success', 'Letter uploaded successfully.');
+	}
 
 //     $request->status = 'Approved';
 //     //$request->status = 'Verified'; // Update status

@@ -30,6 +30,8 @@ return new class extends Migration
             $table->string('venue_of_tournament')->nullable();
             $table->string('organising_authority')->nullable();
             $table->string('tournament_type')->nullable();
+            $table->string('type_of_event')->nullable();
+            $table->string('terms_conditions')->nullable();
             $table->string('medal_won')->nullable();
             $table->string('participation_level')->nullable();            
             $table->string('granted_grade')->nullable();
@@ -39,8 +41,12 @@ return new class extends Migration
             $table->string('sports_certificate')->nullable();
             $table->string('more_than25_photo')->nullable();
             $table->string('profile_picture')->nullable();
+            $table->string('enquiry_pdf')->nullable();
+            $table->string('replied_pdf')->nullable();
             $table->string('status')->nullable();
             $table->string('approve_reject_datetime')->nullable();
+            $table->string('enquiry_pdf_datetime')->nullable();
+            $table->string('replied_pdf_datetime')->nullable();
             $table->string('dso_id')->nullable();
 			$table->string('certificate_pdf')->nullable();
             $table->timestamps();

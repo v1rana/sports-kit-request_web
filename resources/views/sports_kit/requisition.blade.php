@@ -34,29 +34,33 @@
  <!-- Static Information -->
                     <div class="row mb-4">                                
                         <div class="col-xs-12 col-sm-4 col-md-3 mb-3">
-                            <div>
-                                <label> Name of Head Person </label>
-                                <input type="text" class="form-control" name="name" value="{{ session('first_form_data.name') }}" required>
-                            </div> 
-                        </div>
+    <div>
+        <label>Name of Head Person</label>
+        <input type="text" class="form-control" name="name"
+            value="{{ old('name', session('first_form_data.name') ?? $userDetail->full_name_en ?? '') }}" required>
+    </div> 
+</div>
 						<div class="col-xs-12 col-sm-4 col-md-3 mb-3">
-                        <div>
-                            <label>District</label>
-                            <input type="text" class="form-control" name="district" value="{{ session('first_form_data.district') }}" required>
-                            </div> 
-                            </div>
+    <div>
+        <label>District</label>
+        <input type="text" class="form-control" name="district"
+            value="{{ old('district', session('first_form_data.district') ?? $userDetail->district ?? '') }}" required>
+    </div> 
+</div>
 						<div class="col-xs-12 col-sm-4 col-md-3 mb-3">
-                        <div>
-                            <label>Block</label>
-                            <input type="text" class="form-control" name="block" value="{{ session('first_form_data.block') }}" required>
-                            </div> 
-						</div>
+    <div>
+        <label>Block</label>
+        <input type="text" class="form-control" name="block"
+            value="{{ old('block', session('first_form_data.block') ?? $userDetail->block_town ?? '') }}" required>
+    </div> 
+</div>
 						<div class="col-xs-12 col-sm-4 col-md-3 mb-3">
-							<div>
-                            <label>Area Name</label>
-                            <input type="text" class="form-control" name="area_name" placeholder="Enter Area Name" value="{{ session('first_form_data.area_name') }}" required>
-                            </div> 
-                            </div>
+    <div>
+        <label>Area Name</label>
+        <input type="text" class="form-control" name="area_name"
+            value="{{ old('area_name', session('first_form_data.area_name') ?? $userDetail->ward_village ?? '') }}" required>
+    </div> 
+</div>
                         
                         <!--<div class="col-3 mb-3 px-0">
                         <div>
@@ -101,14 +105,14 @@
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="declaration_place" class="form-label"><strong>Place:</strong></label>
-                <input type="text" class="form-control" id="declaration_place" name="declaration_place" placeholder="Enter Place" value="BABARWAS" required>
+                <input type="text" class="form-control" id="declaration_place" name="declaration_place" placeholder="Enter Place" value="{{ $userDetail->ward_village }}" required>
             </div>
             <div class="col-md-4 mb-3">
                 
             </div>
             <div class="col-md-4 mb-3">
                 <label for="declaration_signature" class="form-label"><strong>Signature of Applicant Official Stamp (if applicable)</strong></label>
-                <input type="text" class="form-control" id="declaration_signature" name="declaration_signature" placeholder="Enter Full Name" value="Rajender singh" required>
+                <input type="text" class="form-control" id="declaration_signature" name="declaration_signature" placeholder="Enter Full Name" value="{{ $userDetail->full_name_en }}" required>
             </div>
         </div>
 
@@ -129,12 +133,12 @@
 					<div class="row mb-3 download-doc-area align-items-end justify-content-end">
 						<div class="col-12 text-end">
 							<button type="button" class="btn btn-success" id="downloadButton" onclick="window.print()">Submit and Download PDF</button>
-							<input type="submit" class="btn btn-primary" id="uploadbutton" value="Upload Signed Form">
+							<input type="button" class="btn btn-primary" id="uploadbutton" value="Upload Signed Form">
 						</div>
-						<div class="col-7 mt-3 text-end d-flex align-items-center justify-content-between">
+						<div class="col-7 mt-3 text-end align-items-center justify-content-between upload-signed-file-area">
 							<label for="file_upload" class="form-label">Upload Signed Form</label>
 							<input type="file" class="form-control mx-3" name="file" id="file_upload" required />
-							<button type="button" class="btn btn-primary w-50" style="font-size:13px;">Upload File</button>
+							<button type="submit" class="btn btn-dark w-50" style="font-size:13px;">Upload File</button>
 						</div>
 					</div>
     
@@ -174,31 +178,31 @@
                         <div class="col-3 mb-3 pe-0">
                             <div>
                                 <label>1. Name of Head Person </label>
-                                <input type="text" class="form-control" name="name" value="Rajender singh" required>
+                                <input type="text" class="form-control" name="name" value="{{ $userDetail->full_name_en }}" readonly required>
                             </div> 
                         </div>
                         <div class="col-3 mb-3 px-0">
                         <div>
                             <label>2. Designation</label>
-                            <input type="text" class="form-control" name="designation" value="Gram Sarpanch" required>
+                            <input type="text" class="form-control" name="designation" value="Gram Panchayat" readonly required>
                             </div> 
                             </div>
                         <div class="col mb-3 px-0">
                         <div>
                             <label>3. Block</label>
-                            <input type="text" class="form-control" name="block" value="KAIRU" required>
+                            <input type="text" class="form-control" name="block" value="{{ $userDetail->block_town }}" readonly required>
                             </div> 
                             </div>
                         <div class="col mb-3 px-0">
                         <div>
                             <label>4. District</label>
-                            <input type="text" class="form-control" name="district" value="BHIWANI" required>
+                            <input type="text" class="form-control" name="district" value="{{ $userDetail->district }}" readonly required>
                             </div> 
                             </div>
                         <div class="col mb-3 ps-0">
                         <div>
                             <label>5. Area Name</label>
-                            <input type="text" class="form-control" name="area_name" placeholder="Enter Area Name" value="BABARWAS" required>
+                            <input type="text" class="form-control" name="area_name" placeholder="Enter Area Name" readonly value="{{ $userDetail->ward_village }}" required>
                             </div> 
                             </div>
                     </div>
@@ -304,14 +308,14 @@
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label for="declaration_place" class="form-label"><strong>Place:</strong></label>
-                <input type="text" class="form-control" id="declaration_place" name="declaration_place" placeholder="Enter Place" value="BABARWAS" required>
+                <input type="text" class="form-control" id="declaration_place" name="declaration_place" placeholder="Enter Place" value="{{ $userDetail->ward_village }}" required>
             </div>
             <div class="col-md-4 mb-3">
                 
             </div>
             <div class="col-md-4 mb-3">
                 <label for="declaration_signature" class="form-label"><strong>Signature of Applicant Official Stamp (if applicable)</strong></label>
-                <input type="text" class="form-control" id="declaration_signature" name="declaration_signature" placeholder="Enter Full Name" value="Rajender singh" required>
+                <input type="text" class="form-control" id="declaration_signature" name="declaration_signature" placeholder="Enter Full Name" value="{{ $userDetail->full_name_en }}" required>
             </div>
         </div>
 
@@ -348,6 +352,7 @@
 </div>
 
 @endsection
+<script src="{{ url('assets/js/jquery.min.js') }}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         if ("{{ session('show_second_form') }}") {
@@ -410,6 +415,12 @@
 </script>
 
 <script>
+$(document).ready(function(){
+	$('#uploadbutton').click(function(){
+		$('.upload-signed-file-area').css("display", "flex");		
+	});
+});
+
     // Define equipment options and their max quantity per sport
 const equipmentLimits = {
     "Volleyball": { "Balls": 6, "Net": 1 },

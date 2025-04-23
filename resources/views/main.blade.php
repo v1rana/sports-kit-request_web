@@ -49,17 +49,21 @@
                     <td>{{ $data->certificate_no }}</td>
                     <td>{{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') }}</td>
                     <td>
-                        @if($data->certificate_pdf == '')
+                       @if($data->certificate_pdf == '' && $data->status == '') 
                             <span class="badge rounded-pill px-3 py-2" style="background: #ffcc00; color: #333; font-weight: 600;">
-                                ⏳ Pending.....
+                                ⏳ In-Progress.....
                             </span>
-                        @elseif($data->certificate_pdf != '')
-                            <span class="badge rounded-pill px-3 py-2" style="background: #28a745; color: #fff; font-weight: 600;">
-                                ✅ Approved
-                            </span>
-                        @elseif($data->certificate_pdf == 'rejected')
+                        @elseif($data->certificate_pdf == '' && $data->status == 'Rejected')
                             <span class="badge rounded-pill px-3 py-2" style="background: #dc3545; color: #fff; font-weight: 600;">
-                                ❌ Rejected
+                                <i class="fa fa-times" aria-hidden="true"></i> Rejected
+                            </span>
+                        @elseif($data->certificate_pdf == '' && $data->status == 'Approved')
+                            <span class="badge rounded-pill px-3 py-2" style="background: #28a745; color: #fff; font-weight: 600;">
+                                <i class="fa fa-check" aria-hidden="true"></i> Approved
+                            </span>
+                        @elseif($data->certificate_pdf != '' && $data->status == 'Approved')
+                            <span class="badge rounded-pill px-3 py-2" style="background: #007bff; color: #fff; font-weight: 600;">
+                                🎓 Released
                             </span>
                         @else
                             <span class="badge rounded-pill px-3 py-2" style="background: #6c757d; color: #fff; font-weight: 600;">
