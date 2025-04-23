@@ -1,19 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm, useFormState } from "react-hook-form";
+import { fetchEvent, saveEvent } from "../services/hosp-service";
 const stepsTotal = 5;
 
 const Dashboard = () => {
     const navigate = useNavigate();
     const userData = JSON.parse(localStorage.getItem('user')!);
     const userDetails = userData?.user_details || {};
-    useEffect(() => {
-        // const userData = JSON.parse(localStorage.getItem("user") || "null");
-        if (!userData) {
-            localStorage.clear();
-            navigate("/login");
-        }
-    }, [navigate]);
+   
     // Get user data from localStorage
     
     const logout = () => {
@@ -34,8 +29,44 @@ const Dashboard = () => {
         register,
         handleSubmit,
         watch,
+        setError,
+        setValue,
+        getValues,
         formState: { errors },
     } = useForm();
+
+    useEffect(() => {
+        const fetchEventData = async () => {
+            try {
+                const data = await fetchEvent(); // Replace with your endpoint
+                // Option 1: Set fields one-by-one
+                setValue("aadhaar", data.aadhaar);
+                setValue("event_type", data.event_type);
+                setValue("tournament", data.tournament_id?.toString());
+                setValue("domicile", data.domicile?.toString());
+                setValue("played_national", data.played_national_level?.toString());
+                setValue("central_org_name", data.organisation_represented);
+                setValue("domicile_doc", data.domicile_doc);
+                setValue("national_level_doc", data.national_level_doc);
+                setValue("organisation_doc", data.organisation_doc);
+            
+
+                // Option 2: Reset entire form (if keys match)
+                // reset(data);
+            } catch (error) {
+                console.error("Error loading form data", error);
+            }
+        };
+    
+        fetchEventData();
+    }, []);
+    useEffect(() => {
+        // const userData = JSON.parse(localStorage.getItem("user") || "null");
+        if (!userData) {
+            localStorage.clear();
+            navigate("/login");
+        }
+    }, [navigate]);
 
     // Watch individual fields for conditional logic
     const playedNational = watch("played_national");
@@ -152,6 +183,61 @@ const Dashboard = () => {
         printWindow.print();
         printWindow.close();
       };
+
+
+      const onEventSubmit = async (data) => {
+        const formData = new FormData();
+    
+        formData.append("event_type", data.event_type);
+        formData.append("aadhaar", data.aadhaar);
+        formData.append("tournament", data.tournament);
+        formData.append("domicile", data.domicile);
+        formData.append("played_national", data.played_national);
+    
+        if (data.domicile_certificate?.[0]) {
+            formData.append("domicile_certificate", data.domicile_certificate[0]);
+        }
+    
+        if (data.national_certificate?.[0]) {
+            formData.append("national_certificate", data.national_certificate[0]);
+        }
+    
+        if (playedNational === "2") {
+            formData.append("central_org_name", data.central_org_name);
+            if (data.org_certificate?.[0]) {
+                formData.append("org_certificate", data.org_certificate[0]);
+            }
+        }
+    
+        try {
+            const token = localStorage.getItem("token");
+            const response = await saveEvent(formData);
+            // const response = await axios.post(
+            //     `${import.meta.env.VITE_API_BASE_URL}/api/hosp/event`,
+            //     formData,
+            //     {
+            //         headers: {
+            //             Authorization: `Bearer ${token}`,
+            //             "Content-Type": "multipart/form-data",
+            //         },
+            //     }
+            // );
+    
+            console.log("Event submitted:", response.data);
+            // Move to next step or show success
+        } catch (error) {
+            console.error("Event submission failed", error);
+            if (error.response?.status === 422) {
+                const backendErrors = error.response.data.errors;
+                Object.keys(backendErrors).forEach((field) => {
+                  setError(field, {
+                    type: "server",
+                    message: backendErrors[field][0],
+                  });
+                });
+              }
+        }
+    };
       
 
     return (
@@ -209,7 +295,7 @@ const Dashboard = () => {
                                 <div>
                                  
                                     <form
-                                        onSubmit={handleSubmit(onSubmit)}
+                                        onSubmit={handleSubmit(onEventSubmit)}
                                         className="needs-validation row g-3"
                                         hidden={
                                             currentStep === 1 ? false : true
@@ -223,7 +309,8 @@ const Dashboard = () => {
                                             </label>
                                             <select
                                                 {...register("event_type")}
-                                                className="form-select"
+                                                
+                                                className={`form-select ${errors.event_type ? "is-invalid" : ""}`}
                                             >
                                                 <option value="">Select</option>
                                                 <option value="1">
@@ -233,18 +320,25 @@ const Dashboard = () => {
                                                     Team Event
                                                 </option>
                                             </select>
+                                            {errors.domicile && (
+                                                 <div className="invalid-feedback">{errors.event_type.message as string}</div>
+                                            )}
                                         </div>
                                         <div className="col-md-6"></div>
 
                                         <div className="col-md-6">
                                             <label className="form-label">
-                                                Aadhar No.
+                                                Aadhaar No.
                                             </label>
                                             <input
                                                 type="text"
-                                                className="form-control"
-                                                {...register("aadhar")}
+                                                className={`form-control ${errors.aadhaar ? "is-invalid" : ""}`}
+                                                {...register("aadhaar")}
+                                                maxLength={12}
                                             />
+                                             {errors.aadhaar && (
+                                                 <div className="invalid-feedback">{errors.aadhaar.message as string}</div>
+                                            )}
                                         </div>
 
                                         <div className="col-md-6">
@@ -253,7 +347,8 @@ const Dashboard = () => {
                                             </label>
                                             <select
                                                 {...register("tournament")}
-                                                className="form-select"
+                                                
+                                                className={`form-select ${errors.tournament ? "is-invalid" : ""}`}
                                             >
                                                 <option value="">Select</option>
                                                 <option value="1">
@@ -273,6 +368,9 @@ const Dashboard = () => {
                                                     World Cup/Championship
                                                 </option>
                                             </select>
+                                            {errors.tournament && (
+                                                 <div className="invalid-feedback">{errors.tournament.message as string}</div>
+                                            )}
                                         </div>
 
                                         <div className="col-md-6">
@@ -281,12 +379,15 @@ const Dashboard = () => {
                                             </label>
                                             <select
                                                 {...register("domicile")}
-                                                className="form-select"
+                                                className={`form-select ${errors.domicile ? "is-invalid" : ""}`}
                                             >
                                                 <option value="">Select</option>
                                                 <option value="1">Yes</option>
                                                 <option value="2">No</option>
                                             </select>
+                                            {errors.domicile && (
+                                                 <div className="invalid-feedback">{errors.domicile.message as string}</div>
+                                            )}
                                         </div>
 
                                         <div className="col-md-6">
@@ -295,12 +396,20 @@ const Dashboard = () => {
                                             </label>
                                             <input
                                                 type="file"
-                                                className="form-control"
+                                                className={`form-control ${errors.domicile_certificate ? "is-invalid" : ""}`}
                                                 {...register(
                                                     "domicile_certificate"
                                                 )}
                                                 disabled={domicile !== "1"}
                                             />
+                                              <div className="mt-1">
+            <a href={`/storage/${getValues("domicile_doc")}`} target="_blank" rel="noopener noreferrer">
+                Click here to view uploaded file
+            </a>
+        </div>
+                                             {errors.domicile_certificate && (
+                                                 <div className="invalid-feedback">{errors.domicile_certificate.message as string}</div>
+                                            )}
                                         </div>
 
                                         <div className="col-md-6">
@@ -310,12 +419,15 @@ const Dashboard = () => {
                                             </label>
                                             <select
                                                 {...register("played_national")}
-                                                className="form-select"
+                                                className={`form-select ${errors.played_national ? "is-invalid" : ""}`}
                                             >
                                                 <option value="">Select</option>
                                                 <option value="1">Yes</option>
                                                 <option value="2">No</option>
                                             </select>
+                                            {errors.played_national && (
+                                                 <div className="invalid-feedback">{errors.played_national.message as string}</div>
+                                            )}
                                         </div>
 
                                         <div className="col-md-6">
@@ -325,7 +437,8 @@ const Dashboard = () => {
                                             </label>
                                             <input
                                                 type="file"
-                                                className="form-control"
+                                               
+                                                className={`form-control ${errors.national_certificate ? "is-invalid" : ""}`}
                                                 {...register(
                                                     "national_certificate"
                                                 )}
@@ -333,6 +446,9 @@ const Dashboard = () => {
                                                     playedNational !== "1"
                                                 }
                                             />
+                                              {errors.national_certificate && (
+                                                 <div className="invalid-feedback">{errors.national_certificate?.message}</div>
+                                            )}
                                         </div>
 
                                         <div className="col-md-6">
@@ -342,7 +458,7 @@ const Dashboard = () => {
                                             </label>
                                             <input
                                                 type="text"
-                                                className="form-control"
+                                                className={`form-control ${errors.central_org_name ? "is-invalid" : ""}`}
                                                 {...register(
                                                     "central_org_name"
                                                 )}
@@ -350,6 +466,9 @@ const Dashboard = () => {
                                                     playedNational !== "2"
                                                 }
                                             />
+                                              {errors.central_org_name && (
+                                                 <div className="invalid-feedback">{errors.central_org_name?.message}</div>
+                                            )}
                                         </div>
 
                                         <div className="col-md-6">
@@ -359,22 +478,25 @@ const Dashboard = () => {
                                             </label>
                                             <input
                                                 type="file"
-                                                className="form-control"
+                                                className={`form-control ${errors.org_certificate ? "is-invalid" : ""}`}
                                                 {...register("org_certificate")}
                                                 disabled={
                                                     playedNational !== "2"
                                                 }
                                             />
+                                              {errors.org_certificate && (
+                                                 <div className="invalid-feedback">{errors.org_certificate?.message}</div>
+                                            )}
                                         </div>
 
-                                        {/* <div className="col-12 text-center">
+                                        <div className="col-12 text-center">
                                             <button
                                                 type="submit"
                                                 className="btn btn-primary"
                                             >
                                                 Submit
                                             </button>
-                                        </div> */}
+                                        </div>
                                     </form>
                                     <form
                                         className="needs-validation row g-3"

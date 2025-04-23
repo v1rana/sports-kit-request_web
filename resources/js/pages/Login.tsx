@@ -12,6 +12,7 @@ function Login() {
     const [isOtpVisible, setIsOtpVisible] = useState(false);
     const [isMembersVisible, setIsMembersVisible] = useState(false);
     const [members, setMembers] = useState<{ value: string; text: string }[]>([]);
+    const [loginType, setLoginType] = useState('');
     const basic_data = {
         DeptCode: "NIC",
         ServiceCode: "TestCred",
@@ -25,6 +26,7 @@ function Login() {
         pppId: "",
         selectedMember: "",
         otp: "",
+        loginType: "",
     });
     const navigate = useNavigate();
 
@@ -43,12 +45,18 @@ function Login() {
     const displayMembers = async (event: React.FormEvent) => {
         event.preventDefault();
         const error = validatePppId(pppId);
+        if(!loginType) {
+            setErrors((prev) => ({ ...prev, loginType: 'Please select login type' }));
+            return;
+        }
         if (error) {
             setErrors((prev) => ({ ...prev, pppId: error }));
             return;
         }
+        
 
         setErrors((prev) => ({ ...prev, pppId: "" })); // Clear error
+        setErrors((prev) => ({ ...prev, loginType: "" })); // Clear error
         try {
             basic_data.UIDFID = pppId;
             const response = await getMemberbasicdetailsfromFIDUID(basic_data);
@@ -138,7 +146,7 @@ function Login() {
         }
     };
 
-    const [loginType, setLoginType] = useState('');
+   
 
     const handleLoginTypeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setLoginType(event.target.value);
@@ -194,6 +202,7 @@ function Login() {
                                                     value="equipment"
                                                     onChange={handleLoginTypeChange}
                                                     checked={loginType === 'equipment'}
+                                                    required
                                                     
                                                 />
                                                 <label
@@ -234,9 +243,10 @@ function Login() {
                                                     className="form-check-label"
                                                     htmlFor="hosp"
                                                 >
-                                                    Haryana Outstanding Sports Pserson
+                                                    Haryana OSP
                                                 </label>
                                             </div>
+                                            {errors.loginType && <div className="error">{errors.loginType}</div>}
                                         </div>  
                                             <div className="col-xs-6 col-sm-6 col-md-6">
                                                 <div className="form-floating">

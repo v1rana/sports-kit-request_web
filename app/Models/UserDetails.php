@@ -37,12 +37,12 @@ class UserDetails extends Model
         parent::boot();
 
         static::created(function ($application) {
-            $application->application_id = 'APP' . str_pad($application->id, 6, '0', STR_PAD_LEFT);
+            $application->application_id = 'HOSP' . str_pad($application->id, 6, '0', STR_PAD_LEFT);
             $application->saveQuietly(); // avoid triggering another event
         });
     }
 
-
+// Optional: Inverse Relationship in UserDetails
     public function user()
     {
         return $this->belongsTo(User::class);
