@@ -69,6 +69,7 @@ section h4 .btn{padding: 3px 15px;}
 .table{margin-bottom:0}
 .table th, .table td{font-size:13px; padding: 5px;}
 .table .btn {padding: 0;font-size: 12px;width: 24px;height: 24px; line-height: 22px;}
+.table .modal .btn {padding: 5px 10px;font-size: 14px;width: auto;height: auto; line-height: normal;}
  form .table input{font-size:13px;}
 
 .bg-success h5{color:#fff}
@@ -82,12 +83,15 @@ section h4 .btn{padding: 3px 15px;}
 .games-authorised-sec .row > div:nth-child(4n+1) {border-left: 1px solid #eee;}
 .games-authorised-sec .row > div {border-right: 1px solid #eee;border-bottom: 1px solid #eee;}
 
-.request-default-info > div > div > input {font-size:16px;border: none;background: transparent;padding: 0;text-transform: uppercase;font-weight: 500;}
-.request-default-info > div > div{background:#f1f1e6; padding :10px;border-left: 1px dashed #ccc;}
-.request-default-info > div:first-child > div{border-left:none}
+.request-default-info > div > div > input,.request-default-info > div > div > input.form-control:disabled {font-size:16px;border: none;background: transparent;padding: 0;text-transform: uppercase;font-weight: 500;}
+.request-default-info > div > div{ padding :10px;border: 1px dashed #ccc;}
+.request-default-info > div:first-child > div{border-right:none}
+.request-default-info > div:last-child > div{border-left:none}
 .request-form > div {border: 1px dashed #eee;padding: 22px 10px;margin-bottom: -1px !important;}
 .request-form > div input[type="number"]{padding: 0px 10px;}
 .request-default-info label + h5{color:#000}
+
+.upload-signed-file-area{display:none;}
 
 .content.dashboard-area {min-height:74.3vh}
 .dashboard-area h2{font-size: 38px; margin:0}
@@ -141,6 +145,7 @@ footer p{margin:0}
 .dashboard-stats.nav li button{border:none;color:rgba(0,0,0,0.3);padding: 10px 25px;border-bottom: 2px solid transparent}
 .dashboard-stats.nav li button.active{color:rgb(252, 103, 49);font-weight:500;border-bottom: 2px solid rgb(252, 103, 49);background:rgba(0,0,0,0.03)}
 
+.rejection-remarks{display:none;}
 
 @media screen and (max-width: 786px){
 	#progressbar li span{float: left; width: 100%;margin: -20px 0 30px 20px; }

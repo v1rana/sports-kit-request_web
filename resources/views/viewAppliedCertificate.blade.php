@@ -120,8 +120,8 @@
     
             <h6></h6>
             <ul class="achievement-details">
-                <li style="padding: 5px;display: block;">i). Name of Tournament: <strong class="underline">{{ $otpData->tournament_name ?? '' }}</strong></li>
-                <li style="padding: 5px;display: block;">ii). Date of Event: <strong class="underline">{{ $otpData->month_year ?? '' }}</strong></li>
+                <li style="padding: 5px;display: block;">i). Name of Tournament: <strong class="underline">National School Games/Khelo India/All India Inter University Games/ All India Women Sports/All India Civil Services/All India Police/All India Rural Sports etc.<!-- {{ $otpData->tournament_name ?? '' }} --></strong></li>
+                <li style="padding: 5px;display: block;">ii). Date of Event: <strong class="underline">01-01-2025<!-- {{ $otpData->month_year ?? '' }} --></strong></li>
                 <li style="padding: 5px;display: block;">iii). Venue of Tournament: <strong class="underline">{{ $otpData->venue_of_tournament ?? '' }}</strong></li>
                 <li style="padding: 5px;display: block;">iv). Organizing Authority: <strong class="underline">{{ $otpData->organising_authority ?? '' }}</strong></li>
                 <li style="padding: 5px;display: block;">v). Tournament Type: <strong class="underline">{{$otpData->tournament_type}}</strong></li>
@@ -131,7 +131,7 @@
             </ul>
             <table class="signature-date-area">
                 <tr>
-                    <td>Date of form submission <strong class="underline">{{ $otpData->created_at ?? '' }}</strong></td>
+                    <td>Date of form submission <strong class="underline">22-04-2025<!-- {{ $otpData->created_at ?? '' }} --></strong></td>
                     <!--td> <p> <span style="margin-left: 115px;">Signature of Sportsperson:</span> <span class="underline"><strong>{{ $otpData->certificate_no ?? '' }}</strong></span></p></td-->
                 </tr>
             </table>
@@ -139,7 +139,7 @@
             <!--p>Checked. A copy of supporting documents (self-attested) in support of the claim is retained in office.</p-->
 			<table width="100%">
                 <tr>
-                    <td> Date of Issuance:<strong class="underline">{{ $otpData->created_at ?? '' }}</strong></td>
+                    <td> Date of Issuance:<strong class="underline">22-04-2025<!-- {{ $otpData->created_at ?? '' }} --></strong></td>
                     <td style="text-align:right">Granted Grade <strong class="underline" style="width: 50px; text-align:center; padding:0">A</strong> Sports Certificate</td>
                 </tr>
             </table>

@@ -27,7 +27,7 @@
 						<div class="row request-default-info">	
 							<div class="col-xs-12 col-sm-6 col-md-3 mb-3">
 								<label>1. Name of head person</label>
-								<h5>Rajender Singh</h5>
+								<h5>{{ $userDetail->full_name_en }}</h5>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-3 mb-3">
 								<label>2. Designation </label>

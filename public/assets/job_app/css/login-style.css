@@ -1,44 +1,193 @@
-body{background-color:#eee;background-image:url('../images/login-bg.jpg');background-repeat: no-repeat;background-size: cover;background-position: center; }
-
-h1,h2,h3,h4,h5,h6{font-family: "Jost", sans-serif;}
-a{text-decoration:none; font-family: "Noto Sans", sans-serif;}
-
-.logo img{display: inline-block;vertical-align: middle;margin: 0 12px 0 0;}
-.logo .logo_text {color:#000;display: inline-block;vertical-align: middle;}
-.logo .logo_text strong {font-weight: 400;display: block;font-size: 17px;line-height: 18px;}
-.logo .logo_text .site_name_english, .logo .logo_text h1.h1-logo {font-style: normal;font-size: 1.75em;margin: 0;font-weight: 700;}
-
-section > .row > div {padding: 3em;border-radius: 30px;box-shadow: 0 0.5em 1rem rgba(0,0,0,0.15)}
-.form-floating>.form-control:focus, .form-floating>.form-control:not(:placeholder-shown){padding-top:1.234rem;height:calc(3rem + 2px)}
-.form-floating>.form-control:focus~label, .form-floating>.form-control:not(:placeholder-shown)~label, .form-floating>.form-select~label{opacity:1;padding: 5px 10px;left: 3px; background:#fff;top:-9px;height:auto;}
-.login-area .haryana-logo span{display:none;vertical-align:middle;}
-.login-area .haryana-logo img{width:100%; max-width: 50px;display:inline-block}
-
-.form-floating>.form-control {height: calc(3rem + 2px);}
-.form-floating>label{padding:0.7rem .75rem}
-.form-control:focus{box-shadow: none;border:1px solid #000}
-select.form-control{appearance: auto;-webkit-appearance: auto;}
-
-
-.divs>*{display:none}
-.divs>*:first-child{display:block}
-.otp-area .form-floating>.form-control:focus,.otp-area  .form-floating>.form-control:not(:placeholder-shown){padding-top:0.7rem; font-size:22px;}
-
-
-footer{background:#000; color:#fff; position: fixed; width:100%;bottom:0;padding:10px 0; font-size:12px}
-footer p{margin:0}
-.input-verify-otp{position:relative}
-.input-verify-otp a{position:absolute; top:0; right:0;border-radius: 0 4px 4px 0}
-
-.otp-area .alert{padding: 5px 10px}
-
-
-@media screen and (max-width: 768px){
-	footer{position: relative;}
-	.logo img{width:100%; max-width: 48px;margin-right:0;}
-	.logo .logo_text h1.h1-logo{ font-size:0.75rem}
-	.logo .logo_text{width:calc(100% - 58px);vertical-align:top;}
-	.logo .logo_text span.logo-sub-title { font-size: 11px;display:block}
-	section > .row > div{margin-bottom:20px;}
+body {
+	background-color: #eee;
+	background-image: url('../images/login-bg.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
 }
 
+.new-hero{
+	
+		background-image: url('../images/new-bann.jpg');
+		background-color: rgba(0, 0, 0, 0.5);
+		height: 100%;
+		position: relative;
+		display: flex;
+		background-repeat: no-repeat;
+		background-size: cover;
+		background-position: center;
+		align-items: center;
+		padding: 5%;
+		background-color: rgba(0, 0, 0, 0.5);
+		background-blend-mode: overlay;
+	
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Jost", sans-serif;
+}
+
+a {
+	text-decoration: none;
+	font-family: "Noto Sans", sans-serif;
+}
+
+.logo img {
+	display: inline-block;
+	vertical-align: middle;
+	margin: 0 12px 0 0;
+}
+
+.logo .logo_text {
+	color: #000;
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.logo .logo_text strong {
+	font-weight: 400;
+	display: block;
+	font-size: 17px;
+	line-height: 18px;
+}
+
+.logo .logo_text .site_name_english,
+.logo .logo_text h1.h1-logo {
+	font-style: normal;
+	font-size: 1.75em;
+	margin: 0;
+	font-weight: 700;
+}
+
+section>.row>div {
+	padding: 3em;
+	border-radius: 30px;
+	box-shadow: 0 0.5em 1rem rgba(0, 0, 0, 0.15)
+}
+
+.form-floating>.form-control:focus,
+.form-floating>.form-control:not(:placeholder-shown) {
+	padding-top: 1.234rem;
+	height: calc(3rem + 2px)
+}
+
+.form-floating>.form-control:focus~label,
+.form-floating>.form-control:not(:placeholder-shown)~label,
+.form-floating>.form-select~label {
+	opacity: 1;
+	padding: 5px 10px;
+	left: 3px;
+	background: #fff;
+	top: -9px;
+	height: auto;
+}
+
+.login-area .haryana-logo span {
+	display: none;
+	vertical-align: middle;
+}
+
+.login-area .haryana-logo img {
+	width: 100%;
+	max-width: 50px;
+	display: inline-block
+}
+
+.form-floating>.form-control {
+	height: calc(3rem + 2px);
+}
+
+.form-floating>label {
+	padding: 0.7rem .75rem
+}
+
+.form-control:focus {
+	box-shadow: none;
+	border: 1px solid #000
+}
+
+select.form-control {
+	appearance: auto;
+	-webkit-appearance: auto;
+}
+
+
+.divs>* {
+	display: none
+}
+
+.divs>*:first-child {
+	display: block
+}
+
+.otp-area .form-floating>.form-control:focus,
+.otp-area .form-floating>.form-control:not(:placeholder-shown) {
+	padding-top: 0.7rem;
+	font-size: 22px;
+}
+
+
+footer {
+	background: #000;
+	color: #fff;
+	position: fixed;
+	width: 100%;
+	bottom: 0;
+	padding: 10px 0;
+	font-size: 12px
+}
+
+footer p {
+	margin: 0
+}
+
+.input-verify-otp {
+	position: relative
+}
+
+.input-verify-otp a {
+	position: absolute;
+	top: 0;
+	right: 0;
+	border-radius: 0 4px 4px 0
+}
+
+.otp-area .alert {
+	padding: 5px 10px
+}
+
+
+@media screen and (max-width: 768px) {
+	footer {
+		position: relative;
+	}
+
+	.logo img {
+		width: 100%;
+		max-width: 48px;
+		margin-right: 0;
+	}
+
+	.logo .logo_text h1.h1-logo {
+		font-size: 0.75rem
+	}
+
+	.logo .logo_text {
+		width: calc(100% - 58px);
+		vertical-align: top;
+	}
+
+	.logo .logo_text span.logo-sub-title {
+		font-size: 11px;
+		display: block
+	}
+
+	section>.row>div {
+		margin-bottom: 20px;
+	}
+}
