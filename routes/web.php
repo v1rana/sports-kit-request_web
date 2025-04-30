@@ -1,3 +1,4 @@
+
 <?php
 
 use App\Http\Controllers\RegistrationController;
@@ -19,8 +20,8 @@ use Illuminate\Support\Facades\Route;
 // Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
-Route::middleware(['guest'])->group(function () {
-    Route::get('/', function () {
+
+    Route::get('/login', function () {
         return view('login');
     })->name('login');
 
@@ -34,7 +35,7 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/resend-otp', [SportsGradationCertificateController::class, 'resendOtp'])->name('otp.resend');
     Route::post('/register', [SportsGradationCertificateController::class, 'create_account'])->name('register.store');
     Route::post('/sports.login', [SportsGradationCertificateController::class, 'login'])->name('sports.login');
-});
+
 
 
 // Route::get('/register', [RegistrationController::class, 'create'])->name('register.form');
@@ -42,16 +43,22 @@ Route::middleware(['guest'])->group(function () {
 Route::get('/sarpanch', [GramPanchayatSarpanchController::class, 'index']);
 Route::get('/municipal', [MunicipalBodyMemberController::class, 'index']);
 //Route::middleware(['auth'])->group(function () {
-    Route::get('/sports-kit', [SportsKitRequisitionController::class, 'create'])->name('sports_kit.form');
+    // Route::get('/sports-kit', [SportsKitRequisitionController::class, 'create'])->name('sports_kit.form');
+    Route::get('/registration-form', [SportsKitRequisitionController::class, 'create'])->name('sports_kit.form');
     Route::post('/sports-kit/store', [SportsKitRequisitionController::class, 'store'])->name('sports_kit.store');
 	Route::post('/sports-kit/uploadform', [SportsKitRequisitionController::class, 'uploadform'])->name('sports_kit.uploadform');
     Route::post('/sports-kit/logout', [SportsKitRequisitionController::class, 'logout']);
 	Route::get('/sports-requests', [SportsKitRequisitionController::class, 'index'])->name('sports.requests');
     Route::get('/gm/dashboard', [SportsKitRequisitionController::class, 'dashboard'])->name('sports_kit.dashboard');
     Route::get('/sport-skit/list', [SportsKitRequisitionController::class, 'list'])->name('sports_kit.list');
+	Route::get('/sports-kit/print/{id}', [SportsKitController::class, 'print'])->name('sports-kit.print');
     Route::post('/assign-vendor', [SportsKitRequisitionController::class, 'storeVendorAssignment'])->name('assign.vendor.store');
     Route::get('/hq/sports-requests', [HQController::class, 'index'])->name('hq.sports.requests');
+    Route::get('/hq/hosp-requests', [HQController::class, 'hosp_requests'])->name('hq.hosp.requests');
     Route::get('/hq/dashboard', [HQController::class, 'dashboard'])->name('hq.sports_kit.dashboard');
+    Route::get('/hq/vendors', [HQController::class, 'vendor_form'])->name('hq.vendor'); // Vendor list route
+	Route::get('/vendors/create', [HQController::class, 'create'])->name('vendor.create'); // Add vendor form route
+	Route::post('/vendors', [HQController::class, 'store'])->name('vendor.store'); // Store vendor data route
 Route::post('/hq/assign', [HQController::class, 'assignVendor'])->name('hq.assignvendor');
 Route::get('/dso/sports-requests', [DSOController::class, 'index'])->name('dso.sports.requests');
 Route::get('/dso/sports-kit', [DSOController::class, 'create'])->name('dso.sports_kit.form');
@@ -76,22 +83,29 @@ Route::post('/dso/sports-request/reject/{id}', [DSOController::class, 'RejectReq
 
 
 // Protect Dashboard & Authenticated Routes
-Route::middleware(['auth.session'])->group(function () {
+
     Route::get('/dashboard', [SportsGradationCertificateController::class, 'dashboard'])->name('dashboard');
     Route::get('/create', [SportsGradationCertificateController::class, 'create'])->name('sports.create');
     Route::post('/sportsregistration', [SportsGradationCertificateController::class, 'store'])->name('sports.store');
-    Route::get('/apply.certificate.form', [SportsGradationCertificateController::class, 'applyCertificate'])->name('apply.certificate.form');
+    Route::get('/apply.certificate.form/{user_id}', [SportsGradationCertificateController::class, 'applyCertificate'])->name('apply.certificate.form');
     Route::get('/view.applied.certificate', [SportsGradationCertificateController::class, 'viewAppliedCertificate'])->name('view.applied.certificate');
     // Logout should be POST to prevent CSRF attacks
     Route::get('/get.organising.authority', [SportsGradationCertificateController::class, 'getOrganisingAuthority'])->name('get.organising.authority');
 
     Route::get('/verify-certificate/{mobile}/{certificate}', [SportsGradationCertificateController::class, 'verifyCertificate'])
     ->name('verify.certificate');
+    Route::get('/verification.by.sportsperson', [SportsGradationCertificateController::class, 'verificationBySportsPerson'])->name('verification.by.sportsperson');
+
     
     Route::post('/logout', [SportsGradationCertificateController::class, 'logout'])->name('logout');
-});
 
 
+    Route::get('/', function($any = null) { 
+        return view('hosp/app', ['any' => $any]);
+    })->where('any', '.*');
+    Route::get('/basic-details', function($any = null) { 
+        return view('hosp/app', ['any' => $any]);
+    })->where('any', '.*');
 Route::get('hosp/{any?}', function($any = null) { 
     return view('hosp/app', ['any' => $any]);
 })->where('any', '.*');

@@ -10,7 +10,8 @@ function App() {
     return (
         <Router>
             <Routes>
-            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Login />} />
+            {/* <Route path="/login" element={<Login />} /> */}
             <Route path="/basic-details" element={<BasicDetails />} />
             <Route path="/hosp/*" element={<HOSPRoutes />} />
             </Routes>

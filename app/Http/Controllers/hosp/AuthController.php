@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class AuthController extends Controller
 {
@@ -69,11 +70,13 @@ class AuthController extends Controller
         $user->load('userDetails','eventHosp','sportsDisciplineHosp','declarationsHosp');
         // Log in
         $token = $user->createToken('api-token')->plainTextToken;
-
+        $encryptedId = Crypt::encryptString($user->id);
         return response()->json([
             'user' => $user,
             'token' => $token,
+            'userId' => $encryptedId,
         ]);
+       
         // Auth::login($user);
         // $request->session()->regenerate();
     

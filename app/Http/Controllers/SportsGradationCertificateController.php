@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Storage;
 
 use App\Models\CategoryWiseGradation;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Crypt;
 
 class SportsGradationCertificateController extends Controller
 {
@@ -206,13 +207,28 @@ class SportsGradationCertificateController extends Controller
         return view('main')->with(['otpData' => $otpData]);
     }
 
-    public function applyCertificate()
+    public function redirectGradation($user_id)
     {
+        session([
+            'user_id' => $user_id,
+        ]);
+        return redirect()->route('apply.certificate.form');
+    }
+
+    public function applyCertificate($user_id)
+    {
+        // $encryptedId = Crypt::encryptString($user->id);
+        try {
+            $userId = Crypt::decryptString($user_id);
+        } catch (\Exception $e) {
+            abort(403, 'Invalid or tampered ID.');
+        }
+        // return  $userId;
         if (!session()->has('user_id')) {
             return redirect()->route('login')->withErrors(['message' => 'Please log in first.']);
         }
-
-        $mobile_no = session()->get('mobile_no');
+        // dd(session()->has('user_id'));
+        $mobile_no = session()->get('mobile_no')?session()->get('mobile_no'):'';
 
         $tournaments = CategoryWiseGradation::select('id','tournament','organising_authority')->get(); 
         $state = State::select('id', 'name')->get(); 

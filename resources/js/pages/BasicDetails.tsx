@@ -27,10 +27,11 @@ const BasicDetails = () => {
         navigate("/sports-kit");
         window.location.reload()
       }else if(loginType == 'gradation') {
-        navigate("/dashboard");
+        // navigate("/apply.certificate.form/id"+userData?.user_details?.id);
+        navigate("/apply.certificate.form?user_id=" + userData?.user_details?.id);
         window.location.reload()
       }else if(loginType == 'hosp') {
-        navigate("/hosp/dashboard");
+        navigate("/hosp/dashboard?step=1");
         // window.location.reload()
       }
     };
@@ -62,448 +63,190 @@ const BasicDetails = () => {
        
         <div>
              {userData &&(
-        
-            <div className="container d-flex align-items-center min-vh-100">
-                <div className="row g-0 justify-content-center w-100">
-               
-                    <div className="col-lg-11 offset-lg-1 mx-0 px-0">
-                        <div id="title-container">
-                       
-                            <h2>Sports Department , Government of Haryana</h2>
-                            {/* <h3>Recruitment Form</h3> */}
-                            <p>
-                            Let the young minds grow to the full potential
-                            </p>
-                            <div className="float-end m-2">
-                          
-                                    <button className="btn btn-danger me-1" onClick={logout}>
-                                        Logout <i className="fa fa-sign-out"></i>
-                                    </button>
-                               
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col-lg-12 px-0">
-                        <div id="qbox-container">
-                            <div>
-                                <form
-                                    onSubmit={(e) => e.preventDefault()}
-                                    className="needs-validation row g-3"
-                                >
-                                    <h3 className="text-center">
-                                        Basic Details
-                                    </h3>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputFullNameEn"
-                                            className="form-label"
-                                        >
-                                            Full Name (English)
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputFullNameEn"
-                                            placeholder="Full Name"
-                                            value={userDetails.full_name_en || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputPassword4"
-                                            className="form-label"
-                                        >
-                                            Full Name (Hindi)
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputPassword4"
-                                            placeholder="Full Name"
-                                            value={userDetails.full_name_hi || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputEmail4"
-                                            className="form-label"
-                                        >
-                                            Father Name (English)
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputEmail4"
-                                            placeholder="Father Name"
-                                            value={userDetails.father_name_en || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputPassword4"
-                                            className="form-label"
-                                        >
-                                            Father Name (Hindi)
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputPassword4"
-                                            placeholder="Father Name"
-                                            value={userDetails.father_name_hi || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputEmail4"
-                                            className="form-label"
-                                        >
-                                            Mother Name (English)
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputEmail4"
-                                            placeholder="Mother Name"
-                                            value={userDetails.mother_name_en || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputPassword4"
-                                            className="form-label"
-                                        >
-                                            Mother Name (Hindi)
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputPassword4"
-                                            placeholder="Mother Name"
-                                            value={userDetails.mother_name_hi || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputDob"
-                                            className="form-label"
-                                        >
-                                            Date Of Birth
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputDob"
-                                            value={userDetails.date_of_birth || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputAge"
-                                            className="form-label"
-                                        >
-                                            Age
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputAge"
-                                            value={userDetails.age || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputGender"
-                                            className="form-label"
-                                        >
-                                            Gender
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputGender"
-                                            value={getGenderText(userDetails.gender)}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputMarital"
-                                            className="form-label"
-                                        >
-                                            Marital Status
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputMarital"
-                                            value={getMaritalStatusText(userDetails.marital_status)}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <hr />
-                                    <div className="col-12">
-                                        <label
-                                            htmlFor="inputAddress"
-                                            className="form-label"
-                                        >
-                                            Address
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputAddress"
-                                            placeholder="1234 Main St"
-                                            value={userDetails.address_landMark || ''}
-                                            readOnly
-                                        />
-                                    </div>
-
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputDistrict"
-                                            className="form-label"
-                                        >
-                                            District
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputDistrict"
-                                            value={userDetails.district || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputBlock"
-                                            className="form-label"
-                                        >
-                                            Block
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputBlock"
-                                            value={userDetails.block_town || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputVill"
-                                            className="form-label"
-                                        >
-                                            Ward/Village
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputVill"
-                                            value={userDetails.ward_village || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputZip"
-                                            className="form-label"
-                                        >
-                                            Pincode
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputZip"
-                                            value={userDetails.pincode || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputMobile"
-                                            className="form-label"
-                                        >
-                                            Mobile
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputMobile"
-                                            value={userData.mobile || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputEmail"
-                                            className="form-label"
-                                        >
-                                            Email
-                                        </label>
-                                        <input
-                                            type="email"
-                                            className="form-control"
-                                            id="inputEmail"
-                                            value={userData.email || userDetails.email_id || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <hr />
-
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputBenchmark"
-                                            className="form-label"
-                                        >
-                                            Benchmark Disability
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputBenchmark"
-                                            value={getYesNoText(userDetails.benchmark_disability)}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputCaste"
-                                            className="form-label"
-                                        >
-                                            Caste Category
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputCaste"
-                                            value={userDetails.caste_category || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputHighest"
-                                            className="form-label"
-                                        >
-                                            Highest Qualification
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputHighest"
-                                            value={userDetails.highest_qualification || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputEngagement"
-                                            className="form-label"
-                                        >
-                                            Current Engagement
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputEngagement"
-                                            value={userDetails.current_engagement === 'N' ? 'Not Employed' : 'Employed'}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputIncome"
-                                            className="form-label"
-                                        >
-                                            Total Annual Family Income
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputIncome"
-                                            value={userDetails.annual_income || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputVerified"
-                                            className="form-label"
-                                        >
-                                            Income Verified
-                                        </label>
-                                        <input
-                                            type="email"
-                                            className="form-control"
-                                            id="inputVerified"
-                                            value={getYesNoText(userDetails.income_verified)}
-                                            readOnly
-                                        />
-                                    </div>
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputAlternateNo"
-                                            className="form-label"
-                                        >
-                                            Alternate Number
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className="form-control"
-                                            id="inputAlternateNo"
-                                            value={userDetails.alternate_number || ''}
-                                            readOnly
-                                        />
-                                    </div>
-
-                                    <div className="col-md-6">
-                                        <label
-                                            htmlFor="inputAlternateEmail"
-                                            className="form-label"
-                                        >
-                                            Alternate Email
-                                        </label>
-                                        <input
-                                            type="email"
-                                            className="form-control"
-                                            id="inputAlternateEmail"
-                                            value={userDetails.alternate_email || ''}
-                                            readOnly
-                                        />
-                                    </div>
-                                </form>
-                               
-                                <div id="q-box__buttons">
-                                    <button
-                                        id="next-btn"
-                                        type="button"
-                                        onClick={save}
-                                        className="btn btn-primary me-2"
-                                    >
-                                        Save
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    
+                <div>
+        <header className="hero-section">
+          <h1>Sports Department, Government of Haryana</h1>
+          <p>Let the young minds grow to the full potential</p>
+      
+          <div className="hero-wave">
+            <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+              <path d="M0.00,49.98 C157.87,179.29 349.61,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
+                style={{stroke: 'none', fill: '#f0f0f0'}}></path>
+            </svg>
+          </div>
+        </header>
+      
+        <div className="container form-container">
+          <h3 className="form-heading">Basic Details Form</h3>
+          <form>
+            <div className="row g-3">
+      
+              <div className="col-md-6">
+                <label>Full Name (English)</label>
+                <input type="text" className="form-control"   value={userDetails.full_name_en || ''}
+                                            readOnly placeholder="Enter full name in English" />
+              </div>
+              <div className="col-md-6">
+                <label>Full Name (Hindi)</label>
+                <input type="text" className="form-control" placeholder="हिंदी में पूरा नाम दर्ज करें"  value={userDetails.full_name_hi || ''}
+                                            readOnly />
+              </div>
+      
+      
+              <div className="col-md-6">
+                <label>Father Name (English)</label>
+                <input type="text" className="form-control" value={userDetails.father_name_en || ''}
+                                            readOnly />
+              </div>
+              <div className="col-md-6">
+                <label>Father Name (Hindi)</label>
+                <input type="text" className="form-control" value={userDetails.father_name_hi || ''}
+                                            readOnly />
+              </div>
+      
+      
+              <div className="col-md-6">
+                <label>Mother Name (English)</label>
+                <input type="text" className="form-control" value={userDetails.mother_name_en || ''}
+                                            readOnly/>
+              </div>
+              <div className="col-md-6">
+                <label>Mother Name (Hindi)</label>
+                <input type="text" className="form-control" value={userDetails.mother_name_hi || ''}
+                                            readOnly />
+              </div>
+      
+      
+              <div className="col-md-6">
+                <label>Date Of Birth</label>
+                <input type="date" className="form-control"  value={userDetails.date_of_birth || ''}
+                                            readOnly/>
+              </div>
+              <div className="col-md-6">
+                <label>Age</label>
+                <input type="number" className="form-control"  value={userDetails.age || ''}
+                                            readOnly/>
+              </div>
+      
+      
+              <div className="col-md-6">
+                <label>Gender</label>
+                <input type="number" className="form-control"  value={getGenderText(userDetails.gender)}
+                                            readOnly/>
+              </div>
+              <div className="col-md-6">
+                <label>Marital Status</label>
+                <input type="number" className="form-control"  value={userDetails.marital_status || ''}
+                                            readOnly/>
+              </div>
+      
+      
+              <div className="col-md-12">
+                <label>Address</label>
+                <input type="text" className="form-control"  value={userDetails.address_landMark || ''}
+                                            readOnly/>
+              </div>
+      
+      
+              <div className="col-md-6">
+                <label>District</label>
+                <input type="text" className="form-control" value={userDetails.district || ''}
+                                            readOnly/>
+              </div>
+              <div className="col-md-6">
+                <label>Block</label>
+                <input type="text" className="form-control" value={userDetails.block_town || ''}
+                                            readOnly/>
+              </div>
+      
+      
+              <div className="col-md-6">
+                <label>Ward/Village</label>
+                <input type="text" className="form-control" value={userDetails.ward_village || ''}
+                                            readOnly/>
+              </div>
+              <div className="col-md-6">
+                <label>Pincode</label>
+                <input type="text" className="form-control" value={userDetails.pincode || ''}
+                                            readOnly/>
+              </div>
+      
+      
+              <div className="col-md-6">
+                <label>Mobile</label>
+                <input type="text" className="form-control" value={userDetails.mobile || ''}
+                                            readOnly/>
+              </div>
+              <div className="col-md-6">
+                <label>Email</label>
+                <input type="email" className="form-control" value={userDetails.email_id || ''}
+                                            readOnly/>
+              </div>
+      
+      
+              <div className="col-md-6">
+                <label>Benchmark Disability</label>
+                <input type="text" className="form-control" value={userDetails.benchmark_disability || ''}
+                                            readOnly/>
+              </div>
+              <div className="col-md-6">
+                <label>Caste Category</label>
+                <input type="text" className="form-control" value={userDetails.caste_category || ''}
+                                            readOnly/>
+              </div>
+      
+      
+              <div className="col-md-6">
+                <label>Highest Qualification</label>
+                <input type="text" className="form-control" value={userDetails.highest_qualification || ''}
+                                            readOnly/>
+              </div>
+              <div className="col-md-6">
+                <label>Current Engagement</label>
+                <input type="text" className="form-control"  value={userDetails.current_engagement === 'N' ? 'Not Employed' : 'Employed'}
+                                            readOnly/>
+              </div>
+      
+      
+              <div className="col-md-6">
+                <label>Total Annual Family Income</label>
+                <input type="text" className="form-control" value={userDetails.annual_income || ''}
+                                            readOnly/>
+              </div>
+              <div className="col-md-6">
+                <label>Income Verified</label>
+                <input type="text" className="form-control" value={userDetails.income_verified || ''}
+                                            readOnly/>
+              </div>
+      
+      
+              <div className="col-md-6">
+                <label>Alternate Number</label>
+                <input type="text" className="form-control" value={userDetails.alternate_number || ''}
+                                            readOnly/>
+              </div>
+              <div className="col-md-6">
+                <label>Alternate Email</label>
+                <input type="email" className="form-control"  value={userDetails.alternate_email || ''}
+                                            readOnly/>
+              </div>
+      
+      
+              <div className="text-center mt-4">
+                <button type="button"  onClick={save} className="save-btn">Save</button>
+              </div>
             </div>
+          </form>
+        </div>
+        </div>
+      
             )}
-            <div id="preloader-wrapper">
+            {/* <div id="preloader-wrapper">
                 <div id="preloader"></div>
                 <div className="preloader-section section-left"></div>
                 <div className="preloader-section section-right"></div>
-            </div>
+            </div> */}
         </div>
     );
 };

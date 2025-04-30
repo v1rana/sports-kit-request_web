@@ -90,6 +90,18 @@ export const saveEvent = async (form_data) => {
         throw error;
     }
 };
+export const updateEvent = async (form_data,id) => {
+    try {
+        console.log('API_BASE_URL',API_BASE_URL);
+        const token = localStorage.getItem("token");
+        const response = await api.post(`/event/${id}`,form_data,
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching hosp:", error);
+        throw error;
+    }
+};
 export const fetchEvent = async () => {
     try {
         console.log('API_BASE_URL',API_BASE_URL);
