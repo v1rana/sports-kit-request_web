@@ -61,12 +61,12 @@ function Login() {
         //     return;
         // }
         if (error) {
-            setErrors((prev) => ({ ...prev, pppId: error }));
+            setErrors((err) => ({ ...err, pppId: error }));
             return;
         }
 
-        setErrors((prev) => ({ ...prev, pppId: "" })); // Clear error
-        setErrors((prev) => ({ ...prev, loginType: "" })); // Clear error
+        setErrors((err) => ({ ...err, pppId: "" })); // Clear error
+        setErrors((err) => ({ ...err, loginType: "" })); // Clear error
         try {
             basic_data.UIDFID = pppId;
             const response = await getMemberbasicdetailsfromFIDUID(basic_data);
@@ -75,7 +75,7 @@ function Login() {
                 setMembers(response.result.dropdown);
                 setIsMembersVisible(true);
             } else {
-                setErrors((prev) => ({ ...prev, pppId: response.message }));
+                setErrors((err) => ({ ...err, pppId: response.message }));
                 // alert(response.message || "Failed to fetch members.");
                 setIsMembersVisible(false);
                 setMembers([]);
@@ -89,13 +89,13 @@ function Login() {
     const getVerificationCode = async (event: React.FormEvent) => {
         event.preventDefault();
         if (!selectedMember) {
-            setErrors((prev) => ({
-                ...prev,
+            setErrors((err) => ({
+                ...err,
                 selectedMember: "Please select a member",
             }));
             return;
         }
-        setErrors((prev) => ({ ...prev, selectedMember: "" })); // Clear error
+        setErrors((err) => ({ ...err, selectedMember: "" })); // Clear error
 
         try {
             basic_data.MemberID = selectedMember;
@@ -106,8 +106,8 @@ function Login() {
                 setTxn(response.result.txn);
                 setIsOtpVisible(true);
             } else {
-                setErrors((prev) => ({
-                    ...prev,
+                setErrors((err) => ({
+                    ...err,
                     selectedMember: response.message,
                 }));
                 // alert(response.message || "Failed to fetch members.");
@@ -124,10 +124,10 @@ function Login() {
         event.preventDefault();
         const otpError = validateOtp(otp);
         if (otpError) {
-            setErrors((prev) => ({ ...prev, otp: otpError }));
+            setErrors((err) => ({ ...err, otp: otpError }));
             return;
         }
-        setErrors((prev) => ({ ...prev, otp: "" })); // Clear error
+        setErrors((err) => ({ ...err, otp: "" })); // Clear error
         try {
             // const login_data = { pppId, selectedMember };
             // const data = await login(login_data);
@@ -143,14 +143,14 @@ function Login() {
                
                 const data = await login(response.result);
                 console.log("data", data);
-
+                data.user.user_details.mobile = data.user.mobile;
                 localStorage.setItem("user", JSON.stringify(data.user));
                 localStorage.setItem("token", data.token);
                 setUserId(data.userId)
                 setIsOtpVerified(true);
                 // navigate("/basic-details");
             } else {
-                setErrors((prev) => ({ ...prev, otp: response.message }));
+                setErrors((err) => ({ ...err, otp: response.message }));
             }
         } catch (error) {
             console.error("Login failed:", error);
@@ -169,7 +169,10 @@ function Login() {
         localStorage.setItem("loginType", loginType);
         if(loginType == 'hosp') {
             navigate("/basic-details");
-        }else {
+        }if(loginType == 'equipment') {
+            navigate("/registration-form/"+encodeURIComponent(userId));
+            window.location.reload()
+        }else if(loginType == 'gradation') {
             navigate("/apply.certificate.form/"+encodeURIComponent(userId));
             window.location.reload()
         }
@@ -229,8 +232,8 @@ function Login() {
                                         value={pppId}
                                         onChange={(e) => {
                                             setPppId(e.target.value);
-                                            setErrors((prev) => ({
-                                                ...prev,
+                                            setErrors((err) => ({
+                                                ...err,
                                                 pppId: validatePppId(
                                                     e.target.value
                                                 ),
@@ -243,16 +246,7 @@ function Login() {
                                         </div>
                                     )}
                                 </div>
-                                <button
-                                    className="btn btn-custom mt-1"
-                                    hidden={isMembersVisible}
-                                    onClick={displayMembers}
-                                >
-                                    Display Members
-                                </button>
-                            </div>
 
-                            <div className="col-md-6">
                                 <div className="mb-2">
                                     <label
                                         htmlFor="memberSelect"
@@ -268,8 +262,8 @@ function Login() {
                                         value={selectedMember}
                                         onChange={(e) => {
                                             setSelectedMember(e.target.value);
-                                            setErrors((prev) => ({
-                                                ...prev,
+                                            setErrors((err) => ({
+                                                ...err,
                                                 selectedMember: "",
                                             })); // Clear error
                                         }}
@@ -299,14 +293,30 @@ function Login() {
                                                         </p>
                                                     )} */}
                                 </div>
+                               
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="mt-4">
+
+                            <button
+                                    className="btn btn-custom mt-1"
+                                    hidden={isMembersVisible}
+                                    onClick={displayMembers}
+                                >
+                                    Display Members
+                                </button>
+                                </div>
+                               
                                 {isMembersVisible && (
-                                    <button
-                                        className="btn btn-custom mt-1"
+                                   <div className=" mt-5"> <button
+                                        className="btn btn-custom mt-5"
                                         hidden={isOtpVisible}
                                         onClick={getVerificationCode}
                                     >
                                         Send OTP
                                     </button>
+                                    </div>
                                 )}
                             </div>
                             {isOtpVisible && (

@@ -7,14 +7,29 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::post('/login', [AuthController::class, 'login'])->name('user.login');
-Route::middleware('auth:sanctum')->post('/hosp/event', [HospController::class, 'store']);
-Route::middleware('auth:sanctum')->post('/event/{id}', [HospController::class, 'update']);
-Route::middleware('auth:sanctum')->get('/event-details', [HospController::class, 'getEventData']);
-Route::middleware('auth:sanctum')->get('/redirect-gradation/{user_id}', [HospController::class, 'redirectGradation']);
-Route::get('/certificates/{filename}', [HospController::class, 'download'])->middleware('auth');
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+    Route::post('/update-details', [HospController::class, 'updateUserDetails']);
+    Route::post('/hosp/event', [HospController::class, 'store']);
+    Route::post('/event/{id}', [HospController::class, 'update']);
+    Route::get('/event-details', [HospController::class, 'getEventData']);
+
+    Route::post('/hosp/education', [HospController::class, 'storeOrUpdateEducation']);
+    Route::get('/education-details', [HospController::class, 'getEducationData']);
+
+    Route::post('/hosp/sports-discipline', [HospController::class, 'storeSportDiscipline']);
+    Route::get('/sports-discipline-details', [HospController::class, 'getSportDiscipline']);
+    // to view uploaded file
+    
+    // ->middleware('auth');
+    Route::get('/schedule-list/{event_type}', [HospController::class, 'getSchedule']);
+    Route::get('/games', [HospController::class, 'getGames']);
+});
+
+Route::get('/certificates/{filename}/{foldername}', [HospController::class, 'download']);
+
 
 Route::get('/hosp', function () {
     return response()->json([

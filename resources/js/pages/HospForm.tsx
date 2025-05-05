@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { useForm, useFormState } from "react-hook-form";
-import { fetchEvent, saveEvent, updateEvent } from "../services/hosp-service";
-const stepsTotal = 5;
+import {
+    fetchEducation,
+    fetchEvent,
+    fetchGameList,
+    fetchSchedule12Listing,
+    fetchSportsDiscipline,
+    saveEducation,
+    saveEvent,
+    saveSportsDiscipline,
+    updateEvent,
+} from "../services/hosp-service";
+const stepsTotal = 4;
 
-const Dashboard = () => {
+const HospForm = () => {
     const navigate = useNavigate();
     const userData = JSON.parse(localStorage.getItem("user")!);
     const userDetails = userData?.user_details || {};
@@ -19,12 +29,14 @@ const Dashboard = () => {
     const step: any = params.get("step") ? parseInt(params.get("step")!) : 1;
     // alert(step)
     const [currentStep, setCurrentStep] = useState(step);
-    const [physicalDisability, setPhysicalDisability] = useState(false);
-    const [representedIndia, setRepresentedIndia] = useState("1");
-    const [tournamentLevel, setTournamentLevel] = useState("2");
+    const [physical_disability, setPhysicalDisability] = useState(false);
+    const [represented_india, setRepresentedIndia] = useState("1");
+    const [tournament_level, setTournamentLevel] = useState("2");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
-
+    const [educationErrors, setEducationErrors] = useState("");
+    const [tournamentList, setTournamentList] = useState([]);
+    const [gamesList, setGamesList] = useState([]);
     const {
         register,
         handleSubmit,
@@ -34,6 +46,68 @@ const Dashboard = () => {
         getValues,
         formState: { errors },
     } = useForm();
+    
+    type SportsDisciplineFormData = {
+        physical_disability: string;
+        disability_type_id: string;
+        disability_doc: File | null;
+        tournament_id: string;
+        organizing_committee: string;
+        tournament_level: string;
+        represented_india: string;
+        game_id: string;
+        certificate_path: File | null;
+        achievement_date: string;
+        tournament_venue: string;
+        medal_won: string;
+        participation_level: string;
+    };
+
+    type FormErrors = Partial<Record<keyof SportsDisciplineFormData, string>>;
+
+    const [formData, setFormData] = useState<SportsDisciplineFormData>({
+        physical_disability: '2',
+        disability_type_id: "",
+        disability_doc: null,
+        tournament_id: "",
+        organizing_committee: "",
+        tournament_level: "",
+        represented_india: "",
+        game_id: "",
+        certificate_path: null,
+        achievement_date: "",
+        tournament_venue: "",
+        medal_won: "",
+        participation_level: "",
+    });
+
+    const [sportdiserrors, setErrors] = useState<FormErrors>({});
+       // useEffect to filter games based on formData
+ 
+    const fetchGames = async (is_para = 0) => {
+        try {
+            const data = await fetchGameList();
+          
+            if (data.status === "success") {
+                setGamesList(data.list);
+                console.log('formData.physical_disability',gamesList);
+                // if (formData && formData.physical_disability =='1') {
+                //     const filteredGames = gamesList.filter((game:any) => game.is_para === 1);
+                //     console.log('filteredGames',filteredGames);
+                //     setGamesList(filteredGames);
+                // }else {
+                //     const filteredGames = gamesList.filter((game:any) => game.is_para === 0);
+                //     console.log('filteredGames',filteredGames);
+                //     setGamesList(filteredGames);
+                // }
+            }
+           
+            
+          
+        } catch (error) {
+            console.error("Error loading form data", error);
+        }
+    };
 
     useEffect(() => {
         const fetchEventData = async () => {
@@ -41,9 +115,9 @@ const Dashboard = () => {
                 const data = await fetchEvent(); // Replace with your endpoint
                 // Option 1: Set fields one-by-one
                 setValue("id", data.id);
-                setValue("aadhaar", data.aadhaar);
+                // setValue("aadhaar", data.aadhaar);
                 setValue("event_type", data.event_type);
-                setValue("tournament", data.tournament_id?.toString());
+
                 setValue("domicile", data.domicile?.toString());
                 setValue(
                     "played_national",
@@ -56,13 +130,73 @@ const Dashboard = () => {
 
                 // Option 2: Reset entire form (if keys match)
                 // reset(data);
+                await fetchTournamentList(data.event_type);
+                setTimeout(() => {
+                    setValue("tournament", data.tournament_id);
+                }, 1);
             } catch (error) {
                 console.error("Error loading form data", error);
             }
         };
-
+        const fetchEducationData = async () => {
+            try {
+                const data = await fetchEducation(); // Replace with your endpoint
+                if (data && data.length > 0) {
+                    const formatted = data.map((item) => ({
+                        qualification: item.qualification || "",
+                        otherText: item.other_qualification || "",
+                        certificate: null, // Initially no file selected
+                        fileUrl: `${item.certificate_path}`, // For display/download
+                    }));
+                    setEducationFields(formatted);
+                }
+            } catch (error) {
+                console.error("Error loading form data", error);
+            }
+        };
+        
+        const fetchSportsDisciplineData = async () => {
+            try {
+                const data = await fetchSportsDiscipline(); // Replace with your endpoint
+                console.log('data && data.physical_disability',data);
+                console.log('data && data.physical_disability',data && data.physical_disability ==1);
+                
+                setFormData({
+                    physical_disability: String(data.physical_disability ?? ""),
+                    disability_type_id: String(data.disability_type_id ?? ""),
+                    disability_doc: data.certificate_path ?? null, // We can't prefill file inputs
+                    tournament_id: String(data.tournament_id ?? ""),
+                    organizing_committee: data.organizing_committee ?? "",
+                    tournament_level: String(data.tournament_level ?? ""),
+                    represented_india: String(data.represented_india ?? ""),
+                    game_id: String(data.game_id ?? ""),
+                    certificate_path: data.certificate_path ?? null,
+                    achievement_date: data.achievement_date ?? "",
+                    tournament_venue: data.tournament_venue ?? "",
+                    medal_won: data.medal_won ?? "",
+                    participation_level: data.participation_level ?? "",
+                  });
+               
+            } catch (error) {
+                console.error("Error loading form data", error);
+            }
+        };
         fetchEventData();
+        fetchEducationData();
+        fetchSportsDisciplineData();
+        fetchGames();
+        
     }, []);
+
+
+    const fetchTournamentList = async (event_type) => {
+        setValue("tournament", ""); // Reset tournament selection
+        const response = await fetchSchedule12Listing(event_type);
+        if (response.status === "success") {
+            setTournamentList(response.list);
+        }
+        console.log("tournament listing", response.list);
+    };
     useEffect(() => {
         // const userData = JSON.parse(localStorage.getItem("user") || "null");
         if (!userData) {
@@ -148,7 +282,10 @@ const Dashboard = () => {
         setEducationFields(updated);
     };
     const handlePhysicalDisability = (value) => {
+        console.log(value.checked);
+        const is_para = value.checked ? 1:0
         setPhysicalDisability(value.checked);
+        setFormData((prev) => ({ ...prev, game_id: "" }));
     };
     const handleRepresentedIndia = (value) => {
         console.log("value", value);
@@ -219,7 +356,7 @@ const Dashboard = () => {
 
         formData.append("id", data.id ?? null);
         formData.append("event_type", data.event_type);
-        formData.append("aadhaar", data.aadhaar);
+        // formData.append("aadhaar", data.aadhaar);
         formData.append("tournament", data.tournament);
         formData.append("domicile", data.domicile);
         formData.append("played_national", data.played_national);
@@ -303,14 +440,180 @@ const Dashboard = () => {
             }
         }
     };
+    const onEducationSubmit = async () => {
+        const hasValidEntry = educationFields.some(
+            (field: any) =>
+                field.qualification &&
+                (field.qualification !== "other" || field.otherText) &&
+                (field.certificate || field.fileUrl)
+        );
+        console.log("hasValidEntry", educationFields);
 
-    const onEducationSubmit = async (data) => {
-        if (currentStep < stepsTotal) setCurrentStep((nxt) => nxt + 1);
-        navigate({
-            pathname: location.pathname, // or keep current path
-            search: createSearchParams({ step: currentStep + 1 }).toString(),
+        if (!hasValidEntry) {
+            setEducationErrors(
+                "Please add educational qualification with certificate."
+            );
+            return;
+        }
+
+        setEducationErrors(""); // clear error if validation passes
+
+        const formData = new FormData();
+        educationFields.forEach((field, index) => {
+            formData.append(
+                `educations[${index}][qualification]`,
+                field.qualification
+            );
+            formData.append(
+                `educations[${index}][otherText]`,
+                field.otherText || ""
+            );
+            if (field.certificate) {
+                formData.append(
+                    `educations[${index}][certificate]`,
+                    field.certificate
+                );
+            }
+        });
+
+        try {
+            const response = await saveEducation(formData);
+
+            //   const response = await axios.post("/api/education/store", formData, {
+            //     headers: { "Content-Type": "multipart/form-data" },
+            //   });
+
+            //   setCurrentStep((prev) => prev + 1);
+            if (currentStep < stepsTotal) setCurrentStep((nxt) => nxt + 1);
+            navigate({
+                pathname: location.pathname, // or keep current path
+                search: createSearchParams({
+                    step: currentStep + 1,
+                }).toString(),
+            });
+        } catch (error) {
+            console.error(
+                "Save failed:",
+                error.response?.data || error.message
+            );
+        }
+    };
+
+    // const onEducationSubmit = async (data) => {
+    //     if (currentStep < stepsTotal) setCurrentStep((nxt) => nxt + 1);
+    //     navigate({
+    //         pathname: location.pathname, // or keep current path
+    //         search: createSearchParams({ step: currentStep + 1 }).toString(),
+    //     });
+    // };
+
+
+    const setOrganizationCommittee = (e) => {
+        console.log(e.target.value);
+        tournamentList.forEach((element: any) => {
+            if (element.id == e.target.value) {
+                console.log(element);
+
+                setFormData((d) => ({
+                    ...d,
+                    organizing_committee: element.organizing_authority,
+                }));
+            }
         });
     };
+    const handleSportsDiscChanges = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
+        const { name, value, type } = e.target;
+        // console.log(type);
+        
+        if (type === "file") {
+            const file = (e.target as HTMLInputElement).files?.[0] || null;
+            console.log('name',name);
+            console.log('file',file);
+            
+            setFormData({ ...formData, [name]: file });
+        } else {
+            console.log("formdata", formData);
+
+            setFormData({ ...formData, [name]: value });
+
+            // Reset dependent fields
+            if (name === "physical_disability" && value !== "1") {
+                setFormData((prev) => ({
+                    ...prev,
+                    disability_type_id: "",
+                    disability_doc: null,
+                }));
+            }
+
+            if (name === "tournament_level" && value !== "1") {
+                setFormData((prev) => ({
+                    ...prev,
+                    represented_india: "",
+                }));
+            }
+        }
+    };
+
+    const validate = (): boolean => {
+        const newErrors: FormErrors = {};
+
+        if (!formData.physical_disability)
+            newErrors.physical_disability = "Required";
+        if (formData.physical_disability === "1") {
+            if (!formData.disability_type_id) newErrors.disability_type_id = "Required";
+            if (!formData.disability_doc) newErrors.disability_doc = "Required";
+        }
+
+        if (!formData.tournament_id) newErrors.tournament_id = "Required";
+        if (!formData.organizing_committee)
+            newErrors.organizing_committee = "Required";
+        if (!formData.tournament_level) newErrors.tournament_level = "Required";
+
+        if (formData.tournament_level === "1") {
+            if (!formData.represented_india)
+                newErrors.represented_india = "Required";
+        }
+
+        if (!formData.game_id) newErrors.game_id = "Required";
+        if (!formData.certificate_path) newErrors.certificate_path = "Required";
+        if (!formData.achievement_date) newErrors.achievement_date = "Required";
+        if (!formData.tournament_venue) newErrors.tournament_venue = "Required";
+        if (!formData.medal_won) newErrors.medal_won = "Required";
+        if (!formData.participation_level)
+            newErrors.participation_level = "Required";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const onSportDisciplineSubmit = async(e: React.FormEvent) => {
+        console.log('formData.physical_disability',formData.physical_disability);
+        
+        e.preventDefault();
+        if (!validate()) return;
+
+        const submissionData = new FormData();
+        Object.entries(formData).forEach(([key, value]) => {
+            submissionData.append(key, value ?? "");
+        });
+      
+        // Submit using fetch or axios
+        console.log("Submitting form...", formData);
+
+        const response = await saveSportsDiscipline(submissionData);
+        if (currentStep < stepsTotal) setCurrentStep((nxt) => nxt + 1);
+        // axios.post('/api/sports-discipline', submissionData)
+    };
+
+    // const onSportDisciplineSubmit = async () => {
+    //     if (currentStep < stepsTotal) setCurrentStep((nxt) => nxt + 1);
+    //     navigate({
+    //         pathname: location.pathname, // or keep current path
+    //         search: createSearchParams({ step: currentStep + 1 }).toString(),
+    //     });
+    // };
 
     return (
         <div>
@@ -349,6 +652,36 @@ const Dashboard = () => {
                     </div> */}
 
                 <div className="progress">
+                    <ol>
+                        <li
+                            className={
+                                currentStep === 1 ? "progress-active" : ""
+                            }
+                        >
+                            <span>1. Event Details</span>
+                        </li>
+                        <li
+                            className={
+                                currentStep === 2 ? "progress-active" : ""
+                            }
+                        >
+                            <span>2. Education Details</span>
+                        </li>
+                        <li
+                            className={
+                                currentStep === 3 ? "progress-active" : ""
+                            }
+                        >
+                            <span>3. Sports Disciple</span>
+                        </li>
+                        <li
+                            className={
+                                currentStep === 4 ? "progress-active" : ""
+                            }
+                        >
+                            <span>4. Declartion</span>
+                        </li>
+                    </ol>
                     <div
                         className="progress-bar progress-bar-striped progress-bar-animated bg-success"
                         role="progressbar"
@@ -380,12 +713,10 @@ const Dashboard = () => {
                             hidden={currentStep === 1 ? false : true}
                         >
                             <div className="row g-3">
-                                <h3 className="text-center">Event</h3>
+                                <h2 className="text-center mt-4">Event</h2>
 
                                 <div className="col-md-6">
-                                    <label>
-                                        Select Event
-                                    </label>
+                                    <label>Select Event</label>
                                     <select
                                         {...register("event_type")}
                                         className={`form-select ${
@@ -393,8 +724,11 @@ const Dashboard = () => {
                                                 ? "is-invalid"
                                                 : ""
                                         }`}
+                                        onChange={(e) =>
+                                            fetchTournamentList(e.target.value)
+                                        }
                                     >
-                                        <option value="" disabled selected>
+                                        <option value="" disabled>
                                             Select
                                         </option>
                                         <option value="1">
@@ -402,7 +736,7 @@ const Dashboard = () => {
                                         </option>
                                         <option value="2">Team Event</option>
                                     </select>
-                                    {errors.domicile && (
+                                    {errors.event_type && (
                                         <div className="invalid-feedback">
                                             {
                                                 errors.event_type
@@ -411,9 +745,9 @@ const Dashboard = () => {
                                         </div>
                                     )}
                                 </div>
-                                <div className="col-md-6"></div>
+                                {/* <div className="col-md-6"></div> */}
 
-                                <div className="col-md-6">
+                                {/* <div className="col-md-6">
                                     <label>
                                         Aadhaar No.
                                     </label>
@@ -430,12 +764,10 @@ const Dashboard = () => {
                                             {errors.aadhaar.message as string}
                                         </div>
                                     )}
-                                </div>
+                                </div> */}
 
                                 <div className="col-md-6">
-                                    <label>
-                                        Select Tournament
-                                    </label>
+                                    <label>Select Tournament</label>
                                     <select
                                         {...register("tournament")}
                                         className={`form-select ${
@@ -444,18 +776,17 @@ const Dashboard = () => {
                                                 : ""
                                         }`}
                                     >
-                                        <option value="" disabled selected>
+                                        <option value="" disabled>
                                             Select
                                         </option>
-                                        <option value="1">Olympic Games</option>
-                                        <option value="2">Paralympics</option>
-                                        <option value="3">Asian Games</option>
-                                        <option value="4">
-                                            4-years World Cup/Championship
-                                        </option>
-                                        <option value="5">
-                                            World Cup/Championship
-                                        </option>
+                                        {tournamentList.map((item: any) => (
+                                            <option
+                                                key={item.id}
+                                                value={item.id}
+                                            >
+                                                {item.tournament}
+                                            </option>
+                                        ))}
                                     </select>
                                     {errors.tournament && (
                                         <div className="invalid-feedback">
@@ -468,16 +799,14 @@ const Dashboard = () => {
                                 </div>
 
                                 <div className="col-md-6">
-                                    <label>
-                                        Haryana Resident/Domicile
-                                    </label>
+                                    <label>Haryana Resident/Domicile</label>
                                     <select
                                         {...register("domicile")}
                                         className={`form-select ${
                                             errors.domicile ? "is-invalid" : ""
                                         }`}
                                     >
-                                        <option value="" disabled selected>
+                                        <option value="" disabled>
                                             Select
                                         </option>
                                         <option value="1">Yes</option>
@@ -491,11 +820,10 @@ const Dashboard = () => {
                                 </div>
 
                                 <div className="col-md-6">
-                                    <label>
-                                        Attach Certificate (Domicile)
-                                    </label>
+                                    <label>Attach Certificate (Domicile)</label>
                                     <input
                                         type="file"
+                                        accept="application/pdf"
                                         className={`form-control ${
                                             errors.domicile_certificate
                                                 ? "is-invalid"
@@ -543,7 +871,7 @@ const Dashboard = () => {
                                                 : ""
                                         }`}
                                     >
-                                        <option value="" disabled selected>
+                                        <option value="" disabled>
                                             Select
                                         </option>
                                         <option value="1">Yes</option>
@@ -565,6 +893,7 @@ const Dashboard = () => {
                                     </label>
                                     <input
                                         type="file"
+                                        accept="application/pdf"
                                         className={`form-control ${
                                             errors.national_certificate
                                                 ? "is-invalid"
@@ -631,6 +960,7 @@ const Dashboard = () => {
                                     </label>
                                     <input
                                         type="file"
+                                        accept="application/pdf"
                                         className={`form-control ${
                                             errors.org_certificate
                                                 ? "is-invalid"
@@ -665,8 +995,8 @@ const Dashboard = () => {
                                         </div>
                                     )}
                                 </div>
-
-                                <div className="col-12 text-center">
+                                <hr />
+                                <div className="col-12 text-end">
                                     <button
                                         id="next-btn"
                                         type="submit"
@@ -687,14 +1017,9 @@ const Dashboard = () => {
                             </h3>
 
                             {educationFields.map((field, index) => (
-                                <div
-                                    key={index}
-                                    className="row  g-3"
-                                >
+                                <div key={index} className="row g-3">
                                     <div className="col-md-6">
-                                        <label>
-                                            Select Qualification
-                                        </label>
+                                        <label>Select Qualification</label>
                                         <select
                                             className="form-select"
                                             value={field.qualification}
@@ -708,13 +1033,13 @@ const Dashboard = () => {
                                         >
                                             <option value="">Select</option>
                                             <option value="12">12th</option>
-                                            <option value="graduation">
+                                            <option value="Graduation">
                                                 Graduation
                                             </option>
-                                            <option value="postgraduation">
+                                            <option value="Post graduation">
                                                 Post Graduation
                                             </option>
-                                            <option value="other">Other</option>
+                                            <option value="Other">Other</option>
                                         </select>
                                     </div>
 
@@ -739,9 +1064,7 @@ const Dashboard = () => {
                                     )}
 
                                     <div className="col-md-6">
-                                        <label>
-                                            Attach Certificate (pdf)
-                                        </label>
+                                        <label>Attach Certificate (PDF)</label>
                                         <input
                                             type="file"
                                             accept="application/pdf"
@@ -754,6 +1077,19 @@ const Dashboard = () => {
                                                 )
                                             }
                                         />
+                                        {field.fileUrl && (
+                                            <div className="mt-1">
+                                                <a
+                                                    href={`/api/certificates/${encodeURIComponent(
+                                                        field.fileUrl
+                                                    )}/education-certificates`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    View Uploaded Certificate
+                                                </a>
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className="col-md-2">
@@ -769,6 +1105,12 @@ const Dashboard = () => {
                                             </button>
                                         )}
                                     </div>
+
+                                    {educationErrors && (
+                                        <div className="text-danger mt-2">
+                                            {educationErrors}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
 
@@ -781,278 +1123,392 @@ const Dashboard = () => {
                                     + Add Education
                                 </button>
                             </div>
-                            <div id="text-center mt-4">
+                            <hr />
+                            <div id="text-center mt-4" className="text-end">
                                 {currentStep > 1 && (
                                     <button
-                                       
                                         type="button"
                                         onClick={prevStep}
-                                        className="save-btn m-2"
+                                        className="btn btn-primary m-2"
                                     >
                                         Previous
                                     </button>
                                 )}
 
-                                <button
-                                  
-                                    type="submit"
-                                    className="save-btn"
-                                >
+                                <button type="submit" className="btn btn-primary">
                                     Next
                                 </button>
                             </div>
                         </form>
                         <form
-                            className="needs-validation row g-3"
+                            className="needs-validation row g-3 mt-4"
                             hidden={currentStep === 3 ? false : true}
+                            onSubmit={onSportDisciplineSubmit}
                         >
-                            <h3 className="text-center">Sports Discipline</h3>
+                            <h2 className="text-center">Sports Discipline</h2>
+
                             <div className="col-md-12">
-                                <div className="form-check">
+                                <div className="form-check p-0">
                                     <input
                                         className="form-check-input"
                                         type="checkbox"
-                                        name="medalWon"
-                                        id="medalGold"
-                                        value=""
-                                        onChange={(e) =>
-                                            handlePhysicalDisability(e.target)
+                                        id="physical_disability"
+                                        name="physical_disability"
+                                        checked={
+                                            formData.physical_disability === "1"
                                         }
+                                        onChange={(e) => {
+                                            handleSportsDiscChanges({
+                                                ...e,
+                                                target: {
+                                                    ...e.target,
+                                                    name: "physical_disability",
+                                                    value: e.target.checked
+                                                        ? "1"
+                                                        : "2",
+                                                },
+                                            } as any);
+                                            handlePhysicalDisability(e.target);
+                                        }}
                                     />
                                     <label
-                                        className="form-check-label"
-                                        htmlFor="medalGold"
+                                        className="form-check-label lb"
+                                        htmlFor="physical_disability"
                                     >
-                                        Physical Disability{" "}
+                                        Physical Disability
                                     </label>
                                 </div>
                             </div>
+
+                            {formData.physical_disability === "1" && (
+                                <>
+                                    <div className="col-md-6">
+                                        <label>Disability Type</label>
+                                        <select
+                                            className={`form-select ${
+                                                sportdiserrors.disability_type_id
+                                                    ? "is-invalid"
+                                                    : ""
+                                            }`}
+                                            name="disability_type_id"
+                                            value={formData.disability_type_id}
+                                            onChange={handleSportsDiscChanges}
+                                        >
+                                            <option value="">Select</option>
+                                            <option value="1">Para</option>
+                                            <option value="2">Blind</option>
+                                            <option value="3">Deaf</option>
+                                            <option value="4">
+                                                Special Olympic Sports
+                                            </option>
+                                        </select>
+                                        <div className="invalid-feedback">
+                                            {sportdiserrors.disability_type_id}
+                                        </div>
+                                    </div>
+
+                                    <div className="col-md-6">
+                                        <label>
+                                            Attach Disability Certificate
+                                        </label>
+                                        <input
+                                            type="file"
+                                            name="disability_doc"
+                                            accept="application/pdf"
+                                            className={`form-control ${
+                                                sportdiserrors.disability_doc
+                                                    ? "is-invalid"
+                                                    : ""
+                                            }`}
+                                            onChange={handleSportsDiscChanges}
+                                        />
+                                        <div className="invalid-feedback">
+                                            {sportdiserrors.disability_doc}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
                             <div className="col-md-6">
-                                <label>
-                                    Select Disability type
-                                </label>
+                                <label>Tournament</label>
                                 <select
-                                    className="form-select"
-                                    disabled={!physicalDisability}
+                                    name="tournament_id"
+                                    value={formData.tournament_id}
+                                    className={`form-select ${
+                                        sportdiserrors.tournament_id
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
+                                    onChange={(e) => {
+                                        handleSportsDiscChanges(e);
+                                        setOrganizationCommittee(e);
+                                    }}
                                 >
-                                    <option value="" disabled selected>
+                                    <option value="" disabled>
                                         Select
                                     </option>
-                                    <option value="1">Para</option>
-                                    <option value="2">Blind</option>
-                                    <option value="3">Deaf</option>
-                                    <option value="4">
-                                        Special Olympic Sports
-                                    </option>
+                                    {tournamentList.map((item: any) => (
+                                        <option key={item.id} value={item.id}>
+                                            {item.tournament}
+                                        </option>
+                                    ))}
                                 </select>
+                                <div className="invalid-feedback">
+                                    {sportdiserrors.tournament_id}
+                                </div>
                             </div>
+
                             <div className="col-md-6">
-                                <label>
-                                    Attach Certificate
-                                </label>
+                                <label>Organizing Committee</label>
                                 <input
-                                    type="file"
-                                    className="form-control"
-                                    disabled={!physicalDisability}
+                                    type="text"
+                                    name="organizing_committee"
+                                    value={formData.organizing_committee}
+                                    className={`form-control ${
+                                        sportdiserrors.organizing_committee
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
+                                    readOnly
+                                    onChange={(e) => {
+                                        e.preventDefault(); // just in case
+                                        return false;
+                                    }}
+                                   
+                                   
                                 />
+                                <div className="invalid-feedback">
+                                    {sportdiserrors.organizing_committee}
+                                </div>
                             </div>
+
                             <div className="col-md-6">
-                                <label>
-                                    Select Tournament
-                                </label>
-                                <select className="form-select">
-                                    <option value="" disabled selected>
-                                        Select
-                                    </option>
-                                    <option value="1">Olympic Games</option>
-                                    <option value="2">Paralympics</option>
-                                    <option value="3">Asian Games</option>
-                                    <option value="4">
-                                        4-years World Cup/Championship
-                                    </option>
-                                    <option value="5">
-                                        World Cup/Championship
-                                    </option>
-                                </select>
-                            </div>
-                            <div className="col-md-6">
-                                <label>
-                                    Organizing Committee
-                                </label>
-                                <input type="text" className="form-control" />
-                            </div>
-                            <div className="col-md-6">
-                                <label>
-                                    Level of the Tournament
-                                </label>
+                                <label>Tournament Level</label>
                                 <select
-                                    className="form-select"
-                                    onChange={(e) =>
-                                        handleTournamentLevel(e.target.value)
-                                    }
+                                    name="tournament_level"
+                                    value={formData.tournament_level}
+                                    className={`form-select ${
+                                        sportdiserrors.tournament_level
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
+                                    onChange={(e) => {
+                                        handleSportsDiscChanges(e);
+                                        handleTournamentLevel(e.target.value);
+                                    }}
                                 >
-                                    <option value="" disabled selected>
-                                        Select
-                                    </option>
+                                    <option value="">Select</option>
                                     <option value="1">National</option>
                                     <option value="2">International</option>
                                 </select>
+                                <div className="invalid-feedback">
+                                    {sportdiserrors.tournament_level}
+                                </div>
                             </div>
+
                             <div className="col-md-6">
                                 <label>
                                     Represented India in any sports tournament
                                     (Schedule-I and Schedule-II)
                                 </label>
                                 <select
-                                    className="form-select"
-                                    onChange={(e) =>
-                                        handleRepresentedIndia(e.target.value)
-                                    }
-                                    disabled={tournamentLevel == "2"}
+                                    name="represented_india"
+                                    value={formData.represented_india}
+                                    className={`form-select ${
+                                        sportdiserrors.represented_india
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
+                                    onChange={(e) => {
+                                        handleRepresentedIndia(e.target.value);
+                                        handleSportsDiscChanges(e);
+                                    }}
+                                    disabled={tournament_level == "2"}
                                 >
-                                    <option value="" disabled selected>
-                                        Select
-                                    </option>
+                                    <option value="">Select</option>
                                     <option value="1">Yes</option>
                                     <option value="2">No</option>
                                 </select>
                                 <div
                                     className="text-danger"
-                                    hidden={representedIndia != "2"}
+                                    hidden={represented_india != "2"}
                                 >
                                     You are Ineligibile
                                 </div>
+                                <div className="invalid-feedback">
+                                    {sportdiserrors.represented_india}
+                                </div>
                             </div>
+
                             <div className="col-md-6">
-                                <label>
-                                    Select Game
-                                </label>
+                                <label>Select Game</label>
                                 <select
-                                    className="form-select"
-                                    onChange={(e) =>
-                                        handleTournamentLevel(e.target.value)
-                                    }
+                                    name="game_id"
+                                    value={formData.game_id}
+                                    className={`form-select ${
+                                        sportdiserrors.game_id
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
+                                    onChange={(e) => {
+                                        handleTournamentLevel(e.target.value);
+                                        handleSportsDiscChanges(e);
+                                    }}
                                 >
-                                    <option value="" disabled selected>
-                                        Select
-                                    </option>
-                                    <option value="1">Chess</option>
-                                    <option value="2">Athletics</option>
-                                    <option value="3">Archery</option>{" "}
-                                    <option value="3">Badminton</option>{" "}
-                                    <option value="3">Basketball</option>
-                                    <option value="3">Boxing</option>
-                                    <option value="3">Cycling</option>
+                                    <option value="">Select</option>
+                                    {gamesList
+                                        .filter((game: any) =>
+                                        formData?.physical_disability === '1' ? game.is_para === 1 : game.is_para === 0
+                                        )
+                                        .map((game: any) => (
+                                        <option key={game.id} value={game.id}>
+                                            {game.name}
+                                        </option>
+                                        ))}
                                 </select>
+                                <div className="invalid-feedback">
+                                    {sportdiserrors.game_id}
+                                </div>
                             </div>
+
                             <div className="col-md-6">
-                                <label>
-                                    Attach Certificate (pdf)
-                                </label>
+                                <label>Attach Certificate (pdf)</label>
                                 <input
                                     type="file"
-                                    className="form-control"
-                                    disabled={representedIndia != "1"}
+                                    name="certificate_path"
+                                    accept="application/pdf"
+                                    className={`form-control ${
+                                        sportdiserrors.certificate_path
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
+                                    onChange={handleSportsDiscChanges}
                                 />
+                                <div className="invalid-feedback">
+                                    {sportdiserrors.certificate_path}
+                                </div>
+                                {sportdiserrors.certificate_path && (
+                                <div className="mt-1">
+                                                <a
+                                                    href={`/api/certificates/${encodeURIComponent(
+                                                        sportdiserrors.certificate_path
+                                                    )}/education-certificates`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    View Uploaded Certificate
+                                                </a>
+                                            </div>
+                                )}
                             </div>
+
+                            <div className="col-md-6">
+                                <label>Achievement Date</label>
+                                <input
+                                    type="date"
+                                    name="achievement_date"
+                                    value={formData.achievement_date}
+                                    className={`form-control ${
+                                        sportdiserrors.achievement_date
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
+                                    onChange={handleSportsDiscChanges}
+                                    onClick={(e) =>
+                                        e.target.showPicker &&
+                                        e.target.showPicker()
+                                    }
+                                />
+                                <div className="invalid-feedback">
+                                    {sportdiserrors.achievement_date}
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <label>Tournament Venue</label>
+                                <input
+                                    type="text"
+                                    name="tournament_venue"
+                                    value={formData.tournament_venue}
+                                    className={`form-control ${
+                                        sportdiserrors.tournament_venue
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
+                                    onChange={handleSportsDiscChanges}
+                                />
+                                <div className="invalid-feedback">
+                                    {sportdiserrors.tournament_venue}
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <label>Medal won(if any)</label>
+                                <select
+                                    name="medal_won"
+                                    value={formData.medal_won}
+                                    className={`form-select ${
+                                        sportdiserrors.medal_won
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
+                                    onChange={handleSportsDiscChanges}
+                                >
+                                    <option value="">Select</option>
+                                    <option value="gold">Gold</option>
+                                    <option value="silver">Silver</option>
+                                    <option value="bronze">Bronze</option>
+                                </select>
+                                <div className="invalid-feedback">
+                                    {sportdiserrors.medal_won}
+                                </div>
+                            </div>
+
                             <div className="col-md-6">
                                 <label>
-                                    Achievement date
-                                </label>
-                                <input type="date" className="form-control" />
-                            </div>
-                            <div className="col-md-6">
-                                <label>
-                                    Tournament Venue
-                                </label>
-                                <input type="text" className="form-control" />
-                            </div>
-                            <div className="col-xs-12 col-sm-6 col-md-4">
-                                <p>Medal won(if any)</p>
-                                <div className="form-check form-check-inline">
-                                    <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="medalWon"
-                                        id="medalGold"
-                                        value="medalGold"
-                                    />
-                                    <label
-                                        className="form-check-label"
-                                        htmlFor="medalGold"
-                                    >
-                                        Gold
-                                    </label>
-                                </div>
-                                <div className="form-check form-check-inline">
-                                    <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="medalWon"
-                                        id="medalSilver"
-                                        value="medalSilver"
-                                    />
-                                    <label
-                                        className="form-check-label"
-                                        htmlFor="medalSilver"
-                                    >
-                                        Silver
-                                    </label>
-                                </div>
-                                <div className="form-check form-check-inline">
-                                    <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="medalWon"
-                                        id="medalBronze"
-                                        value="medalBronze"
-                                    />
-                                    <label
-                                        className="form-check-label"
-                                        htmlFor="medalBronze"
-                                    >
-                                        Bronze
-                                    </label>
-                                </div>
-                            </div>
-                            <div className="col-xs-12 col-sm-6 col-md-4">
-                                <p>
                                     Participation Level (in case of team game
                                     only)
-                                </p>
-                                <div className="form-check form-check-inline">
-                                    <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="inlineRadioOptions"
-                                        id="inlineRadio1"
-                                        value="option1"
-                                    />
-                                    <label
-                                        className="form-check-label"
-                                        htmlFor="inlineRadio1"
-                                    >
-                                        25% or more{" "}
-                                    </label>
-                                </div>
-                                <div className="form-check form-check-inline">
-                                    <input
-                                        className="form-check-input"
-                                        type="radio"
-                                        name="inlineRadioOptions"
-                                        id="inlineRadio2"
-                                        value="option2"
-                                    />
-                                    <label
-                                        className="form-check-label"
-                                        htmlFor="inlineRadio2"
-                                    >
-                                        Less then 25%
-                                    </label>
+                                </label>
+                                <select
+                                    name="participation_level"
+                                    value={formData.participation_level}
+                                    className={`form-select ${
+                                        sportdiserrors.participation_level
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
+                                    onChange={handleSportsDiscChanges}
+                                >
+                                    <option value="">Select</option>
+                                    <option value="25_plus">25% or more</option>
+                                    <option value="less_25">
+                                        Less than 25%
+                                    </option>
+                                </select>
+                                <div className="invalid-feedback">
+                                    {sportdiserrors.participation_level}
                                 </div>
                             </div>
+
+                            <div className="col-12 text-center mt-3">
+                            {currentStep > 1 && (
+                                    <button
+                                        type="button"
+                                        onClick={prevStep}
+                                        className="btn btn-primary m-2"
+                                    >
+                                        Previous
+                                    </button>
+                                )}
+                                <button
+                                    className="btn btn-primary"
+                                    type="submit"
+                                >
+                                    Next
+                                </button>
+                            </div>
                         </form>
-                        <form
+                        {/* <form
                             className="needs-validation row g-3"
                             hidden={currentStep === 4 ? false : true}
                         >
@@ -1069,11 +1525,11 @@ const Dashboard = () => {
                                 </label>
                                 <input type="file" className="form-control" />
                             </div>
-                        </form>
+                        </form> */}
 
                         <form
                             className="needs-validation row g-3"
-                            hidden={currentStep === 5 ? false : true}
+                            hidden={currentStep === 4 ? false : true}
                         >
                             <h3 className="text-center">Declaration</h3>
                             <div className="">
@@ -1112,7 +1568,7 @@ const Dashboard = () => {
                                                     }
                                                 />
                                                 <label
-                                                    className="form-check-label"
+                                                    className="form-check-label lb"
                                                     htmlFor={`d${index + 1}`}
                                                 >
                                                     {label}
@@ -1129,7 +1585,7 @@ const Dashboard = () => {
                                                 onChange={handleAcceptAll}
                                             />
                                             <label
-                                                className="form-check-label"
+                                                className="form-check-label lb"
                                                 htmlFor="acceptAll"
                                             >
                                                 Accept all
@@ -1138,11 +1594,10 @@ const Dashboard = () => {
                                     </div>
 
                                     <div className="col-md-6">
-                                        <label>
-                                            Upload Declaration
-                                        </label>
+                                        <label>Upload Declaration</label>
                                         <input
                                             type="file"
+                                            accept="application/pdf"
                                             className="form-control"
                                         />
                                     </div>
@@ -1209,4 +1664,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default HospForm;

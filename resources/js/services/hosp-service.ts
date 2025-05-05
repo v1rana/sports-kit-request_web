@@ -78,10 +78,19 @@ export const login = async (data) => {
     }
 };
 
-export const saveEvent = async (form_data) => {
+export const updateUserData = async (form_data) => {
     try {
         console.log('API_BASE_URL',API_BASE_URL);
-        const token = localStorage.getItem("token");
+        const response = await api.post("/update-details",form_data,
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching hosp:", error);
+        throw error;
+    }
+};
+export const saveEvent = async (form_data) => {
+    try {
         const response = await api.post("/hosp/event",form_data,
         );
         return response.data;
@@ -92,8 +101,6 @@ export const saveEvent = async (form_data) => {
 };
 export const updateEvent = async (form_data,id) => {
     try {
-        console.log('API_BASE_URL',API_BASE_URL);
-        const token = localStorage.getItem("token");
         const response = await api.post(`/event/${id}`,form_data,
         );
         return response.data;
@@ -104,9 +111,67 @@ export const updateEvent = async (form_data,id) => {
 };
 export const fetchEvent = async () => {
     try {
-        console.log('API_BASE_URL',API_BASE_URL);
-        const token = localStorage.getItem("token");
         const response = await api.get("/event-details");
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching hosp:", error);
+        throw error;
+    }
+};
+export const fetchEducation = async () => {
+    try {
+        const response = await api.get("/education-details");
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching hosp:", error);
+        throw error;
+    }
+};
+
+export const fetchSportsDiscipline = async () => {
+    try {
+        const response = await api.get("/sports-discipline-details");
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching hosp:", error);
+        throw error;
+    }
+};
+
+export const fetchGameList = async () => {
+    try {
+        const response = await api.get(`/games`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching hosp:", error);
+        throw error;
+    }
+};
+
+export const saveEducation = async (form_data) => {
+    try {
+        const response = await api.post("/hosp/education",form_data,
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching hosp:", error);
+        throw error;
+    }
+};
+export const saveSportsDiscipline = async (form_data) => {
+    try {
+        const response = await api.post("/hosp/sports-discipline",form_data,
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching hosp:", error);
+        throw error;
+    }
+};
+
+export const fetchSchedule12Listing = async (event_type) => {
+    try {
+        const response = await api.get(`/schedule-list/${event_type}`);
         return response.data;
     } catch (error) {
         console.error("Error fetching hosp:", error);

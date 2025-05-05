@@ -43,8 +43,8 @@ return new class extends Migration
             $table->string('alternate_email')->nullable();
             $table->string('application_id')->nullable()->unique(); // create after all steps submit
             $table->tinyInteger('active_step')->default(1); // create after all steps submit
-            $table->string('photo')->nullable(); // from personal step
-            $table->string('sign')->nullable(); // from personal step
+            $table->string('photo')->nullable(); 
+            $table->string('aadhaar')->nullable(); 
             $table->timestamps();
         });
     }

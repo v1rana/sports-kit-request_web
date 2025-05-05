@@ -478,11 +478,6 @@ input[type="radio"]:hover {
       color: #2c3e50;
     }
 
-    .form-control,
-    .form-select {
-      border-radius: 12px;
-    }
-
     .save-btn {
       background-color: #1abc9c;
       border: none;
@@ -583,3 +578,115 @@ input[type="radio"]:hover {
     /* .form-control:disabled, .form-control[readonly] {
         background-color: black;
     } */
+
+.form-control{border-radius:0}
+
+
+    
+	.hero-section {
+		background: linear-gradient(135deg, #ff5c5d, #e46a6ae8);
+	color: #fff;
+	padding: 60px 20px;
+	position: relative;
+	text-align: center;
+	overflow: hidden;
+	box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+	border-bottom-left-radius: 60px;
+	border-bottom-right-radius: 60px;
+  }
+  
+  .header-logo {
+	width: 70px;
+	height: 70px;
+	object-fit: contain;
+	border: 2px solid #ffffff;
+	padding: 5px;
+	border-radius: 50%;
+	background-color: rgba(255, 255, 255, 0.1);
+	transition: transform 0.3s ease;
+  }
+  
+  .header-logo:hover {
+	transform: scale(1.1);
+  }
+  
+  .hero-title {
+	font-size: 2.2rem;
+	font-weight: 800;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+  }
+  
+  .hero-subtitle2 {
+	font-size: 1.5rem;
+	font-weight: 400;
+	margin: 0;
+  }
+  
+  .hero-tagline {
+	font-size: 1.25rem;
+	margin-top: 20px;
+	font-weight: 500;
+	color: #e0e0e0;
+  }
+  .progress{position:relative; background:transparent; overflow: visible;height:auto}
+  .progress ol{
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    border-top: 8px solid #e9ecef;
+    justify-content: space-between;list-style:none
+  }
+
+.progress ol li {
+    font-size: 16px;
+    margin-top: 10px;
+    color: rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+.progress ol li.progress-active {
+    font-weight: bold;
+    color: #000;
+}
+.progress ol li:before {
+    content: "";
+    position: absolute;
+    top: -12px;
+    height: 11px;
+    width: 2px;
+    background: #ddd;left: 50%;
+    right: auto;
+}
+.progress ol li.progress-active:before{background:#000}
+.progress ol li.progress-active:has(+ li){color:#000}
+  .progress > div{position:absolute; height: 8px; top:0; left:0}
+  
+  form div a{text-decoration:none;    float: right;
+    font-size: 13px;
+    text-transform: uppercase;
+    border-bottom: 1px dotted;}
+    .progress ol li:first-child:before {
+        left: 0;
+    }
+
+    .progress ol li:last-child:before {
+        left: auto;
+        right: 0;
+    }
+  /* Responsive adjustments */
+  @media (min-width: 768px) {
+	.hero-title {
+	  font-size: 3rem;
+	}
+	.hero-subtitle2 {
+	  font-size: 2rem;
+	}
+	.hero-tagline {
+	  font-size: 1.5rem;
+	}
+	.header-logo {
+	  width: 90px;
+	  height: 90px;
+	}
+}

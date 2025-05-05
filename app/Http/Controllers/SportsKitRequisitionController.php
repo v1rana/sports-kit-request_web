@@ -7,6 +7,7 @@ use App\Models\SportsKitRequisition;
 use App\Models\UserDetails;
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class SportsKitRequisitionController extends Controller {
     
@@ -35,13 +36,21 @@ class SportsKitRequisitionController extends Controller {
     }
     
     // Show the requisition form
-  public function create()
+  public function create($user_id)
 {
+    try {
+        $userId = Crypt::decryptString($user_id);
+        session([
+            'user_id' => $userId,
+        ]);
+    } catch (\Exception $e) {
+        abort(403, 'Invalid or tampered ID.');
+    }
     $userId = session('user_id'); // Assuming user ID is stored in session
-if(empty($userId)){
-	$userId ='1';
-	$_SESSION['user_id'] = '1';
-}
+    if(empty($userId)){
+        $userId ='1';
+        $_SESSION['user_id'] = '1';
+    }
 	//return $userId;
     // Get the user details
     $userDetail = UserDetails::where('user_id', $userId)->first();
@@ -70,64 +79,108 @@ if(empty($userId)){
 
     // Store the requisition request
     public function store(Request $request) {
-        // Debugging: Log request data (optional, remove in production)
-        \Log::info('Request Data:', $request->all());
-        
-        // Validate the request
-        $validatedData = $request->validate([
-            'district' => 'required|string|max:100',
-            'block' => 'required|string|max:100',
-            'area_name' => 'required|string|max:100',
-            'designation' => 'required|string|max:50',
-            'sports_equipment' => 'required|array|min:1',
-            'sports_equipment.*.name' => 'required|string',
-            'sports_equipment.*.equipment' => 'required|string',
-            'sports_equipment.*.quantity' => 'required|integer|min:1',
-            'sports_equipment.*.date' => 'required|date',
-            'sports_equipment.*.photo' => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048',
-            'fop_available' => 'required|string|max:50',
-            'players_count' => 'required|integer|min:1',
-            'last_issued_date' => 'nullable|date'
-        ]);
-        
-       // Process each equipment item
-    $finalEquipments = [];
+		
+		// return "hi";
+		// Validate the request
+$validatedData = $request->validate([
+    'name' => 'required|string|max:100',
+    'district' => 'required|string|max:100',
+    'block' => 'required|string|max:100',
+    'area_name' => 'required|string|max:100',
+    'designation' => 'required|string|max:50',
+    'specific_designation' => 'required|string|max:50',
+    'sports_equipment' => 'required|array',
+    'sports_equipment.*.name' => 'required|string',
+    'sports_equipment.*.equipment' => 'required|string',
+    'sports_equipment.*.quantity' => 'required|integer|min:1',
+    'sports_equipment.*.fop_available' => 'required|string|max:50',
+    'sports_equipment.*.players_count' => 'required|integer|min:1',
+    'sports_equipment.*.last_issued_date' => 'nullable|date',
+    //'sports_equipment.*.date' => 'date',
+    'sports_equipment.*.photo' => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048'
+]);
+// echo "<pre>";
+// print_r($_POST);
 
-   foreach ($request->sports_equipment as $index => $equipment) {
-    $photoPath = null;
+// Process equipment photos and data
+// Initialize an array to store the final equipment data
+$finalEquipments = [];
 
+// Loop through each equipment and process its data
+foreach ($request->sports_equipment as $equipment) {
+    $photoPath = null; // Initialize photoPath to null if no photo uploaded
+
+    // Check if a photo was uploaded for this equipment
     if (isset($equipment['photo']) && $equipment['photo'] instanceof \Illuminate\Http\UploadedFile) {
-        $filename = time() . '_' . $equipment['photo']->getClientOriginalName();
+        // Generate a unique filename to prevent overwriting files
+        $filename = uniqid() . '_' . $equipment['photo']->getClientOriginalName();
+        
+        // Move the uploaded photo to the public/uploads directory
         $equipment['photo']->move(public_path('assets/uploads'), $filename);
+        
+        // Store the photo path for this equipment
         $photoPath = 'assets/uploads/' . $filename;
     }
 
+    // Store the equipment data, including the photo path (if any)
     $finalEquipments[] = [
         'name' => $equipment['name'],
         'equipment' => $equipment['equipment'],
         'quantity' => $equipment['quantity'],
-        'date' => $equipment['date'],
-        'photo' => $photoPath,
+        'photo' => $photoPath, // Store the photo path (null if no photo uploaded)
+        'players_count' => $equipment['players_count'],
+        'last_issued_date' => $equipment['last_issued_date'],
+        'fop_available' => $equipment['fop_available']
     ];
 }
-        
-        // Store Data
-        SportsKitRequisition::create([
-            'applicant_id' => '1',
-            'district' => $validatedData['district'],
-            'block' => $validatedData['block'],
-            'area_name' => $validatedData['area_name'],
-            'designation' => $validatedData['designation'],
-            'sports_equipment' => json_encode($finalEquipments),
-			'sports_photos' => null, // Not used now
-            'fop_available' => $validatedData['fop_available'],
-            'players_count' => $validatedData['players_count'],
-            'last_issued_date' => $validatedData['last_issued_date'],
-            'status' => 'Pending'
-        ]);
-    
-        return redirect('/sports-kit')->with('success', 'Request submitted successfully!');
-    }
+
+// Encode equipment data as JSON
+$encodedEquipments = json_encode($finalEquipments);
+// return $encodedEquipments;
+// Check for duplicate
+$existing = SportsKitRequisition::where([
+    ['district', '=', $validatedData['district']],
+    ['block', '=', $validatedData['block']],
+    ['area_name', '=', $validatedData['area_name']],
+])->where('sports_equipment', $encodedEquipments)->first();
+
+if ($existing) {
+    return redirect('/sports-kit')->with('warning', 'You have already submitted this form.');
+}
+
+// Save to database
+$kit = SportsKitRequisition::create([
+    'applicant_id' => 'TEMP', // Temporary applicant ID before updating
+    'name' => $validatedData['name'],
+    'district' => $validatedData['district'],
+    'block' => $validatedData['block'],
+    'area_name' => $validatedData['area_name'],
+    'designation' => $validatedData['designation'],
+    'specific_designation' => $validatedData['specific_designation'],
+    'sports_equipment' => $encodedEquipments,
+    'sports_photos' => null,
+	'fop_available' => '',
+    'players_count' => 0,
+    'last_issued_date' => null,
+    'status' => 'Pending'
+]);
+
+// Generate applicant ID with padded number
+$kit->applicant_id = 'SKIT-' . str_pad($kit->id, 8, '0', STR_PAD_LEFT);
+
+// Save the updated applicant ID
+$kit->save();
+
+// Return the success view with the kit data
+return view('sports_kit.print', compact('kit'));
+}
+
+	
+	public function print($id)
+{
+    $kit = SportsKitRequisition::findOrFail($id);
+    return view('sports_kit.print', compact('kit'));
+}
     
 
     public function list() {

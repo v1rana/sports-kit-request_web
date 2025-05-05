@@ -44,7 +44,7 @@ Route::get('/sarpanch', [GramPanchayatSarpanchController::class, 'index']);
 Route::get('/municipal', [MunicipalBodyMemberController::class, 'index']);
 //Route::middleware(['auth'])->group(function () {
     // Route::get('/sports-kit', [SportsKitRequisitionController::class, 'create'])->name('sports_kit.form');
-    Route::get('/registration-form', [SportsKitRequisitionController::class, 'create'])->name('sports_kit.form');
+    Route::get('/registration-form/{user_id}', [SportsKitRequisitionController::class, 'create'])->name('sports_kit.form');
     Route::post('/sports-kit/store', [SportsKitRequisitionController::class, 'store'])->name('sports_kit.store');
 	Route::post('/sports-kit/uploadform', [SportsKitRequisitionController::class, 'uploadform'])->name('sports_kit.uploadform');
     Route::post('/sports-kit/logout', [SportsKitRequisitionController::class, 'logout']);

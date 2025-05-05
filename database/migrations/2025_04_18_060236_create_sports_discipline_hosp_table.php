@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('hosp_sports_discipline', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->tinyInteger('physical_disability')->default(2)->comment('1 for yes, for no');
-            $table->foreignId('disability_type_id')->constrained('disability_types')->onDelete('cascade')->nullable();
+            $table->tinyInteger('physical_disability')->default(2)->comment('1 for yes,2 for no');
+            $table->unsignedBigInteger('disability_type_id')->nullable();
+            $table->foreign('disability_type_id')->references('id')->on('disability_types')->onDelete('cascade');   
             $table->string('disability_doc')->nullable();
 
             $table->foreignId('tournament_id')->constrained('schedule_1_2')->onDelete('cascade');

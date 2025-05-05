@@ -27,7 +27,7 @@ class AuthController extends Controller
         ]);
     
         // Update or create user
-        $user = User::updateOrCreate(
+        $user = User::firstOrCreate(
             ['member_id' => $request->memberID],
             [
                 'mobile' => $request->mobileNo,
@@ -56,7 +56,7 @@ class AuthController extends Controller
                 'block_town' => $request->btName,
                 'ward_village' => $request->wvName,
                 'pincode' => $request->pinCode,
-                'email_id' => $request->email,
+                'email_id' => $user->email,
                 'benchmark_disability' => $request->disabiltyType,
                 'caste_category' => $request->casteCategoryName,
                 'highest_qualification' => $request->qualificationName,

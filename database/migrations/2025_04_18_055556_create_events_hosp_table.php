@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('hosp_events', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->string('aadhaar');
+            // $table->string('aadhaar');
             $table->string('event_type')->nullable();
             $table->foreignId('tournament_id')->constrained('schedule_1_2')->onDelete('cascade');
             $table->tinyInteger('domicile')->default(0)->comment('1 for yes , 2 for no');
