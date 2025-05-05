@@ -47,7 +47,9 @@ return new class extends Migration
             $table->string('approve_reject_datetime')->nullable();
             $table->string('enquiry_pdf_datetime')->nullable();
             $table->string('replied_pdf_datetime')->nullable();
+            $table->string('certificate_upload_datetime')->nullable();
             $table->string('dso_id')->nullable();
+            $table->string('rejection_remarks')->nullable();
 			$table->string('certificate_pdf')->nullable();
             $table->timestamps();
         });

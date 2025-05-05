@@ -85,7 +85,7 @@
         <img src="{{ url('/' . $item['photo']) }}" width="50" height="50" class="border"/>
     </td>
     <td>{{ \Carbon\Carbon::parse($application->created_at)->format('d M Y, h:i A') }}</td>
-	<td>{{ $application->vendor_id != '' ? 'Ready for Disbursement' : 'Pending' }}</td>
+	<td>{{ $application->vendor_id != '' ? 'Ready for Disbursement' : 'In-Progress' }}</td>
 </tr>
 @endforeach
 

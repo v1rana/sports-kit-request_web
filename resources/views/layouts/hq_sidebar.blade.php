@@ -29,6 +29,13 @@
                     <i class="fa-regular fa-rectangle-list"></i> <span> Kit Request List</span>
                 </a>
             </li>
+			
+			<li class="nav-item">
+                <a href="{{ route('hq.hosp.requests') }}" 
+                   class="nav-link {{ request()->routeIs('hq.hosp.requests') ? 'active' : '' }}">
+                    <i class="fa-regular fa-rectangle-list"></i> <span> HOSP Request List</span>
+                </a>
+            </li>
            
         </ul>
     </div>

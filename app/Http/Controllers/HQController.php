@@ -74,4 +74,15 @@ class HQController extends Controller
 
     return redirect()->back()->with('success', 'Vendor assigned successfully!');
 }
+
+	public function hosp_requests()
+    {
+       /*  $sportsRequests = SportsKitRequisition::with('hqSportsRequest')
+        ->where('status', 'Approved') // Only fetch verified requests
+        ->get();
+
+        $vendors = Vendor::all(); */
+
+        return view('hq.hosp_requests_list');
+    }
 }

@@ -60,7 +60,7 @@
 							@elseif($request->status == 'Not Verified')
 								<span class="badge rounded-pill bg-warning w-100"><i class="fa-solid fa-xmark"></i> Not Verified</span>
 							@else
-								<span class="badge rounded-pill bg-info w-100"><i class="fa-solid fa-hourglass-half"></i> Pending</span>
+								<span class="badge rounded-pill bg-info w-100"><i class="fa-solid fa-hourglass-half"></i> In-Progress</span>
 							@endif
 						</strong>
 					</td>

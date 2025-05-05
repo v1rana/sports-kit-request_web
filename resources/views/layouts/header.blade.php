@@ -1,4 +1,4 @@
-<header class="container">
+<!-- <header class="container">
 		<div class="row justify-content-between py-4">
 			<div class="col-10">
 				<div class="logo">
@@ -16,4 +16,4 @@
 				<img class="w-100" src="{{ url('assets/job_app/images/DigitalIndia.png') }}" alt="Sports Haryana Govt">
 			</div>
 		</div>
-	</header>
+	</header> -->

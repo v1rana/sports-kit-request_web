@@ -125,33 +125,30 @@
 							</button>
 								</form>
 
-								<form action="#" method="POST" style="display:inline;">
-									@csrf
-									<!--button type="button" id="" class="btn btn-danger w-100">
-										Rejected
-									</button-->
-									<!-- Button trigger modal -->
-<button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#rejectRemarkModal">
+								<!-- Button to trigger modal -->
+<button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#rejectRemarkModal{{ $certificate->id }}">
   Rejected
 </button>
 
 <!-- Modal -->
-<div class="modal fade" id="rejectRemarkModal" tabindex="-1" aria-labelledby="rejectRemarkModalLabel" aria-hidden="true">
-  <div class="modal-dialog  modal-dialog-centered">
+<div class="modal fade" id="rejectRemarkModal{{ $certificate->id }}" tabindex="-1" aria-labelledby="rejectRemarkModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      
-      <div class="modal-body">
-		<h5>Rejection Remarks</h5>
-        <textarea class="form-control"></textarea>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+      <form action="{{ route('dso.reject', $certificate->id) }}" method="POST">
+        @csrf
+        <div class="modal-body">
+          <h5>Rejection Remarks</h5>
+          <textarea class="form-control" name="rejection_remark" required></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Submit Rejection</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
-								</form>
+
                             @endif
                         </strong>
                 <!--@if($certificate->status == 'Pending')
@@ -206,14 +203,14 @@
   <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modal{{ $certificate->id }}">Modal title</h5>
+        <h5 class="modal-title" id="modal{{ $certificate->id }}">Gradation Application</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div class="row">
 			<div class="col-xs-12 col-sm-6 col-md-3">
 				<label>Application Submitted Date</label>
-				<h6>2 Apr 2025, 04:35 PM</h6>
+				<h6> Datetime: {{ \Carbon\Carbon::parse($certificate->created_at)->format('d M Y, h:i A') }}</h6>
 			</div>
 			<div class="col-xs-12 col-sm-6 col-md-3">
 				<label>Application Status</label>
@@ -230,19 +227,19 @@
 							</button>
 								</form>
 
-								<form action="#" method="POST" style="display:inline;">
-									@csrf
+								
 									<a href="javascript:void(0);" id="reject-application" class="btn btn-danger">
 										Rejected
 									</a>
 									
-								</form>
+								
                             @endif
                         </strong></h6>
 			</div>
 			
 			<div class="col-xs-12 col-sm-6 col-md-3">
-			<div class="rejection-remarks"><label>Remarks</label><div class="d-flex"><input type="text" class="form-control" /><button class="btn btn-primary " type="submit">Submit</button></div></div>
+			<div class="rejection-remarks"><label>Rejection Remarks</label><div class="d-flex"><form action="{{ route('dso.reject', $certificate->id) }}" method="POST" style="display:inline;">
+									@csrf<textarea class="form-control" name="rejection_remark" required></textarea><button class="btn btn-primary " type="submit">Submit</button></form></div></div>
 			</div>
 			
 			<div class="col-xs-12 col-sm-12 col-md-12">
@@ -251,7 +248,7 @@
 			</div>
 			<div class="col-xs-12 col-sm-6 col-md-3">
 				<label>Certificate Number</label>
-				<h6>25PAGO4D258</h6>
+				<h6>{{ $certificate->certificate_no }}</h6>
 			</div>
 			<div class="col-xs-12 col-sm-6 col-md-3">
 				<label>Sports Person Name</label>
@@ -384,9 +381,26 @@
 		</div>
       </div>
       <div class="modal-footer justify-content-between">
-		<h5 class="text-danger" >
-			Application Timeline - 20Days
-		</h5>
+		@php
+    $createdAt = \Illuminate\Support\Carbon::parse($certificate->created_at);
+
+    // Use certificate_upload_datetime if available, otherwise use now
+    $endDate = $certificate->certificate_upload_datetime
+        ? \Illuminate\Support\Carbon::parse($certificate->certificate_upload_datetime)
+        : now();
+
+    // Calculate only full days (ignore fractions)
+    $totalHours = $createdAt->diffInHours($endDate);
+    $totalDays = floor($totalHours / 24);
+@endphp
+
+<h5 class="text-danger">
+    Application Timeline - {{ $totalDays }} Days
+</h5>
+
+
+
+
         <div>
 			<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 			<button type="button" class="btn btn-primary">Save changes</button>

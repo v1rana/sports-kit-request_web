@@ -56,38 +56,25 @@ class DSOController extends Controller
          ->get();
 
          // Format Month-Year after fetching results
-foreach ($sportsCertificates as $certificate) {
-    if (!empty($certificate->month_year)) {
-        $certificate->formatted_month_year = \Carbon\Carbon::createFromFormat('Y-m', $certificate->month_year)->format('F Y');
-    } else {
-        $certificate->formatted_month_year = 'N/A';
-    }
-}
+		foreach ($sportsCertificates as $certificate) {
+			if (!empty($certificate->month_year)) {
+				$certificate->formatted_month_year = \Carbon\Carbon::createFromFormat('Y-m', $certificate->month_year)->format('F Y');
+			} else {
+				$certificate->formatted_month_year = 'N/A';
+			}
+		}
 
         return view('dso.grad_list', compact('sportsCertificates'));
 
     }
     public function create() {
-        // return "hi";
+        
         return view('sports_kit.requisition');
    }
 
    // Store the requisition request
    public function store(Request $request) {
-// return $request->validate();exit;
-       // $request->merge([
-       //     'sports_equipment' => array_filter($request->input('sports_equipment', []), function ($equipment) {
-       //         return isset($equipment['name'], $equipment['equipment'], $equipment['quantity']) 
-       //             && !empty($equipment['name']) 
-       //             && !empty($equipment['equipment']) 
-       //             && !empty($equipment['quantity']);
-       //     }),
-       //     'sports_photos' => array_filter($request->input('sports_photos', []), function ($photo) {
-       //         return isset($photo['date'], $photo['photo']) 
-       //             && !empty($photo['date']) 
-       //             && is_file($photo['photo']); // Ensure it's a file
-       //     }),
-       // ]);
+
        $request->validate([
            'district' => 'required|string|max:100',
            'block' => 'required|string|max:100',
@@ -186,18 +173,18 @@ foreach ($sportsCertificates as $certificate) {
        return redirect()->back()->with('success', 'Request Approved successfully!');
    }
 
-   public function RejectRequest($id)
+   public function RejectRequest(Request $request,$id)
    {
-    $request = sports_gradation_certificate::find($id);
+    $certificate = sports_gradation_certificate::find($id);
 
-    if (!$request) {
+    if (!$certificate) {
         return redirect()->back()->with('error', 'Request not found!');
     }
 
-    $request->status = 'Rejected';
-    //$request->status = 'Verified'; // Update status
-    $request->approve_reject_datetime = now();
-    $request->save();
+    $certificate->status = 'Rejected';
+    $certificate->rejection_remarks = $request->rejection_remark;
+    $certificate->approve_reject_datetime = now();
+    $certificate->save();
 
        return redirect()->back()->with('success', 'Request Rejected successfully!');
    }
