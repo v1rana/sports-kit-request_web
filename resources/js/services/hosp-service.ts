@@ -77,7 +77,6 @@ export const login = async (data) => {
         throw error;
     }
 };
-
 export const updateUserData = async (form_data) => {
     try {
         console.log('API_BASE_URL',API_BASE_URL);
