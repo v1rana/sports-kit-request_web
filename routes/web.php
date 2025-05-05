@@ -53,7 +53,7 @@ Route::get('/municipal', [MunicipalBodyMemberController::class, 'index']);
 	Route::get('/sports-requests', [SportsKitRequisitionController::class, 'index'])->name('sports.requests');
     Route::get('/gm/dashboard', [SportsKitRequisitionController::class, 'dashboard'])->name('sports_kit.dashboard');
     Route::get('/sport-skit/list', [SportsKitRequisitionController::class, 'list'])->name('sports_kit.list');
-	Route::get('/sports-kit/print/{id}', [SportsKitController::class, 'print'])->name('sports-kit.print');
+	Route::get('/sports-kit/print/{id}', [SportsKitRequisitionController::class, 'print'])->name('sports-kit.print');
     Route::post('/assign-vendor', [SportsKitRequisitionController::class, 'storeVendorAssignment'])->name('assign.vendor.store');
 	
 	
