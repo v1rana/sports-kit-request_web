@@ -29,7 +29,7 @@
             @yield('content')
         </div>
     </div>
-    <footer>
+   <!-- <footer>
 				<div class="container-fluid">
 					<div class="row justify-content-center">
 						<div class="col-xs-12 col-sm-8">
@@ -43,6 +43,6 @@
 						</div>
 					</div>
 				</div>
-			</footer>
+			</footer>-->
 </body>
 </html>

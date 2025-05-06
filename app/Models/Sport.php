@@ -12,8 +12,11 @@ class Sport extends Model
     protected $fillable = ['sports_name'];
 
     // Many-to-Many Relationship
-    public function vendors()
-    {
-        return $this->belongsToMany(Vendor::class, 'sport_vendor');
-    }
+   public function vendors()
+{
+    return $this->belongsToMany(Vendor::class, 'sport_vendor')
+                ->withPivot('rate', 'photo')
+                ->withTimestamps();
+}
+
 }

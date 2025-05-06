@@ -51,6 +51,10 @@ return new class extends Migration
             $table->string('dso_id')->nullable();
             $table->string('rejection_remarks')->nullable();
 			$table->string('certificate_pdf')->nullable();
+			$table->string('verification_by_sportsperson')->nullable();
+            $table->string('user_id')->nullable();
+            $table->string('verify_status')->nullable();
+            $table->string('appl_id')->nullable();
             $table->timestamps();
         });
     }

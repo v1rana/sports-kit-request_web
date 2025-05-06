@@ -18,60 +18,151 @@
 					<th>Block</th>
 					<th>District</th>
 					<th>Area Name</th>
-					<th>Sports Request Details</th>
+					<th>Sports</th>
+					<th>Equipemnt</th>
+					<th>Quantity</th>
 					<th>Availability Of FoP/Hall/Poles</th>
 					<th>Tentative Players</th>
 					<th>Date Of Last Issued Sports</th>
 					<th>Application Status</th>
-					<th width="160px">Assign Vendor</th>
+					<!--<th width="160px">Assign Vendor</th>-->
 				</tr>
 			</thead>
 			<tbody>
 				@foreach($sportsRequests as $index => $request)
 				<tr>
-					<td>{{ $index + 1 }}.</td>
-					<td>{{ $request['designation'] }}</td>
-					<td>{{ $request['block'] }}</td>
-					<td>{{ $request['district'] }}</td>
-					<td>{{ $request['area_name'] }}</td>
-					
-					<td>
-						@php
-							$equipmentList = json_decode($request['sports_equipment'], true);
-						@endphp
-						@if(is_array($equipmentList))
-							<ul>
-								@foreach($equipmentList as $equipment)
-									<li>{{ $equipment['name'] }} - {{ $equipment['equipment'] }} (Qty: {{ $equipment['quantity'] }})</li>
-								@endforeach
-							</ul>
-						@else
-							<span>No equipment data</span>
-						@endif
-					</td>
-					<td>{{ $request['fop_available'] }}</td>
-					<td>{{ $request['players_count'] }}</td>
-					<td>{{ date('d-m-Y', strtotime($request['last_issued_date'])) }}</td>
-					<td>{{ $request['status'] }}</td>
-					<td>
-						<form action="{{ route('hq.assignvendor') }}" method="POST">
-							@csrf
-							<input type="hidden" name="request_id" value="{{ $request->id }}">
-							
-							<select name="vendor_id" class="form-select" required>
-								<option value="">Select Vendor</option>
-								@foreach($vendors as $vendor)
-									<option value="{{ $vendor->id }}" 
-										{{ isset($request->vendor_id) && $request->vendor_id == $vendor->id ? 'selected' : '' }}>
-										{{ $vendor->vendor_name }}
-									</option>
-								@endforeach
-							</select>
-							<button type="submit" class="btn btn-primary mt-2 w-100">Assign Vendor</button>
-						</form>
+    <td>{{ $index + 1 }}.</td>
+    <td>{{ $request['designation'] }}</td>
+    <td>{{ $request['block'] }}</td>
+    <td>{{ $request['district'] }}</td>
+    <td>{{ $request['area_name'] }}</td>
 
-					</td>
-				</tr>
+    {{-- Sports --}}
+    <td>
+        @php $equipmentList = json_decode($request['sports_equipment'], true); @endphp
+        @if(is_array($equipmentList))
+            <ul class="list-unstyled mb-0">
+                @foreach($equipmentList as $equipment)
+                    <li><strong>{{ $equipment['name'] ?? 'N/A' }}</strong></li>
+                @endforeach
+            </ul>
+        @else
+            <span>N/A</span>
+        @endif
+    </td>
+
+    {{-- Equipment --}}
+    <td>
+        @if(is_array($equipmentList))
+            <ul class="list-unstyled mb-0">
+                @foreach($equipmentList as $equipment)
+                    <li>{{ $equipment['equipment'] ?? 'N/A' }}</li>
+                @endforeach
+            </ul>
+        @else
+            <span>N/A</span>
+        @endif
+    </td>
+
+    {{-- Quantity --}}
+    <td>
+        @if(is_array($equipmentList))
+            <ul class="list-unstyled mb-0">
+                @foreach($equipmentList as $equipment)
+                    <li>{{ $equipment['quantity'] ?? '0' }}</li>
+                @endforeach
+            </ul>
+        @else
+            <span>N/A</span>
+        @endif
+    </td>
+
+    {{-- Availability of FoP/Hall/Poles --}}
+    <td>
+        @if(is_array($equipmentList))
+            <ul class="list-unstyled mb-0">
+                @foreach($equipmentList as $equipment)
+                    <li>{{ $equipment['fop_available'] ?? 'N/A' }}</li>
+                @endforeach
+            </ul>
+        @else
+            <span>N/A</span>
+        @endif
+    </td>
+
+    {{-- Tentative Players --}}
+    <td>
+        @if(is_array($equipmentList))
+            <ul class="list-unstyled mb-0">
+                @foreach($equipmentList as $equipment)
+                    <li>{{ $equipment['players_count'] ?? 'N/A' }}</li>
+                @endforeach
+            </ul>
+        @else
+            <span>N/A</span>
+        @endif
+    </td>
+
+    {{-- Last Issued Date --}}
+    <td>
+        @if(is_array($equipmentList))
+            <ul class="list-unstyled mb-0">
+                @foreach($equipmentList as $equipment)
+                    <li>
+                        @if(!empty($equipment['last_issued_date']))
+                            {{ \Carbon\Carbon::parse($equipment['last_issued_date'])->format('d-m-Y') }}
+                        @else
+                            N/A
+                        @endif
+                    </li>
+                @endforeach
+            </ul>
+        @else
+            <span>N/A</span>
+        @endif
+    </td>
+
+    {{-- Assign Vendor --}}
+    <td>
+        @if(is_array($equipmentList))
+    <ul class="list-unstyled mb-0">
+        @foreach($equipmentList as $index => $equipment)
+            @php
+                $assigned = \App\Models\EquipmentVendorAssignment::where('request_id', $request->id)
+                    ->where('equipment_name', $equipment['name'])
+                    ->first();
+            @endphp
+            <li class="mb-2">
+                <form action="{{ route('hq.assignvendor') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="request_id" value="{{ $request->id }}">
+                    <input type="hidden" name="equipment_name" value="{{ $equipment['name'] }}">
+
+                    <strong>
+                        {{ $equipment['name'] }} - {{ $equipment['equipment'] }} (Qty: {{ $equipment['quantity'] }})
+                    </strong>
+
+                    <select name="vendor_id" class="form-select form-select-sm mt-1 mb-1" required>
+                        <option value="">Select Vendor</option>
+                        @foreach($vendors as $vendor)
+                            <option value="{{ $vendor->id }}"
+                                {{ $assigned && $assigned->vendor_id == $vendor->id ? 'selected' : '' }}>
+                                {{ $vendor->vendor_name }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <button type="submit" class="btn btn-sm btn-primary w-100">Assign</button>
+                </form>
+            </li>
+        @endforeach
+    </ul>
+@else
+    <span>No equipment data</span>
+@endif
+    </td>
+</tr>
+
 				@endforeach
 			</tbody>
 		</table>

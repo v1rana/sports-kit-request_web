@@ -47,12 +47,18 @@ Route::get('/municipal', [MunicipalBodyMemberController::class, 'index']);
     Route::get('/registration-form/{user_id}', [SportsKitRequisitionController::class, 'create'])->name('sports_kit.form');
     Route::post('/sports-kit/store', [SportsKitRequisitionController::class, 'store'])->name('sports_kit.store');
 	Route::post('/sports-kit/uploadform', [SportsKitRequisitionController::class, 'uploadform'])->name('sports_kit.uploadform');
+	Route::get('/sports-kit/print-temp', [SportsKitRequisitionController::class, 'printTemporary'])->name('sports-kit.print.temp');
+	Route::get('/sports-kit/sms', [SportsKitRequisitionController::class, 'sendsms'])->name('sports-kit.send.sms');
     Route::post('/sports-kit/logout', [SportsKitRequisitionController::class, 'logout']);
 	Route::get('/sports-requests', [SportsKitRequisitionController::class, 'index'])->name('sports.requests');
     Route::get('/gm/dashboard', [SportsKitRequisitionController::class, 'dashboard'])->name('sports_kit.dashboard');
     Route::get('/sport-skit/list', [SportsKitRequisitionController::class, 'list'])->name('sports_kit.list');
 	Route::get('/sports-kit/print/{id}', [SportsKitController::class, 'print'])->name('sports-kit.print');
     Route::post('/assign-vendor', [SportsKitRequisitionController::class, 'storeVendorAssignment'])->name('assign.vendor.store');
+	
+	
+	Route::post('/send-otp', [SportsKitRequisitionController::class, 'sendOTP'])->name('send.otp');
+	Route::post('/verify-otp', [SportsKitRequisitionController::class, 'verifyOTP'])->name('verify.otp');
     Route::get('/hq/sports-requests', [HQController::class, 'index'])->name('hq.sports.requests');
     Route::get('/hq/hosp-requests', [HQController::class, 'hosp_requests'])->name('hq.hosp.requests');
     Route::get('/hq/dashboard', [HQController::class, 'dashboard'])->name('hq.sports_kit.dashboard');

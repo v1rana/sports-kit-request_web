@@ -8,16 +8,15 @@ return new class extends Migration {
     public function up() {
         Schema::create('sports_kit_requisitions', function (Blueprint $table) {
             $table->id(); // Primary Key
-            $table->unsignedBigInteger('applicant_id'); // Foreign Key
+            $table->string('applicant_id'); // Foreign Key
             $table->string('district', 100);
+            $table->string('name', 100);
             $table->string('block', 100);
             $table->string('area_name', 100);
             $table->string('designation', 50);
+            $table->string('specific_designation', 50);
             $table->json('sports_equipment'); // JSON Column
-            $table->json('sports_photos')->nullable();
-            $table->enum('fop_available', ['Yes', 'No']);
-            $table->integer('players_count');
-            $table->date('last_issued_date')->nullable();
+            $table->string('gram_municipal_signed_document')->nullable();
             $table->enum('verification_status', ['Verified', 'Not Verified']);
             $table->enum('approval_status', ['Approved', 'Rejected']);
             $table->enum('status', ['Pending', 'Verified', 'Not Verified', 'Approved', 'Rejected', 'Disbursed'])->default('Pending');

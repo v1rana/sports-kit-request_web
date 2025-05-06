@@ -25,9 +25,9 @@
 							<li class="nav-item" role="presentation">
 								<button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Gradations</button>
 							</li>
-							<li class="nav-item" role="presentation">
+							<!--<li class="nav-item" role="presentation">
 								<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Jobs</button>
-							</li>
+							</li>-->
 						</ul>
 						<div class="tab-content" id="myTabContent">
 						<div class="tab-pane fade  show active" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -130,8 +130,8 @@
             </div>
         </div></div>
 						  
-						  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-						  <!-- Dashboard Cards -->
+						 <!-- <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+						  
         <div class="row mt-4">
             <div class="col-4">
                 <div class="d-flex rounded justify-content-center flex-column p-3 text-center bg-primary text-white" style="height:220px;">
@@ -169,7 +169,7 @@
                 </div>
             </div>
         </div>
-						  </div>
+						  </div>-->
 						</div>
 					</div>
         

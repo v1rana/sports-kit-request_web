@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { useForm, useFormState } from "react-hook-form";
 import {
+    fetchDeclarationDetails,
+    fetchDeclarationsList,
     fetchEducation,
     fetchEvent,
     fetchGameList,
     fetchSchedule12Listing,
     fetchSportsDiscipline,
+    saveDeclarations,
     saveEducation,
     saveEvent,
     saveSportsDiscipline,
@@ -61,6 +64,8 @@ const HospForm = () => {
         tournament_venue: string;
         medal_won: string;
         participation_level: string;
+        declaration_file:string;
+        declaration_ids:string;
     };
 
     type FormErrors = Partial<Record<keyof SportsDisciplineFormData, string>>;
@@ -81,7 +86,22 @@ const HospForm = () => {
         participation_level: "",
     });
 
+    const defaultDeclarations = [
+        "1. I have read the Haryana Outstanding Sportspersons (Recruitment and Condition of Service) Rules, 2021 and declare that I am eligible for submission of my application for consideration of appointment under these Rules.",
+        "2. I have enclosed self-attested copies of all documents in support of my application.",
+        "3. I have played in 50% or more of the games played by team in the tournament at serial No.12 above.",
+        "4. I did not represent a State/UT other than Haryana at the national level.",
+        "5. I am not guilty of doping, sexual harassment and abuse, competitive manipulation like betting, inside information, match fixing, tanking, threatening the integrity and essence of sports.",
+        "6. If appointment is offered, I undertake that I shall have no subsisting contract for pecuniary gains like commercial endorsement or professional sport before joining the service.",
+        "7. I forego my earlier claim made under the Haryana Outstanding Sportsperson.",
+      ];
+
     const [sportdiserrors, setErrors] = useState<FormErrors>({});
+    const [declarationList, setDeclarationList] = useState<string[]>(defaultDeclarations);
+    const [diclarationerrors, setDiclarationErrors] = useState({
+        msg:''
+    });
+    
        // useEffect to filter games based on formData
  
     const fetchGames = async (is_para = 0) => {
@@ -181,10 +201,58 @@ const HospForm = () => {
                 console.error("Error loading form data", error);
             }
         };
+        const fetchDeclarationDetail = async () => {
+            try {
+                const data = await fetchDeclarationDetails(); 
+
+               
+                const fetchedDeclarations = data.declaration_ids;
+          
+                // Convert array of declaration_id into the checkbox state
+                const updatedDeclarations: any = { ...declarations };
+                fetchedDeclarations.forEach((item: any) => {
+                  updatedDeclarations[`d${item.declaration_id}`] = true;
+                });
+          
+                setDeclarations(updatedDeclarations);
+          
+                // If all declarations were selected
+                const allChecked = Object.values(updatedDeclarations).every(Boolean);
+                setAcceptAll(allChecked);
+          
+                // Set previously uploaded file path if needed
+                if (fetchedDeclarations.length > 0) {
+                  setDeclarationFile(fetchedDeclarations[0].declaration_file);
+                }
+               
+            } catch (error) {
+                console.error("Error loading form data", error);
+            }
+        };
+        const fetchDeclarations = async () => {
+            try {
+                const data = await fetchDeclarationsList();
+                const apiDeclarations = data.declarations;
+                const texts = apiDeclarations.map((item: any, i: number) => `${i + 1}. ${item.point_text}`);
+                setDeclarationList(texts);
+          
+                // Sync checkbox state
+                const newDeclarationState: Record<string, boolean> = {};
+                texts.forEach((_, i) => {
+                  newDeclarationState[`d${i + 1}`] = false;
+                });
+                setDeclarations(newDeclarationState);
+            } catch (error) {
+                console.error("Error loading form data", error);
+            }
+        };
         fetchEventData();
         fetchEducationData();
         fetchSportsDisciplineData();
         fetchGames();
+        fetchDeclarations();
+        fetchDeclarationDetail();
+        
         
     }, []);
 
@@ -250,11 +318,11 @@ const HospForm = () => {
         }
     };
 
-    const handleSubmit1 = async () => {
+    const finalSubmit = async () => {
         document.body.classList.add("loaded");
         setIsSubmitting(true);
         await new Promise((res) => setTimeout(res, 1000));
-        setCurrentStep((nxt) => nxt + 1);
+        // setCurrentStep((nxt) => nxt + 1);
         document.body.classList.remove("loaded");
         setIsSubmitting(false);
         setIsSubmitted(true);
@@ -328,7 +396,53 @@ const HospForm = () => {
         setDeclarations(updatedDeclarations);
         setAcceptAll(newValue);
     };
-
+    const [declarationFile, setDeclarationFile] = useState<File | null>(null);
+   
+    const handleDeclarationFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files?.[0]) {
+          setDeclarationFile(e.target.files[0]);
+        }
+      };
+    const getDeclarationIds = () => {
+        return Object.entries(declarations)
+          .filter(([_, checked]) => checked)
+          .map(([key]) => parseInt(key.replace('d', ''))); // d1 => 1
+      };
+      
+      const handleDeclarationSubmit = async () => {
+        const formData = new FormData();
+        
+        // Append other form fields here...
+      
+        const declarationIds = getDeclarationIds();
+        declarationIds.forEach((id) => formData.append('declaration_ids[]', id.toString()));
+      
+        if (declarationFile) {
+          formData.append('declaration_file', declarationFile);
+        }
+      
+        try {
+          const response = await saveDeclarations(formData);
+          finalSubmit();
+      
+        } catch (error) {
+          console.error('Error:', error);
+          if (error.response?.status === 422) {
+            const backendErrors = error.response.data.errors;
+            Object.keys(backendErrors).forEach((field) => {
+                console.log('field',field);
+                console.log('backendErrors[field]',backendErrors[field]);
+                console.log('backendErrors[field][0]',backendErrors[field][0]);
+                // setFormErrors(validationErrors);
+              
+                setDiclarationErrors({
+                    msg: backendErrors[field][0] || '',
+                  });
+            });
+        }
+        }
+      };
+      
     const handlePrint = () => {
         const content: any = document.getElementById("print-section");
         const printWindow: any = window.open("", "", "width=800,height=600");
@@ -604,6 +718,13 @@ const HospForm = () => {
 
         const response = await saveSportsDiscipline(submissionData);
         if (currentStep < stepsTotal) setCurrentStep((nxt) => nxt + 1);
+
+        navigate({
+            pathname: location.pathname, // or keep current path
+            search: createSearchParams({
+                step: currentStep+1,
+            }).toString(),
+        });
         // axios.post('/api/sports-discipline', submissionData)
     };
 
@@ -679,7 +800,7 @@ const HospForm = () => {
                                 currentStep === 4 ? "progress-active" : ""
                             }
                         >
-                            <span>4. Declartion</span>
+                            <span>4. Declaration</span>
                         </li>
                     </ol>
                     <div
@@ -697,7 +818,7 @@ const HospForm = () => {
                         <div className="preloader-section section-right"></div>
                     </div>
                 )}
-                <div className="float-end m-2" hidden={currentStep !== 7}>
+                <div className="float-end m-2" hidden={currentStep !== 4}>
                     <button
                         className="btn btn-primary me-1"
                         onClick={handlePrint}
@@ -728,7 +849,7 @@ const HospForm = () => {
                                             fetchTournamentList(e.target.value)
                                         }
                                     >
-                                        <option value="" disabled>
+                                        <option value="" selected disabled>
                                             Select
                                         </option>
                                         <option value="1">
@@ -776,7 +897,7 @@ const HospForm = () => {
                                                 : ""
                                         }`}
                                     >
-                                        <option value="" disabled>
+                                        <option value="" selected disabled>
                                             Select
                                         </option>
                                         {tournamentList.map((item: any) => (
@@ -806,7 +927,7 @@ const HospForm = () => {
                                             errors.domicile ? "is-invalid" : ""
                                         }`}
                                     >
-                                        <option value="" disabled>
+                                        <option value="" selected disabled>
                                             Select
                                         </option>
                                         <option value="1">Yes</option>
@@ -871,7 +992,7 @@ const HospForm = () => {
                                                 : ""
                                         }`}
                                     >
-                                        <option value="" disabled>
+                                        <option value="" selected disabled>
                                             Select
                                         </option>
                                         <option value="1">Yes</option>
@@ -1031,7 +1152,7 @@ const HospForm = () => {
                                                 )
                                             }
                                         >
-                                            <option value="">Select</option>
+                                            <option value="" selected disabled>Select</option>
                                             <option value="12">12th</option>
                                             <option value="Graduation">
                                                 Graduation
@@ -1194,7 +1315,7 @@ const HospForm = () => {
                                             value={formData.disability_type_id}
                                             onChange={handleSportsDiscChanges}
                                         >
-                                            <option value="">Select</option>
+                                            <option value="" selected disabled>Select</option>
                                             <option value="1">Para</option>
                                             <option value="2">Blind</option>
                                             <option value="3">Deaf</option>
@@ -1225,6 +1346,19 @@ const HospForm = () => {
                                         <div className="invalid-feedback">
                                             {sportdiserrors.disability_doc}
                                         </div>
+                                        {formData.disability_doc && (
+                                            <div className="mt-1">
+                                                <a
+                                                    href={`/api/certificates/${encodeURIComponent(
+                                                        formData.disability_doc
+                                                    )}/education-certificates`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    View Uploaded Certificate
+                                                </a>
+                                            </div>
+                                        )}
                                     </div>
                                 </>
                             )}
@@ -1244,7 +1378,7 @@ const HospForm = () => {
                                         setOrganizationCommittee(e);
                                     }}
                                 >
-                                    <option value="" disabled>
+                                    <option value="" selected disabled>
                                         Select
                                     </option>
                                     {tournamentList.map((item: any) => (
@@ -1297,7 +1431,7 @@ const HospForm = () => {
                                         handleTournamentLevel(e.target.value);
                                     }}
                                 >
-                                    <option value="">Select</option>
+                                    <option value="" selected disabled>Select</option>
                                     <option value="1">National</option>
                                     <option value="2">International</option>
                                 </select>
@@ -1325,7 +1459,7 @@ const HospForm = () => {
                                     }}
                                     disabled={tournament_level == "2"}
                                 >
-                                    <option value="">Select</option>
+                                    <option value="" selected disabled>Select</option>
                                     <option value="1">Yes</option>
                                     <option value="2">No</option>
                                 </select>
@@ -1355,7 +1489,7 @@ const HospForm = () => {
                                         handleSportsDiscChanges(e);
                                     }}
                                 >
-                                    <option value="">Select</option>
+                                    <option value="" selected disabled>Select</option>
                                     {gamesList
                                         .filter((game: any) =>
                                         formData?.physical_disability === '1' ? game.is_para === 1 : game.is_para === 0
@@ -1387,11 +1521,12 @@ const HospForm = () => {
                                 <div className="invalid-feedback">
                                     {sportdiserrors.certificate_path}
                                 </div>
-                                {sportdiserrors.certificate_path && (
+                                
+                                {formData.certificate_path && (
                                 <div className="mt-1">
                                                 <a
                                                     href={`/api/certificates/${encodeURIComponent(
-                                                        sportdiserrors.certificate_path
+                                                        formData.certificate_path
                                                     )}/education-certificates`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
@@ -1454,7 +1589,7 @@ const HospForm = () => {
                                     }`}
                                     onChange={handleSportsDiscChanges}
                                 >
-                                    <option value="">Select</option>
+                                    <option value="" selected disabled>Select</option>
                                     <option value="gold">Gold</option>
                                     <option value="silver">Silver</option>
                                     <option value="bronze">Bronze</option>
@@ -1479,7 +1614,7 @@ const HospForm = () => {
                                     }`}
                                     onChange={handleSportsDiscChanges}
                                 >
-                                    <option value="">Select</option>
+                                    <option value="" selected disabled>Select</option>
                                     <option value="25_plus">25% or more</option>
                                     <option value="less_25">
                                         Less than 25%
@@ -1488,7 +1623,28 @@ const HospForm = () => {
                                 <div className="invalid-feedback">
                                     {sportdiserrors.participation_level}
                                 </div>
+                               
                             </div>
+                            {/* <div id="text-center mt-4">
+                                {currentStep > 1 && (
+                                    <button
+                                       
+                                        type="button"
+                                        onClick={prevStep}
+                                        className="save-btn m-2"
+                                    >
+                                        Previous
+                                    </button>
+                                )}
+
+                                <button
+                                  
+                                    type="submit"
+                                    className="save-btn"
+                                >
+                                    Next
+                                </button>
+                            </div> */}
 
                             <div className="col-12 text-center mt-3">
                             {currentStep > 1 && (
@@ -1530,22 +1686,16 @@ const HospForm = () => {
                         <form
                             className="needs-validation row g-3"
                             hidden={currentStep === 4 ? false : true}
+                            onSubmit={handleSubmit(handleDeclarationSubmit)}
+                            
                         >
                             <h3 className="text-center">Declaration</h3>
                             <div className="">
                                 {/* <p className="text-center mb-4">Declaration</p> */}
                                 <div className="row">
-                                    <div className="col-xs-12 col-sm-12 col-md-12 mb-3">
+                                    <div className="col-md-12 mb-3">
                                         <p>Declaration by Sportsperson</p>
-                                        {[
-                                            "1. I have read the Haryana Outstanding Sportspersons (Recruitment and Condition of Service) Rules, 2021 and declare that I am eligible for submission of my application for consideration of appointment under these Rules.",
-                                            "2. I have enclosed self-attested copies of all documents in support of my application.",
-                                            "3. I have played in 50% or more of the games played by team in the tournament at serial No.12 above.",
-                                            "4. I did not represent a State/UT other than Haryana at the national level.",
-                                            "5. I am not guilty of doping, sexual harassment and abuse, competitive manipulation like betting, inside information, match fixing, tanking, threatening the integrity and essence of sports.",
-                                            "6. If appointment is offered, I undertake that I shall have no subsisting contract for pecuniary gains like commercial endorsement or professional sport before joining the service.",
-                                            "7. I forego my earlier claim made under the Haryana Outstanding Sportsperson.",
-                                        ].map((label, index) => (
+                                        {declarationList.map((label, index) => (
                                             <div
                                                 className="form-check"
                                                 key={`d${index + 1}`}
@@ -1591,53 +1741,47 @@ const HospForm = () => {
                                                 Accept all
                                             </label>
                                         </div>
+                                       
                                     </div>
-
+                                    
                                     <div className="col-md-6">
                                         <label>Upload Declaration</label>
                                         <input
                                             type="file"
                                             accept="application/pdf"
                                             className="form-control"
+                                            onChange={handleDeclarationFileChange}
                                         />
                                     </div>
+                                    <div className="col-md-6 float-end" hidden={currentStep !== 4}>
+                                        <button
+                                            className="btn btn-primary"
+                                            onClick={handlePrint}
+                                        >
+                                            Print Declaration<i className="fa fa-print"></i>
+                                        </button>
+                                    </div>
+                                    <div className="danger">
+                                    {diclarationerrors.msg}
+                                </div>
                                 </div>
                             </div>
-                        </form>
+                       
                         <div id="q-box__buttons">
-                            {/* {currentStep > 1 && (
-                                            <button
-                                                id="prev-btn"
-                                                type="button"
-                                                onClick={prevStep}
-                                                className="btn btn-primary me-2"
-                                            >
-                                                Previous
-                                            </button>
-                                        )} */}
-
-                            {/* {currentStep < stepsTotal && (
-                                            <button
-                                                id="next-btn"
-                                                type="button"
-                                                onClick={nextStep}
-                                                className="btn btn-primary me-2"
-                                            >
-                                                Next
-                                            </button>
-                                        )} */}
+                            
 
                             {currentStep === stepsTotal && (
                                 <button
                                     id="submit-btn"
-                                    type="button"
-                                    onClick={handleSubmit1}
+                                    type="submit"
+                                   
                                     className="btn btn-success"
                                 >
                                     Submit
                                 </button>
                             )}
                         </div>
+                        </form>
                     </div>
                 )}
 

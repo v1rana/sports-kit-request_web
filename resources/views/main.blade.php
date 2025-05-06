@@ -18,7 +18,7 @@
         <p>We are proud of your achievements</p>
     </div>
     <div class="d-flex justify-content-center flex-wrap">
-        <a href="{{ route('apply.certificate.form') }}" class="btn btn-dark p-4 m-2 fw-bold">
+        <a href="{{ route('apply.certificate.form', ['user_id' => session('enUserid')]) }}" class="btn btn-dark p-4 m-2 fw-bold">
             🏆 Apply for Gradation Certificate
         </a>    
         <!-- <a href="{{ route('view.applied.certificate') }}" class="btn btn-success p-4 m-2 fw-bold">
@@ -47,7 +47,7 @@
                 <tr>
                     <td>{{ $i }}</td>  <!-- Corrected variable -->
                     <td>{{ $data->certificate_no }}</td>
-                    <td>{{ \Carbon\Carbon::parse($data->created_at)->format('Y-m-d') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d-m-Y') }}</td>
                     <td>
                        @if($data->certificate_pdf == '' && $data->status == '') 
                             <span class="badge rounded-pill px-3 py-2" style="background: #ffcc00; color: #333; font-weight: 600;">
@@ -72,7 +72,7 @@
                         @endif
                     </td>
                     <td>
-					    <button class="btn btn-info btn-sm" 
+					    <button style="width:100px" class="btn btn-info btn-sm" 
 							onclick="viewDetails(
 								'{{ url('storage/' . ($data->profile_picture ?? 'default.jpg')) }}',
 								'{{ $data->sports_person_name }}', 
@@ -83,7 +83,7 @@
 								'{{ $data->plays_for_statte_org }}',
 								'{{ $data->name_sports_discipline }}', 
 								'{{ $data->tournament }}', 
-								'{{ $data->month_year }}', 
+								'{{ \Carbon\Carbon::parse($data->month_year)->format('d-m-Y') }}', 
 								'{{ $data->venue_of_tournament }}',
 								'{{ $data->organising_authority }}', 
 								'{{ $data->tournament_type }}', 
@@ -96,6 +96,9 @@
 							)">
 							👁️ View Details
 						</button>
+                        @if(empty($data->verification_by_sportsperson) || empty($data->verify_status))
+                        <a style="width:146px" href="{{ route('verification.by.sportsperson', ['id' => $data->id]) }}" class="btn btn-warning">Verify Your Application</a>
+                        @endif
                     </td>
                 </tr>
                 @php $i++; @endphp  <!-- Increment $i here -->
@@ -172,7 +175,7 @@
                             <h5 class="fw-semibold" id="ornAthority"></h5>
                         </div>
                         <div class="col-md-3 mb-3">
-                            <label class="text-muted fw-bold">III. MONTH & YEAR</label>
+                            <label class="text-muted fw-bold">III. DATE</label>
                             <h5 class="fw-semibold" id="month_year"></h5>
                         </div>
                         <div class="col-md-3 mb-3">

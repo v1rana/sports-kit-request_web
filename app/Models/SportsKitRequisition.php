@@ -12,15 +12,14 @@ class SportsKitRequisition extends Model {
 
     protected $fillable = [
         'applicant_id', 
+        'name', 
         'district', 
         'block', 
         'area_name',
         'designation', 
+        'specific_designation', 
         'sports_equipment', 
-        'sports_photos', 
-        'fop_available', 
-        'players_count', 
-        'last_issued_date', 
+        'gram_municipal_signed_document', 
         'status',
         'vendor_id',
         'vendor_assigned_date',

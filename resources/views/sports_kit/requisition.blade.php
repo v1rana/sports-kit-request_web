@@ -7,7 +7,7 @@
 @media print {
 	
 	html,body{padding:0;margin:0; -webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;}
-  #second_form,.download-doc-area,  #downloadButton,  #uploadbutton, .content-area header {
+  .download-doc-area,  #downloadButton,  #uploadbutton, .content-area header {
     display: none !important;
   }
   label{font-size:13px !important;}
@@ -28,7 +28,7 @@
             <i class="fa-solid fa-arrow-left-long"></i> Back
         </a>-->
     </h4>
- <form action="{{ url('/sports-kit/uploadform') }}" method="POST" enctype="multipart/form-data" class=" py-2">
+ <form action="{{ url('/sports-kit/store') }}" method="POST" enctype="multipart/form-data" class=" py-2">
                     @csrf
 
  <!-- Static Information -->
@@ -37,7 +37,7 @@
     <div>
         <label>Name of Head Person</label>
         <input type="text" class="form-control" name="name"
-            value="{{ old('name', session('first_form_data.name') ?? $userDetail->full_name_en ?? '') }}" required>
+            value="{{ old('name', session('first_form_data.name') ?? $userDetail->full_name_en ?? '') }}" readonly required>
     </div> 
 </div>
 						<div class="col-xs-12 col-sm-4 col-md-3 mb-3">
@@ -95,52 +95,11 @@
                         
                         
                         
-                        <div class="col-12">
-    <div class="alert alert-danger declaration-area">
-        <h6 class="text-danger">Declaration by Applicant</h6>
-        <p>
-            All the above particulars given by me are true and correct. Nothing has been concealed by me. False information or concealment of material information in the registration form by me will render me ineligible in future for said scheme and department is free to take appropriate action as deemed suitable against me in this regard.
-        </p>
-
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <label for="declaration_place" class="form-label"><strong>Place:</strong></label>
-                <input type="text" class="form-control" id="declaration_place" name="declaration_place" placeholder="Enter Place" value="{{ $userDetail->ward_village }}" required>
-            </div>
-            <div class="col-md-4 mb-3">
-                
-            </div>
-            <div class="col-md-4 mb-3">
-                <label for="declaration_signature" class="form-label"><strong>Signature of Applicant Official Stamp (if applicable)</strong></label>
-                <input type="text" class="form-control" id="declaration_signature" name="declaration_signature" placeholder="Enter Full Name" value="{{ $userDetail->full_name_en }}" required>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <label for="declaration_date" class="form-label"><strong>Dated:</strong></label>
-                <input type="date" class="form-control" id="declaration_date" name="declaration_date" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" 
-            readonly required>
-            </div>
-        </div>
-
-        
-    </div>
-</div>
+                        
 
                     </div>
 					<hr />
-					<div class="row mb-3 download-doc-area align-items-end justify-content-end">
-						<div class="col-12 text-end">
-							<button type="button" class="btn btn-success" id="downloadButton" onclick="window.print()">Submit and Download PDF</button>
-							<input type="button" class="btn btn-primary" id="uploadbutton" value="Upload Signed Form">
-						</div>
-						<div class="col-7 mt-3 text-end align-items-center justify-content-between upload-signed-file-area">
-							<label for="file_upload" class="form-label">Upload Signed Form</label>
-							<input type="file" class="form-control mx-3" name="file" id="file_upload" required />
-							<button type="submit" class="btn btn-dark w-50" style="font-size:13px;">Upload File</button>
-						</div>
-					</div>
+					
     
     <!-- Upload Button for the Signed Form -->
     <!--<hr />
@@ -153,8 +112,8 @@
             <button type="submit" class="btn btn-primary" id="uploadbutton">Upload</button>
         </div>
     </div>-->
- </form>
-<div id="second_form" style="display: {{ session('show_second_form') ? 'block' : 'none' }};">
+
+<div id="second_form" >
 
     <h4 class=""> Kit Requisition Form 
         <!--<a href="{{ url('/sports-kit') }}" class="btn btn-secondary float-end">
@@ -170,42 +129,9 @@
     <div class="bg-white shadow mb-5">
         <div class="row justify-content-between py-1 pt-4 border-bottom align-items-center w-100">
             <div class="col-12">
-                <form action="{{ url('/sports-kit/store') }}" method="POST" enctype="multipart/form-data" class="px-5 py-2">
-                    @csrf
-
+               
                     <!-- Static Information -->
-                    <div class="row request-default-info mb-4">                                
-                        <div class="col-3 mb-3 pe-0">
-                            <div>
-                                <label>1. Name of Head Person </label>
-                                <input type="text" class="form-control" name="name" value="{{ $userDetail->full_name_en }}" readonly required>
-                            </div> 
-                        </div>
-                        <div class="col-3 mb-3 px-0">
-                        <div>
-                            <label>2. Designation</label>
-                            <input type="text" class="form-control" name="designation" value="Gram Panchayat" readonly required>
-                            </div> 
-                            </div>
-                        <div class="col mb-3 px-0">
-                        <div>
-                            <label>3. Block</label>
-                            <input type="text" class="form-control" name="block" value="{{ $userDetail->block_town }}" readonly required>
-                            </div> 
-                            </div>
-                        <div class="col mb-3 px-0">
-                        <div>
-                            <label>4. District</label>
-                            <input type="text" class="form-control" name="district" value="{{ $userDetail->district }}" readonly required>
-                            </div> 
-                            </div>
-                        <div class="col mb-3 ps-0">
-                        <div>
-                            <label>5. Area Name</label>
-                            <input type="text" class="form-control" name="area_name" placeholder="Enter Area Name" readonly value="{{ $userDetail->ward_village }}" required>
-                            </div> 
-                            </div>
-                    </div>
+                   
 					
 					
 
@@ -218,47 +144,64 @@
                         <p class="col mb-0 px-1">Select Sports</h6>
                         <p class="col mb-0 px-1">Select Equipements</h6>
                         <p class="col mb-0 px-1">Enter Quantity</h6>
+                        <p class="col-3 mb-0 px-1">Whether FoP/Hall/Poles are available for mentioned Sports?</h6>
+                        <p class="col-3 mb-0 px-1">Tentative Number of Players</h6>
+                        <p class="col-3 mb-0 px-1">Date of Last Issued Sports Item/Equipment</h6>
                         <p class="col-3 mb-0 px-1">Select Location picture</h6>
                         <!--<p class="col mb-0 px-1">Select Date</h6>-->                        
                         <div class="col-1 mb-0 px-1"></div>
                     </div>
                     <div id="equipment-list">
-                        <div class="d-flex mb-2">
-                        <div class="col mb-0 px-1">
-                            <select name="sports_equipment[0][name]" class="form-control" required onchange="updateEquipmentOptions(this)">
-                                <option value="" selected disabled>Select Sport</option>
-                                <option value="Volleyball">Volleyball</option>
-                                <option value="Football">Football</option>
-                                <option value="Basketball">Basketball</option>
-                                <option value="Handball">Handball</option>
-                                <option value="Boxing">Boxing</option>
-                                <option value="Wrestling">Wrestling</option>
-                                <option value="Judo">Judo</option>
-                                <option value="Cricket">Cricket</option>
-                            </select>
-                        </div>
-                        <div class="col mb-0 px-1">
-    <select name="sports_equipment[0][equipment]" class="form-control" required onchange="updateQuantityLimit(this)">
+    <div class="d-flex mb-2">
+        <div class="col mb-0 px-1">
+            <select name="sports_equipment[0][name]" class="form-control" required onchange="updateEquipmentOptions(this)">
+                <option value="" selected disabled>Select Sport</option>
+                <option value="Volleyball">Volleyball</option>
+                <option value="Football">Football</option>
+                <option value="Basketball">Basketball</option>
+                <option value="Handball">Handball</option>
+                <option value="Boxing">Boxing</option>
+                <option value="Wrestling">Wrestling</option>
+                <option value="Judo">Judo</option>
+                <option value="Cricket">Cricket</option>
+            </select>
+        </div>
+        <div class="col mb-0 px-1">
+            <select name="sports_equipment[0][equipment]" class="form-control" required onchange="updateQuantityLimit(this)">
                 <option value="" selected disabled>Select Equipment</option>
             </select>
-                        </div>
-                        <div class="col mb-0 px-1">
-                            <input type="number" name="sports_equipment[0][quantity]" class="form-control" placeholder="Quantity" readonly required>
-                        </div>
-                        <div class="col-3 mb-0 px-1">
-                            <input type="file" class="form-control" name="sports_equipment[0][photo]" accept="image/*" />
-                        </div>
-                        <div class="col mb-0 px-1" style="display:none">
-                            <input type="date" class="form-control" name="sports_equipment[0][date]" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}"/>
-                        </div>
-                        <div class="col-1 mb-0 px-1 text-end">
-                            <!--button type="button" class="btn btn-danger" onclick="removeEquipment(this)"><i class="fa-solid fa-trash"></i></button-->
-                        </div>
-                    </div>
-                </div>
+        </div>
+        <div class="col mb-0 px-1">
+            <input type="number" name="sports_equipment[0][quantity]" class="form-control" placeholder="Quantity" readonly required>
+        </div>
+        
+		<div class="col-3 mb-0 px-1">
+            <select name="sports_equipment[0][fop_available]" class="form-control" required>
+               <option value="" selected>Select Availability</option>
+                <option value="Yes" >Yes</option>
+                <option value="No" >No</option>
+            </select>
+        </div>
+		<div class="col mb-0 px-1">
+            <input type="number" name="sports_equipment[0][players_count]" class="form-control" placeholder="Players count"  required>
+        </div>
+		<div class="col mb-0 px-1">
+            <input type="date" class="form-control" name="sports_equipment[0][last_issued_date]" id="last_issued_date" max="{{ date('Y-m-d') }}" required>
+        </div>
+		<div class="col-3 mb-0 px-1">
+            <input type="file" class="form-control" name="sports_equipment[0][photo]" accept="image/*" />
+        </div>
+        <!--<div class="col mb-0 px-1" style="display:none">
+            <input type="date" class="form-control" name="sports_equipment[0][date]" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}"/>
+        </div>-->
+        <div class="col-1 mb-0 px-1 text-end">
+            <!--button type="button" class="btn btn-danger" onclick="removeEquipment(this)"><i class="fa-solid fa-trash"></i></button-->
+        </div>
+    </div>
+</div>
 
                     <!-- Availability of Facilities -->
-                    <div class="row mt-3">
+                    <!--<div class="row mt-3">
                     <div class="mb-3">
                     <label class="form-label">Whether FoP/Hall/Poles are available for mentioned Sports?</label>
                     <input type="radio" name="fop_available" value="Yes" required> Yes
@@ -272,7 +215,7 @@
                             <label for="last_issued_date" class="form-label">Date of Last Issued Sports Item/Equipment</label>
                             <input type="date" class="form-control" name="last_issued_date" id="last_issued_date" max="{{ date('Y-m-d') }}">
                         </div>
-                    </div>
+                    </div>-->
 
                     
 
@@ -330,6 +273,39 @@
         
     </div>
 </div>
+<hr />
+<div class="col-12">
+    <div class="alert alert-danger declaration-area">
+        <h6 class="text-danger">Declaration by Applicant</h6>
+        <p>
+            All the above particulars given by me are true and correct. Nothing has been concealed by me. False information or concealment of material information in the registration form by me will render me ineligible in future for said scheme and department is free to take appropriate action as deemed suitable against me in this regard.
+        </p>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="declaration_place" class="form-label"><strong>Place:</strong></label>
+                <input type="text" class="form-control" id="declaration_place" name="declaration_place" placeholder="Enter Place" value="{{ $userDetail->ward_village }}" required>
+            </div>
+            <div class="col-md-4 mb-3">
+                
+            </div>
+            <div class="col-md-4 mb-3">
+                <label for="declaration_signature" class="form-label"><strong>Signature of Applicant Official Stamp (if applicable)</strong></label>
+                <input type="text" class="form-control" id="declaration_signature" name="declaration_signature" placeholder="Enter Full Name" value="{{ $userDetail->full_name_en }}" required>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label for="declaration_date" class="form-label"><strong>Dated:</strong></label>
+                <input type="date" class="form-control" id="declaration_date" name="declaration_date" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}" 
+            readonly required>
+            </div>
+        </div>
+
+        
+    </div>
+</div>
 
                     </div>
 
@@ -337,8 +313,8 @@
                     <hr />
                     <div class="row mb-3">                    
                         <div class="col-12 text-end">
-                            <button type="reset" class="btn btn-secondary">Reset</button>
-                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <!--<button type="reset" class="btn btn-secondary" id="downloadButton" onclick="window.print()">Save and Download</button>-->
+                            <button type="submit" id="uploadbutton" class="btn btn-primary">Save</button>
                         </div>
                     </div>
 
@@ -353,7 +329,7 @@
 
 @endsection
 <script src="{{ url('assets/js/jquery.min.js') }}"></script>
-<script>
+<!--<script>
     document.addEventListener("DOMContentLoaded", function() {
         if ("{{ session('show_second_form') }}") {
             const secondForm = document.getElementById('second_form');
@@ -362,57 +338,58 @@
             }
         }
     });
-</script>
+</script>-->
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const designationType = document.getElementById('designation_type');
-        const specificDesignation = document.getElementById('specific_designation');
+document.addEventListener('DOMContentLoaded', function () {
+    const designationType = document.getElementById('designation_type');
+    const specificDesignation = document.getElementById('specific_designation');
 
-        const options = {
-            gram: [
-                { value: 'Sarpanch', text: 'Sarpanch' },
-                { value: 'Gram Sachiv', text: 'Gram Sachiv' }
-            ],
-            municipal: [
-                { value: 'Ward Member', text: 'Ward Member' },
-                { value: 'Councillor', text: 'Councillor' }
-            ]
-        };
+    const options = {
+        gram: [
+            { value: 'Sarpanch', text: 'Sarpanch' },
+            { value: 'Gram Sachiv', text: 'Gram Sachiv' }
+        ],
+        municipal: [
+            { value: 'Councillor', text: 'Councillor' }
+        ]
+    };
 
-        const sessionDesignation = "{{ session('first_form_data.designation') }}";
-        const sessionSpecificDesignation = "{{ session('first_form_data.specific_designation') }}";
+    const sessionDesignation = "{{ session('first_form_data.designation') }}";
+    const sessionSpecificDesignation = "{{ session('first_form_data.specific_designation') }}";
 
-        // Set initial designation type from session if exists
-        if (sessionDesignation) {
-            designationType.value = sessionDesignation;
+    // Set initial designation type
+    if (sessionDesignation) {
+        designationType.value = sessionDesignation;
+    }
 
-            // Manually trigger change to load specific options
-            const event = new Event('change');
-            designationType.dispatchEvent(event);
+    // Populate options based on selected type
+    function populateSpecificOptions(type) {
+        specificDesignation.innerHTML = ''; // Clear old options
+
+        if (options[type]) {
+            options[type].forEach(function (opt) {
+                const option = document.createElement('option');
+                option.value = opt.value;
+                option.textContent = opt.text;
+
+                if (opt.value === sessionSpecificDesignation) {
+                    option.selected = true;
+                }
+
+                specificDesignation.appendChild(option);
+            });
         }
+    }
 
-        designationType.addEventListener('change', function () {
-            const selectedType = this.value;
-            specificDesignation.innerHTML = '<option value="">-- Select Designation --</option>';  // Clear previous options
+    populateSpecificOptions(designationType.value);
 
-            if (options[selectedType]) {
-                options[selectedType].forEach(function (opt) {
-                    const optionElement = document.createElement('option');
-                    optionElement.value = opt.value;
-                    optionElement.textContent = opt.text;
-
-                    // Check if this should be selected
-                    if (opt.value === sessionSpecificDesignation) {
-                        optionElement.selected = true;
-                    }
-
-                    specificDesignation.appendChild(optionElement);
-                });
-            }
-        });
+    designationType.addEventListener('change', function () {
+        populateSpecificOptions(this.value);
     });
+});
 </script>
+
 
 <script>
 $(document).ready(function(){
@@ -539,7 +516,8 @@ function addEquipment() {
     newItem.innerHTML = `
         <div class="col mb-0 px-1">
             <select name="sports_equipment[${count}][name]" class="form-control" required onchange="updateEquipmentOptions(this)">
-                <option value="" selected disabled>Select Sport</option>                <option value="Volleyball">Volleyball</option>
+                <option value="" selected disabled>Select Sport</option>
+                <option value="Volleyball">Volleyball</option>
                 <option value="Football">Football</option>
                 <option value="Basketball">Basketball</option>
                 <option value="Handball">Handball</option>
@@ -557,12 +535,25 @@ function addEquipment() {
         <div class="col mb-0 px-1">
             <input type="number" name="sports_equipment[${count}][quantity]" class="form-control" placeholder="Quantity" required min="1" readonly>
         </div>
+		<div class="col mb-0 px-1">
+            <select name="sports_equipment[${count}][fop_available]" class="form-control" required>
+               <option value="" selected>Select Availability</option>
+                <option value="Yes" >Yes</option>
+                <option value="No" >No</option>
+            </select>
+        </div>
+		<div class="col mb-0 px-1">
+            <input type="number" name="sports_equipment[${count}][players_count]" class="form-control" placeholder="Players count" required min="1">
+        </div>
+		<div class="col mb-0 px-1">
+             <input type="date" class="form-control" name="sports_equipment[${count}][last_issued_date]" class="form-control" max="{{ date('Y-m-d') }}" required>
+        </div>
         <div class="col-3 mb-0 px-1">
-            <input type="file" name="sports_photos[${count}][photo]" class="form-control" accept="image/*">
+            <input type="file" name="sports_equipment[${count}][photo]" class="form-control" accept="image/*">
         </div>
-        <div class="col mb-0 px-1" style="display:none">
+        <!--<div class="col mb-0 px-1" style="display:none">
             <input type="date" name="sports_photos[${count}][date]" class="form-control" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
-        </div>
+        </div>-->
         <div class="col-1 mb-0 px-1 text-end">
             <button type="button" class="btn btn-danger" onclick="removeEquipment(this)">
                 <i class="fa-solid fa-trash"></i>

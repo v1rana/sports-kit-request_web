@@ -21,6 +21,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/hosp/sports-discipline', [HospController::class, 'storeSportDiscipline']);
     Route::get('/sports-discipline-details', [HospController::class, 'getSportDiscipline']);
+
+    Route::post('/hosp/declarations', [HospController::class, 'storeDeclarations']);
+    Route::get('/declaration-details', [HospController::class, 'getHospDeclarations']);
+    Route::get('/declarations-list', [HospController::class, 'getDeclarations']);
     // to view uploaded file
     
     // ->middleware('auth');

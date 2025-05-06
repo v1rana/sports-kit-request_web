@@ -8,6 +8,9 @@
         </div>
     </div>
     <div class="d-flex flex-column flex-shrink-0 py-3 ps-0">
+	
+	
+
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
                 <a href="{{ route('hq.sports_kit.dashboard') }}" 
@@ -17,22 +20,32 @@
                 </a>
             </li>
             
-            <!--<li class="nav-item">
-                <a href="{{ route('sports_kit.form') }}" 
-                   class="nav-link {{ request()->routeIs('sports_kit.form') ? 'active' : '' }}">
-                    <i class="fa-regular fa-rectangle-list"></i> <span> Kit Requisition Form</span>
-                </a>
-            </li>-->
             <li class="nav-item">
-                <a href="{{ route('hq.sports.requests') }}" 
-                   class="nav-link {{ request()->routeIs('hq.sports.requests') ? 'active' : '' }}">
-                    <i class="fa-regular fa-rectangle-list"></i> <span> Kit Request List</span>
+                <a href="{{ route('hq.vendor-list') }}" 
+                   class="nav-link {{ request()->routeIs('hq.vendor-list') ? 'active' : '' }}">
+                    <i class="fa-regular fa-rectangle-list"></i> <span> Vendor</span>
                 </a>
             </li>
+                 {{-- Equipment menu --}}
+    <li class="nav-item menu-item" data-tab="equipments">
+        <a href="{{ route('hq.sports.requests') }}" 
+           class="nav-link {{ request()->routeIs('hq.sports.requests') ? 'active' : '' }}" data-tab="equipments">
+            <i class="fa-regular fa-rectangle-list"></i> <span>Kit Request List</span>
+        </a>
+    </li>
 			
-			<li class="nav-item">
+			
+			{{-- Gradation menu --}}
+    <li class="nav-item menu-item" data-tab="gradations">
+        <a href="" 
+           class="nav-link" data-tab="gradations">
+           <i class="fa-solid fa-address-card"></i> <span>Gradation (A & B) Applications List</span>
+        </a>
+    </li>
+	{{-- OSP menu --}}
+			<li class="nav-item menu-item" data-tab="jobs">
                 <a href="{{ route('hq.hosp.requests') }}" 
-                   class="nav-link {{ request()->routeIs('hq.hosp.requests') ? 'active' : '' }}">
+                   class="nav-link {{ request()->routeIs('hq.hosp.requests') ? 'active' : '' }}"  data-tab="jobs">
                     <i class="fa-regular fa-rectangle-list"></i> <span> HOSP Request List</span>
                 </a>
             </li>
@@ -59,3 +72,32 @@
 					</div>
 				</div>
 			</header>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const tabButtons = document.querySelectorAll('.dashboard-stats .nav-link');
+    const menuItems = document.querySelectorAll('.menu-item');
+
+    // Save selected tab in localStorage and update sidebar
+   tabButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+            const selected = this.textContent.trim().toLowerCase(); // "equipments", "gradations", "jobs"
+            localStorage.setItem('selectedTab', selected);
+            updateSidebar(selected);
+        });
+    });
+
+    // Show only matched menu items in sidebar
+    function updateSidebar(tab) {
+        menuItems.forEach(item => {
+            const tabKey = item.getAttribute('data-tab');
+            item.style.display = (tabKey === tab) ? 'block' : 'none';
+        });
+    }
+
+    // On page load
+    const allowedTabs = ['equipments', 'jobs', 'gradations'];
+    const savedTab = localStorage.getItem('selectedTab');
+    updateSidebar(allowedTabs.includes(savedTab) ? savedTab : 'equipments');
+});
+</script>
+			

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\hosp;
 
 use App\Http\Controllers\Controller;
+use App\Models\Declaration;
+use App\Models\DeclarationsHosp;
 use App\Models\EducationHOSP;
 use App\Models\EventHosp;
 use App\Models\GameHosp;
@@ -29,7 +31,6 @@ class HospController extends Controller
             $id = $request->user()->id;
             $user = User::where('id', $id)->findOrFail($id);
             $user_details = UserDetails::where('user_id', $id)->findOrFail($id);
-
             $user->mobile = $request->mobile;
             $user->email = $request->email_id;
             $user->save();
@@ -286,7 +287,7 @@ class HospController extends Controller
             'game_id' => 'required|exists:games,id',
             'organizing_committee' => 'required|string',
             'tournament_level' => 'required|in:1,2', // 1=National, 2=International
-            'represented_india' => 'required_if:tournament_level,1|in:1,2',
+            'represented_india' => 'nullable|required_if:tournament_level,1|in:0,1,2',
 
             'achievement_date' => 'required|date',
             'tournament_venue' => 'required|string',
@@ -298,7 +299,7 @@ class HospController extends Controller
 
         $user =  $request->user();
         // $user =  $request->user()->id;
-        
+
         // Base update data
         $updateData = [
             'physical_disability' => $request->physical_disability,
@@ -322,7 +323,7 @@ class HospController extends Controller
             $pathDisability = $request->hasFile('disability_doc')
                 ? $request->file('disability_doc')->store('certificates')
                 : null;
-                $updateData['disability_doc'] = basename($pathDisability);
+            $updateData['disability_doc'] = basename($pathDisability);
         }
         if ($request->hasFile('certificate_path')) {
             $pathCertificate = $request->file('certificate_path')->store('certificates');
@@ -348,5 +349,60 @@ class HospController extends Controller
         }
 
         return response()->json($data);
+    }
+
+    public function storeDeclarations(Request $request)
+    {
+        $request->validate([
+            'declaration_ids' => 'required|array|min:1',
+            'declaration_ids.*' => 'exists:declarations,id',
+            // 'declaration_file' => 'file|mimes:pdf|max:2048',
+            'declaration_file' => 'required',
+        ]);
+
+        $userId = $request->user()->id; // Or get from request if not using auth
+
+        // Save the file if present
+        $filePath =  $request->declaration_file;
+        if ($request->hasFile('declaration_file')) {
+            // $filePath = $request->file('declaration_file')->store('declarations', 'public');
+            $filePath = $request->file('declaration_file')->store('declarations');
+            $filePath = basename($filePath);
+        }
+
+        // Optional: Clear old records if needed
+        DeclarationsHosp::where('user_id', $userId)->delete();
+
+          // Save declarations, attach file only once (e.g. to the first)
+        foreach ($request->declaration_ids as $index => $declarationId) {
+            DeclarationsHosp::create([
+                'user_id' => $userId,
+                'declaration_id' => $declarationId,
+                // 'declaration_file' =>  $index == 0 ? ($filePath ?? '') : null,
+                'declaration_file' =>   $filePath ?? '',
+            ]);
+        }
+
+        return response()->json(['message' => 'Declarations saved successfully.']);
+    }
+
+    public function getHospDeclarations(Request $request)
+    {
+        $userId = $request->user()->id;
+
+        $declarations = DeclarationsHosp::where('user_id', $userId)->with('declaration')->get();
+
+        return response()->json([
+            'declaration_ids' => $declarations,
+        ]);
+    }
+
+    public function getDeclarations()
+    {
+        $declarations = Declaration::get();
+
+        return response()->json([
+            'declarations' => $declarations,
+        ]);
     }
 }

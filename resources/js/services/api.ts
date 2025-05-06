@@ -35,7 +35,16 @@ api.interceptors.response.use(
         return response;
     },
     (error) => {
-        console.error("API Error:", error.response?.data || error.message);
+        // console.error("API Error:", error.response?.data || error.message);
+        if (error.response?.status === 401) {
+            // Handle Unauthenticated Error
+            console.warn("User is unauthenticated. Redirecting to login...");
+            // For example, redirect or notify the user
+            window.location.href = "/"; // or use router.push() if you're using React Router/Next.js
+        } else {
+            console.error("Error fetching event:", error);
+        }
+        // throw error; // rethrow for upstream error handling
         return Promise.reject(error);
     }
 );

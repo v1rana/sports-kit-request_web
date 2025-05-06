@@ -1,199 +1,179 @@
-@extends('layouts.master')
-@section('title', 'Sports !! Login Page')
-@section('content')
-@if (session('success'))
-<div class="alert alert-success" id="alert" style="margin-left: 220px;margin-right: 220px;">
-   {{ session('success') }}
-</div>
-@endif
-<style>
-   .awesome-links {
-   background: linear-gradient(135deg, #16617e, #1c6979);
-   color: #fff;
-   border-radius: 70px 0px;
-   transition: transform 0.3s ease;
-   }
-   /* .awesome-links:hover {
-   transform: translateY(-5px);
-   } */
-   .link-custom {
-   color: #fff;
-   font-weight: 600;
-   text-decoration: underline;
-   margin-left: 5px;
-   }
-   .link-custom:hover {
-   color: #000;
-   text-decoration: none;
-   }
-   .form-container {
-   background-color: rgba(255, 255, 255, 0.85);
-   padding: 2rem;
-   border-radius: 15px;
-   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-   max-width: 600px;
-   width: 100%;
-   /* margin: auto; */
-   }
-   .form-container h2,
-   .form-container h5 {
-   color: #404ee8;
-   font-weight: bold;
-   text-align: center;
-   }
-</style>
-<section class="new-hero mb-4" id="my-section">
-   <div class="form-container">
-      <div class="dep-logo text-center mb-3">
-         <img src="{{ url('assets/job_app/images/logo-sports.png') }}" alt="Department Logo">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sports Department - Citizen Login</title>
+  <link rel="stylesheet" href="{{ url('assets/job_app/bootstrap/css/bootstrap.min.css') }}" />
+        <link rel="stylesheet" href="{{ url('assets/job_app/css/login-style.css') }}" />
+  <style>
+    /* Form section style */
+    .form-check {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px 20px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .form-check:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .form-check-label {
+      font-size: 1.1rem;
+      color: #fff;
+      margin-left: 10px;
+      cursor: pointer;
+    }
+
+    .form-check-input {
+      width: 20px;
+      height: 20px;
+      margin-top: 3px;
+    }
+
+    .form-check .form-check-input {
+      float: unset;
+      margin-left: 0;
+    }
+
+    .form-control::placeholder {
+      color: #ffffff;
+    }
+
+    .btn-custom:hover {
+      background-color: #ed2f4c;
+      transform: translateY(-2px);
+    }
+
+    @media (max-width: 767px) {
+      .logo-title h1 {
+        font-size: 1.9rem;
+      }
+      .tagline {
+        font-size: 1rem;
+      }
+    }
+
+    /* Hide OTP input initially */
+    #otpField {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-hero">
+    <div class="bg-overlay"></div>
+    <div class="content-box">
+      <div class="text-center logo-title mb-4">
+        <img src="{{ url('/assets/images/logo-sports.png')}}" alt="Department Logo" class="mb-3" style="width: 110px; height: auto;">
+        <h1>Sports Department</h1>
+        <p class="tagline">Let the young minds grow to the full potential</p>
       </div>
-      <h5>Sports Department</h5>
-      <p class="text-center fw-bold" style="font-size: 14px">Let the young minds grow to the full potential</p>
-      <h2>Login Page</h2>
-      <form method="POST" action="{{ route('sports.login') }}">
-         @csrf
-         <div class="step" id="step1">
-            @if (session('message'))
-            <p class="text-danger" id="alert">{{ session('message') }}</p>
-            @endif
-            @if (session('otp'))
-            <p class="text-danger" id="alert">{{ session('otp') }}</p>
-            @endif
-            <p class="fw-bold mb-2">For Official Login</p>
-            <div class="form-floating mt-4 mb-3">
-               <input type="text" class="form-control required" id="mobile" name="mobile" maxlength="10"
-                  oninput="this.value=this.value.replace(/[^0-9]/g,'');">
-               <label for="floatingInput">Mobile number</label>
+
+      <div class="section-title text-center">For Official Login</div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <form method="POST" action="{{ route('send.otp')}}">
+            @csrf
+            <div class="mb-2">
+              <label for="pppId" class="form-label mb-0">Mobile Number</label>
+              <input type="text" class="form-control" id="mob" name="mobile" placeholder="Enter your mobile no." maxlength='10' required>
+              <small class="form-text" style="color: #ff5b75;">We will send you a verification code.</small>
             </div>
-            <p class="text-secondary mb-0">We will send you a verification code</p>
-         </div>
-         <div class="step" id="step2" style="display: none;">
-            <h2>Enter OTP</h2>
-            <p>SMS has been sent to your mobile number ******</p>
-            <input type="text" class="form-control mb-2 required" maxlength="6" id="otp" name="otp"
-               placeholder="Enter OTP" required>
-            <p id="otperror" class="text-danger" style="display:none;">Please enter OTP</p>
-            <p id="otpInvalid" class="text-danger" style="display:none;">Invalid OTP or expired.</p>
-            <p id="verified" class="text-success" style="display:none;">OTP verified successfully</p>
-            <p id="resenderror" class="text-success" style="display:none;">OTP sent successfully</p>
-            <p class="mt-2">Didn't receive OTP? <a href="#" class="resendOtp">Resend code</a></p>
-         </div>
-         <div class="text-end mt-3">
-            <a id="previousButton" class="btn btn-secondary" style="display:none;">Previous</a>
-            <a id="sendotp" class="btn btn-primary">Send OTP</a>
-            <button id="submitButton" type="submit" class="btn btn-success" style="display:none;">Submit</button>
-         </div>
-      </form>
-      <div class="form-box">
-         <h5>Select Sports Category</h5>
-         <div class="awesome-links p-4 mb-3 text-center">
-            <!--<p class="mb-2">
-               Don’t have an account?
-               <a href="{{ url('/create-account') }}" class="link-custom">Create an account</a>
-               </p>-->
-            <p class="m-0">
-               Haryana Outstanding Sports Persons Jobs
-               <!-- <a href="{{ url('login') }}" class="link-custom">Apply Here</a> -->
-               <a href="http://164.100.137.70/hosp/login" class="link-custom">Apply Here</a>
-            </p>
-         </div>
-         <div class="row">
-            <div class="col-md-6">
-               <div class="mb-3 form-check">
-                  <input class="form-check-input" type="radio" name="sportsOption" id="equipment">
-                  <label class="form-check-label" for="equipment">Haryana Sports Equipment</label>
-               </div>
-               <div class="mb-3 form-check">
-                  <input class="form-check-input" type="radio" name="sportsOption" id="gradation">
-                  <label class="form-check-label" for="gradation">Haryana Sports Gradation</label>
-               </div>
-               <!-- <div class="mb-4 form-check">
-                  <input class="form-check-input" type="radio" name="sportsOption" id="person">
-                  <label class="form-check-label" for="person">Haryana Outstanding Sports Person</label>
-                  </div> -->
+            
+            <!-- OTP Input field, initially hidden -->
+            <div class="mb-2" id="otpField">
+              <label for="otp" class="form-label mb-0">Enter OTP</label>
+              <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
             </div>
-            <div class="col-md-6">
-               <div class="mb-3">
-                  <label for="pppId" class="form-label">PPP ID</label>
-                  <input type="text" class="form-control" id="pppId" value="1KQP3440">
-               </div>
-               <button class="btn btn-custom">Display Members</button>
-            </div>
-         </div>
+
+            <!-- Send OTP button, triggers OTP input visibility -->
+            <button type="submit" class="btn btn-custom mt-1" id="sendOtpBtn">Send OTP</button>
+
+            <!-- Submit button to submit form after OTP entry -->
+            <button type="button" class="btn btn-custom mt-1" id="submitBtn" style="display: none;">Submit</button>
+
+          </form>
+        </div>
       </div>
-      <style>
-         .form-box {
-         max-width: 600px;
-         margin: 20px auto;
-         background: white;
-         padding: 20px;
-         border-radius: 15px;
-         box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-         }
-         .form-check-label {
-         font-weight: 600;
-         color: #2c3e50;
-         }
-         .form-control {
-         border-radius: 10px;
-         height: 45px;
-         }
-         .btn-custom {
-         background: #00b894;
-         color: white;
-         padding: 10px 25px;
-         border-radius: 10px;
-         font-weight: bold;
-         transition: background 0.3s ease;
-         }
-         .btn-custom:hover {
-         background: #019875;
-         }
-         h5 {
-         font-weight: bold;
-         color: #4834d4;
-         }
-      </style>
-   </div>
-</section>
+    </div>
+  </div>
 
-<script>
+  <script src="{{ url('assets/job_app/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const sendOtpBtn = document.getElementById('sendOtpBtn');
+    const otpField = document.getElementById('otpField');
+    const submitBtn = document.getElementById('submitBtn');
 
-window.addEventListener("load", function () {
-    const section = document.getElementById("my-section");
-    section.scrollIntoView({ behavior: "auto", block: "center" });
-  });
+    sendOtpBtn.addEventListener('click', function (e) {
+        e.preventDefault(); // Prevent form submit
 
+        const mobile = document.getElementById('mob').value;
 
-
-   document.getElementById('sendotp').addEventListener('click', function(e) {
-       e.preventDefault();
-       let mobile = document.getElementById('mobile').value;
-       if (mobile.length === 10) {
-           document.getElementById('step1').style.display = 'none';
-           document.getElementById('step2').style.display = 'block';
-           document.getElementById('sendotp').style.display = 'none';
-           document.getElementById('submitButton').style.display = 'inline-block';
-           document.getElementById('previousButton').style.display = 'inline-block';
-       } else {
-           alert('Please enter a valid 10-digit mobile number');
-       }
-   });
-   
-   document.getElementById('previousButton').addEventListener('click', function(e) {
-       e.preventDefault();
-       document.getElementById('step1').style.display = 'block';
-       document.getElementById('step2').style.display = 'none';
-       document.getElementById('sendotp').style.display = 'inline-block';
-       document.getElementById('submitButton').style.display = 'none';
-       document.getElementById('previousButton').style.display = 'none';
-   });
-   
-   document.querySelector('.resendOtp')?.addEventListener('click', function(e) {
-       e.preventDefault();
-       // AJAX call can be implemented here if needed
-       document.getElementById('resenderror').style.display = 'block';
-   });
+        fetch("{{ route('send.otp') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ mobile })
+        })
+        .then(response => response.json())
+        .then(data => {
+			console.log(data);
+            if (data.success) {
+                alert("OTP has been sent to your mobile number.");
+                otpField.style.display = 'block';
+                submitBtn.style.display = 'inline-block';
+                sendOtpBtn.style.display = 'none';
+            } else {
+                alert(data.message || "Failed to send OTP.");
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert("Mobile Number Not Registered.");
+        });
+    });
+});
 </script>
-@endsection
+<script>
+submitBtn.addEventListener('click', function () {
+    const mobile = document.getElementById('mob').value;
+    const otp = document.getElementById('otp').value;
+
+    fetch("{{ route('verify.otp') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ mobile, otp })
+    })
+    .then(response => response.json())
+    .then(data => {
+		console.log(data);
+        if (data.success) {
+            alert("Login successful! Redirecting...");
+            window.location.href = data.redirect_to;
+        } else {
+            alert(data.message || "OTP verification failed.");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Mobile Number Not Registered.");
+    });
+});
+
+
+</script>
+
+</body>
+</html>
