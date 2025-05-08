@@ -150,35 +150,7 @@ const BasicDetails = () => {
                                         placeholder="Enter full name in English"
                                     />
                                 </div>
-                                {/* <div className="col-md-6">
-                <label>Full Name (Hindi)</label>
-                <input type="text" className="form-control" placeholder="हिंदी में पूरा नाम दर्ज करें"  value={userDetails.full_name_hi || ''}
-                                            readOnly />
-              </div>
-      
-      
-              <div className="col-md-6">
-                <label>Father Name (English)</label>
-                <input type="text" className="form-control" value={userDetails.father_name_en || ''}
-                                            readOnly />
-              </div>
-              <div className="col-md-6">
-                <label>Father Name (Hindi)</label>
-                <input type="text" className="form-control" value={userDetails.father_name_hi || ''}
-                                            readOnly />
-              </div>
-      
-      
-              <div className="col-md-6">
-                <label>Mother Name (English)</label>
-                <input type="text" className="form-control" value={userDetails.mother_name_en || ''}
-                                            readOnly/>
-              </div>
-              <div className="col-md-6">
-                <label>Mother Name (Hindi)</label>
-                <input type="text" className="form-control" value={userDetails.mother_name_hi || ''}
-                                            readOnly />
-              </div> */}
+           
 
                                 <div className="col-md-6">
                                     <label>Date Of Birth</label>
@@ -208,47 +180,7 @@ const BasicDetails = () => {
                                     />
                                 </div>
 
-                                {/* <div className="col-md-6">
-                <label>Gender</label>
-                <input type="number" className="form-control"  value={getGenderText(userDetails.gender)}
-                                            readOnly/>
-              </div> */}
-                                {/* <div className="col-md-6">
-                <label>Marital Status</label>
-                <input type="number" className="form-control"  value={userDetails.marital_status || ''}
-                                            readOnly/>
-              </div>
-      
-      
-              <div className="col-md-12">
-                <label>Address</label>
-                <input type="text" className="form-control"  value={userDetails.address_landMark || ''}
-                                            readOnly/>
-              </div>
-      
-      
-              <div className="col-md-6">
-                <label>District</label>
-                <input type="text" className="form-control" value={userDetails.district || ''}
-                                            readOnly/>
-              </div>
-              <div className="col-md-6">
-                <label>Block</label>
-                <input type="text" className="form-control" value={userDetails.block_town || ''}
-                                            readOnly/>
-              </div>
-      
-      
-              <div className="col-md-6">
-                <label>Ward/Village</label>
-                <input type="text" className="form-control" value={userDetails.ward_village || ''}
-                                            readOnly/>
-              </div>
-              <div className="col-md-6">
-                <label>Pincode</label>
-                <input type="text" className="form-control" value={userDetails.pincode || ''}
-                                            readOnly/>
-              </div> */}
+           
 
                                 <div className="col-md-6">
                                     <label>Mobile</label>
@@ -370,48 +302,47 @@ const BasicDetails = () => {
                                     )}
                                 </div>
 
-                                {/* <div className="col-md-6">
-                <label>Highest Qualification</label>
-                <input type="text" className="form-control" value={userDetails.highest_qualification || ''}
-                                            readOnly/>
-              </div>
-              <div className="col-md-6">
-                <label>Current Engagement</label>
-                <input type="text" className="form-control"  value={userDetails.current_engagement === 'N' ? 'Not Employed' : 'Employed'}
-                                            readOnly/>
-              </div>
-      
-      
-              <div className="col-md-6">
-                <label>Total Annual Family Income</label>
-                <input type="text" className="form-control" value={userDetails.annual_income || ''}
-                                            readOnly/>
-              </div>
-              <div className="col-md-6">
-                <label>Income Verified</label>
-                <input type="text" className="form-control" value={userDetails.income_verified || ''}
-                                            readOnly/>
-              </div>
-      
-      
-              <div className="col-md-6">
-                <label>Alternate Number</label>
-                <input type="text" className="form-control" value={userDetails.alternate_number || ''}
-                                            readOnly/>
-              </div>
-              <div className="col-md-6">
-                <label>Alternate Email</label>
-                <input type="email" className="form-control"  value={userDetails.alternate_email || ''}
-                                            readOnly/>
-              </div> */}
+                                <div className="col-md-6">
+                                    <label>Haryana Resident/Domicile</label>
+                                    <select
+                                        
+                                        className={`form-select`}
+                                    >
+                                        <option value="" selected disabled>
+                                            Select
+                                        </option>
+                                        <option value="1">Yes</option>
+                                        <option value="2">No</option>
+                                    </select>
+                                    
+                                </div>
 
+                                <div className="col-md-6">
+                                    <label>Attach Certificate (Domicile)</label>
+                                    <input
+                                        type="file"
+                                        accept="application/pdf"
+                                        className={`form-control`}
+                                       
+                                       
+                                    />
+                                  
+                                  
+                                </div>
                                 <div className="text-center mt-4">
                                     <button
                                         type="button"
                                         onClick={save}
-                                        className="save-btn"
+                                        className="btn btn-primary"
                                     >
                                         Save
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={save}
+                                        className="btn btn-primary mx-2"
+                                    >
+                                        Next
                                     </button>
                                 </div>
                             </div>
