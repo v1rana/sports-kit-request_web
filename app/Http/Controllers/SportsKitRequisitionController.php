@@ -97,101 +97,96 @@ class SportsKitRequisitionController extends Controller {
 
     // Store the requisition request
     public function store(Request $request) {
-		
 		// return "hi";
-		// Validate the request
-$validatedData = $request->validate([
-    'name' => 'required|string|max:100',
-    'district' => 'required|string|max:100',
-    'block' => 'required|string|max:100',
-    'area_name' => 'required|string|max:100',
-    'designation' => 'required|string|max:50',
-    'specific_designation' => 'required|string|max:50',
-    'sports_equipment' => 'required|array',
-    'sports_equipment.*.name' => 'required|string',
-    'sports_equipment.*.equipment' => 'required|string',
-    'sports_equipment.*.quantity' => 'required|integer|min:1',
-    'sports_equipment.*.fop_available' => 'required|string|max:50',
-    'sports_equipment.*.players_count' => 'required|integer|min:1',
-    'sports_equipment.*.last_issued_date' => 'nullable|date',
-    //'sports_equipment.*.date' => 'date',
-    'sports_equipment.*.photo' => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048'
-]);
-// echo "<pre>";
-// print_r($_POST);
+		// return "hi";
+    $validatedData = $request->validate([
+        'name' => 'required|string|max:100',
+        'district' => 'required|string|max:100',
+        'block' => 'required|string|max:100',
+        'area_name' => 'required|string|max:100',
+        'designation' => 'required|string|max:50',
+        'specific_designation' => 'required|string|max:50',
+        'sports_equipment' => 'required|array',
+        'sports_equipment.*.name' => 'required|string',
+        'sports_equipment.*.equipment' => 'required|string',
+        'sports_equipment.*.quantity' => 'required|integer|min:1',
+        'sports_equipment.*.fop_available' => 'required|string|max:50',
+        'sports_equipment.*.players_count' => 'required|integer|min:1',
+        'sports_equipment.*.last_issued_date' => 'nullable|date',
+        'sports_equipment.*.photo' => 'nullable|file|image|mimes:jpg,jpeg,png|max:2048'
+    ]);
 
-// Process equipment photos and data
-// Initialize an array to store the final equipment data
-$finalEquipments = [];
+    // Process equipment
+    $finalEquipments = [];
+    foreach ($request->sports_equipment as $equipment) {
+        $photoPath = null;
+        if (isset($equipment['photo']) && $equipment['photo'] instanceof \Illuminate\Http\UploadedFile) {
+            $filename = uniqid() . '_' . $equipment['photo']->getClientOriginalName();
+            $equipment['photo']->move(public_path('assets/uploads'), $filename);
+            $photoPath = 'assets/uploads/' . $filename;
+        }
 
-// Loop through each equipment and process its data
-foreach ($request->sports_equipment as $equipment) {
-    $photoPath = null; // Initialize photoPath to null if no photo uploaded
-
-    // Check if a photo was uploaded for this equipment
-    if (isset($equipment['photo']) && $equipment['photo'] instanceof \Illuminate\Http\UploadedFile) {
-        // Generate a unique filename to prevent overwriting files
-        $filename = uniqid() . '_' . $equipment['photo']->getClientOriginalName();
-        
-        // Move the uploaded photo to the public/uploads directory
-        $equipment['photo']->move(public_path('assets/uploads'), $filename);
-        
-        // Store the photo path for this equipment
-        $photoPath = 'assets/uploads/' . $filename;
+        $finalEquipments[] = [
+            'name' => $equipment['name'],
+            'equipment' => $equipment['equipment'],
+            'quantity' => $equipment['quantity'],
+            'photo' => $photoPath,
+            'players_count' => $equipment['players_count'],
+            'last_issued_date' => $equipment['last_issued_date'],
+            'fop_available' => $equipment['fop_available']
+        ];
     }
 
-    // Store the equipment data, including the photo path (if any)
-    $finalEquipments[] = [
-        'name' => $equipment['name'],
-        'equipment' => $equipment['equipment'],
-        'quantity' => $equipment['quantity'],
-        'photo' => $photoPath, // Store the photo path (null if no photo uploaded)
-        'players_count' => $equipment['players_count'],
-        'last_issued_date' => $equipment['last_issued_date'],
-        'fop_available' => $equipment['fop_available']
-    ];
+    $validatedData['sports_equipment'] = $finalEquipments;
+	
+	  // Create the application_id based on district, block, and area_name
+    $applicationId = 'SKIT-' .
+					strtoupper(substr($validatedData['district'], 0, 2)) .
+					strtoupper(substr($validatedData['block'], 0, 2)) .
+					strtoupper(substr($validatedData['area_name'], 0, 2)) .
+					rand(1000, 9999);
+	
+	$encodedEquipments = json_encode($validatedData['sports_equipment']);
+	
+	$temp = TemporarySportsKitRequisition::create([
+        'applicant_id' => $applicationId,
+        'name' => $validatedData['name'],
+        'district' => $validatedData['district'],
+        'block' => $validatedData['block'],
+        'area_name' => $validatedData['area_name'],
+        'designation' => $validatedData['designation'],
+        'specific_designation' => $validatedData['specific_designation'],
+        'sports_equipment' => $encodedEquipments,
+    ]);
+
+    // ✅ Save data temporarily in session
+    session(['form_data' => $temp->toArray(), 'temp_id' => $temp->id]);
+
+    // ✅ Show print preview
+    // return view('sports_kit.print', ['kit' => (object)$temp->toArray()]);
+    return redirect()->route('sports-kit.print.temp');
 }
 
-// Encode equipment data as JSON
-$encodedEquipments = json_encode($finalEquipments);
-// return $encodedEquipments;
-// Check for duplicate
-$existing = SportsKitRequisition::where([
-    ['district', '=', $validatedData['district']],
-    ['block', '=', $validatedData['block']],
-    ['area_name', '=', $validatedData['area_name']],
-])->where('sports_equipment', $encodedEquipments)->first();
+public function printTemporary()
+{
+    $formData = session('form_data');
+ 
+    if (!$formData || !isset($formData['applicant_id'])) {
+        return redirect('/')->with('error', 'Missing application ID. Please refill the form.');
+    }
 
-if ($existing) {
-    return redirect('/sports-kit')->with('warning', 'You have already submitted this form.');
+    $tempEntry = TemporarySportsKitRequisition::where('applicant_id', $formData['applicant_id'])->first();
+
+    if (!$tempEntry) {
+        return redirect('/')->with('warning', 'No saved data found. Please fill the form.');
+    }
+
+    $kit = (object) $tempEntry->toArray();
+    return view('sports_kit.print', compact('kit'));
 }
 
-// Save to database
-$kit = SportsKitRequisition::create([
-    'applicant_id' => 'TEMP', // Temporary applicant ID before updating
-    'name' => $validatedData['name'],
-    'district' => $validatedData['district'],
-    'block' => $validatedData['block'],
-    'area_name' => $validatedData['area_name'],
-    'designation' => $validatedData['designation'],
-    'specific_designation' => $validatedData['specific_designation'],
-    'sports_equipment' => $encodedEquipments,
-    'sports_photos' => null,
-	'fop_available' => '',
-    'players_count' => 0,
-    'last_issued_date' => null,
-    'status' => 'Pending'
-]);
 
-// Generate applicant ID with padded number
-$kit->applicant_id = 'SKIT-' . str_pad($kit->id, 8, '0', STR_PAD_LEFT);
 
-// Save the updated applicant ID
-$kit->save();
-
-// Return the success view with the kit data
-return view('sports_kit.print', compact('kit'));
-}
 
 	
 	public function print($id)
@@ -336,7 +331,7 @@ return view('sports_kit.print', compact('kit'));
 
 		// Generate OTP
 		$otp = rand(100000, 999999);
-		$expiryTime = now()->addMinutes(10);
+		$expiryTime = \Carbon\Carbon::now('Asia/Kolkata')->addMinutes(10);
 
 		// Store OTP in user record
 		$user->update([
@@ -345,11 +340,11 @@ return view('sports_kit.print', compact('kit'));
 		]);
 
 		// SMS configuration
-		$username = 'haryanait-sport';
-		$password = 'sports@1234';
-		$senderid = 'GOVHRY';       
-		$dept_key = 'dca7fc77-9e28-4765-bbaa-07bd43197b2e';
-		$temp_id  = '1407174538599726119';
+		return $username = config('sms.username');
+		$password = config('sms.password');
+		$senderid = config('sms.senderid');
+		$dept_key = config('sms.dept_key');
+		$temp_id  = config('sms.temp_id1');
 
 		$msg = "Dear $role User, $otp is OTP for Login. Sports Department, Haryana";
 
@@ -369,7 +364,7 @@ public function verifyOTP(Request $request)
         'otp' => 'required|digits:6'
     ]);
 
-   return $mobile = $request->mobile;
+    $mobile = $request->mobile;
     $otp = $request->otp;
 
     // Check in all user tables
@@ -381,7 +376,7 @@ public function verifyOTP(Request $request)
         return response()->json(['success' => false, 'message' => 'Mobile number not registered.']);
     }
 
-    if ($user->otp != $otp || now()->gt($user->otp_expires_at)) {
+    if ($user->otp != $otp || now()->gt($user->expires_at)) {
         return response()->json(['success' => false, 'message' => 'Invalid or expired OTP.']);
     }
 

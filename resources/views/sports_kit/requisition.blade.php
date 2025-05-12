@@ -47,28 +47,21 @@
             value="{{ old('district', session('first_form_data.district') ?? $userDetail->district ?? '') }}" required>
     </div> 
 </div>
-						<div class="col-xs-12 col-sm-4 col-md-3 mb-3">
+						<div class="col-xs-12 col-sm-4 col-md-3 mb-3" style="display:none;">
     <div>
         <label>Block</label>
-        <input type="text" class="form-control" name="block"
+        <input type="hidden" class="form-control" name="block"
             value="{{ old('block', session('first_form_data.block') ?? $userDetail->block_town ?? '') }}" required>
     </div> 
 </div>
 						<div class="col-xs-12 col-sm-4 col-md-3 mb-3">
     <div>
-        <label>Area Name</label>
+        <label>Municipal Body/ Gram Panchayat</label>
         <input type="text" class="form-control" name="area_name"
             value="{{ old('area_name', session('first_form_data.area_name') ?? $userDetail->ward_village ?? '') }}" required>
     </div> 
 </div>
-                        
-                        <!--<div class="col-3 mb-3 px-0">
-                        <div>
-                            <label>2. Designation</label>
-                            <input type="text" class="form-control" name="designation" value="" required>
-                            </div> 
-                            </div>-->
-						
+       				
     <!-- Designation Type Dropdown -->
     <div class="col-xs-12 col-sm-4 col-md-3 mb-3">
         <label for="designation_type">Designation Type</label>

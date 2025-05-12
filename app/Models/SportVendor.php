@@ -11,6 +11,7 @@ class SportVendor extends Model
     protected $fillable = [
         'vendor_id',
         'sport_id',
+        'equipment',
         'rate',
         'photo',
     ];

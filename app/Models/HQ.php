@@ -12,7 +12,6 @@ class HQ extends Model {
 
     protected $fillable = [
         'hq_name',
-        'designation',
         'mob',
         'status',
         'otp',

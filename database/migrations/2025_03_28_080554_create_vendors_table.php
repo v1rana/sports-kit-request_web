@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('vendor_name')->nullable();
             $table->string('owner_name')->nullable();
             $table->string('pan_of_owner')->nullable();
+            $table->string('mob')->nullable();
             $table->string('firm_address')->nullable();
             $table->string('district')->nullable();
             $table->string('pincode')->nullable();

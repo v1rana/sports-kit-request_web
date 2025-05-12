@@ -56,29 +56,46 @@
 			
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const tabButtons = document.querySelectorAll('.dashboard-stats .nav-link');
+    const tabButtons = document.querySelectorAll('#myTab .nav-link');
+    const tabContent = document.querySelectorAll('.tab-pane');
     const menuItems = document.querySelectorAll('.menu-item');
 
-    // Save selected tab in localStorage and update sidebar
-    tabButtons.forEach(btn => {
-        btn.addEventListener('click', function () {
-            const selected = this.textContent.trim().toLowerCase(); // "equipments", "gradations", "jobs"
-            localStorage.setItem('selectedTab', selected);
-            updateSidebar(selected);
-        });
-    });
+    // Step 1: Read saved tab from localStorage or default
+    const savedTab = localStorage.getItem('selectedTab') || 'equipments';
 
-    // Sidebar visibility logic
-    function updateSidebar(tab) {
+    function activateTab(tabName) {
+        tabButtons.forEach(btn => {
+            const tab = btn.getAttribute('data-tab');
+            const paneId = btn.getAttribute('data-bs-target');
+            const isActive = tab === tabName;
+
+            btn.classList.toggle('active', isActive);
+            const pane = document.querySelector(paneId);
+            if (pane) {
+                pane.classList.toggle('show', isActive);
+                pane.classList.toggle('active', isActive);
+            }
+        });
+
+        // Update sidebar menu visibility
         menuItems.forEach(item => {
             const tabKey = item.getAttribute('data-tab');
-            item.style.display = (tabKey === tab) ? 'block' : 'none';
+            item.style.display = (tabKey === tabName) ? 'block' : 'none';
         });
     }
 
-    // Run on first load
-    const defaultTab = localStorage.getItem('selectedTab') || 'equipments';
-    updateSidebar(defaultTab);
+    // Step 2: On load - activate saved tab and update sidebar
+    activateTab(savedTab);
+
+    // Step 3: When user clicks tab
+    tabButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+            const selected = this.getAttribute('data-tab');
+            localStorage.setItem('selectedTab', selected);
+            activateTab(selected);
+        });
+    });
 });
 </script>
-			
+
+

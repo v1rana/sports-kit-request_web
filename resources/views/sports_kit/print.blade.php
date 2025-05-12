@@ -29,9 +29,9 @@
     <form action="{{ route('sports_kit.uploadform') }}" method="POST" enctype="multipart/form-data" class="d-flex gap-2 no-print">
         @csrf
         <input type="file" name="signed_document" accept="application/pdf,image/*" class="form-control form-control-sm" required />
-        <button type="submit" class="btn btn-success btn-sm">?? Upload Signed Form</button>
+        <button type="submit" class="btn btn-success btn-sm"><i class="fa-solid fa-print me-1"></i> Upload Signed Form</button>
     </form>
-    <button class="btn btn-light btn-sm no-print" onclick="window.print()">??? Print</button>
+    <button class="btn btn-light btn-sm no-print" onclick="window.print()"><i class="fa fa-print"></i> Print</button>
 </div>
 
 				<div class="row justify-content-between py-1 pt-4 border-bottom align-items-center">
@@ -98,7 +98,7 @@
 				<td>{{ $item['players_count'] ?? 'N/A' }}</td>
 				<td>{{ $item['last_issued_date'] ?? 'N/A' }}</td>
 				<td>{{ $item['fop_available'] ?? 'N/A' }}</td>
-                <td>{{ !empty($kit->vendor_id) ? 'Ready for Disbursement' : 'In-Progress' }}</td>
+                <td>{{ !empty($kit->disbursement_status) ? 'Ready for Disbursement' : 'In-Progress' }}</td>
             </tr>
         @endforeach
 

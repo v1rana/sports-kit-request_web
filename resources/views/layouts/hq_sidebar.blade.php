@@ -37,8 +37,8 @@
 			
 			{{-- Gradation menu --}}
     <li class="nav-item menu-item" data-tab="gradations">
-        <a href="" 
-           class="nav-link" data-tab="gradations">
+        <a href="{{ route('hq.grad.list') }}" 
+           class="nav-link {{ request()->routeIs('hq.grad.list') ? 'active' : '' }}" data-tab="gradations">
            <i class="fa-solid fa-address-card"></i> <span>Gradation (A & B) Applications List</span>
         </a>
     </li>

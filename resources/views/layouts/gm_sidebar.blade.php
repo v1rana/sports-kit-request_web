@@ -47,7 +47,7 @@
 							</div>
 						</div>
 						<div class="col-6 text-end">
-							<a href="{{route('login')}}" class="btn btn-danger"><i class="fa-solid fa-power-off"></i> <span>Log Out</span></a>
+							<a href="{{route('sk.logout')}}" class="btn btn-danger"><i class="fa-solid fa-power-off"></i> <span>Log Out</span></a>
 						</div>
 					</div>
 				</div>

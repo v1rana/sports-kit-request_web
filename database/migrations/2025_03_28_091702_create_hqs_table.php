@@ -9,7 +9,7 @@ return new class extends Migration {
         Schema::create('hqs', function (Blueprint $table) {
             $table->id();
             $table->string('hq_name')->unique();
-            $table->enum('status', ['approve', 'reject']);
+            $table->enum('status', ['Active', 'Inactive']);
             $table->string('mob');
             $table->string('otp');
             $table->string('expires_at');

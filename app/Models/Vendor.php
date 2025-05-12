@@ -14,6 +14,7 @@ class Vendor extends Model
 	'owner_name',
 	'pan_of_owner',
 	'firm_address',
+	'mob',
 	'district',
 	'pincode',
 	'vendor_assigned_document'

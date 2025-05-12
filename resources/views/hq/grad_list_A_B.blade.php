@@ -1,4 +1,4 @@
-@extends('layouts.dso_main')
+@extends('hq_main')
 
 @section('content')
 
@@ -31,22 +31,13 @@
                     <th>Application Id</th>
                     <th>Certificate No</th>
                     <th>Sports Person Name</th>
-                    <!--th>Gender</th>
-                    <th>State</th>
-                    <th>Sports Discipline</th-->
                     <th>Tournament Name</th>
                     <th>Month/Year</th>
-                    <!--th>Venue</th-->
                     <th>Organising Authority</th>
                     <th>Tournament Type</th>
                     <th>Medal Won</th>
-                    <!--th>Participation Level</th>
-                    <th>Application Date</th>
-                    <th>Letter Of Enquiry</th>
-                    <th>Reply Of Letter</th-->
                     <th>Action</th>
                     <th>Download Certificate</th>
-                    <!--th>Upload Certificate</th-->
                     <th>Application Status</th>
                 </tr>
             </thead>
@@ -57,12 +48,8 @@
                     <td>{{ $certificate->appl_id }}</td>
                     <td>{{ $certificate->certificate_no }}</td>
                     <td>{{ $certificate->sports_person_name }}</td>
-                    <!--td>{{ $certificate->gender }}</td>
-                    <td>{{ $certificate->domicile_state }}</td>
-                    <td>{{ $certificate->name_sports_discipline }}</td-->
                     <td>{{ $certificate->tournament }}</td>
                     <td>{{ \Carbon\Carbon::createFromFormat('Y-m-d', $certificate->month_year)->format('F Y') }}</td>
-                    <!--td>{{ $certificate->venue_of_tournament }}</td-->
                     <td>{{ $certificate->authority }}</td>
                     <td>{{ $certificate->tournament_type }}</td>
                     <td>{{ $certificate->medal_won }}</td>
@@ -98,12 +85,12 @@
                             <span class="badge rounded-pill bg-success"><i class="fa-solid fa-thumbs-up"></i> Approved</span>
                         @elseif($certificate->status == 'Rejected')
                             <span class="badge rounded-pill bg-danger"><i class="fa-solid fa-ban"></i>  Rejected</span>
-						 @elseif(!empty($certificate->enquiry_pdf) && !empty($certificate->replied_pdf))
-                            <form action="{{ route('dso.approve', $certificate->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
+						 @elseif(!empty($certificate->enquiry_pdf) && !empty($certificate->replied_pdf))	
+						 <form action="{{ route('hq.approve', $certificate->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
                                 @csrf
                                 <button type="submit"  class="btn btn-success">  Approve </button>
                             </form>
-                            <a href="javascript:void(0);" id="reject-application" class="btn btn-danger">Reject</a>	
+                            <a href="javascript:void(0);" id="reject-application" class="btn btn-danger">Reject</a>
                         @else
                             
                         @endif
@@ -115,7 +102,7 @@
                 <div class="rejection-remarks">
                     <label class="info-label text-muted ">Rejection Remarks</label>
                     <div class="d-flex">
-                        <form action="{{ route('dso.reject', $certificate->id) }}" method="POST" style="display:inline;">
+                        <form action="{{ route('hq.reject', $certificate->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Reject this?');">
                             @csrf<textarea class="form-control" name="rejection_remark" required></textarea>
                             <button class="btn btn-primary " type="submit">Submit</button>
                         </form>
@@ -188,11 +175,6 @@
                     <small class="info-label text-muted ">4. Organising Authority</small>
                     <h5>{{ $certificate->authority }}</h5>
                 </div>
-    			<!--div class="col-xs-12 col-sm-6 col-md-3">
-    				<label>Gender</label>
-    				<h6>{{ $certificate->gender }}</h6>
-    			</div-->
-    			
     			<div class="col-xs-12 col-sm-6 col-md-2 mb-3">
     				<small class="info-label text-muted ">5. Medal Won</small>
     				<h5>{{ $certificate->medal_won }}</h5>
@@ -216,13 +198,13 @@
     					</a>
     					<p>
     						<small class="mb-0 text-muted text-end">
-    							📅 Datetime: {{ \Carbon\Carbon::parse($certificate->enquiry_pdf_datetime)->format('d M Y, h:i A') }}
+    							{{ \Carbon\Carbon::parse($certificate->enquiry_pdf_datetime)->format('d M Y, h:i A') }}
     						</small>
     					</p>
     				</div>
 
     				@else
-    					<form action="{{ route('dso.enquiry.UploadLetter') }}" method="POST" enctype="multipart/form-data" style="display:flex;">
+    					<form action="{{ route('hq.enquiry.UploadLetter') }}" method="POST" enctype="multipart/form-data" style="display:flex;">
     						@csrf
     						<input type="file" name="enquiry_pdf" accept="application/pdf" required class="form-control">
     						<input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
@@ -242,12 +224,12 @@
                         <a href="{{ asset('storage/' . $certificate->replied_pdf) }}" target="_blank" class="btn btn-primary mb-2"> <i class="fa-solid fa-file-lines"></i> View Reply Letter  </a>
         
                         <p><small  class="mb-0 text-muted text-end">
-                            📅 Datetime: {{ \Carbon\Carbon::parse($certificate->replied_pdf_datetime)->format('d M Y, h:i A') }}
+                             {{ \Carbon\Carbon::parse($certificate->replied_pdf_datetime)->format('d M Y, h:i A') }}
                         </small></p>
                     </div>
 
                     @else
-                    <form action="{{ route('dso.enquiry.ReplyLetter') }}" method="POST" enctype="multipart/form-data" style="display:flex;">
+                    <form action="{{ route('hq.enquiry.ReplyLetter') }}" method="POST" enctype="multipart/form-data" style="display:flex;">
                         @csrf
                         <input type="file" name="replied_pdf" accept="application/pdf" required class="form-control">
                         <input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
@@ -277,7 +259,7 @@
             </a>
         @else
     				<label>Upload Signed Certificate</label>
-            <form action="{{ route('dso.certificates.uploadPDF') }}" method="POST" enctype="multipart/form-data" style="display:inline;">
+            <form action="{{ route('hq.certificates.uploadPDF') }}" method="POST" enctype="multipart/form-data" style="display:inline;">
                 @csrf
                 <input type="file" name="certificate_pdf" accept="application/pdf" required class="form-control mb-2">
                 <input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
@@ -342,74 +324,14 @@
                             @elseif($certificate->status == 'Rejected')
                                 <span class="badge rounded-pill bg-danger"><i class="fa-solid fa-ban"></i>  Rejected</span>
                             @else
-								<span class="badge rounded-pill bg-primary w-100"><i class="fa-solid fa-check"></i> In-Progress</span>
-                               <!-- <form action="{{ route('dso.approve', $certificate->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
-									@csrf
-									<button type="submit"  class="btn btn-success w-100 mb-2">
-								 Approve
-							</button>
-								</form>
+								<span class="badge rounded-pill bg-info w-100"><i class="fa-solid fa-check"></i> In-Progress</span>
 
-								
-<button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#rejectRemarkModal{{ $certificate->id }}">
-  Reject
-</button>-->
-
-<!-- Modal -->
-<div class="modal fade" id="rejectRemarkModal{{ $certificate->id }}" tabindex="-1" aria-labelledby="rejectRemarkModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <form action="{{ route('dso.reject', $certificate->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to Reject this?');">
-        @csrf
-        <div class="modal-body">
-          <h5>Rejection Remarks</h5>
-          <textarea class="form-control" name="rejection_remark" required></textarea>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 
                             @endif
                         </strong>
-                <!--@if($certificate->status == 'Pending')
-                    <form action="{{ route('dso.approve', $certificate->id) }}" method="POST" style="display:inline;">
-                        @csrf
-						<button type="submit"  class="btn btn-success w-100 mb-2">
-                     Approved
-                </button>
-                    </form>
-
-                    <form action="{{ route('dso.reject', $certificate->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        <button type="submit" class="btn btn-danger w-100">
-                            Rejected
-                        </button>
-                    </form>
-                @endif-->
+               
             </td>
-			<!--td>
-			@if(!empty($certificate->enquiry_pdf) && !empty($certificate->replied_pdf))
-    @if($certificate->certificate_pdf)
-        <a href="{{ asset('storage/' . $certificate->certificate_pdf) }}" target="_blank" class="btn btn-primary w-100 mb-2">
-            View Certificate
-        </a>
-    @else
-        <form action="{{ route('dso.certificates.uploadPDF') }}" method="POST" enctype="multipart/form-data" style="display:inline;">
-            @csrf
-            <input type="file" name="certificate_pdf" accept="application/pdf" required class="form-control mb-2">
-            <input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
-            <button type="submit" class="btn btn-danger w-100">
-                Upload Certificate
-            </button>
-        </form>
-    @endif
-    @endif
-</td-->
+			
 
                 </tr>
                 @endforeach
@@ -417,7 +339,8 @@
         </table>
     </div>
 </div>
-
+ <script src="{{ url('assets/js/jquery.min.js') }}"></script>
+		<script src="{{ url('assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script>
 	$(document).ready(function(){
 		$('#reject-application').click(function(){	

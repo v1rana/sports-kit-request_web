@@ -58,7 +58,7 @@
 							</div>-->
 						</div>
 						<div class="col-6 text-end">
-							<form id="logout-form" action="{{ url('/sports-kit/logout') }}" method="POST" style="display: inline;">
+							<form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: inline;">
     @csrf
     <button type="submit" class="btn btn-danger">
         <i class="fa-solid fa-power-off"></i> <span>Log Out</span>

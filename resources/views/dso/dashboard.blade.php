@@ -20,10 +20,25 @@
 						<ul class="dashboard-stats nav nav-tabs" id="myTab" role="tablist">
 							
 							<li class="nav-item" role="presentation">
-								<button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Equipments</button>
+								<button class="nav-link" id="profile-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#profile"
+                type="button"
+                role="tab"
+                data-tab="equipments"
+                aria-controls="profile"
+                aria-selected="false">Equipments</button>
 							</li>
 							<li class="nav-item" role="presentation">
-								<button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Gradations</button>
+								 <button class="nav-link"
+                id="home-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#home"
+                type="button"
+                role="tab"
+                data-tab="gradations"
+                aria-controls="home"
+                aria-selected="true">Gradations</button>
 							</li>
 							<!--<li class="nav-item" role="presentation">
 								<button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Jobs</button>
@@ -105,21 +120,21 @@
                     
                     <div class="col-md-4">
                         <div class="p-3 rounded text-center bg-info shadow text-white mb-3">
-                            <h2 class="text-white">{{ $totalPending }}</h2>
+                            <h2 class="text-white">{{ $totalgrad_c_d_Pending }}</h2>
                             <small class="text-white">Pending</small>
                             <i class="fa-solid fa-hourglass-half"></i>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="p-3 rounded text-center bg-success shadow text-white mb-3">
-                            <h2 class="text-white">{{ $totalApproved }}</h2>
+                            <h2 class="text-white">{{ $totalgrad_c_d_Approved }}</h2>
                             <small class="text-white">Approved</small>
                             <i class="fa-solid fa-check"></i>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="p-3 rounded text-center bg-danger shadow text-white mb-3">
-                            <h2 class="text-white">{{ $totalRejected }}</h2>
+                            <h2 class="text-white">{{ $totalgrad_c_d_Rejected }}</h2>
                             <small class="text-white">Rejected</small>
                             <i class="fa-solid fa-ban"></i>
                         </div>

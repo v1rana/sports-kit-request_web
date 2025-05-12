@@ -49,7 +49,7 @@ Route::get('/municipal', [MunicipalBodyMemberController::class, 'index']);
 	Route::post('/sports-kit/uploadform', [SportsKitRequisitionController::class, 'uploadform'])->name('sports_kit.uploadform');
 	Route::get('/sports-kit/print-temp', [SportsKitRequisitionController::class, 'printTemporary'])->name('sports-kit.print.temp');
 	Route::get('/sports-kit/sms', [SportsKitRequisitionController::class, 'sendsms'])->name('sports-kit.send.sms');
-    Route::post('/sports-kit/logout', [SportsKitRequisitionController::class, 'logout']);
+    Route::post('/logout', [SportsKitRequisitionController::class, 'logout'])->name('sk.logout');
 	Route::get('/sports-requests', [SportsKitRequisitionController::class, 'index'])->name('sports.requests');
     Route::get('/gm/dashboard', [SportsKitRequisitionController::class, 'dashboard'])->name('sports_kit.dashboard');
     Route::get('/sport-skit/list', [SportsKitRequisitionController::class, 'list'])->name('sports_kit.list');
@@ -62,28 +62,42 @@ Route::get('/municipal', [MunicipalBodyMemberController::class, 'index']);
     Route::get('/hq/sports-requests', [HQController::class, 'index'])->name('hq.sports.requests');
     Route::get('/hq/hosp-requests', [HQController::class, 'hosp_requests'])->name('hq.hosp.requests');
     Route::get('/hq/dashboard', [HQController::class, 'dashboard'])->name('hq.sports_kit.dashboard');
-    Route::get('/hq/vendors', [HQController::class, 'vendor_form'])->name('hq.vendor'); // Vendor list route
+    Route::get('/hq/vendors', [HQController::class, 'vendor_form'])->name('hq.vendor'); // Vendor form route
+    Route::get('/hq/vendor-list', [HQController::class, 'vendor_list'])->name('hq.vendor-list'); // Vendor list route
 	Route::get('/vendors/create', [HQController::class, 'create'])->name('vendor.create'); // Add vendor form route
 	Route::post('/vendors', [HQController::class, 'store'])->name('vendor.store'); // Store vendor data route
-Route::post('/hq/assign', [HQController::class, 'assignVendor'])->name('hq.assignvendor');
-Route::get('/dso/sports-requests', [DSOController::class, 'index'])->name('dso.sports.requests');
-Route::get('/dso/sports-kit', [DSOController::class, 'create'])->name('dso.sports_kit.form');
-Route::get('/dso/dashboard', [DSOController::class, 'dashboard'])->name('dso.sports_kit.dashboard');
-Route::post('/dso/certificates/download-pdf', [DSOController::class, 'viewAppliedCertificate'])->name('dso.certificates.downloadPDF');
-Route::post('/dso/certificates/upload-pdf', [DSOController::class, 'UploadCertificate'])->name('dso.certificates.uploadPDF');
-Route::post('/dso/enquiry/upload-letter', [DSOController::class, 'UploadLetter'])->name('dso.enquiry.UploadLetter');
-Route::post('/dso/enquiry/reply-letter', [DSOController::class, 'RepliedLetter'])->name('dso.enquiry.ReplyLetter');
+	Route::post('/hq/assign', [HQController::class, 'assignVendor'])->name('hq.assignvendor');
+	Route::get('/hq/gradlist', [HQController::class, 'grad_list'])->name('hq.grad.list');
+	
+	Route::post('/hq/certificates/download-pdf', [HQController::class, 'viewAppliedCertificate'])->name('hq.certificates.downloadPDF');
+	Route::post('/hq/certificates/upload-pdf', [HQController::class, 'UploadCertificate'])->name('hq.certificates.uploadPDF');
+	Route::post('/hq/enquiry/upload-letter', [HQController::class, 'UploadLetter'])->name('hq.enquiry.UploadLetter');
+	Route::post('/hq/enquiry/reply-letter', [HQController::class, 'RepliedLetter'])->name('hq.enquiry.ReplyLetter');
+	
+	Route::post('/hq/grad-list/approve/{id}', [HQController::class, 'ApproveRequest'])->name('hq.approve');
+	Route::post('/hq/grad-list/reject/{id}', [HQController::class, 'RejectRequest'])->name('hq.reject');
+	
+	
+	Route::get('/dso/sports-requests', [DSOController::class, 'index'])->name('dso.sports.requests');
+	Route::get('/dso/sports-kit', [DSOController::class, 'create'])->name('dso.sports_kit.form');
+	Route::get('/dso/dashboard', [DSOController::class, 'dashboard'])->name('dso.sports_kit.dashboard');
+	Route::post('/dso/certificates/download-pdf', [DSOController::class, 'viewAppliedCertificate'])->name('dso.certificates.downloadPDF');
+	Route::post('/dso/certificates/upload-pdf', [DSOController::class, 'UploadCertificate'])->name('dso.certificates.uploadPDF');
+	Route::post('/dso/enquiry/upload-letter', [DSOController::class, 'UploadLetter'])->name('dso.enquiry.UploadLetter');
+	Route::post('/dso/enquiry/reply-letter', [DSOController::class, 'RepliedLetter'])->name('dso.enquiry.ReplyLetter');
+	Route::post('/dso/kit-disbursement', [DSOController::class, 'storeKitDisbursement'])->name('dso.kit-disbursement.store');
+	
 
-Route::get('/adc/dashboard', [ADCController::class, 'dashboard'])->name('adc.sports_kit.dashboard');
-Route::get('/dso/gradlist', [DSOController::class, 'grad_list'])->name('dso.grad.list');
-Route::get('/adc/sports-requests', [ADCController::class, 'index'])->name('adc.sports.requests');
-Route::post('/adc/sports-request/approve/{id}', [ADCController::class, 'approveRequest'])->name('adc.approve');
-Route::post('/adc/sports-request/reject/{id}', [ADCController::class, 'rejectRequest'])->name('adc.reject');
+	Route::get('/adc/dashboard', [ADCController::class, 'dashboard'])->name('adc.sports_kit.dashboard');
+	Route::get('/dso/gradlist', [DSOController::class, 'grad_list'])->name('dso.grad.list');
+	Route::get('/adc/sports-requests', [ADCController::class, 'index'])->name('adc.sports.requests');
+	Route::post('/adc/sports-request/approve/{id}', [ADCController::class, 'approveRequest'])->name('adc.approve');
+	Route::post('/adc/sports-request/reject/{id}', [ADCController::class, 'rejectRequest'])->name('adc.reject');
 
-Route::post('/dso/sports-request/verify/{id}', [DSOController::class, 'verifyRequest'])->name('dso.verify');
-Route::post('/dso/sports-request/not-verify/{id}', [DSOController::class, 'notVerifyRequest'])->name('dso.not_verify');
-Route::post('/dso/sports-request/approve/{id}', [DSOController::class, 'ApproveRequest'])->name('dso.approve');
-Route::post('/dso/sports-request/reject/{id}', [DSOController::class, 'RejectRequest'])->name('dso.reject');
+	Route::post('/dso/sports-request/verify/{id}', [DSOController::class, 'verifyRequest'])->name('dso.verify');
+	Route::post('/dso/sports-request/not-verify/{id}', [DSOController::class, 'notVerifyRequest'])->name('dso.not_verify');
+	Route::post('/dso/sports-request/approve/{id}', [DSOController::class, 'ApproveRequest'])->name('dso.approve');
+	Route::post('/dso/sports-request/reject/{id}', [DSOController::class, 'RejectRequest'])->name('dso.reject');
 
 //});
 
@@ -100,8 +114,11 @@ Route::post('/dso/sports-request/reject/{id}', [DSOController::class, 'RejectReq
 
     Route::get('/verify-certificate/{mobile}/{certificate}', [SportsGradationCertificateController::class, 'verifyCertificate'])
     ->name('verify.certificate');
-    Route::get('/verification.by.sportsperson', [SportsGradationCertificateController::class, 'verificationBySportsPerson'])->name('verification.by.sportsperson');
+    Route::get('/verification.by.sportsperson/{id}', [SportsGradationCertificateController::class, 'verificationBySportsPerson'])->name('verification.by.sportsperson');
 
+    Route::post('/upload-file', [SportsGradationCertificateController::class, 'uploadFile'])->name('file.upload');
+    Route::delete('/file.remove', [SportsGradationCertificateController::class, 'fileRemove'])->name('file.remove');
+	Route::post('/verify.status.submit', [SportsGradationCertificateController::class, 'verifyStatusSubmit'])->name('verify.status.submit');
     
     Route::post('/logout', [SportsGradationCertificateController::class, 'logout'])->name('logout');
 

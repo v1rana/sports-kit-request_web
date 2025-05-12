@@ -35,6 +35,10 @@
                         <label for="pan_number" class="form-label">PAN No. of the Owner:</label>
                         <input type="text" class="form-control" id="pan_number" name="pan_number" required>
                     </div>
+					 <div class="col-md-6 mb-3">
+                        <label for="mob" class="form-label">Mobile:</label>
+                        <input type="number" class="form-control" id="mob" name="mob" required>
+                    </div>
 
                     <!-- Firm Address -->
                     <div class="col-md-6 mb-3">
@@ -61,14 +65,20 @@
                             <!-- Game Selection -->
                             <div class="col-md-3 mb-3">
                                 <label for="game" class="form-label">Game</label>
-                                <select name="games[0][game]" class="form-control" required>
+                                <select name="games[0][game]" class="form-control game-select" required onchange="updateEquipmentOptions(this)">
 									<option value="">--Select Sports--</option>
                                     @foreach($sports as $sport)
 										<option value="{{ $sport->id }}">{{ $sport->sports_name }}</option>
+
 									@endforeach
                                 </select>
                             </div>
-
+							<div class="col mb-0 px-1">
+								 <label for="game" class="form-label">Equipment</label>
+								<select name="games[0][equipment]" class="form-control" required>
+									<option value="" selected disabled>Select Equipment</option>
+								</select>
+							</div>
                             <!-- Rate Finalized -->
                             <div class="col-md-3 mb-3">
                                 <label for="rate_finalized" class="form-label">Rate Finalized (per kit)</label>
@@ -107,49 +117,133 @@
 </div>
 
 @endsection
-
+<script src="{{ url('assets/js/jquery.min.js') }}"></script>
 <script>
-    let gameCount = 1; // Initialize game count for dynamic input fields
+const sportNames = @json($sports->pluck('sports_name', 'id'));
+const equipmentLimits = {
+    "Volleyball": { "Balls": 6, "Net": 1 },
+    "Football": { "Balls": 6, "Net": 1 },
+    "Basketball": { "Balls": 6 },
+    "Handball": { "Balls": 6, "Net": 1 },
+    "Boxing": { "Punching Bags": 6, "Gloves": 12 },
+    "Wrestling": { "Mats [1 mtr x 2 mtr x5 cm]": 18 },
+    "Judo": { "Mats [1 mtr x 2 mtr x5 cm]": 18 },
+    "Cricket": {
+        "Bats": 2,
+        "Set of Wickets": 2,
+        "Cricket Balls": 6,
+        "Batting Pads": 2,
+        "Batting Gloves": 2,
+        "Wicket Keeping Pads": 1,
+        "Wicket Keeping Gloves": 1
+    }
+};
 
-    // Function to add more games
-    function addGame() {
-        const gameList = document.getElementById('games-kit-list');
-        const newGame = document.createElement('div');
-        newGame.classList.add('d-flex', 'mb-3');
-        newGame.innerHTML = `
-            <div class="col-md-3 mb-3">
-                <label for="game" class="form-label">Game</label>
-                <select name="games[${gameCount}][game]" class="form-control" required>
-					<option value="">--Select Sports--</option>
-                     @foreach($sports as $sport)
-						<option value="{{ $sport->id }}">{{ $sport->sports_name }}</option>
-					@endforeach
-				</select>
-            </div>
+function updateEquipmentOptions(sportSelect) {
+    let parentDiv = sportSelect.closest('.d-flex');
+    if (!parentDiv) return;
 
-            <div class="col-md-3 mb-3">
-                <label for="rate_finalized" class="form-label">Rate Finalized (per kit)</label>
-                <input type="number" class="form-control" name="games[${gameCount}][rate]" required>
-            </div>
+    let equipmentSelect = parentDiv.querySelector('select[name*="[equipment]"]');
+    if (!equipmentSelect) return;
 
-            <div class="col-md-3 mb-3">
-                <label for="photo" class="form-label">Pic</label>
-                <input type="file" class="form-control" name="games[${gameCount}][photo]" accept="image/*" required />
-            </div>
+    const selectedSportId = sportSelect.value;
+    const selectedSportName = sportNames[selectedSportId];
 
-            <div class="col-md-1 mb-3 text-end">
-                <button type="button" class="btn btn-sm btn-danger mt-4" onclick="removeGame(this)">Remove</button>
-            </div>
-        `;
-        gameList.appendChild(newGame);
-        gameCount++;
+    const selectedSports = Array.from(document.querySelectorAll('select[name*="[game]"]'))
+        .map(select => sportNames[select.value])
+        .filter(Boolean);
+
+    // Prevent both Wrestling and Judo
+    if (selectedSports.includes("Wrestling") && selectedSports.includes("Judo")) {
+        alert("You can only request equipment for either Wrestling or Judo, not both.");
+        sportSelect.value = "";
+        equipmentSelect.innerHTML = '<option value="" disabled selected>Select Equipment</option>';
+        return;
     }
 
-    // Function to remove a game input
-    function removeGame(button) {
-        button.closest('.d-flex').remove();
+    // Reset equipment dropdown
+    equipmentSelect.innerHTML = '<option value="" disabled selected>Select Equipment</option>';
+
+    if (equipmentLimits[selectedSportName]) {
+        Object.keys(equipmentLimits[selectedSportName]).forEach(equipment => {
+            let option = document.createElement("option");
+            option.value = equipment;
+            option.textContent = equipment;
+            equipmentSelect.appendChild(option);
+        });
     }
+
+    updateDuplicateEquipmentOptions(); // Call after populating
+}
+
+// Prevent duplicate equipment selection
+function updateDuplicateEquipmentOptions() {
+    const allEquipmentSelects = document.querySelectorAll('select[name*="[equipment]"]');
+    const selectedEquipments = Array.from(allEquipmentSelects)
+        .map(select => select.value)
+        .filter(val => val !== "");
+
+    allEquipmentSelects.forEach(select => {
+        const currentValue = select.value;
+
+        Array.from(select.options).forEach(option => {
+            if (option.value === "" || option.value === currentValue) {
+                option.disabled = false;
+            } else {
+                option.disabled = selectedEquipments.includes(option.value);
+            }
+        });
+    });
+}
+
+document.addEventListener('change', function (e) {
+    if (e.target && e.target.matches('select[name*="[equipment]"]')) {
+        updateDuplicateEquipmentOptions();
+    }
+});
+
+document.addEventListener('DOMContentLoaded', updateDuplicateEquipmentOptions);
+
+// Add new game
+let gameCount = 1;
+function addGame() {
+    const gameList = document.getElementById('games-kit-list');
+    const newGame = document.createElement('div');
+    newGame.classList.add('d-flex', 'mb-3');
+    newGame.innerHTML = `
+        <div class="col-md-3 mb-3">
+            <select name="games[${gameCount}][game]" class="form-control" required onchange="updateEquipmentOptions(this)">
+                <option value="">--Select Sports--</option>
+                @foreach($sports as $sport)
+                    <option value="{{ $sport->id }}">{{ $sport->sports_name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col mb-0 px-1">
+            <select name="games[${gameCount}][equipment]" class="form-control" required>
+                <option value="" selected disabled>Select Equipment</option>
+            </select>
+        </div>
+        <div class="col-md-3 mb-3">
+            <input type="number" class="form-control" name="games[${gameCount}][rate]" required>
+        </div>
+        <div class="col-md-3 mb-3">
+            <input type="file" class="form-control" name="games[${gameCount}][photo]" accept="image/*" required />
+        </div>
+        <div class="col-md-1 mb-3 text-end">
+            <button type="button" class="btn btn-sm btn-danger mt-4" onclick="removeGame(this)">Remove</button>
+        </div>
+    `;
+    gameList.appendChild(newGame);
+    gameCount++;
+}
+
+function removeGame(button) {
+    button.closest('.d-flex').remove();
+    updateDuplicateEquipmentOptions(); // Update after removal
+}
 </script>
+
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const documentUploadInput = document.getElementById('document_upload');

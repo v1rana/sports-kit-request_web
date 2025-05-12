@@ -7,24 +7,38 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
+<style>
+	    label.info-label,small.info-label {font-weight: 500;font-size:14px;display: block; margin-bottom:0; line-height:normal}
+	    .modal-body h5{margin:0}
+	    .games-authorised-sec .row > div{font-size: 15px;padding:0}
+	    .games-authorised-sec .row > div h6 {
+    margin: 0;
+    padding: 6px 10px;
+    border-left: 1px solid rgba(0, 0, 0, 0.07);
+    background: #eee;
+    color: #777;
+}
+.games-authorised-sec .row > div:first-child h6{border:none;}
+.games-authorised-sec .row > div:nth-child(-n+4){border-top:0;}
+.games-authorised-sec .row > div p{padding: 5px 10px;font-size:14px;}
+</style>
 <h4 class="">Sports Kit Requisition List <a href="" class="btn btn-secondary float-end"><i class="fa-solid fa-arrow-left-long"></i> Back</a></h4>
-<div class=" bg-white shadow mb-5 p-3">
-	<div class="table-responsive">
-		<table class="table table-bordered bg-white table-hover">
-			<thead>
-				<tr class="bg-primary text-white">
-					<th>Sr. No.</th>
-					<th>Designation</th>
-					<th>Block</th>
-					<th>District</th>
-					<th>Area Name</th>
-					<th>Sports</th>
-					<th>Equipemnt</th>
-					<th>Quantity</th>
-					<th>Availability Of FoP/Hall/Poles</th>
-					<th>Tentative Players</th>
-					<th>Date Of Last Issued Sports</th>
-					<th>Application Status</th>
+<div class=" bg-white shadow mb-5 p-2">
+			<table class="table table-bordered bg-white table-hover">
+				<thead>
+					<tr class="bg-primary text-white">
+						<th>Sr. No.</th>
+						<th>Application Id</th>
+						<th>Designation</th>
+						<th>Block</th>
+						<th>District</th>
+						<th>Area Name</th>
+						<th>Sports</th>
+						<th>Equipemnt</th>
+						<th>Quantity</th>
+						<th>Action</th>
+						<th>Download PDF</th>
+						<th>Vendor</th>
 					<!--<th width="160px">Assign Vendor</th>-->
 				</tr>
 			</thead>
@@ -32,7 +46,8 @@
 				@foreach($sportsRequests as $index => $request)
 				<tr>
     <td>{{ $index + 1 }}.</td>
-    <td>{{ $request['designation'] }}</td>
+					 <td>{{ $request['applicant_id'] }}</td>
+    <td>{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}</td>
     <td>{{ $request['block'] }}</td>
     <td>{{ $request['district'] }}</td>
     <td>{{ $request['area_name'] }}</td>
@@ -77,90 +92,193 @@
         @endif
     </td>
 
-    {{-- Availability of FoP/Hall/Poles --}}
-    <td>
-        @if(is_array($equipmentList))
-            <ul class="list-unstyled mb-0">
-                @foreach($equipmentList as $equipment)
-                    <li>{{ $equipment['fop_available'] ?? 'N/A' }}</li>
-                @endforeach
-            </ul>
-        @else
-            <span>N/A</span>
-        @endif
-    </td>
+   <td>
+						<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modal{{ $request->id }}"> View</button>
+						<div class="modal fade" id="modal{{ $request->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+							<div class="modal-dialog modal-xl modal-dialog-centered">
+								<div class="modal-content">
+									<div class="modal-header bg-success">
+										<h5 class="modal-title" id="exampleModalLabel">Sports Equipments Center</h5>
+										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+									<div class="modal-body">
+										<div class="row">									
+											<div class="col-sm-12 col-sm-6 col-md-4">
+												<small class="info-label text-muted">Application Submitted Date</small>
+												<h5>  {{ \Carbon\Carbon::parse($request->created_at)->format('d M Y, h:i A') }}</h5>
+											</div>
 
-    {{-- Tentative Players --}}
-    <td>
-        @if(is_array($equipmentList))
-            <ul class="list-unstyled mb-0">
-                @foreach($equipmentList as $equipment)
-                    <li>{{ $equipment['players_count'] ?? 'N/A' }}</li>
-                @endforeach
-            </ul>
-        @else
-            <span>N/A</span>
-        @endif
-    </td>
+											<div class="col-sm-12 col-sm-6 col-md-3">
+												<small class="info-label text-muted">Application Id</small>
+												<h5>{{ $request['applicant_id'] }}</h5>
+											</div>
 
-    {{-- Last Issued Date --}}
-    <td>
-        @if(is_array($equipmentList))
-            <ul class="list-unstyled mb-0">
-                @foreach($equipmentList as $equipment)
-                    <li>
-                        @if(!empty($equipment['last_issued_date']))
-                            {{ \Carbon\Carbon::parse($equipment['last_issued_date'])->format('d-m-Y') }}
-                        @else
-                            N/A
-                        @endif
-                    </li>
-                @endforeach
-            </ul>
+											<div class="col-sm-12 col-sm-6 col-md-3">
+												<small class="info-label text-muted">Application Status</small>
+												<h5> <strong>
+						                            @if($request->status == 'Approved')
+															<span class="badge bg-success"><i class="fa-solid fa-thumbs-up"></i> Approved</span>
+														@elseif($request->status == 'Rejected')
+															<span class="badge bg-danger"><i class="fa-solid fa-ban"></i> Rejected</span>
+														@else
+														 <form action="{{ route('adc.approve', $request->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
+																@csrf
+																<button type="submit"  class="btn btn-success w-100 mb-2">
+															 Approve
+														</button>
+															</form>
+														<a href="javascript:void(0);" class="btn btn-danger" onclick="document.getElementById('rejection-remarks').classList.remove('d-none'); this.classList.add('d-none');"> Reject </a>
+														@endif
+													</strong>
+												</h5>
+											</div>
+					
+											<div class="col-sm-12 col-md-2 d-none" id="rejection-remarks">
+												<label>Reject Remarks</label>
+													<form action="{{ route('adc.reject', $request->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to Reject this?');">
+													@csrf
+													<div class="d-flex flex-column flex-md-row gap-2">
+														<textarea class="form-control" name="reject_remark" rows="2" placeholder="Enter reason..." required></textarea>
+														<button type="submit" class="btn btn-primary">Submit</button>
+													</div>
+												</form>
+											</div>
+										</div>
+
+										<hr />
+
+										<div class="row">												
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">1. Name</small>
+												<h5>{{ $request['name'] }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">2. District </small>
+												<h5>{{ $request['district'] }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">3. District </small>
+												<h5>{{ $request['district'] }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">4. Block </small>
+												<h5>{{ $request['block'] }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">5. Area Name </small>
+												<h5>{{ $request['area_name'] }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">6. Designation</small>
+												<h5>{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}</h5>
+											</div>
+										</div>
+
+										<div class="row">
+											<div class="col-12 mt-3 games-authorised-sec">
+												<h4 class="text-dark mb-2 border-bottom">Games Kit Authorised</h4>
+												@php $equipmentList = json_decode($request['sports_equipment'], true); @endphp
+												@if(is_array($equipmentList) && count($equipmentList))
+												<div class="row">
+													<div class="col-md-2"><h6>Game</h6></div>
+													<div class="col-md-2"><h6>Equipment</h6></div>
+													<div class="col-md-1"><h6>Qty</h6></div>
+													<div class="col-md-2"><h6>FoP/Hall/Poles</h6></div>
+													<div class="col-md-1"><h6>Players</h6></div>
+													<div class="col-md-2"><h6>Last Issued</h6></div>
+													<div class="col-md-2"><h6>Vendor</h6></div>
+												</div>
+											 	@foreach($equipmentList as $equipment)
+									            <div class="row">
+									                <div class="col-md-2"><p>{{ $equipment['name'] ?? 'N/A' }}</p></div>
+									                <div class="col-md-2"><p>{{ $equipment['equipment'] ?? 'N/A' }}</p></div>
+									                <div class="col-md-1"><p>{{ $equipment['quantity'] ?? '0' }}</p></div>
+									                <div class="col-md-2"><p>{{ $equipment['fop_available'] ?? 'N/A' }}</p></div>
+									                <div class="col-md-1"><p>{{ $equipment['players_count'] ?? 'N/A' }}</p></div>
+									                <div class="col-md-2">
+									                    @if(!empty($equipment['last_issued_date']))
+									                       <p> {{ \Carbon\Carbon::parse($equipment['last_issued_date'])->format('d-m-Y') }}</p>
+									                    @else
+									                        N/A
+									                    @endif
+									                </div>
+													
+									                <div class="col-md-2">
+    <p>
+        @php
+            $assigned = \App\Models\EquipmentVendorAssignment::where('request_id', $request->id)
+                ->where('equipment_name', $equipment['name'])
+                ->first();
+        @endphp
+
+        @if($assigned)
+            {{-- Show assigned vendor name --}}
+            @php
+                $assignedVendor = \App\Models\Vendor::find($assigned->vendor_id);
+            @endphp
+            <strong>Assigned To:</strong><br>
+            <span class="badge bg-success">
+                {{ $assignedVendor->vendor_name ?? 'Vendor Not Found' }}
+            </span>
         @else
-            <span>N/A</span>
+            {{-- Show form if not assigned --}}
+            <form action="{{ route('hq.assignvendor') }}" method="POST">
+                @csrf
+                <input type="hidden" name="request_id" value="{{ $request->id }}">
+                <input type="hidden" name="equipment_name" value="{{ $equipment['name'] }}">
+
+                <select name="vendor_id" class="form-select form-select-sm mt-1 mb-1" required>
+                    <option value="">Select Vendor</option>
+                    @foreach($vendors as $vendor)
+                        <option value="{{ $vendor->id }}">{{ $vendor->vendor_name }}</option>
+                    @endforeach
+                </select>
+
+                <button type="submit" class="btn btn-sm btn-primary w-100">Assign</button>
+            </form>
         @endif
-    </td>
+    </p>
+</div>
+
+									            </div>
+									            @endforeach
+									            @else
+									            	<p>No kits authorized.</p>
+								            	@endif
+								            </div>
+								        </div>
+							    	</div>
+							    </div>
+							</div>
+						</div>
+					</td>
+   
+   <td>
+						@if($request->gram_municipal_signed_document)
+							<a href="{{ url('uploads/gram_municipal_signed_document/' . basename($request->gram_municipal_signed_document)) }}" target="_blank" class="btn btn-danger w-100">
+								View PDF
+							</a>
+						@else
+							<button class="btn btn-secondary w-100" disabled>
+								No Document Available
+							</button>
+						@endif
+					</td>
+   
+   
+   
+   
 
     {{-- Assign Vendor --}}
-    <td>
-        @if(is_array($equipmentList))
-    <ul class="list-unstyled mb-0">
-        @foreach($equipmentList as $index => $equipment)
-            @php
-                $assigned = \App\Models\EquipmentVendorAssignment::where('request_id', $request->id)
-                    ->where('equipment_name', $equipment['name'])
-                    ->first();
-            @endphp
-            <li class="mb-2">
-                <form action="{{ route('hq.assignvendor') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="request_id" value="{{ $request->id }}">
-                    <input type="hidden" name="equipment_name" value="{{ $equipment['name'] }}">
-
-                    <strong>
-                        {{ $equipment['name'] }} - {{ $equipment['equipment'] }} (Qty: {{ $equipment['quantity'] }})
-                    </strong>
-
-                    <select name="vendor_id" class="form-select form-select-sm mt-1 mb-1" required>
-                        <option value="">Select Vendor</option>
-                        @foreach($vendors as $vendor)
-                            <option value="{{ $vendor->id }}"
-                                {{ $assigned && $assigned->vendor_id == $vendor->id ? 'selected' : '' }}>
-                                {{ $vendor->vendor_name }}
-                            </option>
-                        @endforeach
-                    </select>
-
-                    <button type="submit" class="btn btn-sm btn-primary w-100">Assign</button>
-                </form>
-            </li>
-        @endforeach
-    </ul>
-@else
-    <span>No equipment data</span>
-@endif
-    </td>
+   <td>
+    <span class="badge 
+        @if($request->vendor_status == 'Vendors Assigned') bg-success
+        @elseif($request->vendor_status == 'Partially Disbursed') bg-warning
+        @else bg-danger
+        @endif">
+        {{ $request->vendor_status }}
+    </span>
+</td>
 </tr>
 
 				@endforeach
@@ -170,97 +288,7 @@
 	</div>	
 	
 </div>			
-				
-
-            
-     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg modal-dialog-centered">
-			<div class="modal-content">
-				<div class="modal-header bg-success">
-					<h5 class="modal-title" id="exampleModalLabel">Sports Equipments Center</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-sm-12 col-sm-6 col-md-3">
-							<label>1. Name of the Owner</label>
-							<h6>Navjot Kaur</h6>
-						</div>
-						<div class="col-sm-12 col-sm-6 col-md-3">
-							<label>2. PAN No. </label>
-							<h6>123Jdf123</h6>
-						</div>
-						<div class="col-sm-12 col-sm-6 col-md-6">
-							<label>3. Firm Address</label>
-							<h6>Sco. 109-110, Sector 17B, Chandigarh</h6>
-						</div>
-						<div class="col-sm-12 col-sm-6 col-md-3">
-							<label>4. District</label>
-							<h6>Chandigarh</h6>
-						</div>
-						<div class="col-sm-12 col-sm-6 col-md-3">
-							<label>5. Pincode</label>
-							<h6>160017</h6>
-						</div>
-						<div class="col-12 mt-3 games-authorised-sec">
-							<p>Games Kit Authorised</p>
-							<div class="row">
-								<div class="col-xs-12 col-sm-6 col-md-3">
-									<div class="card">
-										<div class="card-body text-center">
-											<h4>Volleyball</h4>
-											<p>₹ 300 (per unit)</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-6 col-md-3">
-									<div class="card">
-										<div class="card-body text-center">
-											<h4>Basketball</h4>
-											<p>₹ 500 (per unit)</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-6 col-md-3">
-									<div class="card">
-										<div class="card-body text-center">
-											<h4>Handball</h4>
-											<p>₹ 300 (per unit)</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-6 col-md-3">
-									<div class="card">
-										<div class="card-body text-center">
-											<h4>Cricket</h4>
-											<p>₹ 300 (per unit)</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-6 col-md-3">
-									<div class="card">
-										<div class="card-body text-center">
-											<h4>Judo</h4>
-											<p>₹ 300 (per unit)</p>
-										</div>
-									</div>
-								</div>
-								<div class="col-xs-12 col-sm-6 col-md-3">
-									<div class="card">
-										<div class="card-body text-center">
-											<h4>Wrestling</h4>
-											<p>₹ 300 (per unit)</p>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-			</div>
-		</div>
-    </div>
+	
     </div>
 	
     @endsection

@@ -24,6 +24,9 @@ return new class extends Migration {
              $table->foreignId('vendor_id')->nullable()->onDelete('cascade')->constrained('vendors'); 
            // $table->string('vendor_id', 50);
            
+            $table->string('not_verify_remarks')->nullable();
+            $table->string('reject_remarks')->nullable();
+            $table->string('disbursement_status')->nullable();
             $table->timestamp('verification_datetime')->nullable();
             $table->timestamp('approval_rejection_datetime')->nullable();
             $table->timestamp('vendor_assign_date')->nullable();

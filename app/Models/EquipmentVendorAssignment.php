@@ -13,6 +13,10 @@ class EquipmentVendorAssignment extends Model
         'request_id',
         'equipment_name',
         'vendor_id',
+        'procurement_amount',
+        'bill_no',
+        'voucher_file_path',
+        'fund_source',
     ];
 
     public function vendor()
