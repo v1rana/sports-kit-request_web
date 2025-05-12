@@ -21,7 +21,9 @@ class SportsDisciplineHosp extends Model
         'achievement_date',
         'tournament_venue',
         'medal_won',
-        'participation_level',
-        'certificate_path',
+        'match_played_by_team',
+        'match_played_by_me',
+        'osp_achivement_certificate_path',
+        'international_achievement_Verification_certificate_path',
     ];
 }

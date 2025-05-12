@@ -108,6 +108,15 @@ export const updateEvent = async (form_data,id) => {
         throw error;
     }
 };
+export const fetchUserDetails = async () => {
+    try {
+        const response = await api.get("/user-details");
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching hosp:", error);
+        throw error;
+    }
+};
 export const fetchEvent = async () => {
     try {
         const response = await api.get("/event-details");

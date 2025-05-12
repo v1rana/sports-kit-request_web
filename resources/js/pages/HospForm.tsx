@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { useForm, useFormState } from "react-hook-form";
 import {
@@ -9,19 +9,25 @@ import {
     fetchGameList,
     fetchSchedule12Listing,
     fetchSportsDiscipline,
+    fetchUserDetails,
     saveDeclarations,
     saveEducation,
     saveEvent,
     saveSportsDiscipline,
     updateEvent,
 } from "../services/hosp-service";
+
+import html2pdf from "html2pdf.js";
+
 const stepsTotal = 4;
-
 const HospForm = () => {
+    // const HospForm = () => {
     const navigate = useNavigate();
-    const userData = JSON.parse(localStorage.getItem("user")!);
-    const userDetails = userData?.user_details || {};
-
+    let userData = JSON.parse(localStorage.getItem("user")!);
+    let userDetails = userData?.user_details || {};
+    if (userData.declarations_hosp && userData.declarations_hosp.id) {
+        // navigate("/hosp/download-application");
+    }
     // Get user data from localStorage
 
     const logout = () => {
@@ -60,11 +66,15 @@ const HospForm = () => {
         tournament_level: string;
         represented_india: string;
         game_id: string;
-        certificate_path: File | null;
+        // certificate_path: File | null;
         achievement_date: string;
         tournament_venue: string;
         medal_won: string;
-        participation_level: string;
+        // participation_level: string;
+        match_played_by_team: string;
+        match_played_by_me: string;
+        osp_achivement_certificate_path: File | null;
+        international_achievement_Verification_certificate_path: File | null;
         declaration_file: string;
         declaration_ids: string;
     };
@@ -80,11 +90,14 @@ const HospForm = () => {
         tournament_level: "",
         represented_india: "",
         game_id: "",
-        certificate_path: null,
+        // certificate_path: null,
         achievement_date: "",
         tournament_venue: "",
         medal_won: "",
-        participation_level: "",
+        match_played_by_team: "",
+        match_played_by_me: "",
+        osp_achivement_certificate_path: null,
+        international_achievement_Verification_certificate_path: null,
     });
 
     const defaultDeclarations = [
@@ -127,6 +140,16 @@ const HospForm = () => {
             console.error("Error loading form data", error);
         }
     };
+    const fetchUserData = async () => {
+        try {
+            const data = await fetchUserDetails();
+            localStorage.setItem("user", JSON.stringify(data.user));
+            userData = JSON.parse(localStorage.getItem("user")!);
+            userDetails = userData?.user_details || {};
+        } catch (error) {
+            console.error("Error loading form data", error);
+        }
+    };
 
     useEffect(() => {
         const fetchEventData = async () => {
@@ -140,13 +163,13 @@ const HospForm = () => {
                     data.event_type == "1" ? "Individual Event" : "Team Event";
                 setEventTitle(selectedText);
 
-                setValue("domicile", data.domicile?.toString());
+                // setValue("domicile", data.domicile?.toString());
                 setValue(
                     "played_national",
                     data.played_national_level?.toString()
                 );
                 setValue("central_org_name", data.organisation_represented);
-                setValue("domicile_doc", data.domicile_doc);
+                // setValue("domicile_doc", data.domicile_doc);
                 setValue("national_level_doc", data.national_level_doc);
                 setValue("organisation_doc", data.organisation_doc);
 
@@ -195,11 +218,17 @@ const HospForm = () => {
                     tournament_level: String(data.tournament_level ?? ""),
                     represented_india: String(data.represented_india ?? ""),
                     game_id: String(data.game_id ?? ""),
-                    certificate_path: data.certificate_path ?? null,
+                    osp_achivement_certificate_path:
+                        data.osp_achivement_certificate_path ?? null,
+                    international_achievement_Verification_certificate_path:
+                        data.international_achievement_Verification_certificate_path ??
+                        null,
                     achievement_date: data.achievement_date ?? "",
                     tournament_venue: data.tournament_venue ?? "",
                     medal_won: data.medal_won ?? "",
-                    participation_level: data.participation_level ?? "",
+                    // participation_level: data.participation_level ?? "",
+                    match_played_by_team: data.match_played_by_team ?? "",
+                    match_played_by_me: data.match_played_by_me ?? "",
                 });
             } catch (error) {
                 console.error("Error loading form data", error);
@@ -261,7 +290,7 @@ const HospForm = () => {
 
     const fetchTournamentList = async (event_type) => {
         const selectedText =
-        event_type == "1" ? "Individual Event" : "Team Event";
+            event_type == "1" ? "Individual Event" : "Team Event";
         setEventTitle(selectedText);
         setValue("tournament", ""); // Reset tournament selection
         const response = await fetchSchedule12Listing(event_type);
@@ -535,14 +564,14 @@ const HospForm = () => {
         formData.append("id", data.id ?? null);
         formData.append("event_type", data.event_type);
         // formData.append("aadhaar", data.aadhaar);
-        formData.append("tournament", data.tournament);
-        formData.append("domicile", data.domicile);
+        // formData.append("tournament", data.tournament);
+        // formData.append("domicile", data.domicile);
         formData.append("played_national", data.played_national);
         if (data.id) {
-            formData.append(
-                "domicile_certificate",
-                data.domicile_doc ? data.domicile_doc : ""
-            );
+            // formData.append(
+            //     "domicile_certificate",
+            //     data.domicile_doc ? data.domicile_doc : ""
+            // );
             formData.append(
                 "national_certificate",
                 data.national_level_doc ? data.national_level_doc : ""
@@ -556,19 +585,19 @@ const HospForm = () => {
         if (data.played_national == "2") {
             formData.delete("national_certificate");
         }
-        if (data.domicile == "2") {
-            formData.delete("domicile_certificate");
-        }
+        // if (data.domicile == "2") {
+        //     formData.delete("domicile_certificate");
+        // }
         if (data.played_national == "1") {
             formData.delete("org_certificate");
         }
 
-        if (data.domicile_certificate?.[0]) {
-            formData.append(
-                "domicile_certificate",
-                data.domicile_certificate[0]
-            );
-        }
+        // if (data.domicile_certificate?.[0]) {
+        //     formData.append(
+        //         "domicile_certificate",
+        //         data.domicile_certificate[0]
+        //     );
+        // }
 
         if (data.national_certificate?.[0]) {
             formData.append(
@@ -629,7 +658,7 @@ const HospForm = () => {
 
         if (!hasValidEntry) {
             setEducationErrors(
-                "Please add educational qualification with certificate."
+                "Educational certificates required. 10th grade certificate is compulsory."
             );
             return;
         }
@@ -755,12 +784,20 @@ const HospForm = () => {
         }
 
         if (!formData.game_id) newErrors.game_id = "Required";
-        if (!formData.certificate_path) newErrors.certificate_path = "Required";
+        if (!formData.osp_achivement_certificate_path)
+            newErrors.osp_achivement_certificate_path = "Required";
+        if (!formData.international_achievement_Verification_certificate_path)
+            newErrors.international_achievement_Verification_certificate_path =
+                "Required";
         if (!formData.achievement_date) newErrors.achievement_date = "Required";
         if (!formData.tournament_venue) newErrors.tournament_venue = "Required";
         if (!formData.medal_won) newErrors.medal_won = "Required";
-        if (!formData.participation_level)
-            newErrors.participation_level = "Required";
+        if (eventTitle === "Team Event") {
+            if (!formData.match_played_by_team)
+                newErrors.match_played_by_team = "Required";
+            if (!formData.match_played_by_me)
+                newErrors.match_played_by_me = "Required";
+        }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
@@ -784,6 +821,7 @@ const HospForm = () => {
         console.log("Submitting form...", formData);
 
         const response = await saveSportsDiscipline(submissionData);
+        fetchUserData();
         if (currentStep < stepsTotal) setCurrentStep((nxt) => nxt + 1);
 
         navigate({
@@ -860,7 +898,7 @@ const HospForm = () => {
                                 currentStep === 3 ? "progress-active" : ""
                             }
                         >
-                            <span>3. Sports Disciple</span>
+                            <span>3. Sports Discipline</span>
                         </li>
                         <li
                             className={
@@ -885,13 +923,20 @@ const HospForm = () => {
                         <div className="preloader-section section-right"></div>
                     </div>
                 )}
-                <div className="float-end m-2" hidden={currentStep !== 4}>
-                    <button
+                <div className="float-end m-2" hidden={!isSubmitted}>
+                    {/* <button
                         className="btn btn-primary me-1"
                         onClick={handlePrint}
                     >
                         Print <i className="fa fa-print"></i>
-                    </button>
+                    </button> */}
+                    {/* <Link
+                        className="btn btn-primary me-1"
+                        to="/hosp/download-application"
+                    >
+                        Preview Form
+                    </Link> */}
+                    {/* <button className="btn btn-primary me-1" onClick={downloadPDF}>Preview Form</button> */}
                 </div>
                 {!isSubmitted && !isSubmitting && (
                     <div>
@@ -901,7 +946,21 @@ const HospForm = () => {
                             hidden={currentStep === 1 ? false : true}
                         >
                             <div className="row g-3">
-                                <h2 className="text-center mt-4">
+                                {eventTitle === "Individual Event" ? (
+                                    <h4 className="text-center mt-4">
+                                        FORM - I
+                                        <br />
+                                        [See rule 9 (1)]
+                                    </h4>
+                                ) : (
+                                    <h4 className="text-center mt-4">
+                                        FORM - II
+                                        <br />
+                                        [See rule 9 (1)]
+                                        <br />
+                                    </h4>
+                                )}
+                                <h2 className="text-center mt-1">
                                     {eventTitle}
                                 </h2>
 
@@ -914,7 +973,9 @@ const HospForm = () => {
                                                 ? "is-invalid"
                                                 : ""
                                         }`}
-                                        onChange={(e) => fetchTournamentList(e.target.value)}
+                                        onChange={(e) =>
+                                            fetchTournamentList(e.target.value)
+                                        }
                                     >
                                         <option value="" selected disabled>
                                             Select
@@ -934,7 +995,7 @@ const HospForm = () => {
                                     )}
                                 </div>
 
-                                <div className="col-md-6">
+                                {/* <div className="col-md-6">
                                     <label>Select Tournament</label>
                                     <select
                                         {...register("tournament")}
@@ -964,7 +1025,7 @@ const HospForm = () => {
                                             }
                                         </div>
                                     )}
-                                </div>
+                                </div> */}
 
                                 {/* <div className="col-md-6">
                                     <label>Haryana Resident/Domicile</label>
@@ -1078,7 +1139,7 @@ const HospForm = () => {
                                                         getValues(
                                                             "national_level_doc"
                                                         )
-                                                    )}`}
+                                                    )}/certificates`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                 >
@@ -1147,7 +1208,7 @@ const HospForm = () => {
                                                             getValues(
                                                                 "organisation_doc"
                                                             )
-                                                        )}`}
+                                                        )}/certificates`}
                                                         target="_blank"
                                                         rel="noopener noreferrer"
                                                     >
@@ -1215,6 +1276,7 @@ const HospForm = () => {
                                             <option value="" selected disabled>
                                                 Select
                                             </option>
+                                            <option value="10">10th</option>
                                             <option value="12">12th</option>
                                             <option value="Graduation">
                                                 Graduation
@@ -1247,7 +1309,8 @@ const HospForm = () => {
                                     )}
 
                                     <div className="col-md-6">
-                                        <label>Attach Certificate (PDF)</label>
+                                        <label>Attach Certificates (PDF)</label>
+
                                         <input
                                             type="file"
                                             accept="application/pdf"
@@ -1418,7 +1481,7 @@ const HospForm = () => {
                                                 <a
                                                     href={`/api/certificates/${encodeURIComponent(
                                                         formData.disability_doc
-                                                    )}/education-certificates`}
+                                                    )}/certificates`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                 >
@@ -1429,7 +1492,45 @@ const HospForm = () => {
                                     </div>
                                 </>
                             )}
-
+                            <div className="col-md-6">
+                                <label>Select Sports Discipline</label>
+                                <select
+                                    name="game_id"
+                                    value={formData.game_id}
+                                    className={`form-select ${
+                                        sportdiserrors.game_id
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
+                                    onChange={(e) => {
+                                        handleTournamentLevel(e.target.value);
+                                        handleSportsDiscChanges(e);
+                                    }}
+                                >
+                                    <option value="" selected disabled>
+                                        Select
+                                    </option>
+                                    {gamesList
+                                        .filter((game: any) =>
+                                            formData?.physical_disability ===
+                                            "1"
+                                                ? game.is_para === 1
+                                                : game.is_para === 0
+                                        )
+                                        .map((game: any) => (
+                                            <option
+                                                key={game.id}
+                                                value={game.id}
+                                            >
+                                                {game.name}
+                                            </option>
+                                        ))}
+                                </select>
+                                <div className="invalid-feedback">
+                                    {sportdiserrors.game_id}
+                                </div>
+                            </div>
+                            <div className="col-md-6"></div>
                             <div className="col-md-6">
                                 <label>Tournament</label>
                                 <select
@@ -1544,77 +1645,6 @@ const HospForm = () => {
                             </div>
 
                             <div className="col-md-6">
-                                <label>Select Game</label>
-                                <select
-                                    name="game_id"
-                                    value={formData.game_id}
-                                    className={`form-select ${
-                                        sportdiserrors.game_id
-                                            ? "is-invalid"
-                                            : ""
-                                    }`}
-                                    onChange={(e) => {
-                                        handleTournamentLevel(e.target.value);
-                                        handleSportsDiscChanges(e);
-                                    }}
-                                >
-                                    <option value="" selected disabled>
-                                        Select
-                                    </option>
-                                    {gamesList
-                                        .filter((game: any) =>
-                                            formData?.physical_disability ===
-                                            "1"
-                                                ? game.is_para === 1
-                                                : game.is_para === 0
-                                        )
-                                        .map((game: any) => (
-                                            <option
-                                                key={game.id}
-                                                value={game.id}
-                                            >
-                                                {game.name}
-                                            </option>
-                                        ))}
-                                </select>
-                                <div className="invalid-feedback">
-                                    {sportdiserrors.game_id}
-                                </div>
-                            </div>
-
-                            <div className="col-md-6">
-                                <label>Attach Certificate (pdf)</label>
-                                <input
-                                    type="file"
-                                    name="certificate_path"
-                                    accept="application/pdf"
-                                    className={`form-control ${
-                                        sportdiserrors.certificate_path
-                                            ? "is-invalid"
-                                            : ""
-                                    }`}
-                                    onChange={handleSportsDiscChanges}
-                                />
-                                <div className="invalid-feedback">
-                                    {sportdiserrors.certificate_path}
-                                </div>
-
-                                {formData.certificate_path && (
-                                    <div className="mt-1">
-                                        <a
-                                            href={`/api/certificates/${encodeURIComponent(
-                                                formData.certificate_path
-                                            )}/education-certificates`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            View Uploaded Certificate
-                                        </a>
-                                    </div>
-                                )}
-                            </div>
-
-                            <div className="col-md-6">
                                 <label>Achievement Date</label>
                                 <input
                                     type="date"
@@ -1677,8 +1707,55 @@ const HospForm = () => {
                                     {sportdiserrors.medal_won}
                                 </div>
                             </div>
+                            {eventTitle === "Team Event" && (
+                                <div className="col-md-6">
+                                    <label>
+                                        Total number of matches played by team
+                                        in the tournament
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="match_played_by_team"
+                                        value={formData.match_played_by_team}
+                                        className={`form-control ${
+                                            sportdiserrors.match_played_by_team
+                                                ? "is-invalid"
+                                                : ""
+                                        }`}
+                                        onChange={handleSportsDiscChanges}
+                                        maxLength={3}
+                                    />
+                                    <div className="invalid-feedback">
+                                        {sportdiserrors.match_played_by_team}
+                                    </div>
+                                </div>
+                            )}
+                            {eventTitle === "Team Event" && (
+                                <div className="col-md-6">
+                                    <label>
+                                        {" "}
+                                        Number of matches played by me in the
+                                        tournament
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="match_played_by_me"
+                                        value={formData.match_played_by_me}
+                                        className={`form-control ${
+                                            sportdiserrors.match_played_by_me
+                                                ? "is-invalid"
+                                                : ""
+                                        }`}
+                                        onChange={handleSportsDiscChanges}
+                                        maxLength={3}
+                                    />
+                                    <div className="invalid-feedback">
+                                        {sportdiserrors.match_played_by_me}
+                                    </div>
+                                </div>
+                            )}
 
-                            <div className="col-md-6">
+                            {/* <div className="col-md-6">
                                 <label>
                                     Participation Level (in case of team game
                                     only)
@@ -1704,27 +1781,83 @@ const HospForm = () => {
                                 <div className="invalid-feedback">
                                     {sportdiserrors.participation_level}
                                 </div>
-                            </div>
-                            {/* <div id="text-center mt-4">
-                                {currentStep > 1 && (
-                                    <button
-                                       
-                                        type="button"
-                                        onClick={prevStep}
-                                        className="save-btn m-2"
-                                    >
-                                        Previous
-                                    </button>
-                                )}
-
-                                <button
-                                  
-                                    type="submit"
-                                    className="save-btn"
-                                >
-                                    Next
-                                </button>
                             </div> */}
+                            <div className="col-md-6">
+                                <label>
+                                    Attach Proof of Outstanding Sports Person
+                                    Achievment Certificate (pdf)
+                                </label>
+                                <br />
+
+                                <input
+                                    type="file"
+                                    name="osp_achivement_certificate_path"
+                                    accept="application/pdf"
+                                    className={`form-control ${
+                                        sportdiserrors.osp_achivement_certificate_path
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
+                                    onChange={handleSportsDiscChanges}
+                                />
+                                <div className="invalid-feedback">
+                                    {
+                                        sportdiserrors.osp_achivement_certificate_path
+                                    }
+                                </div>
+
+                                {formData.osp_achivement_certificate_path && (
+                                    <div className="mt-1">
+                                        <a
+                                            href={`/api/certificates/${encodeURIComponent(
+                                                formData.osp_achivement_certificate_path
+                                            )}/certificates`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            View Uploaded Certificate
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="col-md-6">
+                                <label>
+                                    Attach International Achievement and
+                                    Verification Certificate (pdf){" "}
+                                </label>
+                                <br />
+
+                                <input
+                                    type="file"
+                                    name="international_achievement_Verification_certificate_path"
+                                    accept="application/pdf"
+                                    className={`form-control ${
+                                        sportdiserrors.international_achievement_Verification_certificate_path
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
+                                    onChange={handleSportsDiscChanges}
+                                />
+                                <div className="invalid-feedback">
+                                    {
+                                        sportdiserrors.international_achievement_Verification_certificate_path
+                                    }
+                                </div>
+
+                                {formData.international_achievement_Verification_certificate_path && (
+                                    <div className="mt-1">
+                                        <a
+                                            href={`/api/certificates/${encodeURIComponent(
+                                                formData.international_achievement_Verification_certificate_path
+                                            )}/certificates`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            View Uploaded Certificate
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
 
                             <div className="col-12 text-center mt-3">
                                 {currentStep > 1 && (
@@ -1768,12 +1901,14 @@ const HospForm = () => {
                             hidden={currentStep === 4 ? false : true}
                             onSubmit={handleSubmit(handleDeclarationSubmit)}
                         >
-                            <h3 className="text-center">Declaration</h3>
+                            <h3 className="text-center">
+                                Declaration by Sportsperson
+                            </h3>
                             <div className="">
                                 {/* <p className="text-center mb-4">Declaration</p> */}
                                 <div className="row">
                                     <div className="col-md-12 mb-3">
-                                        <p>Declaration by Sportsperson</p>
+                                        {/* <p>Declaration by Sportsperson</p> */}
                                         {declarationList.map((label, index) => (
                                             <div
                                                 className="form-check"
@@ -1782,6 +1917,7 @@ const HospForm = () => {
                                                 <input
                                                     className="form-check-input"
                                                     type="checkbox"
+                                                    hidden
                                                     id={`d${index + 1}`}
                                                     checked={
                                                         declarations[
@@ -1871,11 +2007,9 @@ const HospForm = () => {
                         className="text-center mt-5 p-4 border rounded shadow-sm bg-light"
                         id="print-section"
                     >
-                        <h4>Success! We'll get back to you ASAP!</h4>
+                        <h4>Application is successfully submitted</h4>
                         <p>Application ID: {userDetails?.application_id}</p>
-                        <Link to="/hosp/login">
-                            Go back from the beginning ➜
-                        </Link>
+                        <Link to="/hosp/login">Go Login</Link>
                     </div>
                 )}
             </div>
@@ -1885,12 +2019,12 @@ const HospForm = () => {
                 <div className="preloader-section section-left"></div>
                 <div className="preloader-section section-right"></div>
             </div>
-
+            {/* print declaration */}
             <div id="print_declaration" style={{ display: "none" }}>
                 <table width="100%">
                     <thead style={{ background: "#225395" }}>
                         <tr>
-                            <td style={{ padding: "10px" }}>
+                            <th style={{ padding: "10px" }}>
                                 <div className="logo">
                                     <a
                                         href="#"
@@ -1910,7 +2044,7 @@ const HospForm = () => {
                                         </div>
                                     </a>
                                 </div>
-                            </td>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1933,26 +2067,267 @@ const HospForm = () => {
                                         <tr>
                                             <td style={{ padding: "15px" }}>
                                                 Name
-                                                <h5>RaAhul Singh</h5>
+                                                <h5>{userData.name}</h5>
                                             </td>
                                             <td
                                                 style={{ padding: "15px" }}
                                                 align="center"
                                             >
                                                 Father Name
-                                                <h5>Raj Singh</h5>
+                                                <h5>
+                                                    {userDetails.father_name_en}
+                                                </h5>
                                             </td>
                                             <td
                                                 style={{ padding: "15px" }}
                                                 align="right"
                                             >
                                                 Aadhar No.
-                                                <h5>9876 5456 7887</h5>
+                                                <h5>{userDetails.aadhaar}</h5>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style={{ padding: "15px" }}>
+                                                Date Of birth
+                                                <h5>
+                                                    {userDetails.date_of_birth}
+                                                </h5>
+                                            </td>
+                                            <td
+                                                style={{ padding: "15px" }}
+                                                align="center"
+                                            >
+                                                Caste Category
+                                                <h5>
+                                                    {userDetails.caste_category}
+                                                </h5>
+                                            </td>
+                                            <td
+                                                style={{ padding: "15px" }}
+                                                align="right"
+                                            >
+                                                Mobile
+                                                <h5>{userData.mobile}</h5>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style={{ padding: "15px" }}>
+                                                Haryana Domicle
+                                                <h5>
+                                                    {userDetails.domicile == "1"
+                                                        ? "Yes"
+                                                        : "No"}
+                                                </h5>
+                                            </td>
+                                        </tr>
+                                        {/* <tr>
+                                        <td style={{ padding: "15px" }}>
+                                        Event </td>
+                                        </tr> */}
+                                        <tr>
+                                            <td style={{ padding: "15px" }}>
+                                                Event type
+                                                <h5>
+                                                    {userData.event_hosp
+                                                        .event_type == "1"
+                                                        ? "Individual"
+                                                        : "Team"}
+                                                </h5>
+                                            </td>
+                                            <td style={{ padding: "15px" }}>
+                                                Played at National Level for
+                                                Haryana
+                                                <h5>
+                                                    {userData.event_hosp
+                                                        .played_national_level ==
+                                                    "1"
+                                                        ? "Yes"
+                                                        : "No"}
+                                                </h5>
+                                                <h6>
+                                                    {userData.event_hosp
+                                                        .national_level_doc
+                                                        ? "(Attached doc)"
+                                                        : "(No Attachment)"}
+                                                </h6>
+                                            </td>
+                                            <td style={{ padding: "15px" }}>
+                                                Name of Central Organisation
+                                                Represented
+                                                <h5>
+                                                    {
+                                                        userData.organisation_represented
+                                                    }
+                                                </h5>
+                                                <h6>
+                                                    {userData.event_hosp
+                                                        .organisation_doc
+                                                        ? "(Attached doc)"
+                                                        : "(No Attachment)"}
+                                                </h6>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                        <td style={{ padding: "15px" }}>
+                                       Educations </td>
+                                        </tr>
+                                        {userData.education_hosp.map(
+                                            (item, index) => (
+                                                <tr key={item.id || index}>
+                                                    <td
+                                                        style={{
+                                                            padding: "15px",
+                                                        }}
+                                                    >
+                                                        Qualification
+                                                        <h5>
+                                                            {item.qualification}
+                                                        </h5>
+                                                    </td>
+                                                    <td
+                                                        style={{
+                                                            padding: "15px",
+                                                        }}
+                                                    >
+                                                        Certificate
+                                                        <h6>
+                                                            {item.certificate_path
+                                                                ? "(Attached doc)"
+                                                                : "(No Attachment)"}
+                                                        </h6>
+                                                    </td>
+                                                    {item.other_qualification && (
+                                                        <td
+                                                            style={{
+                                                                padding: "15px",
+                                                            }}
+                                                        >
+                                                            Other Qualification
+                                                            <h5>
+                                                                {item.other_qualification ||
+                                                                    "N/A"}
+                                                            </h5>
+                                                            <h6>
+                                                                {item.certificate_path
+                                                                    ? "(Attached doc)"
+                                                                    : "(No Attachment)"}
+                                                            </h6>
+                                                        </td>
+                                                    )}
+                                                </tr>
+                                            )
+                                        )}
+                                        <tr>
+                                        <td style={{ padding: "15px" }}>
+                                        Sports Discipline </td>
+                                        </tr>
+                                        <tr>
+                                            <td style={{ padding: "15px" }}>
+                                                Tournament Venue
+                                                <h5>
+                                                    {
+                                                        userData
+                                                            .sports_discipline_hosp
+                                                            .tournament_venue
+                                                    }
+                                                </h5>
+                                            </td>
+
+                                            <td style={{ padding: "15px" }}>
+                                                Medal Won
+                                                <h5>
+                                                    {userData
+                                                        .sports_discipline_hosp
+                                                        .medal_won || "None"}
+                                                </h5>
+                                            </td>
+
+                                            <td style={{ padding: "15px" }}>
+                                                Physical Disability
+                                                <h5>
+                                                    {userData
+                                                        .sports_discipline_hosp
+                                                        .physical_disability ===
+                                                    1
+                                                        ? "Yes"
+                                                        : userData
+                                                              .sports_discipline_hosp
+                                                              .physical_disability ===
+                                                          2
+                                                        ? "No"
+                                                        : "N/A"}
+                                                </h5>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style={{ padding: "15px" }}>
+                                                Represented India
+                                                <h5>
+                                                    {userData
+                                                        .sports_discipline_hosp
+                                                        .represented_india === 1
+                                                        ? "Yes"
+                                                        : "No"}
+                                                </h5>
+                                            </td>
+                                            <td style={{ padding: "15px" }}>
+                                                Organizing Committee
+                                                <h5>
+                                                    {
+                                                        userData
+                                                            .sports_discipline_hosp
+                                                            .organizing_committee
+                                                    }
+                                                </h5>
+                                            </td>
+
+                                           
+                                        </tr>
+                                        <tr>
+                                        <td style={{ padding: "15px" }}>
+                                                OSP Certificate
+                                                <h6>
+                                                    {userData
+                                                        .sports_discipline_hosp
+                                                        .osp_achivement_certificate_path
+                                                        ? "(Attached doc)"
+                                                        : "(No Attachment)"}
+                                                </h6>
+                                            </td>
+
+                                            <td style={{ padding: "15px" }}>
+                                                International Certificate
+                                                <h6>
+                                                    {userData
+                                                        .sports_discipline_hosp
+                                                        .international_achievement_Verification_certificate_path
+                                                        ? "(Attached doc)"
+                                                        : "(No Attachment)"}
+                                                </h6>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td colSpan={3}>
                                                 <hr style={{ marginTop: 0 }} />
+                                            </td>
+                                        </tr>
+                                        <tr style={{ padding: "20px 0 0" }}>
+                                            <td
+                                                style={{ padding: "0 20px" }}
+                                                colSpan={2}
+                                            >
+                                                <strong>Date -</strong> <u> </u>
+                                            </td>
+                                            <td
+                                                align="right"
+                                                style={{
+                                                    padding: "40px 20px 20px",
+                                                    textAlign: "right",
+                                                }}
+                                            >
+                                                <strong>
+                                                    (Signature of Sportsperson)
+                                                </strong>
                                             </td>
                                         </tr>
                                         <tr>

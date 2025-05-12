@@ -61,6 +61,10 @@ class User extends Authenticatable
     {
         return $this->hasOne(SportsDisciplineHosp::class, 'user_id');
     }
+    public function educationHosp()
+    {
+        return $this->hasMany(EducationHOSP::class, 'user_id');
+    }
     public function declarationsHosp()
     {
         return $this->hasOne(DeclarationsHosp::class, 'user_id');

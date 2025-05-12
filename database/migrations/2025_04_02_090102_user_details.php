@@ -45,6 +45,8 @@ return new class extends Migration
             $table->tinyInteger('active_step')->default(1); // create after all steps submit
             $table->string('photo')->nullable(); 
             $table->string('aadhaar')->nullable(); 
+            $table->tinyInteger('domicile')->default(0)->comment('1 for yes , 2 for no');
+            $table->string('domicile_doc')->nullable();
             $table->timestamps();
         });
     }

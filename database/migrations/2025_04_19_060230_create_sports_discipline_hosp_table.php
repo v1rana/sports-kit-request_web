@@ -28,8 +28,11 @@ return new class extends Migration
             $table->date('achievement_date')->nullable();
             $table->string('tournament_venue')->nullable();
             $table->string('medal_won')->nullable();
-            $table->string('participation_level')->nullable();
-            $table->string('certificate_path')->nullable();
+            $table->string('match_played_by_team')->nullable();
+            $table->string('match_played_by_me')->nullable();
+           
+            $table->string('osp_achivement_certificate_path')->nullable();
+            $table->string('international_achievement_Verification_certificate_path')->nullable();
             $table->timestamps();
         });
     }

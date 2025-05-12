@@ -12,6 +12,7 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     Route::post('/update-details', [HospController::class, 'updateUserDetails']);
+    Route::get('/user-details', [HospController::class, 'getUserData']);
     Route::post('/hosp/event', [HospController::class, 'store']);
     Route::post('/event/{id}', [HospController::class, 'update']);
     Route::get('/event-details', [HospController::class, 'getEventData']);

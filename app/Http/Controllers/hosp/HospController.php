@@ -34,14 +34,19 @@ class HospController extends Controller
             $user->mobile = $request->mobile;
             $user->email = $request->email_id;
             $user->save();
-
+   
             if ($request->hasFile('photo')) {
                 $path = $request->file('photo')->store('photo');
                 $user_details->photo = basename($path);
             }
+            if ($request->hasFile('domicile_doc')) {
+                $path = $request->file('domicile_doc')->store('photo');
+                $user_details->domicile_doc = basename($path);
+            }
+            $user_details->domicile = $request->domicile;
             $user_details->aadhaar = $request->aadhaar;
             $user_details->save();
-            $user->load('userDetails', 'eventHosp', 'sportsDisciplineHosp', 'declarationsHosp');
+            $user->load('userDetails', 'eventHosp', 'sportsDisciplineHosp','educationHosp', 'declarationsHosp');
             return response()->json([
                 'status' => 'success',
                 'message' => 'User details saved successfully',
@@ -58,15 +63,15 @@ class HospController extends Controller
         $request->validate([
             'event_type' => 'required|string',
             // 'aadhaar' => 'required|digits:12',
-            'tournament' => 'required|exists:schedule_1_2,id',
+            // 'tournament' => 'required|exists:schedule_1_2,id',
 
-            'domicile' => 'required|in:1,2',
-            'domicile_certificate' => [
-                Rule::requiredIf($request->domicile == 1),
-                'nullable',
-                'file',
-                'mimes:pdf,jpg,jpeg,png',
-            ],
+            // 'domicile' => 'required|in:1,2',
+            // 'domicile_certificate' => [
+            //     Rule::requiredIf($request->domicile == 1),
+            //     'nullable',
+            //     'file',
+            //     'mimes:pdf,jpg,jpeg,png',
+            // ],
 
             'played_national' => 'required|in:1,2',
             'national_certificate' => [
@@ -87,7 +92,7 @@ class HospController extends Controller
                 'mimes:pdf,jpg,jpeg,png',
             ],
         ], [
-            'domicile_certificate.required_if' => 'The domicile certificate is required when domicile is Yes.',
+            // 'domicile_certificate.required_if' => 'The domicile certificate is required when domicile is Yes.',
             'national_certificate.required_if' => 'The national certificate is required when played national is Yes.',
             'org_certificate.required_if' => 'The organisation certificate is required when played national is No.',
         ]);
@@ -100,17 +105,17 @@ class HospController extends Controller
             [
                 'event_type' => $request->event_type,
                 // 'aadhaar' => $request->aadhaar,
-                'tournament_id' => $request->tournament,
-                'domicile' => $request->domicile,
+                // 'tournament_id' => $request->tournament,
+                // 'domicile' => $request->domicile,
                 'played_national_level' => $request->played_national,
                 'organisation_represented' => $request->played_national == 2 ? $request->central_org_name : null,
             ]
         );
 
         // File uploads (optional)
-        if ($request->hasFile('domicile_certificate')) {
-            $event->domicile_doc = $request->file('domicile_certificate')->store('certificates');
-        }
+        // if ($request->hasFile('domicile_certificate')) {
+        //     $event->domicile_doc = $request->file('domicile_certificate')->store('certificates');
+        // }
         if ($request->hasFile('national_certificate')) {
             $event->national_level_doc = $request->file('national_certificate')->store('certificates');
         }
@@ -134,13 +139,13 @@ class HospController extends Controller
         $request->validate([
             'event_type' => 'required|string',
             // 'aadhaar' => 'required|digits:12',
-            'tournament' => 'required|exists:schedule_1_2,id',
+            // 'tournament' => 'required|exists:schedule_1_2,id',
 
-            'domicile' => 'required|in:1,2',
-            'domicile_certificate' => 'required_if:domicile,1',
-            [
-                'domicile_certificate.required_if' => 'The domicile certificate field is required when domicile is Yes.',
-            ],
+            // 'domicile' => 'required|in:1,2',
+            // 'domicile_certificate' => 'required_if:domicile,1',
+            // [
+            //     'domicile_certificate.required_if' => 'The domicile certificate field is required when domicile is Yes.',
+            // ],
 
             'played_national' => 'required|in:1,2',
             'national_certificate' => 'required_if:played_national,1',
@@ -155,15 +160,15 @@ class HospController extends Controller
 
         $event->event_type = $request->event_type;
         // $event->aadhaar = $request->aadhaar;
-        $event->tournament_id = $request->tournament;
-        $event->domicile = $request->domicile;
+        // $event->tournament_id = $request->tournament;
+        // $event->domicile = $request->domicile;
         $event->played_national_level = $request->played_national;
         $event->organisation_represented = $request->played_national == 2 ? $request->central_org_name : null;
 
         // Handle optional file uploads
-        if ($request->hasFile('domicile_certificate')) {
-            $event->domicile_doc = $request->file('domicile_certificate')->store('certificates');
-        }
+        // if ($request->hasFile('domicile_certificate')) {
+        //     $event->domicile_doc = $request->file('domicile_certificate')->store('certificates');
+        // }
 
         if ($request->hasFile('national_certificate')) {
             $event->national_level_doc = $request->file('national_certificate')->store('certificates');
@@ -181,7 +186,19 @@ class HospController extends Controller
             'data' => $event,
         ]);
     }
+    public function getUserData(Request $request)
+    {
+        $user = $request->user(); // Assuming Sanctum auth
 
+        $user = User::where('id', $user->id)->first();
+
+        $user->load('userDetails', 'eventHosp', 'sportsDisciplineHosp','educationHosp', 'declarationsHosp');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User details',
+                'user' => $user,
+            ]);
+    }
 
     public function getEventData(Request $request)
     {
@@ -292,8 +309,10 @@ class HospController extends Controller
             'achievement_date' => 'required|date',
             'tournament_venue' => 'required|string',
             'medal_won' => 'required|string',
-            'participation_level' => 'required|string',
-            'certificate_path' => 'required|nullable',
+            // 'match_played_by_me' => 'required|string',
+            // 'participation_level' => 'required|string',
+            'osp_achivement_certificate_path' => 'required|nullable',
+            'international_achievement_Verification_certificate_path' => 'required|nullable',
         ]);
         // As above
 
@@ -312,7 +331,8 @@ class HospController extends Controller
             'achievement_date' => $request->achievement_date,
             'tournament_venue' => $request->tournament_venue,
             'medal_won' => $request->medal_won,
-            'participation_level' => $request->participation_level,
+            'match_played_by_team' => $request->match_played_by_team,
+            'match_played_by_me' => $request->match_played_by_me,
         ];
 
         // Add certificate_path only if it's not null
@@ -325,9 +345,13 @@ class HospController extends Controller
                 : null;
             $updateData['disability_doc'] = basename($pathDisability);
         }
-        if ($request->hasFile('certificate_path')) {
-            $pathCertificate = $request->file('certificate_path')->store('certificates');
-            $updateData['certificate_path'] = basename($pathCertificate);
+        if ($request->hasFile('osp_achivement_certificate_path')) {
+            $pathCertificate = $request->file('osp_achivement_certificate_path')->store('certificates');
+            $updateData['osp_achivement_certificate_path'] = basename($pathCertificate);
+        }
+        if ($request->hasFile('international_achievement_Verification_certificate_path')) {
+            $pathCertificate = $request->file('international_achievement_Verification_certificate_path')->store('certificates');
+            $updateData['international_achievement_Verification_certificate_path'] = basename($pathCertificate);
         }
         SportsDisciplineHosp::updateOrCreate(
             [

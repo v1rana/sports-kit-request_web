@@ -2,23 +2,28 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { updateUserData } from "../services/hosp-service";
+import { fetchUserDetails, updateUserData } from "../services/hosp-service";
 
 const BasicDetails = () => {
     const navigate = useNavigate();
-    const userData = JSON.parse(localStorage.getItem("user")!);
-    const userDetails = userData?.user_details || {};
+    let  userData = JSON.parse(localStorage.getItem("user")!);
+    let  userDetails = userData?.user_details || {};
+   
     const [userDetailsa, setUserDetails] = useState({
         email_id: userDetails.email_id,
         mobile: userData.mobile,
         aadhaar: userDetails.aadhaar,
         photo: userDetails.photo,
+        domicile: userDetails.domicile,
+        domicile_doc: userDetails.domicile_doc,
     });
     const [errors, setErrors] = useState({
         email_id: "",
         mobile: "",
         aadhaar: "",
         photo: "",
+        domicile: "",
+        domicile_doc: "",
     });
     const validateEmail = (value: string) => {
         if (!value) return "Email is required";
@@ -38,6 +43,28 @@ const BasicDetails = () => {
         if (!/^\d{12}$/.test(value)) return "Aadhaar must be exactly 12 digits";
         return "";
     };
+    const validateDomicle = (value: string) => {
+        if (!value) return "Please select the haryana resident/domicile";
+        return "";
+    };
+
+    const validateDomicleDoc = (value: string) => {
+        if (!value && userDetailsa.domicile == '1') return "Please upload haryana resident/domicile";
+        return "";
+    };
+       useEffect(() => {
+            const fetchUserData = async () => {
+                try {
+                     const data = await fetchUserDetails();
+                     localStorage.setItem("user", JSON.stringify(data.user));
+                     userData = JSON.parse(localStorage.getItem("user")!);
+                     userDetails = userData?.user_details || {};
+                } catch (error) {
+                    console.error("Error loading form data", error);
+                }
+            }
+            fetchUserData();
+        }, []);
 
     useEffect(() => {
         // const userData = JSON.parse(localStorage.getItem("user") || "null");
@@ -64,6 +91,13 @@ const BasicDetails = () => {
 
         const aadhaarError = validateAadhaar(userDetailsa.aadhaar);
         if (aadhaarError) newErrors.aadhaar = aadhaarError;
+
+        const domicleError = validateDomicle(userDetailsa.domicile);
+        if (domicleError) newErrors.domicile = domicleError;
+
+        const domicleDocError = validateDomicleDoc(userDetailsa.domicile_doc);
+        if (domicleDocError) newErrors.domicile_doc = domicleDocError;
+
         if (!userDetailsa.photo) newErrors.photo = "Profile photo is required";
         setErrors(newErrors);
 
@@ -75,6 +109,8 @@ const BasicDetails = () => {
         formData.append("mobile", userDetailsa.mobile);
         formData.append("aadhaar", userDetailsa.aadhaar);
         formData.append("photo", userDetailsa.photo); // This must be a File
+        formData.append("domicile", userDetailsa.domicile); 
+        formData.append("domicile_doc", userDetailsa.domicile_doc); // This must be a File
         const response = await updateUserData(formData);
         if (response.status === "success") {
             localStorage.setItem("user", JSON.stringify(response.user));
@@ -305,8 +341,22 @@ const BasicDetails = () => {
                                 <div className="col-md-6">
                                     <label>Haryana Resident/Domicile</label>
                                     <select
-                                        
-                                        className={`form-select`}
+                                        value={userDetails.domicile}
+                                        className={`form-select required ${
+                                            errors.aadhaar ? "is-invalid" : ""
+                                        }`}
+                                        onChange={(e) => {
+                                            setUserDetails((d) => ({
+                                                ...d,
+                                                domicile: e.target.value,
+                                            }));
+                                            setErrors((err) => ({
+                                                ...err,
+                                                domicile: validateDomicle(
+                                                    e.target.value
+                                                ),
+                                            }));
+                                        }}
                                     >
                                         <option value="" selected disabled>
                                             Select
@@ -314,6 +364,11 @@ const BasicDetails = () => {
                                         <option value="1">Yes</option>
                                         <option value="2">No</option>
                                     </select>
+                                    {errors.domicile && (
+                                        <div className="text-danger">
+                                            {errors.domicile}
+                                        </div>
+                                    )}
                                     
                                 </div>
 
@@ -323,11 +378,33 @@ const BasicDetails = () => {
                                         type="file"
                                         accept="application/pdf"
                                         className={`form-control`}
-                                       
-                                       
+
+                                        onChange={(e) => {
+                                            setUserDetails((d) => ({
+                                                ...d,
+                                                domicile_doc:  e.target.files?.[0] || null,
+                                            }));
+                                        }}
                                     />
                                   
-                                  
+                                  {errors.domicile_doc && userDetailsa.domicile == '1' && (
+                                        <div className="text-danger">
+                                            {errors.domicile_doc}
+                                        </div>
+                                    )}
+
+                                            <div className="mt-1">
+                                                <a
+                                                    href={`/api/certificates/${encodeURIComponent(
+                                                        userDetailsa.domicile_doc
+                                                    )}/photo`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    Click here to view uploaded
+                                                    file
+                                                </a>
+                                            </div>
                                 </div>
                                 <div className="text-center mt-4">
                                     <button

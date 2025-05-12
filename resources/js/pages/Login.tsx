@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
     getMemberbasicdetailsfromFIDUID,
     getOTPRequestforMEMID,
@@ -140,13 +140,13 @@ function Login() {
 
             if (response.status === "Successfull") {
                 console.log(response.result);
-               
+
                 const data = await login(response.result);
                 console.log("data", data);
                 data.user.user_details.mobile = data.user.mobile;
                 localStorage.setItem("user", JSON.stringify(data.user));
                 localStorage.setItem("token", data.token);
-                setUserId(data.userId)
+                setUserId(data.userId);
                 setIsOtpVerified(true);
                 // navigate("/basic-details");
             } else {
@@ -159,7 +159,7 @@ function Login() {
     };
     const handleLogin = async (event: React.FormEvent) => {
         event.preventDefault();
-           if (!loginType) {
+        if (!loginType) {
             setErrors((prev) => ({
                 ...prev,
                 loginType: "Please select login type",
@@ -167,18 +167,16 @@ function Login() {
             return;
         }
         localStorage.setItem("loginType", loginType);
-        if(loginType == 'hosp') {
+        if (loginType == "hosp") {
             navigate("/basic-details");
-        }if(loginType == 'equipment') {
-            navigate("/registration-form/"+encodeURIComponent(userId));
-            window.location.reload()
-        }else if(loginType == 'gradation') {
-            navigate("/apply.certificate.form/"+encodeURIComponent(userId));
-            window.location.reload()
         }
-        
-          
-       
+        if (loginType == "equipment") {
+            navigate("/registration-form/" + encodeURIComponent(userId));
+            window.location.reload();
+        } else if (loginType == "gradation") {
+            navigate("/apply.certificate.form/" + encodeURIComponent(userId));
+            window.location.reload();
+        }
     };
 
     const handleLoginTypeChange = (
@@ -189,68 +187,76 @@ function Login() {
 
     return (
         <div>
-            <div className="bg-hero">
-                <div className="bg-overlay"></div>
-                <div className="content-box">
-                    <div className="text-center logo-title mb-4">
-                        <img
-                            src="./assets/images/logo-sports.png"
-                            alt="Department Logo"
-                            className="mb-3"
-                            style={{ width: "110px", height: "auto" }}
-                        />
-                        <h1>Sports Department</h1>
-                        <p className="tagline">
-                            Let the young minds grow to the full potential
-                        </p>
-                    </div>
+            <div className="background-image"></div>
 
-                    <div className="section-title text-center">
-                        Citizen Login
-                    </div>
-                    <form onSubmit={handleLogin}>
-                        <div className="row">
-                            <div className="col-md-6">
-                                <div className="mb-2">
-                                    <label
-                                        htmlFor="pppId"
-                                        className="form-label mb-0"
-                                    >
-                                        PPP ID
-                                    </label>
+            <div className="d-flex justify-content-center align-items-center min-vh-100">
+                <form onSubmit={handleLogin}>
+                    <div className="row login-container">
+                        {/* Left Side Form  */}
+                        <div className="col-md-5 left-form bg-white">
+                            <div className="text-center logo-title mb-4">
+                                <img
+                                    src="../assets/images/logo-sports.png"
+                                    alt="Logo"
+                                />
+                                <h1>Sports Department</h1>
+                                <p className="tagline">
+                                    Let the young minds grow to the full
+                                    potential
+                                </p>
+                            </div>
 
-                                    <input
-                                        type="text"
-                                        className={`form-control required ${
-                                            errors.pppId ? "is-invalid" : ""
-                                        }`}
-                                        id="pppid"
-                                        name="pppid"
-                                        maxLength={9}
-                                        minLength={6}
-                                        disabled={isMembersVisible}
-                                        value={pppId}
-                                        onChange={(e) => {
-                                            setPppId(e.target.value);
-                                            setErrors((err) => ({
-                                                ...err,
-                                                pppId: validatePppId(
-                                                    e.target.value
-                                                ),
-                                            }));
-                                        }}
-                                    />
-                                    {errors.pppId && (
-                                        <div className="error">
-                                            {errors.pppId}
-                                        </div>
-                                    )}
-                                </div>
+                            <div className="section-title text-center">
+                          
+                               <a href="/" className="active-login">Applicant Login</a> 
+                           
+                              
+                                <a href="/login"> Offical Login</a>
+                            </div>
+                          <div className="clearfix"></div>
 
-                                <div className="mb-2">
+                            <div className="mb-3">
+                                <label htmlFor="pppId" className="form-label">
+                                    PPP ID
+                                </label>
+                                <input
+                                    type="text"
+                                    className={`form-control required ${
+                                        errors.pppId ? "is-invalid" : ""
+                                    }`}
+                                    id="pppid"
+                                    name="pppid"
+                                    maxLength={9}
+                                    minLength={6}
+                                    disabled={isMembersVisible}
+                                    value={pppId}
+                                    onChange={(e) => {
+                                        setPppId(e.target.value);
+                                        setErrors((err) => ({
+                                            ...err,
+                                            pppId: validatePppId(
+                                                e.target.value
+                                            ),
+                                        }));
+                                    }}
+                                />
+                                {errors.pppId && (
+                                    <div className="error">{errors.pppId}</div>
+                                )}
+
+                                <button
+                                    className="btn btn-custom mt-2"
+                                    hidden={isMembersVisible}
+                                    onClick={displayMembers}
+                                >
+                                    Display Members
+                                </button>
+                            </div>
+                            {isMembersVisible && (
+                                <div className="mb-3">
                                     <label
                                         htmlFor="memberSelect"
-                                        className="form-label mb-0"
+                                        className="form-label"
                                     >
                                         Choose Member
                                     </label>
@@ -286,80 +292,47 @@ function Login() {
                                             {errors.selectedMember}
                                         </p>
                                     )}
-                                    {/* {!isOtpVisible && (
-                                                        <p className="mt-1 text-secondary">
-                                                            We will send you a
-                                                            verification code
-                                                        </p>
-                                                    )} */}
+                                    {isMembersVisible && (
+                                        <button
+                                            className="btn btn-custom mt-2"
+                                            hidden={isOtpVisible}
+                                            onClick={getVerificationCode}
+                                        >
+                                            Send OTP
+                                        </button>
+                                    )}
                                 </div>
-                               
-                            </div>
-
-                            <div className="col-md-6">
-                                <div className="mt-4">
-
-                            <button
-                                    className="btn btn-custom mt-1"
-                                    hidden={isMembersVisible}
-                                    onClick={displayMembers}
-                                >
-                                    Display Members
-                                </button>
-                                </div>
-                               
-                                {isMembersVisible && (
-                                   <div className=" mt-5"> <button
-                                        className="btn btn-custom mt-5"
-                                        hidden={isOtpVisible}
-                                        onClick={getVerificationCode}
-                                    >
-                                        Send OTP
-                                    </button>
-                                    </div>
-                                )}
-                            </div>
+                            )}
                             {isOtpVisible && (
-                                <div>
-                                    <div className="col-md-12">
-                                        <div className="mb-2">
-                                            <small>{otp_message}</small>
-                                            <input
-                                                type="text"
-                                                className="form-control required"
-                                                maxLength={6}
-                                                id="otp"
-                                                name="otp"
-                                                placeholder="Enter OTP"
-                                                value={otp}
-                                                disabled={otpVerified}
-                                                onChange={(e) =>
-                                                    setOtp(e.target.value)
-                                                }
-                                                required
-                                            />
-                                            {errors.otp && (
-                                                <p className="error">
-                                                    {errors.otp}
-                                                </p>
-                                            )}
-                                            {!otpVerified && (
-                                                <div>
-                                                    Didn't receive OTP?{" "}
-                                                    <a
-                                                        href="javascript:;"
-                                                        className="resendOtp"
-                                                        onClick={
-                                                            getVerificationCode
-                                                        }
-                                                    >
-                                                        Resend code
-                                                    </a>
-                                                </div>
-                                            )}
+                                <div className="mb-3">
+                                    <input
+                                        type="text"
+                                        className="form-control required"
+                                        maxLength={6}
+                                        id="otp"
+                                        name="otp"
+                                        placeholder="Enter OTP"
+                                        value={otp}
+                                        disabled={otpVerified}
+                                        onChange={(e) => setOtp(e.target.value)}
+                                        required
+                                    />
+                                    {errors.otp && (
+                                        <p className="error">{errors.otp}</p>
+                                    )}
+                                    {!otpVerified && (
+                                        <div>
+                                            Didn't receive OTP?{" "}
+                                            <a
+                                                href="javascript:;"
+                                                className="resendOtp"
+                                                onClick={getVerificationCode}
+                                            >
+                                                Resend code
+                                            </a>
                                         </div>
-
-                                        {!otpVerified && (
+                                    )}
+                                     {!otpVerified && (
                                             <button
                                                 onClick={verifyOTP}
                                                 className="btn btn-custom mt-1"
@@ -368,83 +341,92 @@ function Login() {
                                                 Verify OTP
                                             </button>
                                         )}
-                                    </div>
                                 </div>
                             )}
-                            {otpVerified && (
+                             {otpVerified && (
                                 <div>
-                                    <div className="col-md-12 mt-2">
-                                        <div className="mb-3 form-check">
-                                        <input
-                                                    className="form-check-input"
-                                                    type="radio"
-                                                    name="loginType"
-                                                    id="equipment"
-                                                    value="equipment"
-                                                    onChange={handleLoginTypeChange}
-                                                    checked={loginType === 'equipment'}
-                                                    required
-                                                    
-                                                />
-                                            <label
-                                                className="form-check-label"
-                                                htmlFor="equipment"
-                                            >
-                                                Haryana Sports Equipment
-                                            </label>
-                                        </div>
-                                        <div className="mb-3 form-check">
-                                        <input
-                                                    className="form-check-input"
-                                                    type="radio"
-                                                    name="loginType"
-                                                    id="gradation"
-                                                    value="gradation"
-                                                    onChange={handleLoginTypeChange}
-                                                    checked={loginType === 'gradation'}
-                                                />
-                                            <label
-                                                className="form-check-label"
-                                                htmlFor="gradation"
-                                            >
-                                                Haryana Sports Gradation
-                                            </label>
-                                        </div>
-                                        {/* <!-- Uncomment if needed --> */}
-
-                                        <div className="mb-3 form-check">
-                                        <input
-                                                    className="form-check-input"
-                                                    type="radio"
-                                                    name="loginType"
-                                                    id="hosp"
-                                                    value="hosp"
-                                                    onChange={handleLoginTypeChange}
-                                                    checked={loginType === 'hosp'}
-                                                />
-                                            <label
-                                                className="form-check-label"
-                                                htmlFor="person"
-                                            >
-                                                Haryana Outstanding Sports
-                                                Person
-                                            </label>
-                                        </div>
-                                        {errors.loginType && <div className="error">{errors.loginType}</div>}
-                                    </div>
-                                   
-                                    <button
+                            <div className="mb-3 form-check">
+                                <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    name="loginType"
+                                    id="equipment"
+                                    value="equipment"
+                                    onChange={handleLoginTypeChange}
+                                    checked={loginType === "equipment"}
+                                    required
+                                />
+                                <label
+                                    className="form-check-label"
+                                    htmlFor="equipment"
+                                >
+                                    Haryana Sports Equipment
+                                </label>
+                            </div>
+                            <div className="mb-3 form-check">
+                                <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    name="loginType"
+                                    id="gradation"
+                                    value="gradation"
+                                    onChange={handleLoginTypeChange}
+                                    checked={loginType === "gradation"}
+                                />
+                                <label
+                                    className="form-check-label"
+                                    htmlFor="gradation"
+                                >
+                                    Haryana Sports Gradation
+                                </label>
+                            </div>
+                            <div className="mb-3 form-check">
+                                <input
+                                    className="form-check-input"
+                                    type="radio"
+                                    name="loginType"
+                                    id="hosp"
+                                    value="hosp"
+                                    onChange={handleLoginTypeChange}
+                                    checked={loginType === "hosp"}
+                                />
+                                <label
+                                    className="form-check-label"
+                                    htmlFor="person"
+                                >
+                                    Haryana Outstanding Sports Person
+                                </label>
+                            </div>
+                            {errors.loginType && (
+                                <div className="error">{errors.loginType}</div>
+                            )}
+                             <button
                                         className="btn btn-custom mt-1"
                                         type="submit"
                                     >
                                         Submit
                                     </button>
-                                </div>
-                            )}
+                            </div>
+                            
+                        )}
+                        
                         </div>
-                    </form>
-                </div>
+
+                        {/* Right Side Content */}
+                        <div className="col-md-7 right-side">
+                            <div className="testimonial-text">
+                                "Empowering athletes through seamless digital
+                                access and support."
+                            </div>
+                            <div className="testimonial-author">
+                                - Haryana Sports Dept.
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
+            <div className="background-image"></div>
+            <div className="background-overlay"></div>
         </div>
     );
 }
