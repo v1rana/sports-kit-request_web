@@ -2124,6 +2124,7 @@ const HospForm = () => {
                                         <td style={{ padding: "15px" }}>
                                         Event </td>
                                         </tr> */}
+                                        {userData.event_hosp && (
                                         <tr>
                                             <td style={{ padding: "15px" }}>
                                                 Event type
@@ -2167,10 +2168,13 @@ const HospForm = () => {
                                                 </h6>
                                             </td>
                                         </tr>
+                                        )}
+                                         {userData.education_hosp.length && (
                                         <tr>
                                         <td style={{ padding: "15px" }}>
                                        Educations </td>
                                         </tr>
+                                         )}
                                         {userData.education_hosp.map(
                                             (item, index) => (
                                                 <tr key={item.id || index}>
@@ -2217,10 +2221,13 @@ const HospForm = () => {
                                                 </tr>
                                             )
                                         )}
+                                        {userData.sports_discipline_hosp && (
                                         <tr>
                                         <td style={{ padding: "15px" }}>
                                         Sports Discipline </td>
                                         </tr>
+                                        )}
+                                        {userData.sports_discipline_hosp && (
                                         <tr>
                                             <td style={{ padding: "15px" }}>
                                                 Tournament Venue
@@ -2259,6 +2266,8 @@ const HospForm = () => {
                                                 </h5>
                                             </td>
                                         </tr>
+                                        )}
+                                        {userData.sports_discipline_hosp && (
                                         <tr>
                                             <td style={{ padding: "15px" }}>
                                                 Represented India
@@ -2283,6 +2292,8 @@ const HospForm = () => {
 
                                            
                                         </tr>
+                                        )}
+                                        {userData.sports_discipline_hosp && (
                                         <tr>
                                         <td style={{ padding: "15px" }}>
                                                 OSP Certificate
@@ -2306,6 +2317,7 @@ const HospForm = () => {
                                                 </h6>
                                             </td>
                                         </tr>
+                                        )}
                                         <tr>
                                             <td colSpan={3}>
                                                 <hr style={{ marginTop: 0 }} />
