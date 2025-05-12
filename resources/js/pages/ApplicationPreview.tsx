@@ -78,7 +78,7 @@ const certificateRef = useRef<HTMLDivElement>(null);
           .from(element)
           .save()
           .then(() => {
-            element.style.display = 'none';
+            // element.style.display = 'none';
           });
         }
 
@@ -160,18 +160,18 @@ const certificateRef = useRef<HTMLDivElement>(null);
                                                 <h5>{userData.mobile}</h5>
                                             </td>
                                             <td>
-                                                <small>4. District</small>
+                                                <small>4.  Date Of birth</small>
                                                 <h5>
                                                     {
-                                                        otpData.district_sportsperson_belongs
+                                                        userDetails.date_of_birth
                                                     }
                                                 </h5>
                                             </td>
                                             <td rowSpan={2} width="19%">
                                                 <img
                                                     src={
-                                                        otpData.profile_picture
-                                                            ? `/storage/${otpData.profile_picture}`
+                                                        userDetails.photo
+                                                            ? `/storage/photo/${userDetails.photo}`
                                                             : "default.jpg"
                                                     }
                                                     width="140px"
@@ -185,43 +185,86 @@ const certificateRef = useRef<HTMLDivElement>(null);
                                         </tr>
                                         <tr>
                                             <td>
-                                                <small>5. Domicile State</small>
+                                                <small>5. Caste Category</small>
                                                 <h5>
-                                                    {otpData.domicile_state}
+                                                {userDetails.caste_category}
                                                 </h5>
                                             </td>
                                             <td>
                                                 <small>
-                                                    6. State/Organization
+                                                    6.  Haryana Domicle
                                                 </small>
                                                 <h5>
-                                                    {
-                                                        otpData.plays_for_statte_org
-                                                    }
+                                                {userDetails.domicile == "1"
+                                                        ? "Yes"
+                                                        : "No"}
                                                 </h5>
                                             </td>
                                             <td>
                                                 <small>
-                                                    7. Sports Discipline
+                                                    7.  Event type
                                                 </small>
                                                 <h5>
-                                                    {
-                                                        otpData.name_sports_discipline
-                                                    }
+                                                {userData.event_hosp
+                                                        .event_type == "1"
+                                                        ? "Individual"
+                                                        : "Team"}
                                                 </h5>
                                             </td>
                                             <td>
-                                                <small>Type of Event</small>
-                                                <h5>{otpData.type_of_event}</h5>
+                                                <small>Played National Level</small>
+                                                <h5>  {userData.event_hosp
+                                                        .played_national_level ==
+                                                    "1"
+                                                        ? "Yes"
+                                                        : "No"}</h5>
+                                            </td>
+                                            </tr>
+                                            <tr>
+                                            <td>
+                                                <small> Name of Central Organisation
+                                                Represented</small>
+                                                <h5>   {
+                                                        userData.event_hosp.organisation_represented ?? 'N/A'
+                                                    }</h5>
                                             </td>
                                         </tr>
+                                        {userData.education_hosp.length > 0 && 
+                                            userData.education_hosp.map((item, index) => (
+                                                <tr key={item.id || index}>
+                                                <td colSpan={3} width="58%">
+                                                    <small>Qualification</small>
+                                                    <h5 style={{ width: "95%" }}>
+                                                    {item.qualification}
+                                                    </h5>
+                                                </td>
+                                                {item.other_qualification && (
+                                                        <td
+                                                            style={{
+                                                                padding: "15px",
+                                                            }}
+                                                        >
+                                                           <small>Other Qualification</small>
+                                                           <h5 style={{ width: "95%" }}>
+                                                           {item.other_qualification ||
+                                                                    "N/A"}
+                                                    </h5>
+                                                        </td>
+                                                    )}
+                                                </tr>
+                                            ))
+                                            }
                                         <tr>
                                             <td colSpan={3} width="58%">
                                                 <small>
                                                     Name of Tournament
                                                 </small>
                                                 <h5 style={{ width: "95%" }}>
-                                                    {otpData.type_of_event}
+                                                {
+                                                        userData
+                                                            .sports_discipline_hosp
+                                                            .tournament_id
+                                                    }
                                                 </h5>
                                             </td>
                                             <td colSpan={2}>
@@ -230,7 +273,8 @@ const certificateRef = useRef<HTMLDivElement>(null);
                                                 </small>
                                                 <h5 style={{ width: "95%" }}>
                                                     {
-                                                        otpData.organising_authority
+                                                         userData
+                                                         .sports_discipline_hosp.organizing_committee
                                                     }
                                                 </h5>
                                             </td>
@@ -242,35 +286,36 @@ const certificateRef = useRef<HTMLDivElement>(null);
                                                 </small>
                                                 <h5>
                                                     {
-                                                        otpData.venue_of_tournament
+                                                          userData
+                                                          .sports_discipline_hosp
+                                                          .tournament_venue
                                                     }
                                                 </h5>
                                             </td>
                                             <td>
-                                                <small>Date</small>
+                                                <small>Achievement date</small>
                                                 <h5>
                                                     {new Date(
-                                                        otpData.month_year
+                                                        userData
+                                                        .sports_discipline_hosp.achievement_date
                                                     ).toLocaleDateString()}
                                                 </h5>
                                             </td>
-                                            <td>
-                                                <small>Tournament Type</small>
-                                                <h5>
-                                                    {otpData.tournament_type}
-                                                </h5>
-                                            </td>
+                                           
                                             <td>
                                                 <small>Medal Won</small>
-                                                <h5>{otpData.medal_won}</h5>
+                                                <h5>{userData
+                                                        .sports_discipline_hosp
+                                                        .medal_won || "None"}</h5>
                                             </td>
                                             <td>
                                                 <small>
-                                                    Participation Level
+                                                Match played by team
                                                 </small>
                                                 <h5>
                                                     {
-                                                        otpData.participation_level
+                                                        userData
+                                                        .sports_discipline_hosp.match_played_by_team
                                                     }
                                                 </h5>
                                             </td>
@@ -292,20 +337,20 @@ const certificateRef = useRef<HTMLDivElement>(null);
                                     >
                                         {[
                                             {
-                                                src: otpData.aadhaar_card,
-                                                label: "Aadhaar Card",
+                                                src: 'https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg',
+                                                label: "Haryana Domicile",
                                             },
                                             {
-                                                src: otpData.domicile_certificate,
-                                                label: "Domicile Certificate",
+                                                src: 'https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg',
+                                                label: "Nation Level Certificate",
                                             },
                                             {
-                                                src: otpData.sports_certificate,
-                                                label: "Achievement Certificate",
+                                                src: 'https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg',
+                                                label: " International Achievement and Verification Certificate",
                                             },
                                             {
-                                                src: otpData.more_than25_photo,
-                                                label: "Proof of Playing 25% Matches",
+                                                src: 'https://upload.wikimedia.org/wikipedia/commons/8/87/PDF_file_icon.svg',
+                                                label: "Outstanding Sports Person Achievment Certificate ",
                                             },
                                         ].map((doc, i) => (
                                             <div
@@ -315,7 +360,7 @@ const certificateRef = useRef<HTMLDivElement>(null);
                                                 <img
                                                     src={
                                                         doc.src
-                                                            ? `/storage/${doc.src}`
+                                                            ? `${doc.src}`
                                                             : "default.jpg"
                                                     }
                                                     width="140"
@@ -347,39 +392,62 @@ const certificateRef = useRef<HTMLDivElement>(null);
                                     <h4>Declaration</h4>
                                     <ul>
                                         <li>
-                                            I certify that I am currently a
-                                            domicile/resident of Haryana.
+                                        I have read the Haryana
+                                                        Outstanding
+                                                        Sportspersons
+                                                        (Recruitment and
+                                                        Condition of Service)
+                                                        Rules, 2021 and declare
+                                                        that I am eligible for
+                                                        submission of my
+                                                        application for
+                                                        considration of
+                                                        appointment under these
+                                                        Rules.
                                         </li>
                                         <li>
-                                            I certify that I have never played
-                                            for any State or Union Territory
-                                            other than Haryana.
+                                        I have enclosed
+                                                        self-attested copies of
+                                                        all documents in support
+                                                        of my application.
                                         </li>
                                         <li>
-                                            I certify that I have played for
-                                            Haryana at the
-                                            National/International Level.
+                                        I have played 50% or
+                                                        more of the games played
+                                                        by team in the
+                                                        tournament at serial no.
+                                                        12 above.
                                         </li>
                                         <li>
-                                            I certify that I have not been
-                                            penalized for any unfair practice
-                                            like age fraud, doping, etc., in the
-                                            tournament for which cash award is
-                                            being applied for.
+                                        I did not represent a
+                                                        State/UT other than
+                                                        Haryana at the national
+                                                        level.
                                         </li>
                                         <li>
-                                            I certify that I have enclosed the
-                                            self-attested copies of the
-                                            documents as per requirements.
+                                        I am guilty of doping,
+                                                        sexual harassment and
+                                                        abuse, competitive
+                                                        manipulation like
+                                                        betting, inside
+                                                        information, match
+                                                        fixing, tanking,
+                                                        threatening the
+                                                        integrity and essence of
+                                                        Sports.
                                         </li>
                                         <li>
-                                            I also understand that if any
-                                            information provided by me for the
-                                            grant of Gradation Certificate is
-                                            found to be false or incorrect, then
-                                            I shall be liable for any penal
-                                            action.
+                                        If appointment is
+                                                        offered, I undertake
+                                                        that I shall have no
+                                                        subsisting contract for
+                                                        pecuniaryg gains like
+                                                        commercial endorsement
+                                                        or professional sport
+                                                        before joining the
+                                                        service.
                                         </li>
+                                        
                                     </ul>
                                 </td>
                             </tr>
@@ -410,11 +478,11 @@ const certificateRef = useRef<HTMLDivElement>(null);
                                 <td>
                                     <h6 style={{ marginLeft: "-173px" }}>
                                         Date -{" "}
-                                        <strong>
+                                        {/* <strong>
                                             {new Date(
                                                 otpData.created_at
                                             ).toLocaleDateString()}
-                                        </strong>
+                                        </strong> */}
                                     </h6>
                                 </td>
                             </tr>

@@ -36,7 +36,7 @@ class HospController extends Controller
             $user->save();
    
             if ($request->hasFile('photo')) {
-                $path = $request->file('photo')->store('photo');
+                $path = $request->file('photo')->store('photo','public');
                 $user_details->photo = basename($path);
             }
             if ($request->hasFile('domicile_doc')) {

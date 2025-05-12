@@ -26,7 +26,7 @@ const HospForm = () => {
     let userData = JSON.parse(localStorage.getItem("user")!);
     let userDetails = userData?.user_details || {};
     if (userData.declarations_hosp && userData.declarations_hosp.id) {
-        // navigate("/hosp/download-application");
+        navigate("/hosp/preview-application");
     }
     // Get user data from localStorage
 
@@ -930,12 +930,12 @@ const HospForm = () => {
                     >
                         Print <i className="fa fa-print"></i>
                     </button> */}
-                    {/* <Link
+                    <Link
                         className="btn btn-primary me-1"
-                        to="/hosp/download-application"
+                        to="/hosp/preview-application"
                     >
                         Preview Form
-                    </Link> */}
+                    </Link>
                     {/* <button className="btn btn-primary me-1" onClick={downloadPDF}>Preview Form</button> */}
                 </div>
                 {!isSubmitted && !isSubmitting && (
@@ -2069,13 +2069,10 @@ const HospForm = () => {
                                                 Name
                                                 <h5>{userData.name}</h5>
                                             </td>
-                                            <td
-                                                style={{ padding: "15px" }}
-                                                align="center"
-                                            >
-                                                Father Name
+                                            <td style={{ padding: "15px" }}>
+                                                Date Of birth
                                                 <h5>
-                                                    {userDetails.father_name_en}
+                                                    {userDetails.date_of_birth}
                                                 </h5>
                                             </td>
                                             <td
@@ -2087,12 +2084,7 @@ const HospForm = () => {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td style={{ padding: "15px" }}>
-                                                Date Of birth
-                                                <h5>
-                                                    {userDetails.date_of_birth}
-                                                </h5>
-                                            </td>
+                                            
                                             <td
                                                 style={{ padding: "15px" }}
                                                 align="center"
@@ -2136,8 +2128,7 @@ const HospForm = () => {
                                                 </h5>
                                             </td>
                                             <td style={{ padding: "15px" }}>
-                                                Played at National Level for
-                                                Haryana
+                                            Played National Level
                                                 <h5>
                                                     {userData.event_hosp
                                                         .played_national_level ==
@@ -2225,6 +2216,13 @@ const HospForm = () => {
                                         <tr>
                                         <td style={{ padding: "15px" }}>
                                         Sports Discipline </td>
+                                        <h5>
+                                                    {
+                                                        userData
+                                                            .sports_discipline_hosp
+                                                            .tournament_id
+                                                    }
+                                                </h5>
                                         </tr>
                                         )}
                                         {userData.sports_discipline_hosp && (

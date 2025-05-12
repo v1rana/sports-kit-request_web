@@ -358,7 +358,7 @@ const BasicDetails = () => {
                                             }));
                                         }}
                                     >
-                                        <option value="" selected disabled>
+                                        <option value="0" selected disabled>
                                             Select
                                         </option>
                                         <option value="1">Yes</option>
