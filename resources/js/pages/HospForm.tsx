@@ -26,7 +26,7 @@ const HospForm = () => {
     let userData = JSON.parse(localStorage.getItem("user")!);
     let userDetails = userData?.user_details || {};
     if (userData.declarations_hosp && userData.declarations_hosp.id) {
-        navigate("/hosp/preview-application");
+        // navigate("/hosp/preview-application");
     }
     // Get user data from localStorage
 
