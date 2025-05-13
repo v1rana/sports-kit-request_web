@@ -15,7 +15,7 @@ return new class extends Migration
         $table->id();
         $table->foreignId('vendor_id')->constrained('vendors')->onDelete('cascade');
         $table->foreignId('sport_id')->constrained('sports')->onDelete('cascade');
-        $table->decimal('rate',8,2);
+        $table->decimal('rate',8,2)->nullable();
         $table->string('equipment')->nullable();
         $table->string('photo')->nullable();
         $table->timestamps();
