@@ -304,7 +304,7 @@
 							
 		
 </div>			
-			
+		
 <div class="modal fade" id="requestDisclosure{{ $request->applicant_id }}" tabindex="-1" aria-labelledby="requestDisclosureLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg">
     	<div class="modal-content">
@@ -386,7 +386,7 @@
  	</div>
 </div>
    
-	
+	 
     @endsection
 	<script>
         function readURL(input) {

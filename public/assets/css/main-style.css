@@ -148,6 +148,9 @@ footer p{margin:0}
 .rejection-remarks{display:none;}
 
 
+  div#equipment-list .row{position: relative}
+  div#equipment-list .row .delete-row-area{position:absolute; top: 3px; right: -36px;width:auto}
+  div#equipment-list .row .delete-row-area button{font-size:11px;padding: 7px }
 
 
 @media screen and (max-width: 786px){

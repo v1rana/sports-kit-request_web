@@ -17,6 +17,9 @@
     -moz-appearance: none !important;
     -webkit-appearance: none !important;}
   header{border-bottom:1px solid #eee;}
+  div#equipment-list .row{position: relative}
+  div#equipment-list .row .delete-row-area{position:absolute; top: 3px; right: -36px;width:auto}
+  div#equipment-list .row .delete-row-area button{font-size:11px;padding: 7px }
    
 }
 </style>
@@ -133,23 +136,23 @@
                     <h4 class="mb-3 text-dark">Sports Request Details 
                     <button type="button" class="btn btn-sm btn-success float-end" onclick="addEquipment()">+ Add More</button>
                 </h4>
-                    <div class="title-area d-flex">
-                        <p class="col mb-0 px-1">Select Sports</h6>
-                        <p class="col mb-0 px-1">Select Equipements</h6>
-                        <p class="col mb-0 px-1">Enter Quantity</h6>
-                        <p class="col-3 mb-0 px-1">Whether FoP/Hall/Poles are available for mentioned Sports?</h6>
-                        <p class="col-3 mb-0 px-1">Tentative Number of Players</h6>
-                        <p class="col-3 mb-0 px-1">Date of Last Issued Sports Item/Equipment</h6>
-                        <p class="col-3 mb-0 px-1">Select Location picture</h6>
+                    <div class="title-area row px-3">
+                        <p class="col-1 mb-0 px-1">Sports</h6>
+                        <p class="col-2 mb-0 px-1">Equipements</h6>
+                        <p class="col-1 mb-0 px-1">Quantity</h6>
+                        <p class="col-2 mb-0 px-1">Whether FoP/Hall/Poles are available for mentioned Sports?</h6>
+                        <p class="col-2 mb-0 px-1">Tentative Number of Players</h6>
+                        <p class="col-2 mb-0 px-1">Date of Last Issued Sports Item/Equipment</h6>
+                        <p class="col-2 mb-0 px-1">Select Location picture</h6>
                         <!--<p class="col mb-0 px-1">Select Date</h6>-->                        
                         <div class="col-1 mb-0 px-1"></div>
                     </div>
-                  <div id="equipment-list">
-    <div class="d-flex mb-2 align-items-center">
+                   <div id="equipment-list" class="px-3">
+    <div class="row flex-wrap mb-2 align-items-center">
         <!-- Select Sport Dropdown -->
-        <div class="col-2 mb-0 px-1">
-            <select name="sports_equipment[0][name]" class="form-control" required onchange="updateEquipmentOptions(this)">
-                <option value="" selected disabled>Select Sport</option>
+        <div class="col-12 col-md-1 mb-2 mb-md-0 px-1">
+            <select name="sports_equipment[0][name]" class="form-control ps-1" required onchange="updateEquipmentOptions(this)">
+                <option value="" selected disabled>Select</option>
                 <option value="Volleyball">Volleyball</option>
                 <option value="Football">Football</option>
                 <option value="Basketball">Basketball</option>
@@ -162,49 +165,48 @@
         </div>
 
         <!-- Select Equipment Dropdown -->
-        <div class="col-2 mb-0 px-1">
-            <select name="sports_equipment[0][equipment]" class="form-control" required onchange="updateQuantityLimit(this)">
-                <option value="" selected disabled>Select Equipment</option>
+        <div class="col-12 col-md-2 mb-2 mb-md-0 px-1">
+            <select name="sports_equipment[0][equipment]" class="form-control ps-1" required onchange="updateQuantityLimit(this)">
+                <option value="" selected disabled>Select</option>
             </select>
         </div>
 
         <!-- Quantity Input -->
-        <div class="col-1 mb-0 px-1">
-            <input type="number" name="sports_equipment[0][quantity]" class="form-control" placeholder="Quantity" readonly required>
+        <div class="col-12 col-md-1 mb-2 mb-md-0 px-1">
+            <input type="number" name="sports_equipment[0][quantity]" class="form-control ps-1" placeholder="Quantity" readonly required>
         </div>
 
         <!-- Availability Dropdown -->
-        <div class="col-2 mb-0 px-1">
-            <select name="sports_equipment[0][fop_available]" class="form-control" required>
-                <option value="" selected>Select Availability</option>
+        <div class="col-12 col-md-2 mb-2 mb-md-0 px-1">
+            <select name="sports_equipment[0][fop_available]" class="form-control ps-1" required>
+                <option value="" selected>Select</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
             </select>
         </div>
 
         <!-- Players Count Input -->
-        <div class="col-2 mb-0 px-1">
-            <input type="number" name="sports_equipment[0][players_count]" class="form-control" placeholder="Players count" required>
+        <div class="col-12 col-md-2 mb-2 mb-md-0 px-1">
+            <input type="number" name="sports_equipment[0][players_count]" class="form-control ps-1" placeholder="Players count" required>
         </div>
 
         <!-- Last Issued Date -->
-        <div class="col-2 mb-0 px-1">
-            <input type="date" class="form-control" name="sports_equipment[0][last_issued_date]" id="last_issued_date" max="{{ date('Y-m-d') }}" required>
+        <div class="col-12 col-md-2 mb-2 mb-md-0 px-1">
+            <input type="date" class="form-control ps-1" name="sports_equipment[0][last_issued_date]" id="last_issued_date" max="{{ date('Y-m-d') }}" required>
         </div>
 
         <!-- Equipment Photo Upload -->
-        <div class="col-2 mb-0 px-1">
-            <input type="file" class="form-control" name="sports_equipment[0][photo]" accept="image/*">
+        <div class="col-12 col-md-2 mb-2 mb-md-0 px-1">
+            <input type="file" class="form-control ps-1" name="sports_equipment[0][photo]" accept="image/*">
         </div>
 
         <!-- Delete Button (Optional) -->
-        <div class="col-1 mb-0 px-1 text-end">
+        <div class="col-12 col-md-1 mb-2 mb-md-0 px-1 text-end">
             <!-- Optional delete button if needed -->
             <!-- <button type="button" class="btn btn-danger" onclick="removeEquipment(this)"><i class="fa-solid fa-trash"></i></button> -->
         </div>
     </div>
 </div>
-
 
 
                     <!-- Availability of Facilities -->
@@ -519,10 +521,10 @@ function addEquipment() {
 
     // Create new row
     let newItem = document.createElement('div');
-    newItem.classList.add('d-flex', 'mb-2');
+    newItem.classList.add('row', 'mb-2');
     newItem.innerHTML = `
-        <div class="col mb-0 px-1">
-            <select name="sports_equipment[${count}][name]" class="form-control" required onchange="updateEquipmentOptions(this)">
+        <div class="col-1 mb-0 px-1">
+            <select name="sports_equipment[${count}][name]" class="form-control ps-1" required onchange="updateEquipmentOptions(this)">
                 <option value="" selected disabled>Select Sport</option>
                 <option value="Volleyball">Volleyball</option>
                 <option value="Football">Football</option>
@@ -534,34 +536,34 @@ function addEquipment() {
                 <option value="Cricket">Cricket</option>
             </select>
         </div>
-        <div class="col mb-0 px-1">
-            <select name="sports_equipment[${count}][equipment]" class="form-control" required onchange="checkDuplicate(this); updateQuantityLimit(this)">
+        <div class="col-12 col-md-2 mb-2 mb-md-0 px-1">
+            <select name="sports_equipment[${count}][equipment]" class="form-control ps-1" required onchange="checkDuplicate(this); updateQuantityLimit(this)">
                 <option value="" selected disabled>Select Equipment</option>
             </select>
         </div>
-        <div class="col mb-0 px-1">
-            <input type="number" name="sports_equipment[${count}][quantity]" class="form-control" placeholder="Quantity" required min="1" readonly>
+        <div class="col-1 mb-0 px-1">
+            <input type="number" name="sports_equipment[${count}][quantity]" class="form-control ps-1" placeholder="Quantity" required min="1" readonly>
         </div>
-		<div class="col mb-0 px-1">
-            <select name="sports_equipment[${count}][fop_available]" class="form-control" required>
+		<div class="col-2 mb-0 px-1">
+            <select name="sports_equipment[${count}][fop_available]" class="form-control ps-1" required>
                <option value="" selected>Select Availability</option>
                 <option value="Yes" >Yes</option>
                 <option value="No" >No</option>
             </select>
         </div>
-		<div class="col mb-0 px-1">
-            <input type="number" name="sports_equipment[${count}][players_count]" class="form-control" placeholder="Players count" required min="1">
+		<div class="col-2 mb-0 px-1">
+            <input type="number" name="sports_equipment[${count}][players_count]" class="form-control ps-1" placeholder="Players count" required min="1">
         </div>
-		<div class="col mb-0 px-1">
-             <input type="date" class="form-control" name="sports_equipment[${count}][last_issued_date]" class="form-control" max="{{ date('Y-m-d') }}" required>
+		<div class="col-2 mb-0 px-1">
+             <input type="date" class="form-control" name="sports_equipment[${count}][last_issued_date]" class="form-control ps-1" max="{{ date('Y-m-d') }}" required>
         </div>
-        <div class="col-3 mb-0 px-1">
-            <input type="file" name="sports_equipment[${count}][photo]" class="form-control" accept="image/*">
+        <div class="col-2 mb-0 px-1">
+            <input type="file" name="sports_equipment[${count}][photo]" class="form-control ps-1" accept="image/*">
         </div>
         <!--<div class="col mb-0 px-1" style="display:none">
             <input type="date" name="sports_photos[${count}][date]" class="form-control" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}">
         </div>-->
-        <div class="col-1 mb-0 px-1 text-end">
+        <div class="delete-row-area">
             <button type="button" class="btn btn-danger" onclick="removeEquipment(this)">
                 <i class="fa-solid fa-trash"></i>
             </button>
@@ -573,7 +575,7 @@ function addEquipment() {
 
 // Function to remove equipment row
 function removeEquipment(button) {
-    button.closest('.d-flex').remove();
+    button.closest('.row').remove();
 }
 
 // Attach event listeners on page load
