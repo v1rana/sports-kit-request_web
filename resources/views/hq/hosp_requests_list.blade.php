@@ -7,12 +7,26 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
+<style>
+	    label.info-label,small.info-label {font-weight: 500;font-size:14px;display: block; margin-bottom:0; line-height:normal}
+	    .modal-body h5{margin:0}
+	    .games-authorised-sec .row > div{font-size: 15px;padding:0}
+	    .games-authorised-sec .row > div h6 {
+    margin: 0;
+    padding: 6px 10px;
+    border-left: 1px solid rgba(0, 0, 0, 0.07);
+    background: #eee;
+    color: #777;
+}
+.games-authorised-sec .row > div:first-child h6{border:none;}
+.games-authorised-sec .row > div:nth-child(-n+4){border-top:0;}
+.games-authorised-sec .row > div p{padding: 5px 10px;font-size:14px;}
+</style>
 <h4 class="">Haryana Outstanding Sports Persons List <a href="" class="btn btn-secondary float-end"><i class="fa-solid fa-arrow-left-long"></i> Back</a></h4>
-<div class=" bg-white shadow mb-5 p-3">
-	<div class="table-responsive">
-		<table class="table table-bordered bg-white table-hover">
-			<thead>
-				<tr class="bg-primary text-white">
+<div class=" bg-white shadow mb-5 p-2">
+			<table class="table table-bordered bg-white table-hover">
+				<thead>
+					<tr class="bg-primary text-white">
 					<th>Sr. No.</th>
 					<th>Application Id</th>
 					<th>Name</th>
@@ -33,57 +47,14 @@
 				</tr>
 			</thead>
 			<tbody>
-				
+				@foreach($users as $index => $request)	
 				<tr>
-					<td>1.</td>
-					<td>HOSP-54321</td>
-					<td>Pinki</td>
-					<td>TIGAON BL</td>
-					<td>FARIDABAD</td>
-					<td>Faridpur</td>
-					<td>Individual</td>
-					<td>Olympics</td>
-					<td>No</td>
-					<td>International</td>
-					<td>Boxing</td>
-					<td>Tokyo</td>
-					<td>Gold</td>
-					<td>01 Aug,2020</td>
-					<td>Above 25%</td>
-					<td>In-Progress</td>
-					<td>
-					
-						<form action="" method="POST" style="display:inline;">
-							@csrf
-							<button type="submit"  class="btn btn-success w-100 mb-2">
-								Approve
-							</button>
-						</form>
-
-						<form action="" method="POST" style="display:inline;">
-							@csrf
-							<button type="submit" class="btn btn-danger w-100">
-								Reject
-							</button>
-						</form>
-				</td>
-				</tr>
-				<tr>
-					<td>2.</td>
-					<td>HOSP-65654</td>
-					<td>Sahil</td>
-					<td>TIGAON BL</td>
-					<td>FARIDABAD</td>
-					<td>Faridpur</td>
-					<td>Team</td>
-					<td>4-years World Cup/Championship</td>
-					<td>No</td>
-					<td>National</td>
-					<td>Chess</td>
-					<td>Delhi</td>
-					<td>Silver</td>
-					<td>03 Dec,2022</td>
-					<td>Above 25%</td>
+					<td>{{ $index + 1 }}.</td>
+					<td>{{ $request['applicant_id'] }}</td>
+					<td>{{ $request['user_details']['full_name_en'] }}</td>
+					<td>{{ $request['user_details']['block_town'] }}</td>
+					<td>{{ $request['user_details']['district'] }}</td>
+					<td>{{ $request['user_details']['ward_village'] }}</td>
 					<td>In-Progress</td>
 					<td>
 					
@@ -103,6 +74,7 @@
 				</td>
 				</tr>
 				
+				@endforeach
 			</tbody>
 		</table>
 			
