@@ -108,7 +108,7 @@
                         <div class="row mt-2">
                             <div class="col-md-12">
                                 <div class="form-check d-flex align-items-center justify-content-between p-0">
-                                    <p>?? Agree to Terms &amp; Conditions</p>
+                                    <p> Agree to Terms &amp; Conditions</p>
                                 </div>
                             </div>
                             <div class="col-12">
@@ -125,7 +125,7 @@
 
                             <div class="col-12">
                                 <div class="alert alert-danger declaration-area">
-                                    <h6 class="text-danger">Declaration by Applicant</h6>
+                                    <h6 class="text-danger">Declaration by Applicant (Field of Play)</h6>
                                     <p>
                                         It is certified that proper Field of Play (FoP) for the requisite sports is available, and I have not received any sports items during the last two financial years. The photographs attached with the application are the latest. All the above particulars
                                         given by me are true and correct. Nothing has been concealed by me. False information or concealment of material information in the application form by me will render me ineligible in the future for said scheme
@@ -159,7 +159,7 @@
                             <hr />
                             <div class="col-12">
                                 <div class="alert alert-danger declaration-area">
-                                    <h6 class="text-danger">Declaration by Applicant</h6>
+                                    <h6 class="text-danger">Declaration by Applicant (Self-Declaration)</h6>
                                     <p>
                                         All the above particulars given by me are true and correct. Nothing has been concealed by me. False information or concealment of material information in the registration form by me will render me ineligible in future for said scheme and department is
                                         free to take appropriate action as deemed suitable against me in this regard.
