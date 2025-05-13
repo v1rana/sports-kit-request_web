@@ -22,4 +22,9 @@ class HQSportsRequest extends Model
     {
         return $this->belongsTo(SportsKitRequisition::class, 'sports_kit_requisition_id', 'id');
     }
+	public function vendorAssignment()
+{
+    return $this->belongsTo(EquipmentVendorAssignment::class, 'request_id'); // 'request_id' should match your FK
+}
+
 }

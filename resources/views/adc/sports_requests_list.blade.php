@@ -127,7 +127,7 @@
 														@else
 														 <form action="{{ route('adc.approve', $request->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
 																@csrf
-																<button type="submit"  class="btn btn-success w-100 mb-2">
+																<button type="submit"  class="btn btn-success">
 															 Approve
 														</button>
 															</form>
@@ -141,7 +141,7 @@
 												<label>Reject Remarks</label>
 													<form action="{{ route('adc.reject', $request->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to Reject this?');">
 													@csrf
-													<div class="d-flex flex-column flex-md-row gap-2">
+													<div class="d-flex flex-column">
 														<textarea class="form-control" name="reject_remark" rows="2" placeholder="Enter reason..." required></textarea>
 														<button type="submit" class="btn btn-primary">Submit</button>
 													</div>

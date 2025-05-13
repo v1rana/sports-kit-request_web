@@ -12,7 +12,7 @@ class ADCController extends Controller
     {
         // Fetch sports requests with HQ verification status
         $sportsRequests = SportsKitRequisition::with('hqSportsRequest')
-        ->whereNotIn('status', ['Verified','Not Verified','Pending']) // Only fetch verified requests
+        ->whereNotIn('status', ['Not Verified','Pending']) // Only fetch verified requests
         ->get();
 
     return view('adc.sports_requests_list', compact('sportsRequests'));

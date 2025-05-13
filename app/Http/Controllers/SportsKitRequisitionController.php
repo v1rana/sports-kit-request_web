@@ -313,7 +313,7 @@ public function printTemporary()
 
     // Check which type of user is trying to login
 
-        $user = DSO::where('mob', $mobile)->first();
+       $user = DSO::where('mob', $mobile)->first();
         $role = 'DSO';
     
 		if (!$user) {
@@ -340,7 +340,7 @@ public function printTemporary()
 		]);
 
 		// SMS configuration
-		return $username = config('sms.username');
+		$username = config('sms.username');
 		$password = config('sms.password');
 		$senderid = config('sms.senderid');
 		$dept_key = config('sms.dept_key');
@@ -381,10 +381,10 @@ public function verifyOTP(Request $request)
     }
 
     // Clear OTP after verification
-    $user->update([
-        'otp' => null,
-        'expires_at' => null
-    ]);
+    // $user->update([
+        // 'otp' => null,
+        // 'expires_at' => null
+    // ]);
 
     // Set session or login logic here if needed
 

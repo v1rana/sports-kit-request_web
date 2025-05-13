@@ -144,9 +144,10 @@
                         <!--<p class="col mb-0 px-1">Select Date</h6>-->                        
                         <div class="col-1 mb-0 px-1"></div>
                     </div>
-                    <div id="equipment-list">
-    <div class="d-flex mb-2">
-        <div class="col mb-0 px-1">
+                  <div id="equipment-list">
+    <div class="d-flex mb-2 align-items-center">
+        <!-- Select Sport Dropdown -->
+        <div class="col-2 mb-0 px-1">
             <select name="sports_equipment[0][name]" class="form-control" required onchange="updateEquipmentOptions(this)">
                 <option value="" selected disabled>Select Sport</option>
                 <option value="Volleyball">Volleyball</option>
@@ -159,39 +160,52 @@
                 <option value="Cricket">Cricket</option>
             </select>
         </div>
-        <div class="col mb-0 px-1">
+
+        <!-- Select Equipment Dropdown -->
+        <div class="col-2 mb-0 px-1">
             <select name="sports_equipment[0][equipment]" class="form-control" required onchange="updateQuantityLimit(this)">
                 <option value="" selected disabled>Select Equipment</option>
             </select>
         </div>
-        <div class="col mb-0 px-1">
+
+        <!-- Quantity Input -->
+        <div class="col-1 mb-0 px-1">
             <input type="number" name="sports_equipment[0][quantity]" class="form-control" placeholder="Quantity" readonly required>
         </div>
-        
-		<div class="col-3 mb-0 px-1">
+
+        <!-- Availability Dropdown -->
+        <div class="col-2 mb-0 px-1">
             <select name="sports_equipment[0][fop_available]" class="form-control" required>
-               <option value="" selected>Select Availability</option>
-                <option value="Yes" >Yes</option>
-                <option value="No" >No</option>
+                <option value="" selected>Select Availability</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
             </select>
         </div>
-		<div class="col mb-0 px-1">
-            <input type="number" name="sports_equipment[0][players_count]" class="form-control" placeholder="Players count"  required>
+
+        <!-- Players Count Input -->
+        <div class="col-2 mb-0 px-1">
+            <input type="number" name="sports_equipment[0][players_count]" class="form-control" placeholder="Players count" required>
         </div>
-		<div class="col mb-0 px-1">
+
+        <!-- Last Issued Date -->
+        <div class="col-2 mb-0 px-1">
             <input type="date" class="form-control" name="sports_equipment[0][last_issued_date]" id="last_issued_date" max="{{ date('Y-m-d') }}" required>
         </div>
-		<div class="col-3 mb-0 px-1">
-            <input type="file" class="form-control" name="sports_equipment[0][photo]" accept="image/*" />
+
+        <!-- Equipment Photo Upload -->
+        <div class="col-2 mb-0 px-1">
+            <input type="file" class="form-control" name="sports_equipment[0][photo]" accept="image/*">
         </div>
-        <!--<div class="col mb-0 px-1" style="display:none">
-            <input type="date" class="form-control" name="sports_equipment[0][date]" value="{{ \Carbon\Carbon::now()->format('Y-m-d') }}"/>
-        </div>-->
+
+        <!-- Delete Button (Optional) -->
         <div class="col-1 mb-0 px-1 text-end">
-            <!--button type="button" class="btn btn-danger" onclick="removeEquipment(this)"><i class="fa-solid fa-trash"></i></button-->
+            <!-- Optional delete button if needed -->
+            <!-- <button type="button" class="btn btn-danger" onclick="removeEquipment(this)"><i class="fa-solid fa-trash"></i></button> -->
         </div>
     </div>
 </div>
+
+
 
                     <!-- Availability of Facilities -->
                     <!--<div class="row mt-3">

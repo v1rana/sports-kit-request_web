@@ -16,9 +16,15 @@ class DSOController extends Controller
     {
         // Fetch sports requests with their HQ verification status
         // $sportsRequests = SportsKitRequisition::with('hqSportsRequest')->get();
-        $sportsRequests = SportsKitRequisition::join('equipment_vendor_assignments', 'sports_kit_requisitions.id', '=', 'equipment_vendor_assignments.request_id')
-    ->join('vendors', 'equipment_vendor_assignments.vendor_id', '=', 'vendors.id')
-    ->where('sports_kit_requisitions.status', '=', 'Approved')
+        /* $sportsRequests = SportsKitRequisition::with([
+			'hqSportsRequest.vendorAssignment.vendor',
+			'hqSportsRequest.sport',
+			'hqSportsRequest.equipment'
+		])->get(); */
+		
+		$sportsRequests = DB::table('sports_kit_requisitions')
+    ->leftJoin('equipment_vendor_assignments', 'sports_kit_requisitions.id', '=', 'equipment_vendor_assignments.request_id')
+    ->leftJoin('vendors', 'equipment_vendor_assignments.vendor_id', '=', 'vendors.id')
     ->get();
 
         return view('dso.sports_requests_list', compact('sportsRequests'));
