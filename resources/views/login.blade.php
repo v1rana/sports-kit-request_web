@@ -60,48 +60,90 @@
     #otpField {
       display: none;
     }
+
+    .section-title {
+	font-size: 16px;
+	margin-bottom: 20px;
+	font-weight: bold;display: flex	;
+		width: 100%;
+		text-align: center !important;
+		justify-content: center;
+  }
+  .section-title a {
+    display: block;
+    border: 1px dotted;
+    margin: 0 2px;
+    padding: 4px 10px;
+    border-radius: 5px;
+    color: rgba(0, 0, 0, 0.3);
+    background: #eee;
+}.section-title a.active-login {
+    color: #fff;
+    background: blue;
+    border-color: blue;
+}
   </style>
 </head>
 <body>
+  <div class="background-image"></div>
 
-  <div class="bg-hero">
-    <div class="bg-overlay"></div>
-    <div class="content-box">
-      <div class="text-center logo-title mb-4">
-        <img src="{{ url('/assets/images/logo-sports.png')}}" alt="Department Logo" class="mb-3" style="width: 110px; height: auto;">
-        <h1>Sports Department</h1>
-        <p class="tagline">Let the young minds grow to the full potential</p>
+  <div class="d-flex justify-content-center align-items-center min-vh-100">
+    <div class="row login-container">
+
+      <!-- Left Side Form -->
+      <div class="col-md-5 left-form bg-white">
+        <div class="text-center logo-title mb-4">
+          <img src="./assets/images/logo-sports.png" alt="Logo">
+          <h1>Sports Department</h1>
+          <p class="tagline">Let the young minds grow to the full potential</p>
+        </div>
+
+        <div className="section-title text-center">
+                          
+          <a href="/" >Applicant Login</a> 
+      
+         
+           <a href="/login" class="active-login"> Offical Login</a>
+       </div>
+        <form method="POST" action="{{ route('send.otp')}}">
+          @csrf
+        <div class="mb-3">
+          <label for="pppId" class="form-label">Mobile Number</label>
+          <input type="text" class="form-control" id="mob" name="mobile" placeholder="Enter your mobile no." maxlength='10' required>
+          <small class="form-text" style="color: #ff5b75;">We will send you a verification code.</small>
+          <button type="submit" class="btn btn-custom mt-1" id="sendOtpBtn">Send OTP</button>
+        </div>
+          <!-- OTP Input field, initially hidden -->
+          <div class="mb-2" id="otpField">
+            <label for="otp" class="form-label mb-0">Enter OTP</label>
+            <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
+          </div>
+
+          <!-- Send OTP button, triggers OTP input visibility -->
+          {{-- <button type="submit" class="btn btn-custom mt-1" id="sendOtpBtn">Send OTP</button> --}}
+
+          <!-- Submit button to submit form after OTP entry -->
+          <button type="button" class="btn btn-custom mt-1" id="submitBtn" style="display: none;">Submit</button>
+
+    
       </div>
 
-      <div class="section-title text-center">For Official Login</div>
-
-      <div class="row">
-        <div class="col-md-12">
-          <form method="POST" action="{{ route('send.otp')}}">
-            @csrf
-            <div class="mb-2">
-              <label for="pppId" class="form-label mb-0">Mobile Number</label>
-              <input type="text" class="form-control" id="mob" name="mobile" placeholder="Enter your mobile no." maxlength='10' required>
-              <small class="form-text" style="color: #ff5b75;">We will send you a verification code.</small>
-            </div>
-            
-            <!-- OTP Input field, initially hidden -->
-            <div class="mb-2" id="otpField">
-              <label for="otp" class="form-label mb-0">Enter OTP</label>
-              <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
-            </div>
-
-            <!-- Send OTP button, triggers OTP input visibility -->
-            <button type="submit" class="btn btn-custom mt-1" id="sendOtpBtn">Send OTP</button>
-
-            <!-- Submit button to submit form after OTP entry -->
-            <button type="button" class="btn btn-custom mt-1" id="submitBtn" style="display: none;">Submit</button>
-
-          </form>
+      <!-- Right Side Content -->
+      <div class="col-md-7 right-side">
+        <div class="testimonial-text">
+          "Empowering athletes through seamless digital access and support."
+        </div>
+        <div class="testimonial-author">
+          - Haryana Sports Dept.
         </div>
       </div>
+
     </div>
   </div>
+  <div class="background-image"></div>
+  <div class="background-overlay"></div>
+
+  
 
   <script src="{{ url('assets/job_app/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
 

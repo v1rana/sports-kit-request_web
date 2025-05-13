@@ -24,6 +24,8 @@ section > .row > div {padding: 3em;border-radius: 30px;}
 .otp-area .form-floating>.form-control:focus,.otp-area  .form-floating>.form-control:not(:placeholder-shown){padding-top:0.7rem; font-size:22px;}
 
 
+
+
 footer{background:#000; color:#fff; position: fixed; width:100%;bottom:0;padding:10px 0; font-size:12px}
 footer p{margin:0}
 

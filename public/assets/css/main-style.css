@@ -147,6 +147,9 @@ footer p{margin:0}
 
 .rejection-remarks{display:none;}
 
+
+
+
 @media screen and (max-width: 786px){
 	#progressbar li span{float: left; width: 100%;margin: -20px 0 30px 20px; }
 	#progressbar li {width:100%}

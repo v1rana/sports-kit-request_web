@@ -216,6 +216,7 @@ class SportsGradationCertificateController extends Controller
         // $encryptedId = Crypt::encryptString($user->id);
         try {
             $userId = Crypt::decryptString($user_id);
+            session(['user_id' => $userId]);
         } catch (\Exception $e) {
             abort(403, 'Invalid or tampered ID.');
         }
