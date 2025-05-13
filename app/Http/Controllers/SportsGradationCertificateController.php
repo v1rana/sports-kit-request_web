@@ -540,6 +540,10 @@ class SportsGradationCertificateController extends Controller
         $request->validate([
             'name' => 'required|string'
         ]);
+		
+		$year1 = now()->year;
+        $random = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
+        $applId = $year1 . $random;
 
         $imagePath = null; // Default value to prevent "Undefined variable" error
 
@@ -606,6 +610,7 @@ class SportsGradationCertificateController extends Controller
             'type_of_event' => $request->type_of_event,
             'terms_conditions' => $request->terms_conditions,
             'user_id' => $user_id,
+			'appl_id' => $applId,
             'date' => null
 
         ]);

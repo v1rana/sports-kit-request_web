@@ -80,7 +80,7 @@ class DSOController extends Controller
     public function grad_list(){
         //return "hi";
          // Fetch total application count
-         $sportsCertificates = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
+       return  $sportsCertificates = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
          ->whereIn('category_wise_gradations.gradation', ['C', 'D'])
 		 ->where('sports_gradation_certificates.verification_by_sportsperson', '!=', '')
 		->where('sports_gradation_certificates.verify_status', '!=', '')
