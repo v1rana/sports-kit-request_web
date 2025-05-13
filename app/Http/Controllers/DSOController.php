@@ -26,7 +26,7 @@ class DSOController extends Controller
     // ->leftJoin('equipment_vendor_assignments', 'sports_kit_requisitions.id', '=', 'equipment_vendor_assignments.request_id')
     // ->leftJoin('vendors', 'equipment_vendor_assignments.vendor_id', '=', 'vendors.id')
     // ->get();
-
+		
         return view('dso.sports_requests_list', compact('sportsRequests'));
     }
 
