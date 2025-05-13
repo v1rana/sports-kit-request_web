@@ -360,7 +360,7 @@ function Login() {
                                     className="form-check-label"
                                     htmlFor="equipment"
                                 >
-                                    Haryana Sports Equipment
+                                   Haryana Provision of Sports Equipment 
                                 </label>
                             </div>
                             <div className="mb-3 form-check">
@@ -377,7 +377,7 @@ function Login() {
                                     className="form-check-label"
                                     htmlFor="gradation"
                                 >
-                                    Haryana Sports Gradation
+                                    Haryana Sports Gradation Certificate
                                 </label>
                             </div>
                             <div className="mb-3 form-check">
@@ -394,7 +394,7 @@ function Login() {
                                     className="form-check-label"
                                     htmlFor="person"
                                 >
-                                    Haryana Outstanding Sports Person
+                                    Haryana Outstanding Sportspersons
                                 </label>
                             </div>
                             {errors.loginType && (
@@ -419,7 +419,7 @@ function Login() {
                                 access and support."
                             </div>
                             <div className="testimonial-author">
-                                - Haryana Sports Dept.
+                                -  Sports Department, Haryana
                             </div>
                         </div>
                     </div>

@@ -844,18 +844,35 @@ const HospForm = () => {
     return (
         <div>
             <header className="hero-section">
-                <h1>Sports Department, Government of Haryana</h1>
-                <p>Let the young minds grow to the full potential</p>
+                        <div className="hero-content">
+                            <img
+                                src="./assets/images/logo-sports.png"
+                                alt="Sports Department Logo"
+                                className="header-logo mx-3"
+                            />
+                            <div className="hero-text">
+                                <h1>
+                                    Sports Department, Government of Haryana
+                                </h1>
+                                <p>
+                                    Let the young minds grow to the full
+                                    potential
+                                </p>
+                            </div>
+                        </div>
 
-                <div className="hero-wave">
-                    <svg viewBox="0 0 500 150" preserveAspectRatio="none">
-                        <path
-                            d="M0.00,49.98 C157.87,179.29 349.61,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
-                            style={{ stroke: "none", fill: "#f0f0f0" }}
-                        ></path>
-                    </svg>
-                </div>
-            </header>
+                        <div className="hero-wave">
+                            <svg
+                                viewBox="0 0 500 150"
+                                preserveAspectRatio="none"
+                            >
+                                <path
+                                    d="M0.00,49.98 C157.87,179.29 349.61,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
+                                    style={{ stroke: "none", fill: "#f0f0f0" }}
+                                ></path>
+                            </svg>
+                        </div>
+                    </header>
             <div className="container form-container">
                 {/* <div className="col-lg-12 offset-lg-1 mx-0 px-0">
                         <div id="title-container">

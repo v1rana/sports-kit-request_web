@@ -6,9 +6,9 @@ import { fetchUserDetails, updateUserData } from "../services/hosp-service";
 
 const BasicDetails = () => {
     const navigate = useNavigate();
-    let  userData = JSON.parse(localStorage.getItem("user")!);
-    let  userDetails = userData?.user_details || {};
-   
+    let userData = JSON.parse(localStorage.getItem("user")!);
+    let userDetails = userData?.user_details || {};
+
     const [userDetailsa, setUserDetails] = useState({
         email_id: userDetails.email_id,
         mobile: userData.mobile,
@@ -49,22 +49,23 @@ const BasicDetails = () => {
     };
 
     const validateDomicleDoc = (value: string) => {
-        if (!value && userDetailsa.domicile == '1') return "Please upload haryana resident/domicile";
+        if (!value && userDetailsa.domicile == "1")
+            return "Please upload haryana resident/domicile";
         return "";
     };
-       useEffect(() => {
-            const fetchUserData = async () => {
-                try {
-                     const data = await fetchUserDetails();
-                     localStorage.setItem("user", JSON.stringify(data.user));
-                     userData = JSON.parse(localStorage.getItem("user")!);
-                     userDetails = userData?.user_details || {};
-                } catch (error) {
-                    console.error("Error loading form data", error);
-                }
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const data = await fetchUserDetails();
+                localStorage.setItem("user", JSON.stringify(data.user));
+                userData = JSON.parse(localStorage.getItem("user")!);
+                userDetails = userData?.user_details || {};
+            } catch (error) {
+                console.error("Error loading form data", error);
             }
-            fetchUserData();
-        }, []);
+        };
+        fetchUserData();
+    }, []);
 
     useEffect(() => {
         // const userData = JSON.parse(localStorage.getItem("user") || "null");
@@ -109,7 +110,7 @@ const BasicDetails = () => {
         formData.append("mobile", userDetailsa.mobile);
         formData.append("aadhaar", userDetailsa.aadhaar);
         formData.append("photo", userDetailsa.photo); // This must be a File
-        formData.append("domicile", userDetailsa.domicile); 
+        formData.append("domicile", userDetailsa.domicile);
         formData.append("domicile_doc", userDetailsa.domicile_doc); // This must be a File
         const response = await updateUserData(formData);
         if (response.status === "success") {
@@ -149,26 +150,34 @@ const BasicDetails = () => {
         <div>
             {userData && (
                 <div>
-                    <header className="hero-section d-flex align-items-center">
-                        <div className="container text-center">
-                            <div className="logo-title-wrapper d-flex justify-content-center align-items-center mb-4">
-                                <img
-                                    src="./assets/images/logo-sports.png"
-                                    alt="Sports Department Logo"
-                                    className="header-logo me-3"
-                                />
-                                <div>
-                                    <h1 className="hero-title mb-1">
-                                        Sports Department
-                                    </h1>
-                                    <h2 className="hero-subtitle2">
-                                        Government of Haryana
-                                    </h2>
-                                </div>
+                    <header className="hero-section">
+                        <div className="hero-content">
+                            <img
+                                src="./assets/images/logo-sports.png"
+                                alt="Sports Department Logo"
+                                className="header-logo mx-3"
+                            />
+                            <div className="hero-text">
+                                <h1>
+                                    Sports Department, Government of Haryana
+                                </h1>
+                                <p>
+                                    Let the young minds grow to the full
+                                    potential
+                                </p>
                             </div>
-                            <p className="hero-tagline">
-                                Let the young minds grow to their full potential
-                            </p>
+                        </div>
+
+                        <div className="hero-wave">
+                            <svg
+                                viewBox="0 0 500 150"
+                                preserveAspectRatio="none"
+                            >
+                                <path
+                                    d="M0.00,49.98 C157.87,179.29 349.61,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
+                                    style={{ stroke: "none", fill: "#f0f0f0" }}
+                                ></path>
+                            </svg>
                         </div>
                     </header>
 
@@ -186,7 +195,6 @@ const BasicDetails = () => {
                                         placeholder="Enter full name in English"
                                     />
                                 </div>
-           
 
                                 <div className="col-md-6">
                                     <label>Date Of Birth</label>
@@ -215,8 +223,6 @@ const BasicDetails = () => {
                                         readOnly
                                     />
                                 </div>
-
-           
 
                                 <div className="col-md-6">
                                     <label>Mobile</label>
@@ -369,7 +375,6 @@ const BasicDetails = () => {
                                             {errors.domicile}
                                         </div>
                                     )}
-                                    
                                 </div>
 
                                 <div className="col-md-6">
@@ -378,33 +383,33 @@ const BasicDetails = () => {
                                         type="file"
                                         accept="application/pdf"
                                         className={`form-control`}
-
                                         onChange={(e) => {
                                             setUserDetails((d) => ({
                                                 ...d,
-                                                domicile_doc:  e.target.files?.[0] || null,
+                                                domicile_doc:
+                                                    e.target.files?.[0] || null,
                                             }));
                                         }}
                                     />
-                                  
-                                  {errors.domicile_doc && userDetailsa.domicile == '1' && (
-                                        <div className="text-danger">
-                                            {errors.domicile_doc}
-                                        </div>
-                                    )}
 
-                                            <div className="mt-1">
-                                                <a
-                                                    href={`/api/certificates/${encodeURIComponent(
-                                                        userDetailsa.domicile_doc
-                                                    )}/photo`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    Click here to view uploaded
-                                                    file
-                                                </a>
+                                    {errors.domicile_doc &&
+                                        userDetailsa.domicile == "1" && (
+                                            <div className="text-danger">
+                                                {errors.domicile_doc}
                                             </div>
+                                        )}
+
+                                    <div className="mt-1">
+                                        <a
+                                            href={`/api/certificates/${encodeURIComponent(
+                                                userDetailsa.domicile_doc
+                                            )}/photo`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Click here to view uploaded file
+                                        </a>
+                                    </div>
                                 </div>
                                 <div className="text-center mt-4">
                                     <button

@@ -323,3 +323,26 @@ z-index: -1;
 
 
 
+
+  .hero-section {
+	background: #fff;
+	padding: 2rem;
+	position: relative;
+  }
+  
+  .hero-content {
+	display: flex;
+	align-items: center;         /* vertically centers the text with the logo */
+	justify-content: flex-start; /* keep logo on left */
+	gap: 16.5rem;;                 /* space between logo and text */
+  }
+  
+
+  
+  
+  
+ 
+  
+
+
+
