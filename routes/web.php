@@ -76,6 +76,9 @@ Route::get('/municipal', [MunicipalBodyMemberController::class, 'index']);
 	
 	Route::post('/hq/grad-list/approve/{id}', [HQController::class, 'ApproveRequest'])->name('hq.approve');
 	Route::post('/hq/grad-list/reject/{id}', [HQController::class, 'RejectRequest'])->name('hq.reject');
+
+    Route::post('/hq/sports-request/approve/{id}', [HQController::class, 'approveOspRequest'])->name('hq.approveReject');
+	// Route::post('/hq/sports-request/reject/{id}', [HQController::class, 'rejectOspRequest'])->name('hq.reject');
 	
 	
 	Route::get('/dso/sports-requests', [DSOController::class, 'index'])->name('dso.sports.requests');

@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
+            $table->tinyInteger('status')->default(0)->comment('0 for inprogress,1 for approve,2 for reject');
+            $table->tinyInteger('role')->default(0)->comment('1 for equipm,2 for Gradation,3 for hosp ');
             $table->rememberToken();
             $table->timestamps();
         });

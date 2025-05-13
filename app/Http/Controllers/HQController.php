@@ -96,7 +96,7 @@ class HQController extends Controller
 	public function hosp_requests()
     {
       $users = User::with(['userDetails', 'eventHosp', 'sportsDisciplineHosp', 'declarationsHosp'])->paginate(10);
-
+		// dd($users->userDetails());
         return view('hq.hosp_requests_list', compact('users'));
     }
 	
@@ -412,6 +412,57 @@ class HQController extends Controller
 		return $result;
 		
 	}
+
+
+	public function approveOspRequest(Request $request,$id)
+{
+    $user = User::find($id);
+
+    if (!$request) {
+        return redirect()->back()->with('error', 'Request not found!');
+    }
+
+    $user->status =  $request->status;
+    $user->save();
+	$msg = $request->status == '1' ? 'Request approved successfully!' : 'Request rejected successfully!';
+    return redirect()->back()->with('success', $msg);
+}
+
+public function rejectOspRequest(Request $req,$id)
+{
+    $request = SportsKitRequisition::find($id);
+
+    if (!$request) {
+        return redirect()->back()->with('error', 'Request not found!');
+    }
+
+    $request->approval_status = 'Rejected';
+    $request->status = 'Rejected';
+	$request->reject_remarks = $req->reject_remark;
+    $request->approval_rejection_datetime = now();
+    $request->save();
+	
+	$result = DB::table('user_details')
+		->join('users', 'user_details.user_id', '=', 'users.id')
+		->where('user_details.district', $request->district)
+		->select('user_details.user_id', 'users.mobile')
+		->first();
+		
+		// SMS configuration
+		$username = config('sms.username');
+		$password = config('sms.password');
+		$senderid = config('sms.senderid');
+		$dept_key = config('sms.dept_key');
+		$temp_id  = config('sms.temp_id2');
+
+		$status= $request->status;
+		$scheme= 'Haryana Sports Equipment';
+		$app_id= $request->applicant_id;
+		$mobile= $result->mobile;
+		$msg = "Dear User, your status for application $app_id for $scheme is $status. Sports Department, Haryana";
+
+    return redirect()->back()->with('error', 'Request rejected successfully!');
+}
 
 
 }
