@@ -209,7 +209,7 @@ footer p {
   } */
 
   .background-image {
-	background: url('./assets/images/new-bann.jpg') no-repeat center center/cover;
+	background-image: url('../images/new-bann.jpg');
 	position: fixed;
 	top: 0;
 	left: 0;
