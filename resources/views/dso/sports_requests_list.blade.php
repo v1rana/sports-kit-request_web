@@ -46,6 +46,7 @@
 				</thead>
 				<tbody>
 				@foreach($sportsRequests as $index => $request)
+                
 				<tr>
 					 <td>{{ $index + 1 }}.</td>
 					 <td>{{ $request->applicant_id }}</td>
@@ -188,6 +189,7 @@
             <div class="col-md-2"><h6>FoP/Hall/Poles</h6></div>
             <div class="col-md-1"><h6>Players</h6></div>
             <div class="col-md-2"><h6>Last Issued</h6></div>
+            <div class="col-md-2"><h6>Vendor</h6></div>
         </div>
         @foreach($equipmentList as $equipment)
             <div class="row">
@@ -203,6 +205,29 @@
                         <p>N/A</p>
                     @endif
                 </div>
+                <div class="col-md-2">
+    <p>
+        
+        @php
+            $assigned = \App\Models\EquipmentVendorAssignment::where('request_id', $request->id)
+                ->where('equipment_name', $equipment->name)
+                ->first();
+        @endphp
+
+        @if($assigned)
+            {{-- Show assigned vendor name --}}
+            @php
+                $assignedVendor = \App\Models\Vendor::find($assigned->vendor_id);
+            @endphp
+            <strong>Assigned To:</strong><br>
+            <span class="badge bg-success">
+                {{ $assignedVendor->vendor_name ?? 'Vendor Not Found' }}
+            </span>
+        @else
+           
+        @endif
+    </p>
+</div>
             </div>
         @endforeach
         @else
@@ -271,7 +296,7 @@
             <h6>{{ \Carbon\Carbon::now()->format('d F Y h:ia') }}</h6>
             <input type="hidden" name="issue_date" value="{{ \Carbon\Carbon::now()->toDateTimeString() }}">
         </div>
-		<input type="hidden" name="request_id" value="{{ $request->request_id }}">
+		<input type="hidden" name="request_id" value="{{ $request->id }}">
         <div class="col-4 mb-2">
             <label>Firm Name</label>
             <h6>{{ $request->vendor_name }}</h6>
@@ -283,11 +308,7 @@
             <h6>{{ $request->owner_name }}</h6>
             <input type="hidden" name="owner_name" value="{{ $request->owner_name }}">
         </div>
-		 <div class="col-3 mb-2">
-            <label>Name of the Owner</label>
-            <h6>{{ $request->firm_address }}</h6>
-            <input type="hidden" name="owner_name" value="{{ $request->firm_address }}">
-        </div>
+		 
         <div class="col mb-2">
             <label>Mobile Number</label>
             <h6>{{ $request->mob }}</h6>
