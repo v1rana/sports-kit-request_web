@@ -35,7 +35,8 @@ const HospForm = () => {
         navigate("/login");
     };
     const params = new URLSearchParams(window.location.search);
-    const step: any = params.get("step") ? parseInt(params.get("step")!) : 1;
+    // const step: any = params.get("step") ? parseInt(params.get("step")!) : 1;
+    const step: any = 2;  // start from 2, first step is basic detail
     // alert(step)
     const [currentStep, setCurrentStep] = useState(step);
     const [physical_disability, setPhysicalDisability] = useState(false);
@@ -846,14 +847,15 @@ const HospForm = () => {
             <header className="hero-section">
                         <div className="hero-content">
                             <img
-                                src="./assets/images/logo-sports.png"
+                                src="/assets/images/logo-sports.png"
                                 alt="Sports Department Logo"
                                 className="header-logo mx-3"
                             />
                             <div className="hero-text">
-                                <h1>
-                                    Sports Department, Government of Haryana
-                                </h1>
+                                <h2>
+                                Haryana Outstanding Sportspersons Application
+                                <br />Sports Department, Haryana
+                                </h2>
                                 <p>
                                     Let the young minds grow to the full
                                     potential
@@ -896,13 +898,14 @@ const HospForm = () => {
 
                 <div className="progress">
                     <ol>
-                        <li
+                    <li
                             className={
                                 currentStep === 1 ? "progress-active" : ""
                             }
                         >
-                            <span>1. Event Details</span>
+                            <span>1. Basic Details</span>
                         </li>
+                        
                         <li
                             className={
                                 currentStep === 2 ? "progress-active" : ""
@@ -915,7 +918,7 @@ const HospForm = () => {
                                 currentStep === 3 ? "progress-active" : ""
                             }
                         >
-                            <span>3. Sports Discipline</span>
+                            <span>3. Best Sports Achievement </span>
                         </li>
                         <li
                             className={
@@ -960,26 +963,26 @@ const HospForm = () => {
                         <form
                             onSubmit={handleSubmit(onEventSubmit)}
                             className="needs-validation row g-3"
-                            hidden={currentStep === 1 ? false : true}
+                            hidden={currentStep === 3 ? false : true}
                         >
                             <div className="row g-3">
                                 {eventTitle === "Individual Event" ? (
-                                    <h4 className="text-center mt-4">
+                                    <h6 className="text-center mt-4">
                                         FORM - I
                                         <br />
                                         [See rule 9 (1)]
-                                    </h4>
+                                    </h6>
                                 ) : (
-                                    <h4 className="text-center mt-4">
+                                    <h6 className="text-center mt-4">
                                         FORM - II
                                         <br />
                                         [See rule 9 (1)]
                                         <br />
-                                    </h4>
+                                    </h6>
                                 )}
-                                <h2 className="text-center mt-1">
+                                <h5 className="text-center mt-1">
                                     {eventTitle}
-                                </h2>
+                                </h5>
 
                                 <div className="col-md-6">
                                     <label>Select Event</label>

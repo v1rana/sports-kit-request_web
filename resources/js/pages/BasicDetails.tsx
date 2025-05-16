@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -8,14 +8,41 @@ const BasicDetails = () => {
     const navigate = useNavigate();
     let userData = JSON.parse(localStorage.getItem("user")!);
     let userDetails = userData?.user_details || {};
+    console.log('userDetails',userDetails.domicile);
 
+
+    const dob = userDetails.date_of_birth; // dd-mm-yyyy
+    const [day, month, year] = dob.split("-").map(Number);
+    console.log('year',year);
+
+    const birthDate = new Date(year, month - 1, day); // JS months are 0-indexed
+    console.log('day',birthDate);
+    const today = new Date();
+    userDetails.age = today.getFullYear() - birthDate.getFullYear();
+
+    // const indianStates = [
+    //     "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+    //     "Goa", "Gujarat", "Himachal Pradesh", "Jharkhand",
+    //     "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur",
+    //     "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab",
+    //     "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura",
+    //     "Uttar Pradesh", "Uttarakhand", "West Bengal",
+    //     "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+    //     "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+    //   ];
+    
     const [userDetailsa, setUserDetails] = useState({
-        email_id: userDetails.email_id,
+        email_id: userData.email??'',
         mobile: userData.mobile,
-        aadhaar: userDetails.aadhaar,
+        aadhaar: userDetails.aadhaar??'',
         photo: userDetails.photo,
-        domicile: userDetails.domicile,
+        domicile: userDetails.domicile??null,
         domicile_doc: userDetails.domicile_doc,
+        // other_state: userDetails.other_state,
+        played_national:userDetails.played_national,
+        national_certificate:userDetails.national_certificate,
+        central_org_name:userDetails.central_org_name,
+        org_certificate:userDetails.org_certificate,
     });
     const [errors, setErrors] = useState({
         email_id: "",
@@ -24,7 +51,14 @@ const BasicDetails = () => {
         photo: "",
         domicile: "",
         domicile_doc: "",
+        played_national: "",
+        national_certificate: "",
+        central_org_name: "",
+        org_certificate: "",
+        // other_state: "",
     });
+    const domicileFileRef = useRef(null);
+    const nationalCerFileRef = useRef(null);
     const validateEmail = (value: string) => {
         if (!value) return "Email is required";
         if (!/^\S+@\S+\.\S+$/.test(value)) return "Invalid email format";
@@ -53,7 +87,17 @@ const BasicDetails = () => {
             return "Please upload haryana resident/domicile";
         return "";
     };
-    useEffect(() => {
+    const validateNationalDoc = (value: string) => {
+        if (!value && userDetailsa.played_national == "1")
+            return "Please upload file";
+        return "";
+    };
+    const validateOrgDoc = (value: string) => {
+        if (!value && userDetailsa.played_national == "2")
+            return "Please upload file";
+        return "";
+    };
+
         const fetchUserData = async () => {
             try {
                 const data = await fetchUserDetails();
@@ -65,7 +109,7 @@ const BasicDetails = () => {
             }
         };
         fetchUserData();
-    }, []);
+  
 
     useEffect(() => {
         // const userData = JSON.parse(localStorage.getItem("user") || "null");
@@ -99,6 +143,9 @@ const BasicDetails = () => {
         const domicleDocError = validateDomicleDoc(userDetailsa.domicile_doc);
         if (domicleDocError) newErrors.domicile_doc = domicleDocError;
 
+        // const otherStateError = validateOtherState(userDetailsa.other_state);
+        // if (otherStateError) newErrors.other_state = otherStateError;
+
         if (!userDetailsa.photo) newErrors.photo = "Profile photo is required";
         setErrors(newErrors);
 
@@ -111,11 +158,11 @@ const BasicDetails = () => {
         formData.append("aadhaar", userDetailsa.aadhaar);
         formData.append("photo", userDetailsa.photo); // This must be a File
         formData.append("domicile", userDetailsa.domicile);
-        formData.append("domicile_doc", userDetailsa.domicile_doc); // This must be a File
+        formData.append("domicile_doc", userDetailsa.domicile== '1'? userDetailsa.domicile_doc : null); // This must be a File
         const response = await updateUserData(formData);
         if (response.status === "success") {
             localStorage.setItem("user", JSON.stringify(response.user));
-            navigate("/hosp/hosp-form?step=1");
+            navigate("/hosp/hosp-form");
         }
     };
 
@@ -182,36 +229,59 @@ const BasicDetails = () => {
                     </header>
 
                     <div className="container form-container">
+                    <div className="progress">
+                    <ol>
+                    <li
+                            className="progress-active"
+                        >
+                            <span>1. Basic Details</span>
+                        </li>
+                        
+                        <li
+                           
+                        >
+                            <span>2. Education Details</span>
+                        </li>
+                        <li
+                           
+                        >
+                            <span>3. Best Sports Achievement </span>
+                        </li>
+                        <li
+                        >
+                            <span>4. Declaration</span>
+                        </li>
+                    </ol>
+                    <div
+                        className="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                        role="progressbar"
+                        style={{ width: `${25}%` }}
+                    ></div>
+                </div>
                         <h3 className="form-heading">Basic Details Form</h3>
                         <form>
+                       
                             <div className="row g-3">
+                            
+                                
                                 <div className="col-md-6">
-                                    <label>Full Name (English)</label>
+                                    <label>Parivar Pehchan Patra ID</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={userDetails.family_id || ""}
+                                        readOnly
+                                        placeholder="Enter full name in English"
+                                    />
+                                </div>
+                                <div className="col-md-6">
+                                    <label>Name</label>
                                     <input
                                         type="text"
                                         className="form-control"
                                         value={userDetails.full_name_en || ""}
                                         readOnly
                                         placeholder="Enter full name in English"
-                                    />
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label>Date Of Birth</label>
-                                    <input
-                                        type="date"
-                                        className="form-control"
-                                        value={userDetails.date_of_birth || ""}
-                                        readOnly
-                                    />
-                                </div>
-                                <div className="col-md-6">
-                                    <label>Age</label>
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        value={userDetails.age || ""}
-                                        readOnly
                                     />
                                 </div>
                                 <div className="col-md-6">
@@ -223,7 +293,179 @@ const BasicDetails = () => {
                                         readOnly
                                     />
                                 </div>
+                                <div className="col-md-6">
+                                    <label>Date Of Birth</label>
+                                    <input
+                                        type="date"
+                                        className="form-control"
+                                        value={userDetails.date_of_birth || ""}
+                                        readOnly
+                                    />
+                                </div>
+                                <div className="col-md-6">
+                                    <label>Upload Profile Pic</label>
+                                    <input
+                                        type="file"
+                                        className={`form-control required ${
+                                            errors.photo ? "is-invalid" : ""
+                                        }`}
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0] || null;
+                                    
+                                            // Update photo
+                                            setUserDetails((prev) => ({
+                                                ...prev,
+                                                photo: file,
+                                            }));
+                                    
+                                            // Clear photo error if file is selected
+                                            if (file) {
+                                                setErrors((prev:any) => ({
+                                                    ...prev,
+                                                    photo: null,
+                                                }));
+                                            }
+                                    
+                                            
+                                        }}
+                                    />
+                                    {errors.photo && (
+                                        <div className="text-danger">
+                                            {errors.photo}
+                                        </div>
+                                    )}
+                                     {userDetails.photo && 
+                                        <div className="mt-1">
+                                            <a
+                                                href={`/storage/photo/${encodeURIComponent(
+                                                    userDetailsa.photo
+                                                )}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                Click here to view uploaded photo
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                             
 
+                              
+                                <div className="col-md-6">
+                                    <label>Upload Birth Certificate or Matriculation Certificate</label>
+                                    <input
+                                        type="file"
+                                        className={`form-control required ${
+                                            errors.photo ? "is-invalid" : ""
+                                        }`}
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                            const file = e.target.files?.[0] || null;
+                                    
+                                            // Update photo
+                                            setUserDetails((prev) => ({
+                                                ...prev,
+                                                photo: file,
+                                            }));
+                                    
+                                            // Clear photo error if file is selected
+                                            if (file) {
+                                                setErrors((prev:any) => ({
+                                                    ...prev,
+                                                    photo: null,
+                                                }));
+                                            }
+                                    
+                                            
+                                        }}
+                                    />
+                                    {errors.photo && (
+                                        <div className="text-danger">
+                                            {errors.photo}
+                                        </div>
+                                    )}
+                                     {userDetails.photo && 
+                                        <div className="mt-1">
+                                            <a
+                                                href={`/storage/photo/${encodeURIComponent(
+                                                    userDetailsa.photo
+                                                )}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                Click here to view uploaded photo
+                                            </a>
+                                        </div>
+                                    }
+                                </div>
+                               
+                                <div className="col-md-6">
+                                    <label>Age</label>
+                                    <input
+                                        type="number"
+                                        className="form-control"
+                                        value={userDetails.age || ""}
+                                        readOnly
+                                    />
+                                </div>
+                                <div className="col-md-6">
+                                    <label>Aadhaar No</label>
+                                    <input
+                                        type="text"
+                                        className={`form-control required ${
+                                            errors.aadhaar ? "is-invalid" : ""
+                                        }`}
+                                        value={userDetailsa.aadhaar}
+                                        onChange={(e) => {
+                                            setUserDetails((d) => ({
+                                                ...d,
+                                                aadhaar: e.target.value,
+                                            }));
+                                            setErrors((err) => ({
+                                                ...err,
+                                                aadhaar: validateAadhaar(
+                                                    e.target.value
+                                                ),
+                                            }));
+                                        }}
+                                        maxLength={12}
+                                    />
+                                    {errors.aadhaar && (
+                                        <div className="text-danger">
+                                            {errors.aadhaar}
+                                        </div>
+                                    )}
+                                </div>
+
+                                
+                                <div className="col-md-6">
+                                    <label>Mailing Address</label>
+                                    <input
+                                        type="email"
+                                        className={`form-control required ${
+                                            errors.email_id ? "is-invalid" : ""
+                                        }`}
+                                        value={userDetailsa?.email_id}
+                                        onChange={(e) => {
+                                            setUserDetails((d) => ({
+                                                ...d,
+                                                email_id: e.target.value,
+                                            }));
+                                            setErrors((err) => ({
+                                                ...err,
+                                                email_id: validateEmail(
+                                                    e.target.value
+                                                ),
+                                            }));
+                                        }}
+                                    />
+                                    {errors.email_id && (
+                                        <div className="text-danger">
+                                            {errors.email_id}
+                                        </div>
+                                    )}
+                                </div>
                                 <div className="col-md-6">
                                     <label>Mobile</label>
                                     <input
@@ -254,107 +496,24 @@ const BasicDetails = () => {
                                         </div>
                                     )}
                                 </div>
-                                <div className="col-md-6">
-                                    <label>Email</label>
-                                    <input
-                                        type="email"
-                                        className={`form-control required ${
-                                            errors.email_id ? "is-invalid" : ""
-                                        }`}
-                                        value={userDetailsa?.email_id}
-                                        onChange={(e) => {
-                                            setUserDetails((d) => ({
-                                                ...d,
-                                                email_id: e.target.value,
-                                            }));
-                                            setErrors((err) => ({
-                                                ...err,
-                                                email_id: validateEmail(
-                                                    e.target.value
-                                                ),
-                                            }));
-                                        }}
-                                    />
-                                    {errors.email_id && (
-                                        <div className="text-danger">
-                                            {errors.email_id}
-                                        </div>
-                                    )}
-                                </div>
-                                <div className="col-md-6">
-                                    <label>Upload Profile Pic</label>
-                                    <input
-                                        type="file"
-                                        className={`form-control required ${
-                                            errors.photo ? "is-invalid" : ""
-                                        }`}
-                                        accept="image/*"
-                                        onChange={(e) =>
-                                            setUserDetails((d) => ({
-                                                ...d,
-                                                photo:
-                                                    e.target.files?.[0] || null,
-                                            }))
-                                        }
-                                    />
-                                    {errors.photo && (
-                                        <div className="text-danger">
-                                            {errors.photo}
-                                        </div>
-                                    )}
-                                    <div className="mt-1">
-                                        <a
-                                            href={`/api/certificates/${encodeURIComponent(
-                                                userDetailsa.photo
-                                            )}/photo`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            Click here to view uploaded photo
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label>Aadhaar No</label>
-                                    <input
-                                        type="text"
-                                        className={`form-control required ${
-                                            errors.aadhaar ? "is-invalid" : ""
-                                        }`}
-                                        value={userDetailsa.aadhaar}
-                                        onChange={(e) => {
-                                            setUserDetails((d) => ({
-                                                ...d,
-                                                aadhaar: e.target.value,
-                                            }));
-                                            setErrors((err) => ({
-                                                ...err,
-                                                aadhaar: validateAadhaar(
-                                                    e.target.value
-                                                ),
-                                            }));
-                                        }}
-                                        maxLength={12}
-                                    />
-                                    {errors.aadhaar && (
-                                        <div className="text-danger">
-                                            {errors.aadhaar}
-                                        </div>
-                                    )}
-                                </div>
+                                
+                               
+                                
+                              
 
                                 <div className="col-md-6">
                                     <label>Haryana Resident/Domicile</label>
                                     <select
-                                        value={userDetails.domicile}
+                                        value={userDetailsa.domicile}
                                         className={`form-select required ${
-                                            errors.aadhaar ? "is-invalid" : ""
+                                            errors.domicile ? "is-invalid" : ""
                                         }`}
                                         onChange={(e) => {
+                                            const value = e.target.value;
                                             setUserDetails((d) => ({
                                                 ...d,
-                                                domicile: e.target.value,
+                                                domicile: value,
+                                                domicile_doc: value === "2" ? null : d.domicile_doc, // Clear if "No"
                                             }));
                                             setErrors((err) => ({
                                                 ...err,
@@ -362,9 +521,13 @@ const BasicDetails = () => {
                                                     e.target.value
                                                 ),
                                             }));
+                                            // Clear the file input if "No" is selected
+                                        if ((value == '' || value === "2") && domicileFileRef.current) {
+                                            domicileFileRef.current.value = null;
+                                        }
                                         }}
                                     >
-                                        <option value="0" selected disabled>
+                                        <option value="">
                                             Select
                                         </option>
                                         <option value="1">Yes</option>
@@ -380,6 +543,7 @@ const BasicDetails = () => {
                                 <div className="col-md-6">
                                     <label>Attach Certificate (Domicile)</label>
                                     <input
+                                     ref={domicileFileRef}
                                         type="file"
                                         accept="application/pdf"
                                         className={`form-control`}
@@ -390,6 +554,8 @@ const BasicDetails = () => {
                                                     e.target.files?.[0] || null,
                                             }));
                                         }}
+
+                                        disabled={ !userDetailsa.domicile ||  userDetailsa.domicile == '2'}
                                     />
 
                                     {errors.domicile_doc &&
@@ -398,7 +564,7 @@ const BasicDetails = () => {
                                                 {errors.domicile_doc}
                                             </div>
                                         )}
-
+                                    {userDetails.domicile_doc && userDetailsa.domicile_doc && 
                                     <div className="mt-1">
                                         <a
                                             href={`/api/certificates/${encodeURIComponent(
@@ -410,7 +576,213 @@ const BasicDetails = () => {
                                             Click here to view uploaded file
                                         </a>
                                     </div>
+                                    }
                                 </div>
+                                {/* <div className="col-md-6">
+                                    <label>Select which State are you a domicile/resident of</label>
+                                    <select
+                                        value={userDetailsa.other_state}
+                                        className={`form-select required ${
+                                            errors.other_state ? "is-invalid" : ""
+                                        }`}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            setUserDetails((d) => ({
+                                                ...d,
+                                                other_state: value,
+                                            }));
+                                            setErrors((err) => ({
+                                                ...err,
+                                                other_state: validateDomicle(
+                                                    e.target.value
+                                                ),
+                                            }));
+                                            
+                                      
+                                        }}
+                                    >
+                                        <option value="">
+                                            Select
+                                        </option>
+                                        {indianStates.map((state, index) => (
+                                        <option key={index} value={state}>{state}</option>
+                                        ))}
+                                    </select>
+                                    {errors.other_state && (
+                                        <div className="text-danger">
+                                            {errors.other_state}
+                                        </div>
+                                    )}
+                                </div> */}
+
+
+
+<div className="col-md-6">
+                                    <label>
+                                        Played at National Level for Haryana
+                                    </label>
+                                    <select
+                                        value={userDetailsa.played_national}
+                                        className={`form-select required ${
+                                            errors.played_national ? "is-invalid" : ""
+                                        }`}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            setUserDetails((d) => ({
+                                                ...d,
+                                                played_national: value,
+                                                national_certificate: value === "2" ? null : d.national_certificate, // Clear if "No"
+                                            }));
+                                            setErrors((err) => ({
+                                                ...err,
+                                                played_national: validateDomicle(
+                                                    e.target.value
+                                                ),
+                                            }));
+                                            // Clear the file input if "No" is selected
+                                        if ((value == '' || value === "2") && nationalCerFileRef.current) {
+                                            nationalCerFileRef.current.value = null;
+                                        }
+                                        }}
+                                    >
+                                        <option value="" selected disabled>
+                                            Select
+                                        </option>
+                                        <option value="1">Yes</option>
+                                        <option value="2">No</option>
+                                    </select>
+                                    {errors.played_national && (
+                                        <div className="invalid-feedback">
+                                            {
+                                                errors.played_national
+                                            }
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="col-md-6">
+                                    <label>
+                                        Attach Certificate (National Level)
+                                    </label>
+                                    <input
+                                        type="file"
+                                        accept="application/pdf"
+                                        className={`form-control ${
+                                            errors.national_certificate
+                                                ? "is-invalid"
+                                                : ""
+                                        }`}
+                                       
+                                        onChange={(e) => {
+                                            setUserDetails((d) => ({
+                                                ...d,
+                                                national_certificate:
+                                                    e.target.files?.[0] || null,
+                                            }));
+                                        }}
+
+                                        disabled={ !userDetailsa.played_national ||  userDetailsa.played_national == '2'}
+                                    />
+
+                                    {errors.national_certificate &&
+                                        userDetailsa.played_national == "1" && (
+                                            <div className="text-danger">
+                                                {errors.national_certificate}
+                                            </div>
+                                        )}
+                                    {userDetails.national_certificate && userDetailsa.national_certificate && 
+                                    <div className="mt-1">
+                                        <a
+                                            href={`/api/certificates/${encodeURIComponent(
+                                                userDetailsa.national_certificate
+                                            )}/photo`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            Click here to view uploaded file
+                                        </a>
+                                    </div>
+                                    }
+                                </div>
+                                {userDetailsa.played_national == "2" && (
+                                    <div className="col-md-6">
+                                        <label>
+                                            Name of Central Organisation
+                                            Represented
+                                        </label>
+                                        <input
+                                            type="text"
+                                            className={`form-control required ${
+                                                errors.central_org_name ? "is-invalid" : ""
+                                            }`}
+                                            value={userDetailsa?.central_org_name}
+                                            onChange={(e) => {
+                                                setUserDetails((d) => ({
+                                                    ...d,
+                                                    central_org_name: e.target.value,
+                                                }));
+                                                setErrors((err) => ({
+                                                    ...err,
+                                                    central_org_name: validateEmail(
+                                                        e.target.value
+                                                    ),
+                                                }));
+                                            }}
+                                        />
+                                        {errors.central_org_name && (
+                                            <div className="text-danger">
+                                                {errors.central_org_name}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                                {userDetailsa.played_national == "2" && (
+                                    <div className="col-md-6">
+                                        <label>
+                                            Attach Certificate (Organisation
+                                            Represented)
+                                        </label>
+                                        <input
+                                            type="file"
+                                            accept="application/pdf"
+                                            className={`form-control ${
+                                                errors.org_certificate
+                                                    ? "is-invalid"
+                                                    : ""
+                                            }`}
+                                           
+                                            onChange={(e) => {
+                                                setUserDetails((d) => ({
+                                                    ...d,
+                                                    org_certificate:
+                                                        e.target.files?.[0] || null,
+                                                }));
+                                            }}
+    
+                                            disabled={ !userDetailsa.played_national ||  userDetailsa.played_national == '1'}
+                                        />
+    
+                                        {errors.org_certificate &&
+                                            userDetailsa.played_national == "1" && (
+                                                <div className="text-danger">
+                                                    {errors.org_certificate}
+                                                </div>
+                                            )}
+                                        {userDetails.org_certificate && userDetailsa.org_certificate && 
+                                        <div className="mt-1">
+                                            <a
+                                                href={`/api/certificates/${encodeURIComponent(
+                                                    userDetailsa.org_certificate
+                                                )}/photo`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
+                                                Click here to view uploaded file
+                                            </a>
+                                        </div>
+                                        }
+                                    </div>
+                                )}
                                 <div className="text-center mt-4">
                                     <button
                                         type="button"

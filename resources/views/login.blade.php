@@ -69,11 +69,11 @@
 		text-align: center !important;
 		justify-content: center;
   }
-  .section-title a {
+  .section-title a {text-decoration:none;font-weight:normal;
     display: block;
     border: 1px dotted;
     margin: 0 2px;
-    padding: 4px 10px;
+    padding: 4px 10px;font-size:13px;text-transform:uppercase;
     border-radius: 5px;
     color: rgba(0, 0, 0, 0.3);
     background: #eee;
@@ -98,7 +98,7 @@
           <p class="tagline">Let the young minds grow to the full potential</p>
         </div>
 
-        <div className="section-title text-center">
+        <div class="section-title text-center">
                           
           <a href="/" >Applicant Login</a> 
       
@@ -134,7 +134,7 @@
           "Empowering athletes through seamless digital access and support."
         </div>
         <div class="testimonial-author">
-          - Haryana Sports Dept.
+          Haryana Sports Department
         </div>
       </div>
 

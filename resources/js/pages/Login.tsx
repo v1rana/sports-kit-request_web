@@ -196,7 +196,7 @@ function Login() {
                         <div className="col-md-5 left-form bg-white">
                             <div className="text-center logo-title mb-4">
                                 <img
-                                    src="../assets/images/logo-sports.png"
+                                    src="/assets/images/logo-sports.png"
                                     alt="Logo"
                                 />
                                 <h1>Sports Department</h1>
@@ -419,7 +419,7 @@ function Login() {
                                 access and support."
                             </div>
                             <div className="testimonial-author">
-                                -  Sports Department, Haryana
+                                 Sports Department, Haryana
                             </div>
                         </div>
                     </div>
