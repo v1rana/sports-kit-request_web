@@ -8,15 +8,13 @@ const BasicDetails = () => {
     const navigate = useNavigate();
     let userData = JSON.parse(localStorage.getItem("user")!);
     let userDetails = userData?.user_details || {};
-    console.log('userDetails',userDetails.domicile);
+
+    console.log('userDetails',userDetails.date_of_birth);
 
 
     const dob = userDetails.date_of_birth; // dd-mm-yyyy
-    const [day, month, year] = dob.split("-").map(Number);
-    console.log('year',year);
+    const birthDate = new Date(dob);
 
-    const birthDate = new Date(year, month - 1, day); // JS months are 0-indexed
-    console.log('day',birthDate);
     const today = new Date();
     userDetails.age = today.getFullYear() - birthDate.getFullYear();
 
@@ -36,25 +34,27 @@ const BasicDetails = () => {
         mobile: userData.mobile,
         aadhaar: userDetails.aadhaar??'',
         photo: userDetails.photo,
+        dob_doc: userDetails.dob_doc,
         domicile: userDetails.domicile??null,
         domicile_doc: userDetails.domicile_doc,
         // other_state: userDetails.other_state,
-        played_national:userDetails.played_national,
-        national_certificate:userDetails.national_certificate,
-        central_org_name:userDetails.central_org_name,
-        org_certificate:userDetails.org_certificate,
+        played_national_level:userDetails.played_national_level??null,
+        national_level_doc:userDetails.national_level_doc,
+        organisation_represented:userDetails.organisation_represented,
+        organisation_doc:userDetails.organisation_doc,
     });
     const [errors, setErrors] = useState({
         email_id: "",
         mobile: "",
         aadhaar: "",
         photo: "",
+        dob_doc: "",
         domicile: "",
         domicile_doc: "",
-        played_national: "",
-        national_certificate: "",
-        central_org_name: "",
-        org_certificate: "",
+        played_national_level: "",
+        national_level_doc: "",
+        organisation_represented: "",
+        organisation_doc: "",
         // other_state: "",
     });
     const domicileFileRef = useRef(null);
@@ -82,18 +82,34 @@ const BasicDetails = () => {
         return "";
     };
 
-    const validateDomicleDoc = (value: string) => {
+    const validateDobDoc = (value: string) => {
+        if (!value)
+            return "Please upload birth certificate";
+        return "";
+    };
+     const validateDomicleDoc = (value: string) => {
         if (!value && userDetailsa.domicile == "1")
             return "Please upload haryana resident/domicile";
         return "";
     };
+    const validateNationalLevel = (value: string) => {
+        if (!value )
+            return "Please select national level for haryana";
+        return "";
+    };
     const validateNationalDoc = (value: string) => {
-        if (!value && userDetailsa.played_national == "1")
+        if (!value && userDetailsa.played_national_level == "1")
             return "Please upload file";
         return "";
     };
+    
+     const validateCentralOrg = (value: string) => {
+        if (!value && userDetailsa.played_national_level == "2")
+            return "Central organisation represented is required";
+        return "";
+    };
     const validateOrgDoc = (value: string) => {
-        if (!value && userDetailsa.played_national == "2")
+        if (!value && userDetailsa.played_national_level == "2")
             return "Please upload file";
         return "";
     };
@@ -137,14 +153,27 @@ const BasicDetails = () => {
         const aadhaarError = validateAadhaar(userDetailsa.aadhaar);
         if (aadhaarError) newErrors.aadhaar = aadhaarError;
 
+        const dobCerError = validateDobDoc(userDetailsa.dob_doc);
+        if (dobCerError) newErrors.dob_doc = dobCerError;
+        
         const domicleError = validateDomicle(userDetailsa.domicile);
         if (domicleError) newErrors.domicile = domicleError;
 
         const domicleDocError = validateDomicleDoc(userDetailsa.domicile_doc);
         if (domicleDocError) newErrors.domicile_doc = domicleDocError;
 
-        // const otherStateError = validateOtherState(userDetailsa.other_state);
-        // if (otherStateError) newErrors.other_state = otherStateError;
+
+        const nationLevelError = validateNationalLevel(userDetailsa.played_national_level);
+        if (nationLevelError) newErrors.played_national_level = nationLevelError;
+
+        const nationalDocError = validateNationalDoc(userDetailsa.national_level_doc);
+        if (nationalDocError) newErrors.national_level_doc = nationalDocError;
+
+        const centralOrgError = validateCentralOrg(userDetailsa.organisation_represented);
+        if (centralOrgError) newErrors.organisation_represented = centralOrgError;
+
+        const orgDocError = validateOrgDoc(userDetailsa.organisation_doc);
+        if (orgDocError) newErrors.organisation_doc = orgDocError;
 
         if (!userDetailsa.photo) newErrors.photo = "Profile photo is required";
         setErrors(newErrors);
@@ -158,7 +187,12 @@ const BasicDetails = () => {
         formData.append("aadhaar", userDetailsa.aadhaar);
         formData.append("photo", userDetailsa.photo); // This must be a File
         formData.append("domicile", userDetailsa.domicile);
+        formData.append("played_national_level", userDetailsa.played_national_level);
+        formData.append("organisation_represented", userDetailsa.organisation_represented);
+        formData.append("dob_doc", userDetailsa.dob_doc); // This must be a File
         formData.append("domicile_doc", userDetailsa.domicile== '1'? userDetailsa.domicile_doc : null); // This must be a File
+        formData.append("national_level_doc", userDetailsa.played_national_level== '1'? userDetailsa.national_level_doc : null); // This must be a File
+        formData.append("organisation_doc", userDetailsa.played_national_level== '2'? userDetailsa.organisation_doc : null); // This must be a File
         const response = await updateUserData(formData);
         if (response.status === "success") {
             localStorage.setItem("user", JSON.stringify(response.user));
@@ -357,40 +391,40 @@ const BasicDetails = () => {
                                     <input
                                         type="file"
                                         className={`form-control required ${
-                                            errors.photo ? "is-invalid" : ""
+                                            errors.dob_doc ? "is-invalid" : ""
                                         }`}
-                                        accept="image/*"
+                                        accept="application/pdf"
                                         onChange={(e) => {
                                             const file = e.target.files?.[0] || null;
                                     
                                             // Update photo
                                             setUserDetails((prev) => ({
                                                 ...prev,
-                                                photo: file,
+                                                dob_doc: file,
                                             }));
                                     
                                             // Clear photo error if file is selected
                                             if (file) {
                                                 setErrors((prev:any) => ({
                                                     ...prev,
-                                                    photo: null,
+                                                    dob_doc: null,
                                                 }));
                                             }
                                     
                                             
                                         }}
                                     />
-                                    {errors.photo && (
+                                    {errors.dob_doc && (
                                         <div className="text-danger">
-                                            {errors.photo}
+                                            {errors.dob_doc}
                                         </div>
                                     )}
-                                     {userDetails.photo && 
+                                     {userDetails.dob_doc && 
                                         <div className="mt-1">
                                             <a
-                                                href={`/storage/photo/${encodeURIComponent(
-                                                    userDetailsa.photo
-                                                )}`}
+                                               href={`/api/certificates/${encodeURIComponent(
+                                                userDetailsa.dob_doc
+                                            )}/certificates`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             >
@@ -569,7 +603,7 @@ const BasicDetails = () => {
                                         <a
                                             href={`/api/certificates/${encodeURIComponent(
                                                 userDetailsa.domicile_doc
-                                            )}/photo`}
+                                            )}/certificates`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
@@ -622,20 +656,20 @@ const BasicDetails = () => {
                                         Played at National Level for Haryana
                                     </label>
                                     <select
-                                        value={userDetailsa.played_national}
+                                        value={userDetailsa.played_national_level}
                                         className={`form-select required ${
-                                            errors.played_national ? "is-invalid" : ""
+                                            errors.played_national_level ? "is-invalid" : ""
                                         }`}
                                         onChange={(e) => {
                                             const value = e.target.value;
                                             setUserDetails((d) => ({
                                                 ...d,
-                                                played_national: value,
-                                                national_certificate: value === "2" ? null : d.national_certificate, // Clear if "No"
+                                                played_national_level: value,
+                                                national_level_doc: value === "2" ? null : d.national_level_doc, // Clear if "No"
                                             }));
                                             setErrors((err) => ({
                                                 ...err,
-                                                played_national: validateDomicle(
+                                                played_national_level: validateDomicle(
                                                     e.target.value
                                                 ),
                                             }));
@@ -645,16 +679,16 @@ const BasicDetails = () => {
                                         }
                                         }}
                                     >
-                                        <option value="" selected disabled>
+                                        <option value="0" selected disabled>
                                             Select
                                         </option>
                                         <option value="1">Yes</option>
                                         <option value="2">No</option>
                                     </select>
-                                    {errors.played_national && (
+                                    {errors.played_national_level && (
                                         <div className="invalid-feedback">
                                             {
-                                                errors.played_national
+                                                errors.played_national_level
                                             }
                                         </div>
                                     )}
@@ -668,7 +702,7 @@ const BasicDetails = () => {
                                         type="file"
                                         accept="application/pdf"
                                         className={`form-control ${
-                                            errors.national_certificate
+                                            errors.national_level_doc
                                                 ? "is-invalid"
                                                 : ""
                                         }`}
@@ -676,26 +710,26 @@ const BasicDetails = () => {
                                         onChange={(e) => {
                                             setUserDetails((d) => ({
                                                 ...d,
-                                                national_certificate:
+                                                national_level_doc:
                                                     e.target.files?.[0] || null,
                                             }));
                                         }}
 
-                                        disabled={ !userDetailsa.played_national ||  userDetailsa.played_national == '2'}
+                                        disabled={ !userDetailsa.played_national_level ||  userDetailsa.played_national_level == '2'}
                                     />
 
-                                    {errors.national_certificate &&
-                                        userDetailsa.played_national == "1" && (
+                                    {errors.national_level_doc &&
+                                        userDetailsa.played_national_level == "1" && (
                                             <div className="text-danger">
-                                                {errors.national_certificate}
+                                                {errors.national_level_doc}
                                             </div>
                                         )}
-                                    {userDetails.national_certificate && userDetailsa.national_certificate && 
+                                    {userDetails.national_level_doc && userDetailsa.national_level_doc && 
                                     <div className="mt-1">
                                         <a
                                             href={`/api/certificates/${encodeURIComponent(
-                                                userDetailsa.national_certificate
-                                            )}/photo`}
+                                                userDetailsa.national_level_doc
+                                            )}/certificates`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
@@ -704,7 +738,7 @@ const BasicDetails = () => {
                                     </div>
                                     }
                                 </div>
-                                {userDetailsa.played_national == "2" && (
+                                {userDetailsa.played_national_level == "2" && (
                                     <div className="col-md-6">
                                         <label>
                                             Name of Central Organisation
@@ -713,30 +747,30 @@ const BasicDetails = () => {
                                         <input
                                             type="text"
                                             className={`form-control required ${
-                                                errors.central_org_name ? "is-invalid" : ""
+                                                errors.organisation_represented ? "is-invalid" : ""
                                             }`}
-                                            value={userDetailsa?.central_org_name}
+                                            value={userDetailsa?.organisation_represented}
                                             onChange={(e) => {
                                                 setUserDetails((d) => ({
                                                     ...d,
-                                                    central_org_name: e.target.value,
+                                                    organisation_represented: e.target.value,
                                                 }));
                                                 setErrors((err) => ({
                                                     ...err,
-                                                    central_org_name: validateEmail(
+                                                    organisation_represented: validateEmail(
                                                         e.target.value
                                                     ),
                                                 }));
                                             }}
                                         />
-                                        {errors.central_org_name && (
-                                            <div className="text-danger">
-                                                {errors.central_org_name}
+                                        {errors.organisation_represented && (
+                                            <div className="invalid-feedback">
+                                                {errors.organisation_represented}
                                             </div>
                                         )}
                                     </div>
                                 )}
-                                {userDetailsa.played_national == "2" && (
+                                {userDetailsa.played_national_level == "2" && (
                                     <div className="col-md-6">
                                         <label>
                                             Attach Certificate (Organisation
@@ -746,7 +780,7 @@ const BasicDetails = () => {
                                             type="file"
                                             accept="application/pdf"
                                             className={`form-control ${
-                                                errors.org_certificate
+                                                errors.organisation_doc
                                                     ? "is-invalid"
                                                     : ""
                                             }`}
@@ -754,26 +788,26 @@ const BasicDetails = () => {
                                             onChange={(e) => {
                                                 setUserDetails((d) => ({
                                                     ...d,
-                                                    org_certificate:
+                                                    organisation_doc:
                                                         e.target.files?.[0] || null,
                                                 }));
                                             }}
     
-                                            disabled={ !userDetailsa.played_national ||  userDetailsa.played_national == '1'}
+                                            disabled={ !userDetailsa.played_national_level ||  userDetailsa.played_national_level == '1'}
                                         />
     
-                                        {errors.org_certificate &&
-                                            userDetailsa.played_national == "1" && (
+                                        {errors.organisation_doc &&
+                                            userDetailsa.played_national_level == "2" && (
                                                 <div className="text-danger">
-                                                    {errors.org_certificate}
+                                                    {errors.organisation_doc}
                                                 </div>
                                             )}
-                                        {userDetails.org_certificate && userDetailsa.org_certificate && 
+                                        {userDetails.organisation_doc && userDetailsa.organisation_doc && 
                                         <div className="mt-1">
                                             <a
                                                 href={`/api/certificates/${encodeURIComponent(
-                                                    userDetailsa.org_certificate
-                                                )}/photo`}
+                                                    userDetailsa.organisation_doc
+                                                )}/certificates`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             >

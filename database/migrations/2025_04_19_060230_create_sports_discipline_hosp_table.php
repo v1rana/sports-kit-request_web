@@ -18,7 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('disability_type_id')->nullable();
             $table->foreign('disability_type_id')->references('id')->on('disability_types')->onDelete('cascade');   
             $table->string('disability_doc')->nullable();
-
+            
+            $table->string('event_type')->nullable();
             $table->foreignId('tournament_id')->constrained('schedule_1_2')->onDelete('cascade');
 
             $table->foreignId('game_id')->constrained('games')->nullable();

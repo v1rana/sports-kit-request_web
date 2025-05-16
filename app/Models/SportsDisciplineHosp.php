@@ -13,6 +13,7 @@ class SportsDisciplineHosp extends Model
         'physical_disability',
         'disability_type_id',
         'disability_doc',
+        'event_type',
         'tournament_id',
         'game_id',
         'organizing_committee',

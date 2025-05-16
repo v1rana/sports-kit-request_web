@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
         $this->call(DsoSeeder::class);
         
         $this->call(GramPanchayatSarpanchSeeder::class);
-        $this->call(AdcSeeder::class);
+        // $this->call(AdcSeeder::class);
         $this->call(DeclarationSeeder::class);
         // $this->call(HqsSeeder::class);
        

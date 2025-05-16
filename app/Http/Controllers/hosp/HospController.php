@@ -26,6 +26,13 @@ class HospController extends Controller
             'aadhaar' => 'required|digits:12',
             'email_id' => 'required|email',
             'photo' => 'required',
+            'domicile' => 'required',
+            'dob_doc' => 'required',
+            'played_national_level' => 'required|in:1,2',
+            'national_level_doc' => 'required_if:played_national_level,1',
+            'organisation_represented' => 'required_if:played_national_level,2',
+            'org_certificate' => 'required_if:played_national_level,2',
+           
         ]);
         try {
             $id = $request->user()->id;
@@ -39,12 +46,26 @@ class HospController extends Controller
                 $path = $request->file('photo')->store('photo','public');
                 $user_details->photo = basename($path);
             }
-            if ($request->hasFile('domicile_doc')) {
-                $path = $request->file('domicile_doc')->store('photo');
+            if ($request->hasFile('dob_doc')) {
+                $path = $request->file('dob_doc')->store('certificates');
+                $user_details->dob_doc = basename($path);
+            }
+             if ($request->hasFile('domicile_doc')) {
+                $path = $request->file('domicile_doc')->store('certificates');
                 $user_details->domicile_doc = basename($path);
+            }
+            if ($request->hasFile('national_level_doc')) {
+                $path = $request->file('national_level_doc')->store('certificates');
+                $user_details->national_level_doc = basename($path);
+            }
+            if ($request->hasFile('organisation_doc')) {
+                $path = $request->file('organisation_doc')->store('certificates');
+                $user_details->organisation_doc = basename($path);
             }
             $user_details->domicile = $request->domicile;
             $user_details->aadhaar = $request->aadhaar;
+            $user_details->played_national_level = $request->played_national_level;
+            $user_details->organisation_represented = $request->organisation_represented;
             $user_details->save();
             $user->load('userDetails', 'eventHosp', 'sportsDisciplineHosp','educationHosp', 'declarationsHosp');
             return response()->json([
@@ -297,22 +318,24 @@ class HospController extends Controller
     {
         $validated = $request->validate([
             'physical_disability' => 'required|in:1,2',
+            'event_type' => 'required',
             'disability_type_id' => 'required_if:physical_disability,1|exists:disability_types,id|nullable',
             'disability_doc' => 'required_if:physical_disability,1|nullable',
 
             'tournament_id' => 'required|exists:schedule_1_2,id',
             'game_id' => 'required|exists:games,id',
             'organizing_committee' => 'required|string',
+            
             'tournament_level' => 'required|in:1,2', // 1=National, 2=International
             'represented_india' => 'nullable|required_if:tournament_level,1|in:0,1,2',
 
             'achievement_date' => 'required|date',
             'tournament_venue' => 'required|string',
-            'medal_won' => 'required|string',
+            // 'medal_won' => 'required|string',
             // 'match_played_by_me' => 'required|string',
             // 'participation_level' => 'required|string',
             'osp_achivement_certificate_path' => 'required|nullable',
-            'international_achievement_Verification_certificate_path' => 'required|nullable',
+            // 'international_achievement_Verification_certificate_path' => 'required|nullable',
         ]);
         // As above
 
@@ -325,6 +348,7 @@ class HospController extends Controller
             'disability_type_id' => $request->disability_type_id,
             'tournament_id' => $request->tournament_id,
             'game_id' => $request->game_id,
+            'event_type' => $request->event_type,
             'organizing_committee' => $request->organizing_committee,
             'tournament_level' => $request->tournament_level,
             'represented_india' => $request->represented_india ?? 0,

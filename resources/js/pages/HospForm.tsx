@@ -62,6 +62,7 @@ const HospForm = () => {
         physical_disability: string;
         disability_type_id: string;
         disability_doc: File | null;
+        event_type: string;
         tournament_id: string;
         organizing_committee: string;
         tournament_level: string;
@@ -71,6 +72,7 @@ const HospForm = () => {
         achievement_date: string;
         tournament_venue: string;
         medal_won: string;
+      
         // participation_level: string;
         match_played_by_team: string;
         match_played_by_me: string;
@@ -95,6 +97,7 @@ const HospForm = () => {
         achievement_date: "",
         tournament_venue: "",
         medal_won: "",
+        event_type: "",
         match_played_by_team: "",
         match_played_by_me: "",
         osp_achivement_certificate_path: null,
@@ -214,7 +217,9 @@ const HospForm = () => {
                     physical_disability: String(data.physical_disability ?? ""),
                     disability_type_id: String(data.disability_type_id ?? ""),
                     disability_doc: data.certificate_path ?? null, // We can't prefill file inputs
+                    // event_type: String(data.event_type ?? ""),
                     tournament_id: String(data.tournament_id ?? ""),
+                    event_type: String(data.event_type ?? ""),
                     organizing_committee: data.organizing_committee ?? "",
                     tournament_level: String(data.tournament_level ?? ""),
                     represented_india: String(data.represented_india ?? ""),
@@ -281,7 +286,7 @@ const HospForm = () => {
                 console.error("Error loading form data", error);
             }
         };
-        fetchEventData();
+        // fetchEventData();
         fetchEducationData();
         fetchSportsDisciplineData();
         fetchGames();
@@ -775,6 +780,7 @@ const HospForm = () => {
         }
 
         if (!formData.tournament_id) newErrors.tournament_id = "Required";
+        if (!formData.event_type) newErrors.event_type = "Required";
         if (!formData.organizing_committee)
             newErrors.organizing_committee = "Required";
         if (!formData.tournament_level) newErrors.tournament_level = "Required";
@@ -787,12 +793,12 @@ const HospForm = () => {
         if (!formData.game_id) newErrors.game_id = "Required";
         if (!formData.osp_achivement_certificate_path)
             newErrors.osp_achivement_certificate_path = "Required";
-        if (!formData.international_achievement_Verification_certificate_path)
-            newErrors.international_achievement_Verification_certificate_path =
-                "Required";
+        // if (!formData.international_achievement_Verification_certificate_path)
+        //     newErrors.international_achievement_Verification_certificate_path =
+        //         "Required";
         if (!formData.achievement_date) newErrors.achievement_date = "Required";
         if (!formData.tournament_venue) newErrors.tournament_venue = "Required";
-        if (!formData.medal_won) newErrors.medal_won = "Required";
+        // if (!formData.medal_won) newErrors.medal_won = "Required";
         if (eventTitle === "Team Event") {
             if (!formData.match_played_by_team)
                 newErrors.match_played_by_team = "Required";
@@ -966,7 +972,7 @@ const HospForm = () => {
                             hidden={currentStep === 3 ? false : true}
                         >
                             <div className="row g-3">
-                                {eventTitle === "Individual Event" ? (
+                                {/* {eventTitle === "Individual Event" ? (
                                     <h6 className="text-center mt-4">
                                         FORM - I
                                         <br />
@@ -982,38 +988,9 @@ const HospForm = () => {
                                 )}
                                 <h5 className="text-center mt-1">
                                     {eventTitle}
-                                </h5>
+                                </h5> */}
 
-                                <div className="col-md-6">
-                                    <label>Select Event</label>
-                                    <select
-                                        {...register("event_type")}
-                                        className={`form-select ${
-                                            errors.event_type
-                                                ? "is-invalid"
-                                                : ""
-                                        }`}
-                                        onChange={(e) =>
-                                            fetchTournamentList(e.target.value)
-                                        }
-                                    >
-                                        <option value="" selected disabled>
-                                            Select
-                                        </option>
-                                        <option value="1">
-                                            Individual Event
-                                        </option>
-                                        <option value="2">Team Event</option>
-                                    </select>
-                                    {errors.event_type && (
-                                        <div className="invalid-feedback">
-                                            {
-                                                errors.event_type
-                                                    .message as string
-                                            }
-                                        </div>
-                                    )}
-                                </div>
+                           
 
                                 {/* <div className="col-md-6">
                                     <label>Select Tournament</label>
@@ -1108,7 +1085,7 @@ const HospForm = () => {
                                     )}
                                 </div> */}
 
-                                <div className="col-md-6">
+                                {/* <div className="col-md-6">
                                     <label>
                                         Played at National Level for Haryana
                                     </label>
@@ -1246,9 +1223,9 @@ const HospForm = () => {
                                             </div>
                                         )}
                                     </div>
-                                )}
-                                <hr />
-                                <div className="col-12 text-end">
+                                )} */}
+                                {/* <hr /> */}
+                                {/* <div className="col-12 text-end">
                                     <button
                                         id="next-btn"
                                         type="submit"
@@ -1266,7 +1243,7 @@ const HospForm = () => {
                                     >
                                         Next
                                     </button>
-                                </div>
+                                </div> */}
                             </div>
                         </form>
                         <form
@@ -1414,7 +1391,7 @@ const HospForm = () => {
                             hidden={currentStep === 3 ? false : true}
                             onSubmit={onSportDisciplineSubmit}
                         >
-                            <h2 className="text-center">Sports Discipline</h2>
+                            <h2 className="text-center">Best Sports Achievement </h2>
 
                             <div className="col-md-12">
                                 <div className="form-check p-0">
@@ -1512,8 +1489,36 @@ const HospForm = () => {
                                     </div>
                                 </>
                             )}
+                                 <div className="col-md-6">
+                                    <label>Event Type</label>
+                                    <select
+                                    name="event_type"
+                                         value={formData.event_type}
+                                        className={`form-select ${
+                                            sportdiserrors.event_type
+                                                ? "is-invalid"
+                                                : ""
+                                        }`}
+                                        onChange={(e) =>{
+                                            fetchTournamentList(e.target.value),
+                                            handleSportsDiscChanges(e)
+                                        }
+                                        }
+                                    >
+                                        <option value="" selected disabled>
+                                            Select
+                                        </option>
+                                        <option value="1">
+                                            Individual Event
+                                        </option>
+                                        <option value="2">Team Event</option>
+                                    </select>
+                                     <div className="invalid-feedback">
+                                    {sportdiserrors.event_type}
+                                </div>
+                                </div>
                             <div className="col-md-6">
-                                <label>Select Sports Discipline</label>
+                                <label>Name of Sports Discipline</label>
                                 <select
                                     name="game_id"
                                     value={formData.game_id}
@@ -1550,9 +1555,9 @@ const HospForm = () => {
                                     {sportdiserrors.game_id}
                                 </div>
                             </div>
-                            <div className="col-md-6"></div>
+                            {/* <div className="col-md-6"></div> */}
                             <div className="col-md-6">
-                                <label>Tournament</label>
+                                <label>Name of Tournament</label>
                                 <select
                                     name="tournament_id"
                                     value={formData.tournament_id}
@@ -1581,7 +1586,7 @@ const HospForm = () => {
                             </div>
 
                             <div className="col-md-6">
-                                <label>Organizing Committee</label>
+                                <label>Organizing Authority</label>
                                 <input
                                     type="text"
                                     name="organizing_committee"
@@ -1603,7 +1608,7 @@ const HospForm = () => {
                             </div>
 
                             <div className="col-md-6">
-                                <label>Tournament Level</label>
+                                <label>Level of Tournament</label>
                                 <select
                                     name="tournament_level"
                                     value={formData.tournament_level}
@@ -1665,29 +1670,23 @@ const HospForm = () => {
                             </div>
 
                             <div className="col-md-6">
-                                <label>Achievement Date</label>
+                                <label>Achievement (Month & Year)</label>
                                 <input
                                     type="date"
                                     name="achievement_date"
                                     value={formData.achievement_date}
-                                    className={`form-control ${
-                                        sportdiserrors.achievement_date
-                                            ? "is-invalid"
-                                            : ""
-                                    }`}
+                                    className={`form-control ${sportdiserrors.achievement_date ? "is-invalid" : ""}`}
+                                    max={new Date().toISOString().split("T")[0]} // 👈 correct format: YYYY-MM-DD
                                     onChange={handleSportsDiscChanges}
-                                    onClick={(e) =>
-                                        e.target.showPicker &&
-                                        e.target.showPicker()
-                                    }
-                                />
+                                    onClick={(e) => e.target.showPicker && e.target.showPicker()}
+                                    />
                                 <div className="invalid-feedback">
                                     {sportdiserrors.achievement_date}
                                 </div>
                             </div>
 
                             <div className="col-md-6">
-                                <label>Tournament Venue</label>
+                                <label>Tournament Venue (Type as per in your Achievement Certificate)</label>
                                 <input
                                     type="text"
                                     name="tournament_venue"
@@ -1722,10 +1721,11 @@ const HospForm = () => {
                                     <option value="gold">Gold</option>
                                     <option value="silver">Silver</option>
                                     <option value="bronze">Bronze</option>
+                                    <option value="participation">Participation</option>
                                 </select>
-                                <div className="invalid-feedback">
+                                {/* <div className="invalid-feedback">
                                     {sportdiserrors.medal_won}
-                                </div>
+                                </div> */}
                             </div>
                             {eventTitle === "Team Event" && (
                                 <div className="col-md-6">
@@ -1804,8 +1804,7 @@ const HospForm = () => {
                             </div> */}
                             <div className="col-md-6">
                                 <label>
-                                    Attach Proof of Outstanding Sports Person
-                                    Achievment Certificate (pdf)
+                                    Attach Sports Achievment Certificate (pdf)
                                 </label>
                                 <br />
 
@@ -1840,7 +1839,7 @@ const HospForm = () => {
                                     </div>
                                 )}
                             </div>
-                            <div className="col-md-6">
+                            {/* <div className="col-md-6">
                                 <label>
                                     Attach International Achievement and
                                     Verification Certificate (pdf){" "}
@@ -1877,7 +1876,7 @@ const HospForm = () => {
                                         </a>
                                     </div>
                                 )}
-                            </div>
+                            </div> */}
 
                             <div className="col-12 text-center mt-3">
                                 {currentStep > 1 && (
@@ -1977,18 +1976,6 @@ const HospForm = () => {
                                             </label>
                                         </div>
                                     </div>
-
-                                    <div className="col-md-6">
-                                        <label>Upload Declaration</label>
-                                        <input
-                                            type="file"
-                                            accept="application/pdf"
-                                            className="form-control"
-                                            onChange={
-                                                handleDeclarationFileChange
-                                            }
-                                        />
-                                    </div>
                                     <div
                                         className="col-md-6 float-end mt-4"
                                         hidden={currentStep !== 4}
@@ -2001,6 +1988,18 @@ const HospForm = () => {
                                             <i className="fa fa-print"></i>
                                         </button>
                                     </div>
+                                    <div className="col-md-6">
+                                        <label>Upload Declaration</label>
+                                        <input
+                                            type="file"
+                                            accept="application/pdf"
+                                            className="form-control"
+                                            onChange={
+                                                handleDeclarationFileChange
+                                            }
+                                        />
+                                    </div>
+                                    
                                     <div className="text-danger">
                                         {diclarationerrors.msg}
                                     </div>

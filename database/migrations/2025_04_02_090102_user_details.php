@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('family_id');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            // $table->string('member_id');
-            // $table->string('mobile_no');
+         
             $table->string('full_name_en');
             $table->string('full_name_hi')->nullable();
             $table->string('father_name_en');
@@ -45,8 +44,16 @@ return new class extends Migration
             $table->tinyInteger('active_step')->default(1); // create after all steps submit
             $table->string('photo')->nullable(); 
             $table->string('aadhaar')->nullable(); 
+            $table->string('dob_doc')->nullable();
             $table->tinyInteger('domicile')->default(0)->comment('1 for yes , 2 for no');
             $table->string('domicile_doc')->nullable();
+            
+
+            $table->tinyInteger('played_national_level')->default(0)->comment('1 for yes , 2 for no');
+            $table->string('national_level_doc')->nullable();
+
+            $table->string('organisation_represented')->nullable();
+            $table->string('organisation_doc')->nullable();
             $table->timestamps();
         });
     }

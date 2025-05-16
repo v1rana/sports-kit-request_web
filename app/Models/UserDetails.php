@@ -30,6 +30,12 @@ class UserDetails extends Model
         'current_engagement',
         'annual_income',
         'income_verified',
+        'domicile',
+        'domicile_doc',
+        'played_national_level',
+        'organisation_represented',
+        'national_level_doc',
+        'organisation_doc',
         // don't include application_id in fillable since it will be generated
     ];
     protected static function boot()
