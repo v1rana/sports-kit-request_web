@@ -19,16 +19,20 @@
 								<h5>{{ $userDetail->full_name_en }}</h5>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-3 mb-3">
-								<label>2. Designation of Applicant</label>
+								<label>2. Body Type</label>
 								<h5>{{ $application->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }} </h5>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-3 mb-3">
-								<label>3. Name of Municipal Body/Gram Panchayat</label>
-								<h5>{{ $application->block }} </h5>
+								<label>3. Designation Of Applicantt</label>
+								<h5>{{ $application->specific_designation }} </h5>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-3 mb-3">
 								<label>4. District</label>
 								<h5>{{ $application->district }}</h5>
+							</div>
+							<div class="col-xs-12 col-sm-6 col-md-6 mb-3">
+								<label>5. Name of Municipal Body/ Gram Panchayat/ Ward/ Village</label>
+								<h5>{{ $application->area_name }}</h5>
 							</div>
 							
 						</div>

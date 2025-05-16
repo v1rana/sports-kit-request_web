@@ -76,8 +76,12 @@
     padding: 4px 10px;font-size:13px;text-transform:uppercase;
     border-radius: 5px;
     color: rgba(0, 0, 0, 0.3);
-    background: #eee;
-}.section-title a.active-login {
+    background: #eee;text-decoration: none;
+    
+    font-size: 13px;
+    text-transform: uppercase;
+}
+.section-title a.active-login {
     color: #fff;
     background: blue;
     border-color: blue;
@@ -93,7 +97,7 @@
       <!-- Left Side Form -->
       <div class="col-md-5 left-form bg-white">
         <div class="text-center logo-title mb-4">
-          <img src="./assets/images/logo-sports.png" alt="Logo">
+          <img src="{{ url('assets/images/logo-sports.png') }}" alt="Logo">
           <h1>Sports Department</h1>
           <p class="tagline">Let the young minds grow to the full potential</p>
         </div>

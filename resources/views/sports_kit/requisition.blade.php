@@ -111,9 +111,9 @@
     </div>-->
 
         <div id="second_form">
-			<h4 class=""> Kit Requisition Form  
-			<!--<a href="{{ url('/sports-kit') }}" class="btn btn-secondary float-end"> <i class="fa-solid fa-arrow-left-long"></i> Back  </a>-->
-			</h4> 
+			<!--h4 class=""> Kit Requisition Form  
+			<<a href="{{ url('/sports-kit') }}" class="btn btn-secondary float-end"> <i class="fa-solid fa-arrow-left-long"></i> Back  </a>
+			</h4> -->
 			@if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 {{ session('success') }}
@@ -134,16 +134,17 @@
                             <h4 class="mb-3 text-dark">
 								Sports Request Details <button type="button" class="btn btn-sm btn-success float-end" onclick="addEquipment()">+ Add More</button>
 							</h4>
+							<p>NOTE - <span class="text-danger fs-16">*</span> marked fields are required to fill. </p>
 							<table class="table table-striped table-bordered">
 								<thead>
 									<tr>
-										<th>Sports</th>
-										<th>Equipements</th>
-										<th>Quantity</th>
-										<th>Whether FoP/Hall/Poles are available for mentioned Sports ?</th>
-										<th>Tentative Number of Players</th>
+										<th>Sports <sup class="text-danger">*</sup></th>
+										<th>Equipements <sup class="text-danger">*</sup></th>
+										<th>Quantity <sup class="text-danger">*</sup></th>
+										<th>Whether FoP/Hall/Poles are available for mentioned Sports ? <sup class="text-danger">*</sup></th>
+										<th>Tentative Number of Players <sup class="text-danger">*</sup></th>
 										<th>Date of Last Issued Sports Item/Equipment, If any</th>
-										<th>Select Location picture</th>
+										<th>Select Location picture <sup class="text-danger">*</sup></th>
 										<th>Action</th>
 									</tr>
 								</thead>
