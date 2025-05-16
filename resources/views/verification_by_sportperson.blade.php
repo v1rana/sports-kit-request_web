@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Sports !! Verification by Sportsperson')
+@section('title', 'Application for Sports Gradation Certificate')
 
 @section('content')
 <style>
@@ -60,7 +60,7 @@ h3 {
         <div class="col-md-10">
           <div class="row details-area">
             <div class="col-md-3 mb-3">          
-              <small class="info-label text-muted ">1. Sports person's Name</small>
+              <small class="info-label text-muted ">1. Name of the Sportperson</small>
               <h5>{{ $otpData->sports_person_name }}</h5>
             </div>
             <div class="col-md-3 mb-3"> 
@@ -119,7 +119,7 @@ h3 {
           <h5 >{{ $otpData->organising_authority }}</h5>
         </div>   
         <div class="col-md-3 mb-3"> 
-            <small class="info-label text-muted">Medal Won</small>
+            <small class="info-label text-muted">Medal Won(If any)</small>
             <h5>{{ $otpData->medal_won }}</h5>
         </div>
         <div class="col-md-3 mb-3"> 
@@ -136,22 +136,28 @@ h3 {
        <!-- Uploaded Documents Starts -->
       <div class="row mt-4 uploaded-doca-area">         
         <h3><i class="fa-solid fa-folder-open"></i> Uploaded Documents</h3>       
-        <div class="col-3 mb-3">
+        <div class="col-2 mb-3">
           <img src="{{ url('storage/' . ($otpData->aadhaar_card ?? 'default.jpg')) }}" width="200px" height="200px" style="border:5px solid #eee" />
           <h5 class="mt-2">1. Aadhaar Card</h5>           
         </div>
-        <div class="col-3 mb-3">
+        <div class="col-2 mb-3">
           <img src="{{ url('storage/' . ($otpData->domicile_certificate ?? 'default.jpg')) }}" width="200px" height="200px" style="border:5px solid #eee" />
           <h5 class="mt-2">2. Domicile Proof</h5>           
         </div>
-        <div class="col-3 mb-3">
+        <div class="col-2 mb-3">
           <img src="{{ url('storage/' . ($otpData->sports_certificate ?? 'default.jpg')) }}" width="200px" height="200px" style="border:5px solid #eee" />
           <h5 class="mt-2">3. Achievement Certificate</h5>             
         </div>
-        <div class="col-md-3 mb-3">
-          <img src="{{ url('storage/' . ($otpData->more_than25_photo ?? 'default.jpg')) }}" width="200px" height="200px" style="border:5px solid #eee" />
-          <h5 class="mt-2">4. Certificate for as proof for playing more than 25% of matches</h5>            
+        <div class="col-2 mb-3">
+          <img src="{{ url('storage/' . ($otpData->noc_upload ?? 'default.jpg')) }}" width="200px" height="200px" style="border:5px solid #eee" />
+          <h5 class="mt-2">4. NOC Upload (for Certifying Played from Other State/UT/Organisation)</h5>             
         </div>
+        @if($otpData->more_than25_photo != "")
+        <div class="col-md-2 mb-3">
+          <img src="{{ url('storage/' . ($otpData->more_than25_photo ?? 'default.jpg')) }}" width="200px" height="200px" style="border:5px solid #eee" />
+          <h5 class="mt-2">5. Certificate for as proof for playing more than 25% of matches</h5>            
+        </div>                          
+        @endif 
       </div>
        <!-- Uploaded Documents Ends -->
 <hr />
@@ -161,7 +167,7 @@ h3 {
           <div class="d-flex justify-content-between align-items-center">
             <!-- Download Performa Button -->
             <div>
-                <small class="info-label text-muted">Download Performa</small><br />
+                <small class="info-label text-muted">Download Application</small><br />
                 <a href="#" class="btn btn-success" onclick="downloadPDF()">
                     <i class="fa-solid fa-file-arrow-down"></i> PDF
                 </a>
@@ -169,7 +175,7 @@ h3 {
 
             <!-- Upload and Remove Forms (in one flex container) -->
             <div class="">
-                <small class="info-label text-muted">Upload Signed Performa</small><br />
+                <small class="info-label text-muted">Upload Signed Application</small><br />
 
                 <!-- Upload Form -->
                 <div class="d-flex gap-2">
@@ -361,7 +367,7 @@ h3 {
               <tr>
                 <td colspan="3" width="58%">
                    <small>Name of Tournament</small>
-                   <h5 style="width: 95%">{{ $otpData->type_of_event }}</h5>
+                   <h5 style="width: 95%">{{ $otpData->tournament }}</h5>
                 </td>
                 <td colspan="2">
                   <small>Organizing Authority</small> 
@@ -411,12 +417,18 @@ h3 {
                 <img src="{{ url('storage/' . ($otpData->sports_certificate ?? 'default.jpg')) }}" width="140" height="140" style="border:5px solid #eee;" />
                 <h5 style="margin-top: 3px; font-weight: 500;font-size: 16px;">3. Achievement Certificate</h5>
               </div>
+              <div style="width:22%">
+                <img src="{{ url('storage/' . ($otpData->noc_upload ?? 'default.jpg')) }}" width="140" height="140" style="border:5px solid #eee;" />
+                <h5 style="margin-top: 3px; font-weight: 500;font-size: 16px;">4. NOC Upload (for Certifying Played from Other State/UT/Organisation)</h5>
+              </div>
+              @if($otpData->more_than25_photo != "")
               <div style="width:25%">
                 <img src="{{ url('storage/' . ($otpData->more_than25_photo ?? 'default.jpg')) }}" width="140" height="140" style="border:5px solid #eee;" />
                 <h5 style="margin-top: 3px; font-weight: 500;font-size: 16px;">
-                  4. Certificate for Proof of Playing 25% Matches
+                  5. Certificate for Proof of Playing 25% Matches
                 </h5>
               </div>
+              @endif
             </div>
           </td>
         </tr>

@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('title', 'Sports !! Dashborad')
+@section('title', 'Dashborad')
 
 @section('content')
 @if (session('success'))
@@ -118,7 +118,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content shadow-lg rounded-4 border-0">
             <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title fw-bold" id="detailsModalLabel">Sports Person Details</h5>
+                <h5 class="modal-title fw-bold text-white" id="detailsModalLabel">Sports Person Details</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
