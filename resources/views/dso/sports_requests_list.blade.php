@@ -34,7 +34,7 @@
   }
 
   .custom-header-row th {
-    padding: 18px;
+    padding: 8px;
 	vertical-align: middle;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   }
@@ -74,7 +74,39 @@
     /* overflow: hidden; */
   }
 
+  .table .btn{font-size: 15px;padding:4px 0 0 0;    margin-top: 2px;}
+  ul.list-unstyled li:before {
+    position: absolute;
+    content: "";
+    background: rgba(0, 0, 0, 0.7);
+	border-radius: 100%;
+    width: 4px;
+    height: 4px;
+    top: 8px;
+    left: -6px;
+}
+ul.list-unstyled li {
+    position: relative;
+}
+.table td{vertical-align:top}
+.app-id-view-btn {
+    border-width: 0 0 1px;
+    text-align: left;
+    border-style: dotted;
+    width: auto;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    border-color: blue;
+    font-weight: bold;
+}
 
+a.badge {border:none;
+    height: auto;font-weight:normal;
+    font-size: 11px;
+    line-height: normal;margin-top:4px; padding: 3px;transition:all linear 0.1s 0s;
+    box-shadow:0 4px 0 #193c6b;
+}
+a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 </style>
 <h4 class="d-flex justify-content-between align-items-center">
   <span>Sports Kit Requisition List</span>
@@ -84,7 +116,7 @@
 </h4>
 
 <div class=" bg-white shadow mb-5 p-2 table-responsive table-container">
-			<table class="table table-bordered bg-white table-hover">
+		<table class="table table-bordered bg-white table-hover">
 				<thead>
 					<tr class="custom-header-row">
 						<th>Sr. No.</th>
@@ -98,9 +130,9 @@
 						<th>Quantity</th>
 						<!--<th>Availability Of FoP/Hall/Poles</th>
 						<th>Tentative Players</th>
-						<th>Date Of Last Issued Sports</th>-->
-						<th>Action</th>
-						<th>Download <br>Application PDF</th>
+						<th>Date Of Last Issued Sports</th>>
+						<th>Action</th-->
+						<!--th>Download <br>Application PDF</th-->
 						<th>Application Status</th>
 					</tr>
 				</thead>
@@ -108,55 +140,20 @@
 				@foreach($sportsRequests as $index => $request)
                 
 				<tr>
-					 <td>{{ $index + 1 }}.</td>
-					 <td>{{ $request->applicant_id }}</td>
-<td>{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}</td>
-<td>{{ $request->specific_designation }}</td>
-<td>{{ $request->district }}</td>
-<td>{{ $request->area_name }}</td>
-
-{{-- Sports --}}
-<td>
-    @php $equipmentList = json_decode($request->sports_equipment); @endphp
-    @if(is_array($equipmentList))
-        <ul class="list-unstyled mb-0">
-            @foreach($equipmentList as $equipment)
-                <li><strong>{{ $equipment->name ?? 'N/A' }}</strong></li>
-            @endforeach
-        </ul>
-    @else
-        <span>N/A</span>
-    @endif
-</td>
-
-{{-- Equipment --}}
-<td>
-    @if(is_array($equipmentList))
-        <ul class="list-unstyled mb-0">
-            @foreach($equipmentList as $equipment)
-                <li>{{ $equipment->equipment ?? 'N/A' }}</li>
-            @endforeach
-        </ul>
-    @else
-        <span>N/A</span>
-    @endif
-</td>
-
-{{-- Quantity --}}
-<td>
-    @if(is_array($equipmentList))
-        <ul class="list-unstyled mb-0">
-            @foreach($equipmentList as $equipment)
-                <li>{{ $equipment->quantity ?? '0' }}</li>
-            @endforeach
-        </ul>
-    @else
-        <span>N/A</span>
-    @endif
-</td>
-
-   <td>
-						<button type="button" class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modal{{ $request->id }}"> View</button>
+					<td>{{ $index + 1 }}.</td>
+					<td>
+					<div  class="d-flex"><button type="button" data-bs-toggle="modal" data-bs-target="#modal{{ $request->id }}" class="bg-transparent text-primary app-id-view-btn">{{ $request->applicant_id }} </button>
+						@if($request->gram_municipal_signed_document)
+							<a href="{{ url('uploads/gram_municipal_signed_document/' . basename($request->gram_municipal_signed_document)) }}" target="_blank" class="btn btn-primary">
+								<i class="fa-solid fa-file-arrow-down"></i> 
+							</a>
+						@else
+							<button class="btn btn-secondary w-100" disabled>
+								No Document Available
+							</button>
+						@endif
+						
+						</div>
 						<div class="modal fade" id="modal{{ $request->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 							<div class="modal-dialog modal-xl modal-dialog-centered">
 								<div class="modal-content">
@@ -209,96 +206,71 @@
 												</form>
 											</div>
 										</div> -->
+										<style>
+											.badge-custom { font-size: 0.9rem; padding: 0.6rem 1rem; }
+											.card-custom {border-radius: 1rem;box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);padding: 1rem 1.5rem;background-color: #ffffff;margin-bottom: 1.5rem;}
+											.info-label {font-size: 0.85rem;font-weight: 500;color: #6c757d;}
+											h5 {font-weight: 600;font-size: 1rem;}
+										</style>
+										
+										<div class="container">
+											<div class="card card-custom">
+												<div class="row">
+													<!-- Application Submitted Date -->
+													<div class="col-12 col-md-4">
+														<small class="info-label text-muted">Application Submitted Date</small>
+														<h5 class="mt-1">{{ \Carbon\Carbon::parse($request->created_at)->format('d M Y, h:i A') }}</h5>
+													</div>
 
-								
-
-<style>
-
-  .badge-custom {
-    font-size: 0.9rem;
-    padding: 0.6rem 1rem;
-  }
-
-  .card-custom {
-    border-radius: 1rem;
-    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
-    padding: 2rem;
-    background-color: #ffffff;
-    margin-bottom: 1.5rem;
-  }
-
-  .info-label {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: #6c757d;
-  }
-
-  h5 {
-    font-weight: 600;
-    font-size: 1rem;
-  }
-</style>
-
-<div class="container my-4">
-  <div class="card card-custom">
-    <div class="row g-4">
-
-      <!-- Application Submitted Date -->
-      <div class="col-12 col-md-4">
-        <small class="info-label text-muted">Application Submitted Date</small>
-        <h5 class="mt-1">{{ \Carbon\Carbon::parse($request->created_at)->format('d M Y, h:i A') }}</h5>
-      </div>
-
-      <!-- Application ID -->
-      <div class="col-12 col-md-4">
-        <small class="info-label text-muted">Application Id</small>
-        <h5 class="mt-1">{{ $request->applicant_id }}</h5>
-      </div>
-
-      <!-- Application Status -->
-      <div class="col-12 col-md-4">
-        <small class="info-label text-muted">Application Status</small>
-        <h5 class="mt-1">
-          <strong>
-            @if($request->status == 'Approved')
-              <span class="badge rounded-pill bg-success badge-custom"><i class="fa-solid fa-thumbs-up me-1"></i> Approved</span>
-            @elseif($request->status == 'Rejected')
-              <span class="badge rounded-pill bg-danger badge-custom"><i class="fa-solid fa-ban me-1"></i> Rejected</span>
-            @elseif($request->status == 'Verified')
-              <span class="badge rounded-pill bg-primary badge-custom"><i class="fa-solid fa-check me-1"></i> Verified</span>
-            @elseif($request->status == 'Not Verified')
-              <span class="badge rounded-pill bg-warning text-dark badge-custom"><i class="fa-solid fa-xmark me-1"></i> Not Verified</span>
-            @else
-              <form action="{{ route('dso.verify', $request->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to Verify this?');">
-                @csrf
-                <button type="submit" class="btn btn-success btn-sm me-2"> <i class="fa-solid fa-check"></i> Verify </button>
-              </form>
-              <button type="button" class="btn btn-danger btn-sm" onclick="document.getElementById('rejection-remarks').classList.remove('d-none'); this.classList.add('d-none');">
-                <i class="fa-solid fa-xmark"></i> Not Verify
-              </button>
-            @endif
-          </strong>
-        </h5>
-      </div>
-
-      <!-- Rejection Remarks (Initially Hidden) -->
-      <div class="col-12 d-none" id="rejection-remarks">
-        <label class="form-label">Not Verify Remarks</label>
-        <form action="{{ route('dso.not_verify', $request->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to Not Verify this?');">
-          @csrf
-          <div class="d-flex flex-column flex-md-row gap-2">
-            <textarea class="form-control" name="not_verify_remark" rows="2" placeholder="Enter reason..." required></textarea>
-            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Submit</button>
-          </div>
-        </form>
-      </div>
-
-    </div>
-  </div>
-</div>
+													<!-- Application ID -->
+													<div class="col-12 col-md-4">
+														<small class="info-label text-muted">Application Id</small>
+														<h5 class="mt-1">{{ $request->applicant_id }}</h5>
+													</div>
 
 
-										<hr />
+													<!-- Application Status -->
+													<div class="col-12 col-md-4">
+														<small class="info-label text-muted">Application Status</small>
+														<h5 class="mt-1">
+															  <strong>
+																@if($request->status == 'Approved')
+																  <span class="badge rounded-pill bg-success badge-custom"><i class="fa-solid fa-thumbs-up me-1"></i> Approved</span>
+																@elseif($request->status == 'Rejected')
+																  <span class="badge rounded-pill bg-danger badge-custom"><i class="fa-solid fa-ban me-1"></i> Rejected</span>
+																@elseif($request->status == 'Verified')
+																  <span class="badge rounded-pill bg-primary badge-custom"><i class="fa-solid fa-check me-1"></i> Verified</span>
+																@elseif($request->status == 'Not Verified')
+																  <span class="badge rounded-pill bg-warning text-dark badge-custom"><i class="fa-solid fa-xmark me-1"></i> Not Verified</span>
+																@else
+																  <form action="{{ route('dso.verify', $request->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to Verify this?');">
+																	@csrf
+																	<button type="submit" class="btn btn-success btn-sm me-2"> <i class="fa-solid fa-check"></i> Verify </button>
+																  </form>
+																  <button type="button" class="btn btn-danger btn-sm" onclick="document.getElementById('rejection-remarks').classList.remove('d-none'); this.classList.add('d-none');">
+																	<i class="fa-solid fa-xmark"></i> Not Verify
+																  </button>
+																@endif
+															  </strong>
+															</h5>
+													</div>
+													
+													<!-- Rejection Remarks (Initially Hidden) -->
+													<div class="col-12 d-none" id="rejection-remarks">
+														<label class="form-label">Not Verify Remarks</label>
+														<form action="{{ route('dso.not_verify', $request->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to Not Verify this?');">
+															@csrf
+															<div class="d-flex flex-column flex-md-row gap-2">
+																<textarea class="form-control" name="not_verify_remark" rows="2" placeholder="Enter reason..." required></textarea>
+																<button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Submit</button>
+															</div>
+														</form>
+													</div>
+												</div>
+											</div>
+										</div>
+
+
 
 										<!-- <div class="row">												
 											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
@@ -323,130 +295,168 @@
 											</div>
 											
 										</div> -->
-<!-- Continue inside your container or card -->
- <div class="container my-4">
-<div class="card card-custom mt-4">
-  <div class="row g-4">
+										
+										<!-- Continue inside your container or card -->
+										<div class="container my-4">
+											<div class="card card-custom mt-4">
+												<div class="row g-4">
 
-    <!-- Name of Applicant -->
-    <div class="col-12 col-md-3">
-      <small class="info-label text-muted">1. Name of Applicant</small>
-      <h5 class="mt-1">{{ $request->name }}</h5>
-    </div>
+													<!-- Name of Applicant -->
+													<div class="col-12 col-md-3">
+														<small class="info-label text-muted">1. Name of Applicant</small>
+														<h5 class="mt-1">{{ $request->name }}</h5>
+													</div>
 
-    <!-- District -->
-    <div class="col-12 col-md-3">
-      <small class="info-label text-muted">2. District</small>
-      <h5 class="mt-1">{{ $request->district }}</h5>
-    </div>
+													<!-- District -->
+													<div class="col-12 col-md-3">
+														<small class="info-label text-muted">2. District</small>
+														<h5 class="mt-1">{{ $request->district }}</h5>
+													</div>
 
-    <!-- Body Type -->
-    <div class="col-12 col-md-3">
-      <small class="info-label text-muted">6. Body Type</small>
-      <h5 class="mt-1">
-        {{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}
-      </h5>
-    </div>
+													<!-- Body Type -->
+													<div class="col-12 col-md-3">
+														<small class="info-label text-muted">6. Body Type</small>
+														<h5 class="mt-1">
+										{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}
+										</h5>
+													</div>
 
-    <!-- Name Of Designation -->
-    <div class="col-12 col-md-3">
-      <small class="info-label text-muted">4. Name Of Designation</small>
-      <h5 class="mt-1">{{ $request->specific_designation }}</h5>
-    </div>
+													<!-- Name Of Designation -->
+													<div class="col-12 col-md-3">
+														<small class="info-label text-muted">4. Name Of Designation</small>
+														<h5 class="mt-1">{{ $request->specific_designation }}</h5>
+													</div>
 
-    <!-- Name Of Area -->
-    <div class="col-12 col-md-6">
-      <small class="info-label text-muted">
-        5. Name Of Municipal Body / Gram Panchayat / Ward / Village
-      </small>
-      <h5 class="mt-1">{{ $request->area_name }}</h5>
-    </div>
+													<!-- Name Of Area -->
+													<div class="col-12 col-md-6">
+														<small class="info-label text-muted">
+										5. Name Of Municipal Body / Gram Panchayat / Ward / Village
+										</small>
+														<h5 class="mt-1">{{ $request->area_name }}</h5>
+													</div>
 
-  </div>
-</div>
-</div>
+												</div>
+											</div>
+										</div>
+										
+										
+										<div class="container my-4">
+											<div class="card card-custom mt-4">
+												<div class="row">
+													<div class="col-12 games-authorised-sec">
+														<h4 class="text-dark mb-2 border-bottom">Games Kit Applied</h4> @php $equipmentList = json_decode($request->sports_equipment); @endphp @if(is_array($equipmentList) && count($equipmentList))
+														<div class="row">
+															<div class="col-md-2"><h6>Game</h6></div>
+															<div class="col-md-2"><h6>Equipment</h6></div>
+															<div class="col-md-1"><h6>Qty</h6></div>
+															<div class="col-md-2"><h6>FoP/Hall/Poles</h6></div>
+															<div class="col-md-1"><h6>Players</h6></div>
+															<div class="col-md-2"><h6>Last Issued</h6></div>
+															<div class="col-md-2"><h6>Vendor</h6></div>
+														</div>
+														@foreach($equipmentList as $equipment)
+														<div class="row">
+															<div class="col-md-2">
+																<p>{{ $equipment->name ?? 'N/A' }}</p>
+															</div>
+															<div class="col-md-2">
+																<p>{{ $equipment->equipment ?? 'N/A' }}</p>
+															</div>
+															<div class="col-md-1">
+																<p>{{ $equipment->quantity ?? '0' }}</p>
+															</div>
+															<div class="col-md-2">
+																<p>{{ $equipment->fop_available ?? 'N/A' }}</p>
+															</div>
+															<div class="col-md-1">
+																<p>{{ $equipment->players_count ?? 'N/A' }}</p>
+															</div>
+															<div class="col-md-2">
+																@if(!empty($equipment->last_issued_date))
+																<p>{{ \Carbon\Carbon::parse($equipment->last_issued_date)->format('d-m-Y') }}</p>
+																@else
+																<p>N/A</p>
+																@endif
+															</div>
+															<div class="col-md-2">
+																<p>
 
-<hr />
- <div class="container my-4">
-<div class="card card-custom mt-4">
-<div class="row">
-    <div class="col-12 mt-3 games-authorised-sec">
-        <h4 class="text-dark mb-2 border-bottom">Games Kit Applied</h4>
-        @php $equipmentList = json_decode($request->sports_equipment); @endphp
-        @if(is_array($equipmentList) && count($equipmentList))
-        <div class="row">
-            <div class="col-md-2"><h6>Game</h6></div>
-            <div class="col-md-2"><h6>Equipment</h6></div>
-            <div class="col-md-1"><h6>Qty</h6></div>
-            <div class="col-md-2"><h6>FoP/Hall/Poles</h6></div>
-            <div class="col-md-1"><h6>Players</h6></div>
-            <div class="col-md-2"><h6>Last Issued</h6></div>
-            <div class="col-md-2"><h6>Vendor</h6></div>
-        </div>
-        @foreach($equipmentList as $equipment)
-            <div class="row">
-                <div class="col-md-2"><p>{{ $equipment->name ?? 'N/A' }}</p></div>
-                <div class="col-md-2"><p>{{ $equipment->equipment ?? 'N/A' }}</p></div>
-                <div class="col-md-1"><p>{{ $equipment->quantity ?? '0' }}</p></div>
-                <div class="col-md-2"><p>{{ $equipment->fop_available ?? 'N/A' }}</p></div>
-                <div class="col-md-1"><p>{{ $equipment->players_count ?? 'N/A' }}</p></div>
-                <div class="col-md-2">
-                    @if(!empty($equipment->last_issued_date))
-                        <p>{{ \Carbon\Carbon::parse($equipment->last_issued_date)->format('d-m-Y') }}</p>
-                    @else
-                        <p>N/A</p>
-                    @endif
-                </div>
-                <div class="col-md-2">
-    <p>
-        
-        @php
-            $assigned = \App\Models\EquipmentVendorAssignment::where('request_id', $request->id)
-                ->where('equipment_name', $equipment->name)
-                ->first();
-        @endphp
-
-        @if($assigned)
-            {{-- Show assigned vendor name --}}
-            @php
-                $assignedVendor = \App\Models\Vendor::find($assigned->vendor_id);
-            @endphp
-            <strong>Assigned To:</strong><br>
-            <span class="badge bg-success">
-                {{ $assignedVendor->vendor_name ?? 'Vendor Not Found' }}
-            </span>
-        @else
-           
-        @endif
-    </p>
-</div>
-</div>
-</div>
-            </div>
-        @endforeach
-        @else
-            <p>No kit applied.</p>
-        @endif
-    </div>
-</div>
+																	@php $assigned = \App\Models\EquipmentVendorAssignment::where('request_id', $request->id) ->where('equipment_name', $equipment->name) ->first(); @endphp @if($assigned) {{-- Show assigned vendor name --}} @php $assignedVendor = \App\Models\Vendor::find($assigned->vendor_id);
+																	@endphp
+																	<strong>Assigned To:</strong>
+																	<br />
+																	<span class="badge bg-success">
+														{{ $assignedVendor->vendor_name ?? 'Vendor Not Found' }}
+													</span> @else @endif
+																</p>
+															</div>
+														</div>
+														
+												@endforeach
+												@else
+												<p>No kit applied.</p>
+												@endif
+														
+													</div>
+												</div>
+											</div>
+										</div>
 
 							    	</div>
 							    </div>
 							</div>
 						</div>
 					</td>
-					
+					<td>{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}</td>
+					<td>{{ $request->specific_designation }}</td>
+					<td>{{ $request->district }}</td>
+					<td>{{ $request->area_name }}</td>
+
+					{{-- Sports --}}
 					<td>
-						@if($request->gram_municipal_signed_document)
-							<a href="{{ url('uploads/gram_municipal_signed_document/' . basename($request->gram_municipal_signed_document)) }}" target="_blank" class="btn btn-danger w-100">
-								View PDF
-							</a>
+						@php $equipmentList = json_decode($request->sports_equipment); @endphp
+						@if(is_array($equipmentList))
+							<ul class="list-unstyled mb-0 ps-2">
+								@foreach($equipmentList as $equipment)
+									<li><strong>{{ $equipment->name ?? 'N/A' }}</strong></li>
+								@endforeach
+							</ul>
 						@else
-							<button class="btn btn-secondary w-100" disabled>
-								No Document Available
-							</button>
+							<span>N/A</span>
 						@endif
 					</td>
+
+					{{-- Equipment --}}
+					<td>
+						@if(is_array($equipmentList))
+							<ul class="list-unstyled mb-0 ps-2">
+								@foreach($equipmentList as $equipment)
+									<li>{{ $equipment->equipment ?? 'N/A' }}</li>
+								@endforeach
+							</ul>
+						@else
+							<span>N/A</span>
+						@endif
+					</td>
+
+					{{-- Quantity --}}
+					<td>
+						@if(is_array($equipmentList))
+							<ul class="list-unstyled mb-0 ps-2">
+								@foreach($equipmentList as $equipment)
+									<li>{{ $equipment->quantity ?? '0' }}</li>
+								@endforeach
+							</ul>
+						@else
+							<span>N/A</span>
+						@endif
+					</td>
+
+					
+					<!--td>
+						
+						
+					</td-->
 
 					<!--<td>
 						@if($request->status == 'Pending')
@@ -472,7 +482,7 @@
 							@if($request->status == 'Approved')
 								<span class="badge rounded-pill bg-success w-100"><i class="fa-solid fa-thumbs-up"></i> Approved</span> <br />
 								<!--@if($request->disbursement_status != 'Completed')-->
-								<a href="#" class="btn btn-primary w-100 h-100" data-bs-toggle="modal" data-bs-target="#requestDisclosure{{ $request->applicant_id }}">Request for disclosure</a>
+								<a href="#" class="badge bg-primary w-100" data-bs-toggle="modal" data-bs-target="#requestDisclosure{{ $request->applicant_id }}">Request Disclosure</a>
 								
                                 <div class="modal fade" id="requestDisclosure{{ $request->applicant_id }}" tabindex="-1" aria-labelledby="requestDisclosureLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg">

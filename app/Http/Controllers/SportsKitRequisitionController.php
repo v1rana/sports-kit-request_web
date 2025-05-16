@@ -98,7 +98,7 @@ class SportsKitRequisitionController extends Controller {
     // Store the requisition request
     public function store(Request $request) {
 		// return "hi";
-		// return "hi";
+		// return $request->all();
     $validatedData = $request->validate([
         'name' => 'required|string|max:100',
         'district' => 'required|string|max:100',

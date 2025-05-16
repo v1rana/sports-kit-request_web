@@ -3,7 +3,7 @@
 	.request-registration-form form .form-control{font-size: 13px;}
 	.request-registration-form label, .request-registration-form form p {
     display: inline-block;
-    font-size: 12px;
+    font-size: 11px;
     color: #2f4858;
     font-weight: 500;
     text-transform: uppercase;
@@ -138,12 +138,12 @@
 							<table class="table table-striped table-bordered">
 								<thead>
 									<tr>
-										<th>Sports <sup class="text-danger">*</sup></th>
+										<th width="120px">Sports <sup class="text-danger">*</sup></th>
 										<th>Equipements <sup class="text-danger">*</sup></th>
-										<th>Quantity <sup class="text-danger">*</sup></th>
-										<th>Whether FoP/Hall/Poles are available for mentioned Sports ? <sup class="text-danger">*</sup></th>
+										<th width="80px">Quantity <sup class="text-danger">*</sup></th>
+										<th width="160px">Whether FoP/Hall/Poles are available for mentioned Sports ? <sup class="text-danger">*</sup></th>
 										<th>Tentative Number of Players <sup class="text-danger">*</sup></th>
-										<th>Date of Last Issued Sports Item/Equipment, If any</th>
+										<th width="160px">Date of Last Issued Sports Item/Equipment, If any</th>
 										<th>Select Location picture <sup class="text-danger">*</sup></th>
 										<th>Action</th>
 									</tr>
@@ -179,12 +179,12 @@
 											</select>
 										</td>
 										<td>
-											<input type="number" name="sports_equipment[0][players_count]" class="form-control ps-1" placeholder="Players count" required>
+											<input type="number" name="sports_equipment[0][players_count]" class="form-control ps-1" placeholder="Players count" required min="1">
 										</td>
 										<td>
 											<input type="date" class="form-control ps-1" name="sports_equipment[0][last_issued_date]" id="last_issued_date" max="{{ date('Y-m-d') }}">
 										</td>
-										<td><input type="file" class="form-control ps-1" name="sports_equipment[0][photo]" accept="image/*"></td>
+										<td><input type="file" class="form-control ps-1" name="sports_equipment[0][photo]" accept="image/*" required></td>
 										<td></td>
 									</tr>
 								</tbody>
@@ -372,7 +372,7 @@
     
         // Populate options based on selected type
         function populateSpecificOptions(type) {
-            specificDesignation.innerHTML = ''; // Clear old options
+            specificDesignation.innerHTML = '<option value="" selected disabled>Select</option>'; // Clear old options
     
             if (options[type]) {
                 options[type].forEach(function (opt) {
@@ -381,6 +381,7 @@
                     option.textContent = opt.text;
     
                     if (opt.value === sessionSpecificDesignation) {
+						
                         option.selected = true;
                     }
     
@@ -448,7 +449,7 @@
             return;
         }
     
-        equipmentSelect.innerHTML = '<option value="" selected disabled>Select Equipment</option>'; 
+        equipmentSelect.innerHTML = '<option value="" selected disabled>Select</option>'; 
     
         if (selectedSport in equipmentLimits) {
             Object.keys(equipmentLimits[selectedSport]).forEach(equipment => {
@@ -501,7 +502,7 @@
     // Function to add a new Equipment row
     function addEquipment() {
         let list = document.getElementById('equipment-list');
-        let count = document.querySelectorAll('#equipment-list').length;
+        let count = document.querySelectorAll('#equipment-list tr').length;
     
         // Get all current selections (Sport + Equipment)
         let selectedCombinations = Array.from(document.querySelectorAll('#equipment-list')).map(row => {
@@ -536,7 +537,7 @@
             </td>
             <td>
                 <select name="sports_equipment[${count}][equipment]" class="form-control ps-1" required onchange="checkDuplicate(this); updateQuantityLimit(this)">
-                    <option value="" selected disabled>Select Equipment</option>
+                    <option value="" selected disabled>Select</option>
                 </select>
             </td>
             <td>
@@ -544,7 +545,7 @@
             </td>
     		<td>
                 <select name="sports_equipment[${count}][fop_available]" class="form-control ps-1" required>
-                   <option value="" selected>Select Availability</option>
+                   <option value="" selected>Select</option>
                     <option value="Yes" >Yes</option>
                     <option value="No" >No</option>
                 </select>
@@ -598,13 +599,13 @@
     });
     
     function checkDuplicate(equipmentSelect) {
-        const parentRow = equipmentSelect.closest('.d-flex');
+        const parentRow = equipmentSelect.closest('tr');
         const selectedSport = parentRow.querySelector('select[name*="[name]"]').value;
         const selectedEquipment = equipmentSelect.value;
     
         const currentCombo = `${selectedSport}-${selectedEquipment}`;
     
-        const allCombos = Array.from(document.querySelectorAll('#equipment-list .d-flex')).map(row => {
+        const allCombos = Array.from(document.querySelectorAll('#equipment-list tr')).map(row => {
             if (row === parentRow) return null; // skip current row
             const sport = row.querySelector('select[name*="[name]"]')?.value;
             const equipment = row.querySelector('select[name*="[equipment]"]')?.value;

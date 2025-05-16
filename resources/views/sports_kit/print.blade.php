@@ -1,8 +1,12 @@
 @extends('gm_main')
 <style>
+    label{font-size: 12px;
+    display: inline-block;
+    text-transform: uppercase;
+    font-weight: 500;}
     /* Hide print-only content on screen */
         .print-only {display: none;}
-    	@page{orientation: A4;margin:0; padding:20px}
+    	@page{orientation: A4;margin:0; padding:10px}
 		.alert ul{padding:0;}
 		.alert ul li{list-style:none}
     	//div p{margin:15px 0 10px;}
@@ -17,7 +21,7 @@
     		.row {display:flex;}
     		.col-md-4{width: 33% !important;  }
     		h5{font-size:17px;}
-			table .table img{width: 55px !important; height: 55px !important}
+			table .table img{width: 40px !important; height: 40px !important}
 			table label{font-size:13px;}
         }
 </style>
@@ -170,7 +174,7 @@
 										<td>{{ $item['quantity'] ?? '0' }}</td>
 
 										<td>
-											<img src="{{ url('/' . $item['photo']) }}" width="80" height="80" class="border" />
+											<img src="{{ url('/' . $item['photo']) }}" width="50" height="50" class="border" />
 										</td>
 
 
