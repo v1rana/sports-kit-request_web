@@ -21,72 +21,12 @@
 .games-authorised-sec .row > div:first-child h6{border:none;}
 .games-authorised-sec .row > div:nth-child(-n+4){border-top:0;}
 .games-authorised-sec .row > div p{padding: 5px 10px;font-size:14px;}
-
-  .custom-header-row {
-	background: linear-gradient(135deg, #b63807, #a78f21, #f78b2d);
-    /* background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);  */
-    color: #f8f9fa;
-    font-weight: 700;
-    text-transform: capitalize;
-    letter-spacing: 0.8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    border-radius: 8px 8px 0 0;
-  }
-
-  .custom-header-row th {
-    padding: 18px;
-	vertical-align: middle;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  table {
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 10px;
-    overflow: hidden;
-    background-color: #ffffff;
-  }
-
-  tbody tr:nth-child(even) {
-    background-color: #f4f6f8;
-  }
-
-  tbody tr:nth-child(odd) {
-    background-color:rgb(230, 230, 230);
-  }
-
-  tbody tr:hover {
-    background-color: #d9e4f5;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-
-  td {
-    padding: 14px;
-    vertical-align: middle;
-    font-size: 15px;
-  }
-
-  /* Optional: Subtle border and shadow on the table */
-  .table-container {
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    /* overflow: hidden; */
-  }
-
-
 </style>
-<h4 class="d-flex justify-content-between align-items-center">
-  <span>Sports Kit Requisition List</span>
-  <a href="#" class="btn btn-secondary">
-    <i class="fa-solid fa-arrow-left-long"></i> Back
-  </a>
-</h4>
-
-<div class=" bg-white shadow mb-5 p-2 table-responsive table-container">
+<h4 class="">Sports Kit Requisition List <a href="" class="btn btn-secondary float-end"><i class="fa-solid fa-arrow-left-long"></i> Back</a></h4>
+<div class=" bg-white shadow mb-5 p-2">
 			<table class="table table-bordered bg-white table-hover">
 				<thead>
-					<tr class="custom-header-row">
+					<tr class="bg-primary text-white">
 						<th>Sr. No.</th>
 						<th>Application Id</th>
 						<th>Body Type</th>
@@ -165,7 +105,7 @@
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
 									<div class="modal-body">
-										<!-- <div class="row">									
+										<div class="row">									
 											<div class="col-sm-12 col-sm-6 col-md-4">
 												<small class="info-label text-muted">Application Submitted Date</small>
 												<h5> {{ \Carbon\Carbon::parse($request->created_at)->format('d M Y, h:i A') }}</h5>
@@ -208,99 +148,11 @@
 													</div>
 												</form>
 											</div>
-										</div> -->
-
-								
-
-<style>
-
-  .badge-custom {
-    font-size: 0.9rem;
-    padding: 0.6rem 1rem;
-  }
-
-  .card-custom {
-    border-radius: 1rem;
-    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
-    padding: 2rem;
-    background-color: #ffffff;
-    margin-bottom: 1.5rem;
-  }
-
-  .info-label {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: #6c757d;
-  }
-
-  h5 {
-    font-weight: 600;
-    font-size: 1rem;
-  }
-</style>
-
-<div class="container my-4">
-  <div class="card card-custom">
-    <div class="row g-4">
-
-      <!-- Application Submitted Date -->
-      <div class="col-12 col-md-4">
-        <small class="info-label text-muted">Application Submitted Date</small>
-        <h5 class="mt-1">{{ \Carbon\Carbon::parse($request->created_at)->format('d M Y, h:i A') }}</h5>
-      </div>
-
-      <!-- Application ID -->
-      <div class="col-12 col-md-4">
-        <small class="info-label text-muted">Application Id</small>
-        <h5 class="mt-1">{{ $request->applicant_id }}</h5>
-      </div>
-
-      <!-- Application Status -->
-      <div class="col-12 col-md-4">
-        <small class="info-label text-muted">Application Status</small>
-        <h5 class="mt-1">
-          <strong>
-            @if($request->status == 'Approved')
-              <span class="badge rounded-pill bg-success badge-custom"><i class="fa-solid fa-thumbs-up me-1"></i> Approved</span>
-            @elseif($request->status == 'Rejected')
-              <span class="badge rounded-pill bg-danger badge-custom"><i class="fa-solid fa-ban me-1"></i> Rejected</span>
-            @elseif($request->status == 'Verified')
-              <span class="badge rounded-pill bg-primary badge-custom"><i class="fa-solid fa-check me-1"></i> Verified</span>
-            @elseif($request->status == 'Not Verified')
-              <span class="badge rounded-pill bg-warning text-dark badge-custom"><i class="fa-solid fa-xmark me-1"></i> Not Verified</span>
-            @else
-              <form action="{{ route('dso.verify', $request->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to Verify this?');">
-                @csrf
-                <button type="submit" class="btn btn-success btn-sm me-2"> <i class="fa-solid fa-check"></i> Verify </button>
-              </form>
-              <button type="button" class="btn btn-danger btn-sm" onclick="document.getElementById('rejection-remarks').classList.remove('d-none'); this.classList.add('d-none');">
-                <i class="fa-solid fa-xmark"></i> Not Verify
-              </button>
-            @endif
-          </strong>
-        </h5>
-      </div>
-
-      <!-- Rejection Remarks (Initially Hidden) -->
-      <div class="col-12 d-none" id="rejection-remarks">
-        <label class="form-label">Not Verify Remarks</label>
-        <form action="{{ route('dso.not_verify', $request->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to Not Verify this?');">
-          @csrf
-          <div class="d-flex flex-column flex-md-row gap-2">
-            <textarea class="form-control" name="not_verify_remark" rows="2" placeholder="Enter reason..." required></textarea>
-            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> Submit</button>
-          </div>
-        </form>
-      </div>
-
-    </div>
-  </div>
-</div>
-
+										</div>
 
 										<hr />
 
-										<!-- <div class="row">												
+										<div class="row">												
 											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 												<small class="info-label text-muted">1. Name of Applicant</small>
 												<h5>{{ $request->name }}</h5>
@@ -322,54 +174,10 @@
 												<h5>{{ $request->area_name }}</h5>
 											</div>
 											
-										</div> -->
-<!-- Continue inside your container or card -->
- <div class="container my-4">
-<div class="card card-custom mt-4">
-  <div class="row g-4">
+										</div>
 
-    <!-- Name of Applicant -->
-    <div class="col-12 col-md-3">
-      <small class="info-label text-muted">1. Name of Applicant</small>
-      <h5 class="mt-1">{{ $request->name }}</h5>
-    </div>
 
-    <!-- District -->
-    <div class="col-12 col-md-3">
-      <small class="info-label text-muted">2. District</small>
-      <h5 class="mt-1">{{ $request->district }}</h5>
-    </div>
-
-    <!-- Body Type -->
-    <div class="col-12 col-md-3">
-      <small class="info-label text-muted">6. Body Type</small>
-      <h5 class="mt-1">
-        {{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}
-      </h5>
-    </div>
-
-    <!-- Name Of Designation -->
-    <div class="col-12 col-md-3">
-      <small class="info-label text-muted">4. Name Of Designation</small>
-      <h5 class="mt-1">{{ $request->specific_designation }}</h5>
-    </div>
-
-    <!-- Name Of Area -->
-    <div class="col-12 col-md-6">
-      <small class="info-label text-muted">
-        5. Name Of Municipal Body / Gram Panchayat / Ward / Village
-      </small>
-      <h5 class="mt-1">{{ $request->area_name }}</h5>
-    </div>
-
-  </div>
-</div>
-</div>
-
-<hr />
- <div class="container my-4">
-<div class="card card-custom mt-4">
-<div class="row">
+										<div class="row">
     <div class="col-12 mt-3 games-authorised-sec">
         <h4 class="text-dark mb-2 border-bottom">Games Kit Applied</h4>
         @php $equipmentList = json_decode($request->sports_equipment); @endphp
@@ -419,8 +227,6 @@
            
         @endif
     </p>
-</div>
-</div>
 </div>
             </div>
         @endforeach
