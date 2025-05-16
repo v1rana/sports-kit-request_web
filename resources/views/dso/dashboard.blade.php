@@ -75,7 +75,7 @@
                     <div class="col-md-4">
                         <div class="p-3 rounded text-center bg-info shadow text-white mb-3">
                             <h2 class="text-white">{{ $totalPending }}</h2>
-                            <small class="text-white">Pending</small>
+                            <small class="text-white">In-Progress</small>
                             <i class="fa-solid fa-hourglass-half"></i>
                         </div>
                     </div>
@@ -121,7 +121,7 @@
                     <div class="col-md-4">
                         <div class="p-3 rounded text-center bg-info shadow text-white mb-3">
                             <h2 class="text-white">{{ $totalgrad_c_d_Pending }}</h2>
-                            <small class="text-white">Pending</small>
+                            <small class="text-white">In-Progress</small>
                             <i class="fa-solid fa-hourglass-half"></i>
                         </div>
                     </div>

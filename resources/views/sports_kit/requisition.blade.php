@@ -38,9 +38,34 @@
                     <div class="row mb-4">                                
                         <div class="col-xs-12 col-sm-4 col-md-3 mb-3">
     <div>
-        <label>Name of Head Person</label>
+        <label>Name of Applicant</label>
         <input type="text" class="form-control" name="name"
-            value="{{ old('name', session('first_form_data.name') ?? $userDetail->full_name_en ?? '') }}" readonly required>
+            value="{{ old('name', session('first_form_data.name') ?? $userDetail->full_name_en ?? '') }}" required>
+    </div> 
+</div>
+<!-- Designation Type Dropdown -->
+<div class="col-xs-12 col-sm-4 col-md-3 mb-3">
+        <label for="designation_type">Body Type</label>
+        <select class="form-control" name="designation" id="designation_type" required>
+            <option value="">-- Select Type --</option>
+            <option value="gram" {{ session('first_form_data.designation') == 'gram' ? 'selected' : '' }}>Gram Panchayat</option>
+            <option value="municipal" {{ session('first_form_data.designation') == 'municipal' ? 'selected' : '' }}>Municipal Bodies</option>
+        </select>
+    </div>
+
+    <!-- Specific Designation Dropdown -->
+    <div class="col-xs-12 col-sm-4 col-md-3 mb-3">
+        <label for="specific_designation">Designation Of Applicant</label>
+        <select class="form-control" name="specific_designation" id="specific_designation" required>
+            <option value="">-- Select Designation --</option>
+        </select>
+    </div>
+
+    <div class="col-xs-12 col-sm-4 col-md-3 mb-3">
+    <div>
+        <label>Name of Municipal Body/ Gram Panchayat/ Ward/ Village</label>
+        <input type="text" class="form-control" name="area_name"
+            value="{{ old('area_name', session('first_form_data.area_name') ?? $userDetail->ward_village ?? '') }}" required>
     </div> 
 </div>
 						<div class="col-xs-12 col-sm-4 col-md-3 mb-3">
@@ -57,31 +82,9 @@
             value="{{ old('block', session('first_form_data.block') ?? $userDetail->block_town ?? '') }}" required>
     </div> 
 </div>
-						<div class="col-xs-12 col-sm-4 col-md-3 mb-3">
-    <div>
-        <label>Municipal Body/ Gram Panchayat</label>
-        <input type="text" class="form-control" name="area_name"
-            value="{{ old('area_name', session('first_form_data.area_name') ?? $userDetail->ward_village ?? '') }}" required>
-    </div> 
-</div>
+						
        				
-    <!-- Designation Type Dropdown -->
-    <div class="col-xs-12 col-sm-4 col-md-3 mb-3">
-        <label for="designation_type">Designation Type</label>
-        <select class="form-control" name="designation" id="designation_type" required>
-            <option value="">-- Select Type --</option>
-            <option value="gram" {{ session('first_form_data.designation') == 'gram' ? 'selected' : '' }}>Gram Panchayat</option>
-            <option value="municipal" {{ session('first_form_data.designation') == 'municipal' ? 'selected' : '' }}>Municipal Bodies</option>
-        </select>
-    </div>
-
-    <!-- Specific Designation Dropdown -->
-    <div class="col-xs-12 col-sm-4 col-md-3 mb-3">
-        <label for="specific_designation">Specific Designation</label>
-        <select class="form-control" name="specific_designation" id="specific_designation" required>
-            <option value="">-- Select Designation --</option>
-        </select>
-    </div>
+    
 	
                         
                        
@@ -140,9 +143,9 @@
                         <p class="col-1 mb-0 px-1">Sports</h6>
                         <p class="col-2 mb-0 px-1">Equipements</h6>
                         <p class="col-1 mb-0 px-1">Quantity</h6>
-                        <p class="col-2 mb-0 px-1">Whether FoP/Hall/Poles are available for mentioned Sports?</h6>
+                        <p class="col-2 mb-0 px-1">Whether FoP/Hall/Poles are available for mentioned Sports ?</h6>
                         <p class="col-2 mb-0 px-1">Tentative Number of Players</h6>
-                        <p class="col-2 mb-0 px-1">Date of Last Issued Sports Item/Equipment</h6>
+                        <p class="col-2 mb-0 px-1">Date of Last Issued Sports Item/Equipment, If any</h6>
                         <p class="col-2 mb-0 px-1">Select Location picture</h6>
                         <!--<p class="col mb-0 px-1">Select Date</h6>-->                        
                         <div class="col-1 mb-0 px-1"></div>
@@ -192,7 +195,7 @@
 
         <!-- Last Issued Date -->
         <div class="col-12 col-md-2 mb-2 mb-md-0 px-1">
-            <input type="date" class="form-control ps-1" name="sports_equipment[0][last_issued_date]" id="last_issued_date" max="{{ date('Y-m-d') }}" required>
+            <input type="date" class="form-control ps-1" name="sports_equipment[0][last_issued_date]" id="last_issued_date" max="{{ date('Y-m-d') }}">
         </div>
 
         <!-- Equipment Photo Upload -->
@@ -243,9 +246,8 @@
                                 <h6 class="text-danger">Terms & Conditions</h6>
                                 <ul>
                                     <li>Only the sports equipment mentioned in the scheme shall be given.</li>
-                                    <li>Municipal Bodies/ Gram Panchayats are eligible to apply for sports equipment during a two-year period.</li>
-                                    <li>Equipment for Wrestling and Judo will be provided for only one of the two sports.</li>
-                                    <li>All issued sports equipment must be registered in the official record of the Municipal Body/ Gram Panchayat.</li>
+                                    <li>Municipal Bodies/ Gram Panchayats would be eligible to apply for sports equipment for all sports which are popular in the area, during the period of two financial years. In case of Wrestling nad Judo, sports equipments shall be provided for either of sport. The eligible applicant shall be as per Para 4 (c) and (d) of the policy.</li>
+                                    <li>After the sports equipments are issued, the same shall be entered in the proceeding register of the concerned Municipal Body/ Gram Panchayat.</li>
                                 </ul>
                             </div>
                         </div>
@@ -254,7 +256,7 @@
     <div class="alert alert-danger declaration-area">
         <h6 class="text-danger">Declaration by Applicant</h6>
         <p>
-            It is certified that proper Field of Play (FoP) for the requisite sports is available, and I have not received any sports items during the last two financial years. The photographs attached with the application are the latest. All the above particulars given by me are true and correct. Nothing has been concealed by me. False information or concealment of material information in the application form by me will render me ineligible in the future for said scheme and may invite penal consequences.
+            It is certified that proper Field of Play (FoP) for the requisite sports is available, and I have not received any sports items during the last two financial years and the photographs attached with the application are the latest. All the above particulars given by me are true and correct. Nothing has been concealed by me. False information or concealment of material information in the application form by me will render me ineligible in the future for said scheme and may invite penal consequences.
         </p>
 
         <div class="row">
@@ -299,7 +301,7 @@
                 
             </div>
             <div class="col-md-4 mb-3">
-                <label for="declaration_signature" class="form-label"><strong>Signature of Applicant Official Stamp (if applicable)</strong></label>
+                <label for="declaration_signature" class="form-label"><strong>Signature of Applicant with Official Stamp</strong></label>
                 <input type="text" class="form-control" id="declaration_signature" name="declaration_signature" placeholder="Enter Full Name" value="{{ $userDetail->full_name_en }}" required>
             </div>
         </div>
@@ -413,17 +415,17 @@ const equipmentLimits = {
     "Football": { "Balls": 6, "Net": 1 },
     "Basketball": { "Balls": 6 },
     "Handball": { "Balls": 6, "Net": 1 },
-    "Boxing": { "Punching Bags": 6, "Gloves": 12 },
-    "Wrestling": { "Mats [1 mtr x 2 mtr x5 cm]": 18 },
-    "Judo": { "Mats [1 mtr x 2 mtr x5 cm]": 18 },
+    "Boxing": { "Punching Bags": 6, "Pairs Of Gloves": 12 },
+    "Wrestling": { "Mats [1 mtr x 2 mtr x5 cm] with cover": 18 },
+    "Judo": { "Mats [1 mtr x 2 mtr x5 cm]  with cover": 18 },
     "Cricket": {
         "Bats": 2,
-        "Set of Wickets": 2,
+        "Set of Wickets with Stumps": 2,
         "Cricket Balls": 6,
-        "Batting Pads": 2,
-        "Batting Gloves": 2,
-        "Wicket Keeping Pads": 1,
-        "Wicket Keeping Gloves": 1
+        "Batting Pads Pair": 2,
+        "Batting Gloves Pair": 2,
+        "Wicket Keeping Pads Pair": 1,
+        "Wicket Keeping Gloves Pair": 1
     }
 };
 
@@ -555,7 +557,7 @@ function addEquipment() {
             <input type="number" name="sports_equipment[${count}][players_count]" class="form-control ps-1" placeholder="Players count" required min="1">
         </div>
 		<div class="col-2 mb-0 px-1">
-             <input type="date" class="form-control" name="sports_equipment[${count}][last_issued_date]" class="form-control ps-1" max="{{ date('Y-m-d') }}" required>
+             <input type="date" class="form-control" name="sports_equipment[${count}][last_issued_date]" class="form-control ps-1" max="{{ date('Y-m-d') }}">
         </div>
         <div class="col-2 mb-0 px-1">
             <input type="file" name="sports_equipment[${count}][photo]" class="form-control ps-1" accept="image/*">

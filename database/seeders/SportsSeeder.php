@@ -14,14 +14,14 @@ class SportsSeeder extends Seeder
     public function run(): void
     {
         $sports = [
-            ['id' => 1, 'sports_name' => 'Cricket'],
+            ['id' => 1, 'sports_name' => 'Volleyball'],
             ['id' => 2, 'sports_name' => 'Football'],
-            ['id' => 3, 'sports_name' => 'Wrestling'],
-            ['id' => 4, 'sports_name' => 'Boxing'],
-            ['id' => 5, 'sports_name' => 'Basketball'],
-            ['id' => 6, 'sports_name' => 'Handball'],
-            ['id' => 8, 'sports_name' => 'Tennis'],
-            ['id' => 9, 'sports_name' => 'Volleyball'],
+            ['id' => 3, 'sports_name' => 'Basketball'],
+            ['id' => 4, 'sports_name' => 'Handball'],
+            ['id' => 5, 'sports_name' => 'Boxing'],
+            ['id' => 6, 'sports_name' => 'Wrestling'],
+            ['id' => 8, 'sports_name' => 'Judo'],
+            ['id' => 9, 'sports_name' => 'Cricket'],
         ];
 
         foreach ($sports as &$sport) {

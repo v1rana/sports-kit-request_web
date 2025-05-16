@@ -16,7 +16,7 @@ class DSOController extends Controller
     {
         // Fetch sports requests with their HQ verification status
         // $sportsRequests = SportsKitRequisition::with('hqSportsRequest')->get();
-        $sportsRequests = SportsKitRequisition::with([
+       $sportsRequests = SportsKitRequisition::with([
 			'hqSportsRequest.vendorAssignment.vendor',
 			'hqSportsRequest.sport',
 			'hqSportsRequest.equipment'

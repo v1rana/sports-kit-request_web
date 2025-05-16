@@ -29,6 +29,31 @@ class HQController extends Controller
 
 			$total = is_array($equipmentList) ? count($equipmentList) : 0;
 
+			 // Try to auto-assign vendors
+			 $sport = Sport::where('sports_name', $request->sport_name)->first();
+
+			 foreach ($equipmentList as $equipment) {
+				 $alreadyAssigned = EquipmentVendorAssignment::where('request_id', $request->id)
+					 ->where('equipment_name', $equipment['name'])
+					 ->exists();
+	 
+				 if (!$alreadyAssigned && $sport) {
+					 $vendorMatch = DB::table('sport_vendor')
+						 ->join('vendors', 'sport_vendor.vendor_id', '=', 'vendors.id')
+						 ->where('sport_vendor.sport_id', $sport->id)
+						 ->where('sport_vendor.equipment', $equipment['name'])
+						 ->select('vendors.id')
+						 ->first();
+	 
+					 if ($vendorMatch) {
+						 EquipmentVendorAssignment::create([
+							 'request_id' => $request->id,
+							 'equipment_name' => $equipment['name'],
+							 'vendor_id' => $vendorMatch->id,
+						 ]);
+					 }
+				 }
+			 }
 			$assigned = EquipmentVendorAssignment::where('request_id', $request->id)->count();
 
 			if ($assigned === $total && $total > 0) {

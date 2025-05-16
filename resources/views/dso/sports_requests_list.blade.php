@@ -29,28 +29,29 @@
 					<tr class="bg-primary text-white">
 						<th>Sr. No.</th>
 						<th>Application Id</th>
-						<th>Designation</th>
-						<th>Block</th>
+						<th>Body Type</th>
+                        <th>Name Of Designation</th>						
 						<th>District</th>
-						<th>Area Name</th>
+						<th>Name Of Municipal Body<br>/ Gram Panchayat/ Ward/ Village</th>
 						<th>Sports</th>
-						<th>Equipemnt</th>
+						<th>Equipment</th>
 						<th>Quantity</th>
 						<!--<th>Availability Of FoP/Hall/Poles</th>
 						<th>Tentative Players</th>
 						<th>Date Of Last Issued Sports</th>-->
-						<th>Application Status</th>
-						<th>Download PDF</th>
 						<th>Action</th>
+						<th>Download <br>Application PDF</th>
+						<th>Application Status</th>
 					</tr>
 				</thead>
 				<tbody>
 				@foreach($sportsRequests as $index => $request)
+                
 				<tr>
 					 <td>{{ $index + 1 }}.</td>
 					 <td>{{ $request->applicant_id }}</td>
 <td>{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}</td>
-<td>{{ $request->block }}</td>
+<td>{{ $request->specific_designation }}</td>
 <td>{{ $request->district }}</td>
 <td>{{ $request->area_name }}</td>
 
@@ -152,33 +153,33 @@
 										<hr />
 
 										<div class="row">												
-    <div class="col-sm-12 col-sm-6 col-md-3 mb-3">
-        <small class="info-label text-muted">1. Name</small>
-        <h5>{{ $request->name }}</h5>
-    </div>
-    
-    <div class="col-sm-12 col-sm-6 col-md-3 mb-3">
-        <small class="info-label text-muted">3. District</small>
-        <h5>{{ $request->district }}</h5>
-    </div>
-    <div class="col-sm-12 col-sm-6 col-md-3 mb-3">
-        <small class="info-label text-muted">4. Block</small>
-        <h5>{{ $request->block }}</h5>
-    </div>
-    <div class="col-sm-12 col-sm-6 col-md-3 mb-3">
-        <small class="info-label text-muted">5. Area Name</small>
-        <h5>{{ $request->area_name }}</h5>
-    </div>
-    <div class="col-sm-12 col-sm-6 col-md-3 mb-3">
-        <small class="info-label text-muted">6. Designation</small>
-        <h5>{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}</h5>
-    </div>
-</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">1. Name of Applicant</small>
+												<h5>{{ $request->name }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">2. District </small>
+												<h5>{{ $request->district }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">6. Body Type</small>
+												<h5>{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">4. Name Of Designation </small>
+												<h5>{{ $request->specific_designation }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">5. Name Of Municipal Body<br>/ Gram Panchayat/ Ward/ Village </small>
+												<h5>{{ $request->area_name }}</h5>
+											</div>
+											
+										</div>
 
 
 										<div class="row">
     <div class="col-12 mt-3 games-authorised-sec">
-        <h4 class="text-dark mb-2 border-bottom">Games Kit Authorised</h4>
+        <h4 class="text-dark mb-2 border-bottom">Games Kit Applied</h4>
         @php $equipmentList = json_decode($request->sports_equipment); @endphp
         @if(is_array($equipmentList) && count($equipmentList))
         <div class="row">
@@ -188,6 +189,7 @@
             <div class="col-md-2"><h6>FoP/Hall/Poles</h6></div>
             <div class="col-md-1"><h6>Players</h6></div>
             <div class="col-md-2"><h6>Last Issued</h6></div>
+            <div class="col-md-2"><h6>Vendor</h6></div>
         </div>
         @foreach($equipmentList as $equipment)
             <div class="row">
@@ -203,10 +205,33 @@
                         <p>N/A</p>
                     @endif
                 </div>
+                <div class="col-md-2">
+    <p>
+        
+        @php
+            $assigned = \App\Models\EquipmentVendorAssignment::where('request_id', $request->id)
+                ->where('equipment_name', $equipment->name)
+                ->first();
+        @endphp
+
+        @if($assigned)
+            {{-- Show assigned vendor name --}}
+            @php
+                $assignedVendor = \App\Models\Vendor::find($assigned->vendor_id);
+            @endphp
+            <strong>Assigned To:</strong><br>
+            <span class="badge bg-success">
+                {{ $assignedVendor->vendor_name ?? 'Vendor Not Found' }}
+            </span>
+        @else
+           
+        @endif
+    </p>
+</div>
             </div>
         @endforeach
         @else
-            <p>No kits authorized.</p>
+            <p>No kit applied.</p>
         @endif
     </div>
 </div>
@@ -254,7 +279,84 @@
 								<span class="badge rounded-pill bg-success w-100"><i class="fa-solid fa-thumbs-up"></i> Approved</span> <br />
 								<!--@if($request->disbursement_status != 'Completed')-->
 								<a href="#" class="btn btn-primary w-100 h-100" data-bs-toggle="modal" data-bs-target="#requestDisclosure{{ $request->applicant_id }}">Request for disclosure</a>
-								<!--@endif-->
+								
+                                <div class="modal fade" id="requestDisclosure{{ $request->applicant_id }}" tabindex="-1" aria-labelledby="requestDisclosureLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+    	<div class="modal-content">
+    		<div class="modal-header">
+       			<h5 class="modal-title" id="requestDisclosureLabel">Request Closure: Disbursal Receipt </h5>
+       			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+     		<div class="modal-body">
+				<form action="{{ route('dso.kit-disbursement.store') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    <div class="row">
+        <div class="col-3 mb-2">
+            <label>Date of Issue</label>
+            <h6>{{ \Carbon\Carbon::now()->format('d F Y h:ia') }}</h6>
+            <input type="hidden" name="issue_date" value="{{ \Carbon\Carbon::now()->toDateTimeString() }}">
+        </div>
+		<input type="hidden" name="request_id" value="{{ $request->id }}">
+        <div class="col-4 mb-2">
+            <label>Firm Name</label>
+            <h6>{{ $request->vendor_name }}</h6>
+            <input type="hidden" name="firm_name" value="{{ $request->vendor_name }}">
+            <input type="hidden" name="vendor_id" value="{{ $request->vendor_id }}">
+        </div>
+        <div class="col-3 mb-2">
+            <label>Name of the Owner</label>
+            <h6>{{ $request->owner_name }}</h6>
+            <input type="hidden" name="owner_name" value="{{ $request->owner_name }}">
+        </div>
+		 
+        <div class="col mb-2">
+            <label>Mobile Number</label>
+            <h6>{{ $request->mob }}</h6>
+            <input type="hidden" name="mobile_number" value="{{ $request->mob }}">
+        </div>
+    </div>
+    <hr class="mt-0" />
+    <div class="row">
+        <div class="col">
+            <label><strong>Source of Fund</strong></label><br />
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="fund_source" value="DSE" id="fundSourceDSE">
+                <label class="form-check-label" for="fundSourceDSE">
+                    Sourced by DSE 
+                </label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="fund_source" value="HQ" id="fundSourceHQ" checked>
+                <label class="form-check-label" for="fundSourceHQ">
+                    Sourced by HQ
+                </label>
+            </div>
+        </div>
+        <div class="col">
+            <label><strong>Amount of procurement</strong></label>
+            <input type="text" class="form-control" name="procurement_amount" required />
+        </div>
+        <div class="col">
+            <label><strong>Bill no. and Voucher no.</strong></label>
+            <input type="text" class="form-control mb-2" name="bill_no" required />
+            <input type="file" class="form-control" name="voucher_file" accept=".pdf,.jpg,.jpeg,.png" required />
+        </div>
+    </div>
+
+    <div class="text-end mt-3">
+        <button type="submit" class="btn btn-success">Disburse Kit</button>
+    </div>
+</form>
+       
+      		</div>
+     		<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				<!--<button type="button" class="btn btn-success">Disburse Kit</button>-->
+     		</div>
+   		</div>
+ 	</div>
+</div>
+                                <!--@endif-->
 							@elseif($request->status == 'Rejected')
 								<span class="badge rounded-pill bg-danger w-100"><i class="fa-solid fa-ban"></i> Rejected</span>
 							@elseif($request->status == 'Verified')
@@ -305,86 +407,7 @@
 		
 </div>			
 		
-<div class="modal fade" id="requestDisclosure{{ $request->applicant_id }}" tabindex="-1" aria-labelledby="requestDisclosureLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg">
-    	<div class="modal-content">
-    		<div class="modal-header">
-       			<h5 class="modal-title" id="requestDisclosureLabel">Request Closure: Disbursal Receipt </h5>
-       			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-     		<div class="modal-body">
-				<form action="{{ route('dso.kit-disbursement.store') }}" method="POST" enctype="multipart/form-data">
-    @csrf
-    <div class="row">
-        <div class="col-3 mb-2">
-            <label>Date of Issue</label>
-            <h6>{{ \Carbon\Carbon::now()->format('d F Y h:ia') }}</h6>
-            <input type="hidden" name="issue_date" value="{{ \Carbon\Carbon::now()->toDateTimeString() }}">
-        </div>
-		<input type="hidden" name="request_id" value="{{ $request->request_id }}">
-        <div class="col-4 mb-2">
-            <label>Firm Name</label>
-            <h6>{{ $request->vendor_name }}</h6>
-            <input type="hidden" name="firm_name" value="{{ $request->vendor_name }}">
-            <input type="hidden" name="vendor_id" value="{{ $request->vendor_id }}">
-        </div>
-        <div class="col-3 mb-2">
-            <label>Name of the Owner</label>
-            <h6>{{ $request->owner_name }}</h6>
-            <input type="hidden" name="owner_name" value="{{ $request->owner_name }}">
-        </div>
-		 <div class="col-3 mb-2">
-            <label>Name of the Owner</label>
-            <h6>{{ $request->firm_address }}</h6>
-            <input type="hidden" name="owner_name" value="{{ $request->firm_address }}">
-        </div>
-        <div class="col mb-2">
-            <label>Mobile Number</label>
-            <h6>{{ $request->mob }}</h6>
-            <input type="hidden" name="mobile_number" value="{{ $request->mob }}">
-        </div>
-    </div>
-    <hr class="mt-0" />
-    <div class="row">
-        <div class="col">
-            <label><strong>Source of Fund</strong></label><br />
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="fund_source" value="DSE" id="fundSourceDSE">
-                <label class="form-check-label" for="fundSourceDSE">
-                    Sourced by DSE 
-                </label>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="radio" name="fund_source" value="HQ" id="fundSourceHQ" checked>
-                <label class="form-check-label" for="fundSourceHQ">
-                    Sourced by HQ
-                </label>
-            </div>
-        </div>
-        <div class="col">
-            <label><strong>Amount of procurement</strong></label>
-            <input type="text" class="form-control" name="procurement_amount" required />
-        </div>
-        <div class="col">
-            <label><strong>Bill no. and Voucher no.</strong></label>
-            <input type="text" class="form-control mb-2" name="bill_no" required />
-            <input type="file" class="form-control" name="voucher_file" accept=".pdf,.jpg,.jpeg,.png" required />
-        </div>
-    </div>
 
-    <div class="text-end mt-3">
-        <button type="submit" class="btn btn-success">Disburse Kit</button>
-    </div>
-</form>
-       
-      		</div>
-     		<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-				<!--<button type="button" class="btn btn-success">Disburse Kit</button>-->
-     		</div>
-   		</div>
- 	</div>
-</div>
    
 	 
     @endsection

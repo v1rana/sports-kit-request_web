@@ -29,18 +29,18 @@
 					<tr class="bg-primary text-white">
 						<th>Sr. No.</th>
 						<th>Application Id</th>
-						<th>Designation</th>
-						<th>Block</th>
+						<th>Body Type</th>
+                        <th>Name Of Designation</th>						
 						<th>District</th>
-						<th>Area Name</th>
+						<th>Name Of Municipal Body<br>/ Gram Panchayat/ Ward/ Village</th>
 						<th>Sports</th>
-						<th>Equipemnt</th>
+						<th>Equipment</th>
 						<th>Quantity</th>
 						<!--<th>Availability Of FoP/Hall/Poles</th>
 						<th>Tentative Players</th>
 						<th>Date Of Last Issued Sports</th>-->
 						<th>Action</th>
-						<th>Download PDF</th>
+						<th>Download <br>Application PDF</th>
 						<th>Application Status</th>
 					</tr>
 				</thead>
@@ -48,11 +48,11 @@
 			@foreach($sportsRequests as $index => $request)
 			<tr>
 				 <td>{{ $index + 1 }}.</td>
-					 <td>{{ $request['applicant_id'] }}</td>
-    <td>{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}</td>
-    <td>{{ $request['block'] }}</td>
-    <td>{{ $request['district'] }}</td>
-    <td>{{ $request['area_name'] }}</td>
+				 <td>{{ $request->applicant_id }}</td>
+<td>{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}</td>
+<td>{{ $request->specific_designation }}</td>
+<td>{{ $request->district }}</td>
+<td>{{ $request->area_name }}</td>
 
     {{-- Sports --}}
     <td>
@@ -153,7 +153,7 @@
 
 										<div class="row">												
 											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
-												<small class="info-label text-muted">1. Name</small>
+												<small class="info-label text-muted">1. Name of Applicant</small>
 												<h5>{{ $request['name'] }}</h5>
 											</div>
 											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
@@ -161,26 +161,23 @@
 												<h5>{{ $request['district'] }}</h5>
 											</div>
 											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
-												<small class="info-label text-muted">3. District </small>
-												<h5>{{ $request['district'] }}</h5>
-											</div>
-											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
-												<small class="info-label text-muted">4. Block </small>
-												<h5>{{ $request['block'] }}</h5>
-											</div>
-											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
-												<small class="info-label text-muted">5. Area Name </small>
-												<h5>{{ $request['area_name'] }}</h5>
-											</div>
-											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
-												<small class="info-label text-muted">6. Designation</small>
+												<small class="info-label text-muted">6. Body Type</small>
 												<h5>{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}</h5>
 											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">4. Name Of Designation </small>
+												<h5>{{ $request['specific_designation'] }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">5. Name Of Municipal Body<br>/ Gram Panchayat/ Ward/ Village </small>
+												<h5>{{ $request['area_name'] }}</h5>
+											</div>
+											
 										</div>
 
 										<div class="row">
 											<div class="col-12 mt-3 games-authorised-sec">
-												<h4 class="text-dark mb-2 border-bottom">Games Kit Authorised</h4>
+												<h4 class="text-dark mb-2 border-bottom">Games Kit Applied</h4>
 												@php $equipmentList = json_decode($request['sports_equipment'], true); @endphp
 												@if(is_array($equipmentList) && count($equipmentList))
 												<div class="row">
@@ -208,7 +205,7 @@
 									            </div>
 									            @endforeach
 									            @else
-									            	<p>No kits authorized.</p>
+												<p>No kit applied.</p>
 								            	@endif
 								            </div>
 								        </div>
