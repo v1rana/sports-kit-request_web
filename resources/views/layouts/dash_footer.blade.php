@@ -22,15 +22,31 @@
 
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <script>
+document.getElementById('plays_for_statte_org').addEventListener('change', function () {
+    
+    const input = document.getElementById('other_state_input');
+    if (this.value === 'Other') {
+        input.style.display = 'block';
+        input.required = true;
+    } else {
+        input.style.display = 'none';
+        input.required = false;
+    }
+});
+</script>
+<script>
     document.addEventListener('DOMContentLoaded', function () {
         const eventTypeSelect = document.getElementById('type_of_event');
         const participationSection = document.getElementById('participation_level_section');
+        const more_than25_photo = document.getElementById('more_than25_photo');
 
         function toggleParticipationLevel() {
             if (eventTypeSelect.value === 'Team') {
                 participationSection.style.display = 'block';
+                more_than25_photo.style.display = 'block';
             } else {
                 participationSection.style.display = 'none';
+                more_than25_photo.style.display = 'none';
 
                 // Optionally clear selection when hidden
                 document.querySelectorAll('input[name="participation_level"]').forEach(el => el.checked = false);
@@ -47,17 +63,29 @@
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const radioLess = document.getElementById('inlineRadio2');
-
+    const inlineRadio1 = document.getElementById('inlineRadio1');
     if (radioLess) {
       radioLess.addEventListener('change', function () {
         if (this.checked) {
+          // Show modal
           const modal = new bootstrap.Modal(document.getElementById('ineligibleModal'));
           modal.show();
+
+          // Uncheck the target input if it's a checkbox/radio
+          if (radioLess && (radioLess.type === 'checkbox' || radioLess.type === 'radio')) {
+            radioLess.checked = false;
+          }
+
+          // Make the target input required
+          if (inlineRadio1) {
+            inlineRadio1.setAttribute('required', true);
+          }
         }
       });
     }
   });
 </script>
+
 
 <script>
   document.getElementById('myDate').max = new Date().toISOString().split("T")[0];

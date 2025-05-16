@@ -1,6 +1,6 @@
 	@extends('layouts.dashboard')
 
-	@section('title', 'Sports !! Sports Gradation Certificate Application')
+	@section('title', 'Sports Gradation Certificate Application')
 
 	@section('content')
 	@if (session('success'))
@@ -23,8 +23,8 @@
 							<div class="col-xs-12 col-sm-6 col-md-8">
 								<div class="row">
 									<div class="col-xs-12 col-sm-6 col-md-6 mb-3">
-										<label for="name" class="form-label">1. Name of Sportsperson<span class="text-danger">*</span></label>
-										<input type="text" class="form-control" required id="name" name="name" value="{{ $otpData->full_name_en ?? '' }}" readonly oninput="this.value=this.value.replace(/[^A-Za-z\s]/g,'');">
+										<label for="name" class="form-label">1. Name of the Sportsperson<span class="text-danger">*</span></label>
+										<input type="text" class="form-control" required id="name" name="name" value="{{ $otpData->full_name_en ?? '' }}"  oninput="this.value=this.value.replace(/[^A-Za-z\s]/g,'');">
 									</div>
 									<div class="col-xs-12 col-sm-6 col-md-6 mb-3">
 										<label for="adhaarNo" class="form-label">2. Aadhaar No. <span class="text-danger">*</span></label>
@@ -55,6 +55,7 @@
 													{{ $val->name }}
 												</option>
 											@endforeach
+											
 										</select>
 									</div>
 									<div class="col-xs-12 col-sm-6 col-md-6 mb-3">
@@ -67,7 +68,12 @@
 													{{ $val->name }}
 												</option>
 											@endforeach
+											<option value="Other">Other</option>
 										</select>
+									</div>
+									<div class="col-xs-12 col-sm-6 col-md-6 mb-3" id="other_state_input" style="display:none;">
+										<label for="name" class="form-label">Other</label>
+										<input type="text" class="form-control" name="other_state_input" value=""  oninput="this.value=this.value.replace(/[^A-Za-z\s]/g,'');">
 									</div>
 									<div class="col-xs-12 col-sm-6 col-md-6 mb-3">
 										<label for="sportsDiscipline" class="form-label">7. Name of Sports Discipline <span class="text-danger">*</span></label>
@@ -145,34 +151,36 @@
 							</div>
 
 							<div class="col-xs-12 col-sm-6 col-md-4 mb-3">
-								<p>vi. Medal won (if any) <span class="text-danger">*</span></p>
+								<p>vi. Medal won (if any)</p>
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" required type="radio" name="medal_won" id="medalGold" value="Gold" 
+									<input class="form-check-input"  type="radio" name="medal_won" id="medalGold" value="Gold" 
 										{{ isset($otpData->medal_won) && $otpData->medal_won == 'Gold' ? 'checked' : '' }}>
 									<label class="form-check-label" for="medalGold">Gold</label>
 								</div>
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" required type="radio" name="medal_won" id="medalSilver" value="Silver" 
+									<input class="form-check-input"  type="radio" name="medal_won" id="medalSilver" value="Silver" 
 										{{ isset($otpData->medal_won) && $otpData->medal_won == 'Silver' ? 'checked' : '' }}>
 									<label class="form-check-label" for="medalSilver">Silver</label>
 								</div>
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" required type="radio" name="medal_won" id="medalBronze" value="Bronze" 
+									<input class="form-check-input"  type="radio" name="medal_won" id="medalBronze" value="Bronze" 
 										{{ isset($otpData->medal_won) && $otpData->medal_won == 'Bronze' ? 'checked' : '' }}>
 									<label class="form-check-label" for="medalBronze">Bronze</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input"  type="radio" name="medal_won" id="medalBronze" value="Particpation">
+									<label class="form-check-label" for="medalBronze">Particpation</label>
 								</div>
 							</div>
 
 							<div class="col-xs-12 col-sm-6 col-md-4 mb-3" id="participation_level_section">
 								<p>vii. Participation Level (in case of team game only) <span class="text-danger">*</span></p>
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="participation_level" id="inlineRadio1" value="25% or more" 
-										{{ isset($otpData->participation_level) && $otpData->participation_level == '25% or more' ? 'checked' : '' }}>
+									<input class="form-check-input" type="radio" name="participation_level" id="inlineRadio1" value="25% or more">
 									<label class="form-check-label" for="inlineRadio1">25% or more</label>
 								</div>
 								<div class="form-check form-check-inline">
-									<input class="form-check-input" type="radio" name="participation_level" id="inlineRadio2" value="Less than 25%" 
-										{{ isset($otpData->participation_level) && $otpData->participation_level == 'Less than 25%' ? 'checked' : '' }}>
+									<input class="form-check-input" type="radio" name="participation_level" id="inlineRadio2" value="Less than 25%">
 									<label class="form-check-label" for="inlineRadio2">Less than 25%</label>
 								</div>
 							</div>
@@ -220,16 +228,20 @@
 									<input type="file" class="form-control" id="sports_certificate" name="sports_certificate" accept=".jpg,.jpeg,.png" required onchange="previewFile(event, 'sportsPreview')">
 									<div id="sportsPreview" class="preview-container"></div>
 								</div>
+								<div class="col mb-3 border-end">
+									<label for="sports_certificate" class="form-label">Add NOC Upload (for Certifying Played from Other State/UT/Organisation) <span class="text-danger">*</span></label>
+									<input type="file" class="form-control" id="noc_upload" name="noc_upload" accept=".jpg,.jpeg,.png" required onchange="previewFile(event, 'sportsPreview')">
+									<div id="sportsPreview" class="preview-container"></div>
+								</div>
 
 								<!-- Self-Attested Photograph -->
-								<div class="col mb-3">
-									<label for="self_attested_photo" class="form-label">Certificate for as Proof for Playing more than 25% of matches<span class="text-danger">*</span></label>
-									<input type="file" class="form-control" id="more_than25_photo" name="more_than25_photo" accept=".jpg,.jpeg,.png" required onchange="previewFile(event, 'photoPreview')">
+								<div class="col mb-3" id="more_than25_photo">
+									<label for="self_attested_photo" class="form-label">Certificate for as Proof for Playing more than 25% of matches</label>
+									<input type="file" class="form-control"  name="more_than25_photo" accept=".jpg,.jpeg,.png"  onchange="previewFile(event, 'photoPreview')">
 									<div id="photoPreview" class="preview-container"></div>
 								</div>
 								<div class="col-12">
-
-										<small class="text-danger">NOTE- Upload in format .jpg, .jpeg, .png</small>
+									<small class="text-danger">NOTE- Upload in format .jpg, .jpeg, .png</small>
 								</div>
 							</div>
 						<div class="col-12 mt-4 shadow" style="background-color: bisque;padding: 21px 0px;">    
@@ -237,15 +249,10 @@
 						
 							<div class="form-check">
 						 <label class="form-check-label" for="declare1">
-									I certify that I am currently a domicile/resident of Haryana.
+								I certify that I am currently a domicile/resident of Haryana.
 								</label>
 							</div>
-							<div class="form-check">
 							
-								<label class="form-check-label" for="declare2">
-								I certify that I have never played for any State or Union Territory other than Haryana.
-								</label>
-							</div>
 							<div class="form-check">
 							
 								<label class="form-check-label" for="declare3">
@@ -255,7 +262,7 @@
 							<div class="form-check">
 							
 								<label class="form-check-label" for="declare4">
-								I certify that I have not been penalized for any unfair practice like age fraud, doping, etc., in the tournament for which cash award is being applied for.
+								I certify that I have not been penalized for any unfair practice like age fraud, doping, etc., in the tournament for which Gradation Certificate is being applied for.
 								</label>
 							</div>
 							<div class="form-check">

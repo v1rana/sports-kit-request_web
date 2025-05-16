@@ -8,6 +8,7 @@
     <meta name="keywords" content=""> 
     <meta name="author" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="{{ url('assets/job_app/dash/images/logo-sports.png') }}" />
 
 	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 	

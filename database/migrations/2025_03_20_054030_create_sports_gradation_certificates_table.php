@@ -41,7 +41,7 @@ return new class extends Migration
             $table->string('sports_certificate')->nullable();
             $table->string('more_than25_photo')->nullable();
             $table->string('profile_picture')->nullable();
-<<<<<<< HEAD
+            $table->string('noc_upload')->nullable();
             $table->string('enquiry_pdf')->nullable();
             $table->string('replied_pdf')->nullable();
             $table->string('status')->nullable();
@@ -51,16 +51,11 @@ return new class extends Migration
             $table->string('certificate_upload_datetime')->nullable();
             $table->string('dso_id')->nullable();
             $table->string('rejection_remarks')->nullable();
-			$table->string('certificate_pdf')->nullable();
-			$table->string('verification_by_sportsperson')->nullable();
+            $table->string('certificate_pdf')->nullable();
+            $table->string('verification_by_sportsperson')->nullable();
             $table->string('user_id')->nullable();
             $table->string('verify_status')->nullable();
             $table->string('appl_id')->nullable();
-=======
-            $table->string('status')->nullable();
-            $table->string('approve_reject_datetime')->nullable();
-            $table->string('dso_id')->nullable();
->>>>>>> 0b9bcb90967ad7dbd4ea7d65c5b14e97a0e6ef74
             $table->timestamps();
         });
     }
