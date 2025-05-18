@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { fetchUserDetails, updateUserData } from "../services/hosp-service";
-
+import { toast } from 'react-toastify';
 const BasicDetails = () => {
     const navigate = useNavigate();
     let userData = JSON.parse(localStorage.getItem("user")!);
@@ -38,7 +38,7 @@ const BasicDetails = () => {
         domicile: userDetails.domicile??null,
         domicile_doc: userDetails.domicile_doc,
         // other_state: userDetails.other_state,
-        played_national_level:userDetails.played_national_level??null,
+        played_national_level:userDetails.played_national_level??'',
         national_level_doc:userDetails.national_level_doc,
         organisation_represented:userDetails.organisation_represented,
         organisation_doc:userDetails.organisation_doc,
@@ -78,6 +78,11 @@ const BasicDetails = () => {
         return "";
     };
     const validateDomicle = (value: string) => {
+        if(value == '2') {
+            toast.error("Ineligible to apply")
+            return 'Ineligible to apply';
+        }
+
         if (!value) return "Please select the haryana resident/domicile";
         return "";
     };
@@ -141,7 +146,7 @@ const BasicDetails = () => {
         navigate("/login");
     };
 
-    const save = async () => {
+    const save = async (is_save = false) => {
         const newErrors: any = {};
 
         const emailError = validateEmail(userDetailsa.email_id);
@@ -196,7 +201,10 @@ const BasicDetails = () => {
         const response = await updateUserData(formData);
         if (response.status === "success") {
             localStorage.setItem("user", JSON.stringify(response.user));
-            navigate("/hosp/hosp-form");
+            if(!is_save) {
+                navigate("/hosp/hosp-form");
+            }
+            
         }
     };
 
@@ -669,7 +677,7 @@ const BasicDetails = () => {
                                             }));
                                             setErrors((err) => ({
                                                 ...err,
-                                                played_national_level: validateDomicle(
+                                                played_national_level: validateNationalLevel(
                                                     e.target.value
                                                 ),
                                             }));
@@ -757,7 +765,7 @@ const BasicDetails = () => {
                                                 }));
                                                 setErrors((err) => ({
                                                     ...err,
-                                                    organisation_represented: validateEmail(
+                                                    organisation_represented: validateCentralOrg(
                                                         e.target.value
                                                     ),
                                                 }));
@@ -820,14 +828,14 @@ const BasicDetails = () => {
                                 <div className="text-center mt-4">
                                     <button
                                         type="button"
-                                        onClick={save}
+                                        onClick={() => save(true)}
                                         className="btn btn-primary"
                                     >
                                         Save
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={save}
+                                        onClick={() => save(false)}
                                         className="btn btn-primary mx-2"
                                     >
                                         Next

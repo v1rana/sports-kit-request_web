@@ -107,7 +107,7 @@ const HospForm = () => {
     const defaultDeclarations = [
         "1. I have read the Haryana Outstanding Sportspersons (Recruitment and Condition of Service) Rules, 2021 and declare that I am eligible for submission of my application for consideration of appointment under these Rules.",
         "2. I have enclosed self-attested copies of all documents in support of my application.",
-        "3. I have played in 50% or more of the games played by team in the tournament at serial No.12 above.",
+        "3. I have played in 50% or more of the games played by team in the tournament.",
         "4. I did not represent a State/UT other than Haryana at the national level.",
         "5. I am not guilty of doping, sexual harassment and abuse, competitive manipulation like betting, inside information, match fixing, tanking, threatening the integrity and essence of sports.",
         "6. If appointment is offered, I undertake that I shall have no subsisting contract for pecuniary gains like commercial endorsement or professional sport before joining the service.",
@@ -349,12 +349,12 @@ const HospForm = () => {
     const prevStep = () => {
         if (currentStep > 0) {
             setCurrentStep((prev) => prev - 1);
-            navigate({
-                pathname: location.pathname, // or keep current path
-                search: createSearchParams({
-                    step: String(currentStep - 1),
-                }).toString(),
-            });
+            // navigate({
+            //     pathname: location.pathname, // or keep current path
+            //     search: createSearchParams({
+            //         step: String(currentStep - 1),
+            //     }).toString(),
+            // });
         }
     };
 
@@ -511,7 +511,8 @@ const HospForm = () => {
         printWindow.close();
     };
 
-    const handlePrintDeclaration = () => {
+    const handlePrintDeclaration = (e) => {
+        e.preventDefault();
         const content: any = document.getElementById("print_declaration");
         const printWindow: any = window.open("", "", "width=800,height=600");
         printWindow.document.write(`
@@ -634,9 +635,9 @@ const HospForm = () => {
             // ✅ Update URL with query param ?step=1
             navigate({
                 pathname: location.pathname, // or keep current path
-                search: createSearchParams({
-                    step: currentStep + 1,
-                }).toString(),
+                // search: createSearchParams({
+                //     step: currentStep + 1,
+                // }).toString(),
             });
             console.log("Event submitted:", response.data);
             // Move to next step or show success
@@ -700,9 +701,9 @@ const HospForm = () => {
             if (currentStep < stepsTotal) setCurrentStep((nxt) => nxt + 1);
             navigate({
                 pathname: location.pathname, // or keep current path
-                search: createSearchParams({
-                    step: currentStep + 1,
-                }).toString(),
+                // search: createSearchParams({
+                //     step: currentStep + 1,
+                // }).toString(),
             });
         } catch (error) {
             console.error(
@@ -833,9 +834,9 @@ const HospForm = () => {
 
         navigate({
             pathname: location.pathname, // or keep current path
-            search: createSearchParams({
-                step: currentStep + 1,
-            }).toString(),
+            // search: createSearchParams({
+            //     step: currentStep + 1,
+            // }).toString(),
         });
         // axios.post('/api/sports-discipline', submissionData)
     };
@@ -1369,13 +1370,14 @@ const HospForm = () => {
                             <hr />
                             <div id="text-center mt-4" className="text-end">
                                 {currentStep > 1 && (
-                                    <button
+                                    
+                                    <Link
                                         type="button"
-                                        onClick={prevStep}
-                                        className="btn btn-primary m-2"
+                                        to="/basic-details"
+                                        className="btn btn-primary mx-2"
                                     >
                                         Previous
-                                    </button>
+                                    </Link>
                                 )}
 
                                 <button
@@ -1982,14 +1984,15 @@ const HospForm = () => {
                                     >
                                         <button
                                             className="btn btn-primary"
-                                            onClick={handlePrintDeclaration}
+                                            onClick={(e) => handlePrintDeclaration(e)}
+                                           
                                         >
-                                            Print Declaration
+                                            Download Declaration
                                             <i className="fa fa-print"></i>
                                         </button>
                                     </div>
                                     <div className="col-md-6">
-                                        <label>Upload Declaration</label>
+                                        <label>Upload Signed Application Form</label>
                                         <input
                                             type="file"
                                             accept="application/pdf"
@@ -2006,8 +2009,16 @@ const HospForm = () => {
                                 </div>
                             </div>
 
-                            <div id="col-12 text-center mt-3">
+                            <div id="col-12 text-center mt-3 text-end">
                                 {currentStep === stepsTotal && (
+                                    <div>
+                                    <button
+                                        type="button"
+                                        onClick={prevStep}
+                                        className="btn btn-primary m-2"
+                                    >
+                                        Previous
+                                    </button>
                                     <button
                                         id="submit-btn"
                                         type="submit"
@@ -2015,6 +2026,7 @@ const HospForm = () => {
                                     >
                                         Submit
                                     </button>
+                                    </div>
                                 )}
                             </div>
                         </form>
@@ -2386,8 +2398,7 @@ const HospForm = () => {
                                                         I have played 50% or
                                                         more of the games played
                                                         by team in the
-                                                        tournament at serial no.
-                                                        12 above.
+                                                        tournament.
                                                     </li>
                                                     <li>
                                                         I did not represent a
