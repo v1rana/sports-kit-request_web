@@ -25,6 +25,7 @@ class HospController extends Controller
             'mobile' => 'required|digits:10',
             'aadhaar' => 'required|digits:12',
             'email_id' => 'required|email',
+            'age' => 'required',
             'photo' => 'required',
             'domicile' => 'required',
             'dob_doc' => 'required',
@@ -64,6 +65,7 @@ class HospController extends Controller
             }
             $user_details->domicile = $request->domicile;
             $user_details->aadhaar = $request->aadhaar;
+            $user_details->age = $request->age;
             $user_details->played_national_level = $request->played_national_level;
             $user_details->organisation_represented = $request->organisation_represented;
             $user_details->save();

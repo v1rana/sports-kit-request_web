@@ -205,28 +205,35 @@ const certificateRef = useRef<HTMLDivElement>(null);
                                                     7.  Event type
                                                 </small>
                                                 <h5>
-                                                {userData.event_hosp
+                                                {/* {userData.event_hosp
                                                         .event_type == "1"
                                                         ? "Individual"
-                                                        : "Team"}
+                                                        : "Team"} */}
+                                                        Individual
                                                 </h5>
                                             </td>
                                             <td>
                                                 <small>Played National Level</small>
-                                                <h5>  {userData.event_hosp
+                                                <h5>
+                                                      {/* {userData.event_hosp
                                                         .played_national_level ==
                                                     "1"
                                                         ? "Yes"
-                                                        : "No"}</h5>
+                                                        : "No"} */}
+                                                        yes
+                                                        </h5>
                                             </td>
                                             </tr>
                                             <tr>
                                             <td>
                                                 <small> Name of Central Organisation
                                                 Represented</small>
-                                                <h5>   {
+                                                <h5>  
+                                                     {/* {
                                                         userData.event_hosp.organisation_represented ?? 'N/A'
-                                                    }</h5>
+                                                    } */}
+                                                    'N/A'
+                                                    </h5>
                                             </td>
                                         </tr>
                                         {userData.education_hosp.length > 0 && 

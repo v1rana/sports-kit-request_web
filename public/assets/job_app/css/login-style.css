@@ -333,8 +333,7 @@ z-index: -1;
   .hero-content {
 	display: flex;
 	align-items: center;         /* vertically centers the text with the logo */
-	justify-content: flex-start; /* keep logo on left */
-	gap: 16.5rem;;                 /* space between logo and text */
+	justify-content: space-between                 /* space between logo and text */
   }
   
 

@@ -37,6 +37,8 @@ const BasicDetails = () => {
         dob_doc: userDetails.dob_doc,
         domicile: userDetails.domicile??null,
         domicile_doc: userDetails.domicile_doc,
+        caste_category: userDetails.caste_category,
+        age: userDetails.age,
         // other_state: userDetails.other_state,
         played_national_level:userDetails.played_national_level??'',
         national_level_doc:userDetails.national_level_doc,
@@ -55,6 +57,7 @@ const BasicDetails = () => {
         national_level_doc: "",
         organisation_represented: "",
         organisation_doc: "",
+        caste_category: "",
         // other_state: "",
     });
     const domicileFileRef = useRef(null);
@@ -90,6 +93,25 @@ const BasicDetails = () => {
     const validateDobDoc = (value: string) => {
         if (!value)
             return "Please upload birth certificate";
+        return "";
+    };
+    const validateCasteAge = (value: string) => {
+        if (!value) {
+            return "Please enter caste category";
+        }
+    
+        const age = parseInt(userDetailsa.age); // make sure it's a number
+    
+        if (value === 'general') {
+            if (!age || age < 18 || age > 42) {
+                toast.error("Ineligible to apply (Age must be between 18 and 42 for General category)");
+                return "Ineligible to apply (Age must be between 18 and 42 for General category)";
+            }
+        }else if(!age || age < 18) {
+            toast.error("Ineligible to apply (Age must be greater than 18 )");
+            return "Ineligible to apply (Age must be greater than 18 )";
+        }
+    
         return "";
     };
      const validateDomicleDoc = (value: string) => {
@@ -149,6 +171,9 @@ const BasicDetails = () => {
     const save = async (is_save = false) => {
         const newErrors: any = {};
 
+        const castError = validateCasteAge(userDetailsa.caste_category);
+        if (castError) newErrors.caste_category = castError;
+
         const emailError = validateEmail(userDetailsa.email_id);
         if (emailError) newErrors.email_id = emailError;
 
@@ -189,6 +214,7 @@ const BasicDetails = () => {
         const formData = new FormData();
         formData.append("email_id", userDetailsa.email_id);
         formData.append("mobile", userDetailsa.mobile);
+        formData.append("age", userDetailsa.age);
         formData.append("aadhaar", userDetailsa.aadhaar);
         formData.append("photo", userDetailsa.photo); // This must be a File
         formData.append("domicile", userDetailsa.domicile);
@@ -300,7 +326,7 @@ const BasicDetails = () => {
                         style={{ width: `${25}%` }}
                     ></div>
                 </div>
-                        <h3 className="form-heading">Basic Details Form</h3>
+                        <h3 className="text-center mt-5">Basic Details Form</h3>
                         <form>
                        
                             <div className="row g-3">
@@ -825,7 +851,8 @@ const BasicDetails = () => {
                                         }
                                     </div>
                                 )}
-                                <div className="text-center mt-4">
+                                <hr />
+                                <div className="text-center mt-1">
                                     <button
                                         type="button"
                                         onClick={() => save(true)}

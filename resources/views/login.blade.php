@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sports Department - Citizen Login</title>
+  <title>Sports Department - Offical Login</title>
   <link rel="stylesheet" href="{{ url('assets/job_app/bootstrap/css/bootstrap.min.css') }}" />
         <link rel="stylesheet" href="{{ url('assets/job_app/css/login-style.css') }}" />
   <style>

@@ -36,7 +36,7 @@ const HospForm = () => {
     };
     const params = new URLSearchParams(window.location.search);
     // const step: any = params.get("step") ? parseInt(params.get("step")!) : 1;
-    const step: any = 2;  // start from 2, first step is basic detail
+    const step: any = 2; // start from 2, first step is basic detail
     // alert(step)
     const [currentStep, setCurrentStep] = useState(step);
     const [physical_disability, setPhysicalDisability] = useState(false);
@@ -72,7 +72,7 @@ const HospForm = () => {
         achievement_date: string;
         tournament_venue: string;
         medal_won: string;
-      
+
         // participation_level: string;
         match_played_by_team: string;
         match_played_by_me: string;
@@ -320,9 +320,9 @@ const HospForm = () => {
             setCurrentStep((prev) => (prev > 1 ? prev - 1 : 1));
             navigate({
                 pathname: location.pathname, // or keep current path
-                search: createSearchParams({
-                    step: String(currentStep),
-                }).toString(),
+                // search: createSearchParams({
+                //     step: String(currentStep),
+                // }).toString(),
             });
         };
 
@@ -514,55 +514,60 @@ const HospForm = () => {
     const handlePrintDeclaration = (e) => {
         e.preventDefault();
         const content: any = document.getElementById("print_declaration");
-        const printWindow: any = window.open("", "", "width=800,height=600");
-        printWindow.document.write(`
+        // const printWindow: any = window.open("", "", "width=800,height=600");
+        const htmlContent =`
          <!DOCTYPE html>
-<html>
+            <html>
 
-<head>
-    <title>Apply Certificate Form - Sports Haryana </title>
-    <meta charset="UTF-8">
-    <meta name="description" content="">
-    <meta name="keywords" content=""> 
-    <meta name="author" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <head>
+                    <title>Apply Certificate Form - Sports Haryana </title>
+                    <meta charset="UTF-8">
+                    <meta name="description" content="">
+                    <meta name="keywords" content=""> 
+                    <meta name="author" content="">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-	
-	<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+                    
+                    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 
 
-	<style>
-		@page{orientation: A4;margin:0; padding:0}		
-		body{background:#fafafc;margin:0;padding:0;}
-		h1,h2,h3,h4,h5,h6{font-family: "Jost", sans-serif;color:#5f788a; margin:0}
-		a,p,li,td{text-decoration:none; font-family: "Noto Sans", sans-serif;}
-		.logo a{display:flex; align-items:center}
-		.logo img{display: inline-block;vertical-align: middle;margin: 0 4px 0 0;max-width:70px; width:100%}
-		td h4{font-size: 30px;}
-		td h5{font-size: 20px;margin:0}
-		.logo h1{color:#fff; font-size:26px; padding-left:10px}
-		footer{background:#2f4858; color:#fff;width:100%;bottom:0;padding:10px 0; font-size:12px; left:0}
-		footer p{margin:0}
-		ol {margin:0; padding:0}
-		ol li{padding: 0 10px 20px;margin-left:30px}
-		@media print{
-			* { -webkit-print-color-adjust: exact !important; color-adjust: exact !important;print-color-adjust: exact !important;}
-			table tbody table{width: 90% !important}
-		}
-	</style>
-	
-	
-</head>
-            <body>
-              ${content.innerHTML}
-            </body>
+                    <style>
+                        @page{orientation: A4;margin:0; padding:0}		
+                        body{background:#fafafc;margin:0;padding:0;}
+                        h1,h2,h3,h4,h5,h6{font-family: "Jost", sans-serif;color:#5f788a; margin:0}
+                        a,p,li,td{text-decoration:none; font-family: "Noto Sans", sans-serif;}
+                        .logo a{display:flex; align-items:center}
+                        .logo img{display: inline-block;vertical-align: middle;margin: 0 4px 0 0;max-width:70px; width:100%}
+                        td h4{font-size: 30px;}
+                        td h5{font-size: 20px;margin:0}
+                        .logo h1{color:#fff; font-size:26px; padding-left:10px}
+                        footer{background:#2f4858; color:#fff;width:100%;bottom:0;padding:10px 0; font-size:12px; left:0}
+                        footer p{margin:0}
+                        ol {margin:0; padding:0}
+                        ol li{padding: 0 10px 20px;margin-left:30px}
+                        @media print{
+                            * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important;print-color-adjust: exact !important;}
+                            table tbody table{width: 90% !important}
+                        }
+                    </style>
+                    
+                    
+                </head>
+                <body>
+                ${content.innerHTML}
+                </body>
           </html>
-        `);
-        printWindow.document.close();
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();
+        `;
+        // printWindow.document.close();
+        // printWindow.focus();
+        // printWindow.print();
+        // printWindow.close();
+        const blob = new Blob([htmlContent], { type: "text/html" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "declaration.html"; // or .doc for Word
+        link.click();
     };
 
     const onEventSubmit = async (data) => {
@@ -851,37 +856,42 @@ const HospForm = () => {
 
     return (
         <div>
+           
             <header className="hero-section">
-                        <div className="hero-content">
-                            <img
-                                src="/assets/images/logo-sports.png"
-                                alt="Sports Department Logo"
-                                className="header-logo mx-3"
-                            />
-                            <div className="hero-text">
-                                <h2>
-                                Haryana Outstanding Sportspersons Application
-                                <br />Sports Department, Haryana
-                                </h2>
-                                <p>
-                                    Let the young minds grow to the full
-                                    potential
-                                </p>
-                            </div>
-                        </div>
+                <div className="hero-content">
+                    <img
+                        src="/assets/images/logo-sports.png"
+                        alt="Sports Department Logo"
+                        className="header-logo mx-3"
+                    />
+                    <div className="hero-text">
+                        <h2>
+                            Haryana Outstanding Sportspersons Application
+                            <br />
+                            <small>Sports Department, Haryana</small>
+                        </h2>
+                        <p>Let the young minds grow to the full potential</p>
+                    </div>
+                    <div className="float-end m-2">
+                        <button
+                            className="btn btn-danger me-1"
+                            onClick={logout}
+                        >
+                                <i className="fa-solid fa-power-off"></i> Logout
+                        </button>
+                    </div>
+                </div>
 
-                        <div className="hero-wave">
-                            <svg
-                                viewBox="0 0 500 150"
-                                preserveAspectRatio="none"
-                            >
-                                <path
-                                    d="M0.00,49.98 C157.87,179.29 349.61,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
-                                    style={{ stroke: "none", fill: "#f0f0f0" }}
-                                ></path>
-                            </svg>
-                        </div>
-                    </header>
+                <div className="hero-wave">
+                    <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+                        <path
+                            d="M0.00,49.98 C157.87,179.29 349.61,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
+                            style={{ stroke: "none", fill: "#f0f0f0" }}
+                        ></path>
+                    </svg>
+                </div>
+            </header>
+            
             <div className="container form-container">
                 {/* <div className="col-lg-12 offset-lg-1 mx-0 px-0">
                         <div id="title-container">
@@ -902,46 +912,46 @@ const HospForm = () => {
                             </div>
                         </div>
                     </div> */}
+                {!isSubmitted && 
+                    <div className="progress">
+                        <ol>
+                            <li
+                                className={
+                                    currentStep === 1 ? "progress-active" : ""
+                                }
+                            >
+                                <span>1. Basic Details</span>
+                            </li>
 
-                <div className="progress">
-                    <ol>
-                    <li
-                            className={
-                                currentStep === 1 ? "progress-active" : ""
-                            }
-                        >
-                            <span>1. Basic Details</span>
-                        </li>
-                        
-                        <li
-                            className={
-                                currentStep === 2 ? "progress-active" : ""
-                            }
-                        >
-                            <span>2. Education Details</span>
-                        </li>
-                        <li
-                            className={
-                                currentStep === 3 ? "progress-active" : ""
-                            }
-                        >
-                            <span>3. Best Sports Achievement </span>
-                        </li>
-                        <li
-                            className={
-                                currentStep === 4 ? "progress-active" : ""
-                            }
-                        >
-                            <span>4. Declaration</span>
-                        </li>
-                    </ol>
-                    <div
-                        className="progress-bar progress-bar-striped progress-bar-animated bg-success"
-                        role="progressbar"
-                        style={{ width: `${progressPercent}%` }}
-                    ></div>
-                </div>
-
+                            <li
+                                className={
+                                    currentStep === 2 ? "progress-active" : ""
+                                }
+                            >
+                                <span>2. Education Details</span>
+                            </li>
+                            <li
+                                className={
+                                    currentStep === 3 ? "progress-active" : ""
+                                }
+                            >
+                                <span>3. Best Sports Achievement </span>
+                            </li>
+                            <li
+                                className={
+                                    currentStep === 4 ? "progress-active" : ""
+                                }
+                            >
+                                <span>4. Declaration</span>
+                            </li>
+                        </ol>
+                        <div
+                            className="progress-bar progress-bar-striped progress-bar-animated bg-success"
+                            role="progressbar"
+                            style={{ width: `${progressPercent}%` }}
+                        ></div>
+                    </div>
+                }
                 {isSubmitting && (
                     // <div className="d-block text-center mt-5">Submitting...</div>
                     <div id="preloader-wrapper">
@@ -990,8 +1000,6 @@ const HospForm = () => {
                                 <h5 className="text-center mt-1">
                                     {eventTitle}
                                 </h5> */}
-
-                           
 
                                 {/* <div className="col-md-6">
                                     <label>Select Tournament</label>
@@ -1258,7 +1266,7 @@ const HospForm = () => {
 
                             {educationFields.map((field, index) => (
                                 <div key={index} className="row g-3">
-                                    <div className="col-md-6">
+                                    <div className="col">
                                         <label>Select Qualification</label>
                                         <select
                                             className="form-select"
@@ -1287,7 +1295,7 @@ const HospForm = () => {
                                     </div>
 
                                     {field.qualification === "other" && (
-                                        <div className="col-md-6">
+                                        <div className="col-md-4">
                                             <label>
                                                 Specify Other Qualification
                                             </label>
@@ -1306,7 +1314,7 @@ const HospForm = () => {
                                         </div>
                                     )}
 
-                                    <div className="col-md-6">
+                                    <div className="col">
                                         <label>Attach Certificates (PDF)</label>
 
                                         <input
@@ -1336,16 +1344,16 @@ const HospForm = () => {
                                         )}
                                     </div>
 
-                                    <div className="col-md-2">
-                                        {educationFields.length > 1 && (
-                                            <button
+                                    <div className="col-md-1"><br /> 
+                                        {educationFields.length > 1 && index != 0 && (
+                                           <button
                                                 type="button"
                                                 className="btn btn-outline-danger"
                                                 onClick={() =>
                                                     handleRemoveEducation(index)
                                                 }
                                             >
-                                                Remove
+                                                <i className="fa-regular fa-trash-can"></i>
                                             </button>
                                         )}
                                     </div>
@@ -1357,7 +1365,6 @@ const HospForm = () => {
                                     )}
                                 </div>
                             ))}
-
                             <div className="col-12 text-end">
                                 <button
                                     type="button"
@@ -1368,13 +1375,12 @@ const HospForm = () => {
                                 </button>
                             </div>
                             <hr />
-                            <div id="text-center mt-4" className="text-end">
+                            <div  className=" text-center mt-1">
                                 {currentStep > 1 && (
-                                    
                                     <Link
                                         type="button"
                                         to="/basic-details"
-                                        className="btn btn-primary mx-2"
+                                        className="float-none btn btn-primary mx-2"
                                     >
                                         Previous
                                     </Link>
@@ -1393,9 +1399,28 @@ const HospForm = () => {
                             hidden={currentStep === 3 ? false : true}
                             onSubmit={onSportDisciplineSubmit}
                         >
-                            <h2 className="text-center">Best Sports Achievement </h2>
+                            {eventTitle === "Individual Event" ? (
+                                <h6 className="text-center mt-4">
+                                    FORM - I
+                                    <br />
+                                    [See rule 9 (1)]
+                                </h6>
+                            ) : (
+                                <h6 className="text-center mt-4">
+                                    FORM - II
+                                    <br />
+                                    [See rule 9 (1)]
+                                    <br />
+                                </h6>
+                            )}
+                            {/* <h5 className="text-center mt-1">
+                                    {eventTitle}
+                                </h5> */}
+                            <h2 className="text-center mt-1">
+                                Best Sports Achievement{" "}
+                            </h2>
 
-                            <div className="col-md-12">
+                            <div className="col-md-12 ms-4">
                                 <div className="form-check p-0">
                                     <input
                                         className="form-check-input"
@@ -1491,34 +1516,31 @@ const HospForm = () => {
                                     </div>
                                 </>
                             )}
-                                 <div className="col-md-6">
-                                    <label>Event Type</label>
-                                    <select
+                            <div className="col-md-6">
+                                <label>Event Type</label>
+                                <select
                                     name="event_type"
-                                         value={formData.event_type}
-                                        className={`form-select ${
-                                            sportdiserrors.event_type
-                                                ? "is-invalid"
-                                                : ""
-                                        }`}
-                                        onChange={(e) =>{
-                                            fetchTournamentList(e.target.value),
-                                            handleSportsDiscChanges(e)
-                                        }
-                                        }
-                                    >
-                                        <option value="" selected disabled>
-                                            Select
-                                        </option>
-                                        <option value="1">
-                                            Individual Event
-                                        </option>
-                                        <option value="2">Team Event</option>
-                                    </select>
-                                     <div className="invalid-feedback">
+                                    value={formData.event_type}
+                                    className={`form-select ${
+                                        sportdiserrors.event_type
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
+                                    onChange={(e) => {
+                                        fetchTournamentList(e.target.value),
+                                            handleSportsDiscChanges(e);
+                                    }}
+                                >
+                                    <option value="" selected disabled>
+                                        Select
+                                    </option>
+                                    <option value="1">Individual Event</option>
+                                    <option value="2">Team Event</option>
+                                </select>
+                                <div className="invalid-feedback">
                                     {sportdiserrors.event_type}
                                 </div>
-                                </div>
+                            </div>
                             <div className="col-md-6">
                                 <label>Name of Sports Discipline</label>
                                 <select
@@ -1677,18 +1699,28 @@ const HospForm = () => {
                                     type="date"
                                     name="achievement_date"
                                     value={formData.achievement_date}
-                                    className={`form-control ${sportdiserrors.achievement_date ? "is-invalid" : ""}`}
+                                    className={`form-control ${
+                                        sportdiserrors.achievement_date
+                                            ? "is-invalid"
+                                            : ""
+                                    }`}
                                     max={new Date().toISOString().split("T")[0]} // 👈 correct format: YYYY-MM-DD
                                     onChange={handleSportsDiscChanges}
-                                    onClick={(e) => e.target.showPicker && e.target.showPicker()}
-                                    />
+                                    onClick={(e) =>
+                                        e.target.showPicker &&
+                                        e.target.showPicker()
+                                    }
+                                />
                                 <div className="invalid-feedback">
                                     {sportdiserrors.achievement_date}
                                 </div>
                             </div>
 
                             <div className="col-md-6">
-                                <label>Tournament Venue (Type as per in your Achievement Certificate)</label>
+                                <label>
+                                    Tournament Venue (Type as per in your
+                                    Achievement Certificate)
+                                </label>
                                 <input
                                     type="text"
                                     name="tournament_venue"
@@ -1723,7 +1755,9 @@ const HospForm = () => {
                                     <option value="gold">Gold</option>
                                     <option value="silver">Silver</option>
                                     <option value="bronze">Bronze</option>
-                                    <option value="participation">Participation</option>
+                                    <option value="participation">
+                                        Participation
+                                    </option>
                                 </select>
                                 {/* <div className="invalid-feedback">
                                     {sportdiserrors.medal_won}
@@ -1879,8 +1913,9 @@ const HospForm = () => {
                                     </div>
                                 )}
                             </div> */}
+                            <hr />
 
-                            <div className="col-12 text-center mt-3">
+                            <div className="col-12 text-center mt-1">
                                 {currentStep > 1 && (
                                     <button
                                         type="button"
@@ -1922,7 +1957,7 @@ const HospForm = () => {
                             hidden={currentStep === 4 ? false : true}
                             onSubmit={handleSubmit(handleDeclarationSubmit)}
                         >
-                            <h3 className="text-center">
+                            <h3 className="text-center mt-5">
                                 Declaration by Sportsperson
                             </h3>
                             <div className="">
@@ -1932,7 +1967,7 @@ const HospForm = () => {
                                         {/* <p>Declaration by Sportsperson</p> */}
                                         {declarationList.map((label, index) => (
                                             <div
-                                                className="form-check"
+                                                className=""
                                                 key={`d${index + 1}`}
                                             >
                                                 <input
@@ -1984,15 +2019,18 @@ const HospForm = () => {
                                     >
                                         <button
                                             className="btn btn-primary"
-                                            onClick={(e) => handlePrintDeclaration(e)}
-                                           
+                                            onClick={(e) =>
+                                                handlePrintDeclaration(e)
+                                            }
                                         >
-                                            Download Declaration
+                                            Download Signed Application Form
                                             <i className="fa fa-print"></i>
                                         </button>
                                     </div>
                                     <div className="col-md-6">
-                                        <label>Upload Signed Application Form</label>
+                                        <label>
+                                            Upload Signed Application Form
+                                        </label>
                                         <input
                                             type="file"
                                             accept="application/pdf"
@@ -2002,30 +2040,30 @@ const HospForm = () => {
                                             }
                                         />
                                     </div>
-                                    
+
                                     <div className="text-danger">
                                         {diclarationerrors.msg}
                                     </div>
                                 </div>
                             </div>
-
-                            <div id="col-12 text-center mt-3 text-end">
+                            <hr />
+                            <div className=" text-center mt-1">
                                 {currentStep === stepsTotal && (
                                     <div>
-                                    <button
-                                        type="button"
-                                        onClick={prevStep}
-                                        className="btn btn-primary m-2"
-                                    >
-                                        Previous
-                                    </button>
-                                    <button
-                                        id="submit-btn"
-                                        type="submit"
-                                        className="btn btn-primary"
-                                    >
-                                        Submit
-                                    </button>
+                                        <button
+                                            type="button"
+                                            onClick={prevStep}
+                                            className="btn btn-primary m-2"
+                                        >
+                                            Previous
+                                        </button>
+                                        <button
+                                            id="submit-btn"
+                                            type="submit"
+                                            className="btn btn-primary"
+                                        >
+                                            Submit
+                                        </button>
                                     </div>
                                 )}
                             </div>
@@ -2053,24 +2091,25 @@ const HospForm = () => {
             {/* print declaration */}
             <div id="print_declaration" style={{ display: "none" }}>
                 <table width="100%">
-                    <thead style={{ background: "#225395" }}>
+                    <thead style={{ background: "#4831d4" }}>
                         <tr>
                             <th style={{ padding: "10px" }}>
-                                <div className="logo">
+                                <div className="logo ">
                                     <a
                                         href="#"
                                         title="Go to home"
-                                        className="site_logo"
+                                        className="site_logo d-flex align-items-center"
                                         rel="home"
                                     >
                                         <img
                                             id="logo"
-                                            src="images/logo-sports.png"
+                                            src="../assets/images/logo-sports.png"
                                             alt="Sports Haryana Govt"
                                         />
-                                        <div className="logo_text">
-                                            <h1 className="h1-logo">
-                                                Sports Department
+                                        <div className="logo_text ms-3">
+                                            <h1 className="h1-logo text-white mb-0">
+                                                Sports Department<br />
+                                                <small>Let the young minds grow to the full potential</small>
                                             </h1>
                                         </div>
                                     </a>
@@ -2087,38 +2126,36 @@ const HospForm = () => {
                         <tr>
                             <td>
                                 <table
-                                    width="60%"
+                                    width="65%"
                                     style={{
                                         margin: "0 auto 50px",
+                                        border: "1px solid #dedede",
                                         background: "#fff",
                                         tableLayout: "fixed",
                                     }}
                                 >
                                     <tbody>
                                         <tr>
-                                            <td style={{ padding: "15px" }}>
+                                            <td style={{ padding: "6px 10px" }}>
                                                 Name
                                                 <h5>{userData.name}</h5>
                                             </td>
-                                            <td style={{ padding: "15px" }}>
+                                            <td style={{ padding: "6px 10px" }} align="center">
                                                 Date Of birth
                                                 <h5>
                                                     {userDetails.date_of_birth}
                                                 </h5>
                                             </td>
                                             <td
-                                                style={{ padding: "15px" }}
-                                                align="right"
-                                            >
+                                                style={{ padding: "6px 10px" }} align="right" >
                                                 Aadhar No.
                                                 <h5>{userDetails.aadhaar}</h5>
                                             </td>
                                         </tr>
                                         <tr>
-                                            
                                             <td
-                                                style={{ padding: "15px" }}
-                                                align="center"
+                                                style={{ padding: "6px 10px" }}
+                                                
                                             >
                                                 Caste Category
                                                 <h5>
@@ -2126,15 +2163,13 @@ const HospForm = () => {
                                                 </h5>
                                             </td>
                                             <td
-                                                style={{ padding: "15px" }}
-                                                align="right"
+                                                style={{ padding: "6px 10px" }}
+                                                align="center"
                                             >
                                                 Mobile
                                                 <h5>{userData.mobile}</h5>
                                             </td>
-                                        </tr>
-                                        <tr>
-                                            <td style={{ padding: "15px" }}>
+                                            <td style={{ padding: "6px 10px" }} align="right">
                                                 Haryana Domicle
                                                 <h5>
                                                     {userDetails.domicile == "1"
@@ -2148,204 +2183,201 @@ const HospForm = () => {
                                         Event </td>
                                         </tr> */}
                                         {userData.event_hosp && (
-                                        <tr>
-                                            <td style={{ padding: "15px" }}>
-                                                Event type
-                                                <h5>
-                                                    {userData.event_hosp
-                                                        .event_type == "1"
-                                                        ? "Individual"
-                                                        : "Team"}
-                                                </h5>
-                                            </td>
-                                            <td style={{ padding: "15px" }}>
-                                            Played National Level
-                                                <h5>
-                                                    {userData.event_hosp
-                                                        .played_national_level ==
-                                                    "1"
-                                                        ? "Yes"
-                                                        : "No"}
-                                                </h5>
-                                                <h6>
-                                                    {userData.event_hosp
-                                                        .national_level_doc
-                                                        ? "(Attached doc)"
-                                                        : "(No Attachment)"}
-                                                </h6>
-                                            </td>
-                                            <td style={{ padding: "15px" }}>
-                                                Name of Central Organisation
-                                                Represented
-                                                <h5>
-                                                    {
-                                                        userData.organisation_represented
-                                                    }
-                                                </h5>
-                                                <h6>
-                                                    {userData.event_hosp
-                                                        .organisation_doc
-                                                        ? "(Attached doc)"
-                                                        : "(No Attachment)"}
-                                                </h6>
-                                            </td>
-                                        </tr>
+                                            <tr>
+                                                <td style={{ padding: "6px 10px " }}>
+                                                    Event type
+                                                    <h5>
+                                                        {userData.event_hosp
+                                                            .event_type == "1"
+                                                            ? "Individual"
+                                                            : "Team"}
+                                                    </h5>
+                                                </td>
+                                                <td style={{ padding: "6px 10px" }}>
+                                                    Played National Level
+                                                    <h5>
+                                                        {userData.event_hosp
+                                                            .played_national_level ==
+                                                        "1"
+                                                            ? "Yes"
+                                                            : "No"}
+                                                    </h5>
+                                                    <h6>
+                                                        {userData.event_hosp
+                                                            .national_level_doc
+                                                            ? "(Attached doc)"
+                                                            : "(No Attachment)"}
+                                                    </h6>
+                                                </td>
+                                                <td style={{ padding: "15px" }}>
+                                                    Name of Central Organisation
+                                                    Represented
+                                                    <h5>
+                                                        {
+                                                            userData.organisation_represented
+                                                        }
+                                                    </h5>
+                                                    <h6>
+                                                        {userData.event_hosp
+                                                            .organisation_doc
+                                                            ? "(Attached doc)"
+                                                            : "(No Attachment)"}
+                                                    </h6>
+                                                </td>
+                                            </tr>
                                         )}
-                                         {userData.education_hosp.length && (
-                                        <tr>
-                                        <td style={{ padding: "15px" }}>
-                                       Educations </td>
-                                        </tr>
-                                         )}
+                                      
+                                        {userData.education_hosp.length && (
+                                            <tr>
+                                                <td style={{ padding: "15px" }}>
+                                                   <h4> Educations{" "}</h4>
+                                                </td>
+                                            </tr>
+                                        )}
                                         {userData.education_hosp.map(
                                             (item, index) => (
                                                 <tr key={item.id || index}>
-                                                    <td
-                                                        style={{
-                                                            padding: "15px",
-                                                        }}
-                                                    >
-                                                        Qualification
-                                                        <h5>
-                                                            {item.qualification}
-                                                        </h5>
-                                                    </td>
-                                                    <td
-                                                        style={{
-                                                            padding: "15px",
-                                                        }}
-                                                    >
-                                                        Certificate
-                                                        <h6>
-                                                            {item.certificate_path
+                                                    <td>
+                                                        <table width="100%">
+                                                        {index==0 && (
+                                                            <tr>
+                                                                <th>Qualification</th>
+                                                                <th>Certificate</th>
+                                                                {item.other_qualification && (
+                                                                    <th>Other Qualification</th>
+                                                                )}
+                                                            </tr>
+                                                        )}
+                                                            <tr>
+                                                                <td>{item.qualification}</td>
+                                                                <td>{item.certificate_path
                                                                 ? "(Attached doc)"
-                                                                : "(No Attachment)"}
-                                                        </h6>
-                                                    </td>
-                                                    {item.other_qualification && (
-                                                        <td
-                                                            style={{
-                                                                padding: "15px",
-                                                            }}
-                                                        >
-                                                            Other Qualification
-                                                            <h5>
-                                                                {item.other_qualification ||
-                                                                    "N/A"}
-                                                            </h5>
-                                                            <h6>
-                                                                {item.certificate_path
+                                                                : "(No Attachment)"}</td>
+                                                                {item.other_qualification && (
+                                                                    <td>{item.other_qualification ||
+                                                                        "N/A"}</td>
+                                                                )}
+                                                                 {item.other_qualification && (
+                                                                   
+                                                                        <td> {item.certificate_path
                                                                     ? "(Attached doc)"
-                                                                    : "(No Attachment)"}
-                                                            </h6>
-                                                        </td>
-                                                    )}
+                                                                    : "(No Attachment)"}</td>
+                                                                )}
+                                                                
+                                                            </tr>
+
+
+                                                        </table>
+                                                       
+                                                    </td>
+                                                   
                                                 </tr>
                                             )
                                         )}
                                         {userData.sports_discipline_hosp && (
-                                        <tr>
-                                        <td style={{ padding: "15px" }}>
-                                        Sports Discipline </td>
-                                        <h5>
+                                            <tr>
+                                                <td style={{ padding: "15px" }}>
+                                                    Sports Discipline{" "}
+                                                </td>
+                                                <h5>
                                                     {
                                                         userData
                                                             .sports_discipline_hosp
                                                             .tournament_id
                                                     }
                                                 </h5>
-                                        </tr>
+                                            </tr>
                                         )}
                                         {userData.sports_discipline_hosp && (
-                                        <tr>
-                                            <td style={{ padding: "15px" }}>
-                                                Tournament Venue
-                                                <h5>
-                                                    {
-                                                        userData
+                                            <tr>
+                                                <td style={{ padding: "15px" }}>
+                                                    Tournament Venue
+                                                    <h5>
+                                                        {
+                                                            userData
+                                                                .sports_discipline_hosp
+                                                                .tournament_venue
+                                                        }
+                                                    </h5>
+                                                </td>
+
+                                                <td style={{ padding: "15px" }}>
+                                                    Medal Won
+                                                    <h5>
+                                                        {userData
                                                             .sports_discipline_hosp
-                                                            .tournament_venue
-                                                    }
-                                                </h5>
-                                            </td>
+                                                            .medal_won ||
+                                                            "None"}
+                                                    </h5>
+                                                </td>
 
-                                            <td style={{ padding: "15px" }}>
-                                                Medal Won
-                                                <h5>
-                                                    {userData
-                                                        .sports_discipline_hosp
-                                                        .medal_won || "None"}
-                                                </h5>
-                                            </td>
-
-                                            <td style={{ padding: "15px" }}>
-                                                Physical Disability
-                                                <h5>
-                                                    {userData
-                                                        .sports_discipline_hosp
-                                                        .physical_disability ===
-                                                    1
-                                                        ? "Yes"
-                                                        : userData
-                                                              .sports_discipline_hosp
-                                                              .physical_disability ===
-                                                          2
-                                                        ? "No"
-                                                        : "N/A"}
-                                                </h5>
-                                            </td>
-                                        </tr>
-                                        )}
-                                        {userData.sports_discipline_hosp && (
-                                        <tr>
-                                            <td style={{ padding: "15px" }}>
-                                                Represented India
-                                                <h5>
-                                                    {userData
-                                                        .sports_discipline_hosp
-                                                        .represented_india === 1
-                                                        ? "Yes"
-                                                        : "No"}
-                                                </h5>
-                                            </td>
-                                            <td style={{ padding: "15px" }}>
-                                                Organizing Committee
-                                                <h5>
-                                                    {
-                                                        userData
+                                                <td style={{ padding: "15px" }}>
+                                                    Physical Disability
+                                                    <h5>
+                                                        {userData
                                                             .sports_discipline_hosp
-                                                            .organizing_committee
-                                                    }
-                                                </h5>
-                                            </td>
-
-                                           
-                                        </tr>
+                                                            .physical_disability ===
+                                                        1
+                                                            ? "Yes"
+                                                            : userData
+                                                                  .sports_discipline_hosp
+                                                                  .physical_disability ===
+                                                              2
+                                                            ? "No"
+                                                            : "N/A"}
+                                                    </h5>
+                                                </td>
+                                            </tr>
                                         )}
                                         {userData.sports_discipline_hosp && (
-                                        <tr>
-                                        <td style={{ padding: "15px" }}>
-                                                OSP Certificate
-                                                <h6>
-                                                    {userData
-                                                        .sports_discipline_hosp
-                                                        .osp_achivement_certificate_path
-                                                        ? "(Attached doc)"
-                                                        : "(No Attachment)"}
-                                                </h6>
-                                            </td>
+                                            <tr>
+                                                <td style={{ padding: "15px" }}>
+                                                    Represented India
+                                                    <h5>
+                                                        {userData
+                                                            .sports_discipline_hosp
+                                                            .represented_india ===
+                                                        1
+                                                            ? "Yes"
+                                                            : "No"}
+                                                    </h5>
+                                                </td>
+                                                <td style={{ padding: "15px" }}>
+                                                    Organizing Committee
+                                                    <h5>
+                                                        {
+                                                            userData
+                                                                .sports_discipline_hosp
+                                                                .organizing_committee
+                                                        }
+                                                    </h5>
+                                                </td>
+                                            </tr>
+                                        )}
+                                        {userData.sports_discipline_hosp && (
+                                            <tr>
+                                                <td style={{ padding: "15px" }}>
+                                                    OSP Certificate
+                                                    <h6>
+                                                        {userData
+                                                            .sports_discipline_hosp
+                                                            .osp_achivement_certificate_path
+                                                            ? "(Attached doc)"
+                                                            : "(No Attachment)"}
+                                                    </h6>
+                                                </td>
 
-                                            <td style={{ padding: "15px" }}>
-                                                International Certificate
-                                                <h6>
-                                                    {userData
-                                                        .sports_discipline_hosp
-                                                        .international_achievement_Verification_certificate_path
-                                                        ? "(Attached doc)"
-                                                        : "(No Attachment)"}
-                                                </h6>
-                                            </td>
-                                        </tr>
+                                                <td style={{ padding: "15px" }}>
+                                                    International Certificate
+                                                    <h6>
+                                                        {userData
+                                                            .sports_discipline_hosp
+                                                            .international_achievement_Verification_certificate_path
+                                                            ? "(Attached doc)"
+                                                            : "(No Attachment)"}
+                                                    </h6>
+                                                </td>
+                                            </tr>
                                         )}
                                         <tr>
                                             <td colSpan={3}>
