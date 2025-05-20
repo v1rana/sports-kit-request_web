@@ -173,7 +173,7 @@
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>4. Date of Birth</label>
-								<h6>{{ $request->userDetails->date_of_birth ?? 'N/A' }} <a href="ygFbWTvsYrmpNhLAcJGjX0LH1ubBspivld1dFEil.pdf" target="_blank"><i class="fa-solid fa-file-lines"></i></a></h6>
+								<h6>{{ $request->userDetails->date_of_birth ?? 'N/A' }} <a href="{{ url('storage/certificates/'.($request->userDetails->dob_doc)) }}" target="_blank"><i class="fa-solid fa-file-lines"></i></a></h6>
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>5. Age</label>
@@ -193,11 +193,19 @@
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>9. Haryana Resident/Domicile</label>
-								<h6>Yes <a href="" target="_blank"><i class="fa-solid fa-file-lines"></i></a></h6>
+								<h6>@if(isset($request->userDetails->domicile))
+        {{ $request->userDetails->domicile == 1 ? 'Yes' : 'No' }}
+    @else
+        N/A
+    @endif <a href="{{ url('storage/certificates/'.($request->userDetails->domicile_doc)) }}" target="_blank"><i class="fa-solid fa-file-lines"></i></a></h6>
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>10. Played at Natioanl Level for Haryana</label>
-								<h6>Yes <a href="" target="_blank"><i class="fa-solid fa-file-lines"></i></a></h6>
+								<h6>@if(isset($request->userDetails->played_national_level))
+        {{ $request->userDetails->played_national_level == 1 ? 'Yes' : 'No' }}
+    @else
+        N/A
+    @endif  <a href="{{ url('storage/certificates/'.($request->userDetails->national_level_doc)) }}" target="_blank"><i class="fa-solid fa-file-lines"></i></a></h6>
 							</div>
 						</div>
 					</div>
@@ -224,7 +232,11 @@
 						<div class="row">
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>1. Physical Disablity</label>
-								<h6>No</h6>
+								<h6>@if(isset($request->sportsDisciplineHosp->physical_disability))
+        {{ $request->sportsDisciplineHosp->physical_disability == 1 ? 'Yes' : 'No' }}
+    @else
+        N/A
+    @endif</h6>
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>2. Name of Sports Discipline</label>
@@ -232,23 +244,31 @@
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>3. Name of Tournament</label>
-								<h6>No</h6>
+								<h6>{{ $request->sportsDisciplineHosp->tournament->tournament ?? 'N/A' }}</h6>
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>4. Organizing Authority</label>
-								<h6>No</h6>
+								<h6>{{ $request->sportsDisciplineHosp->organizing_committee ?? 'N/A' }}</h6>
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>5. Level of Tournament</label>
-								<h6>Natioanl</h6>
+								<h6>@if(isset($request->sportsDisciplineHosp->tournament_level))
+        {{ $request->sportsDisciplineHosp->tournament_level == '1' ? 'National' : 'International' }}
+    @else
+        N/A
+    @endif</h6>
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>6 Represented India in any Sports Tournament</label>
-								<h6>Yees</h6>
+								<h6>@if(isset($request->sportsDisciplineHosp->represented_india))
+        {{ $request->sportsDisciplineHosp->represented_india == '1' ? 'Yes' : 'No' }}
+    @else
+        N/A
+    @endif</h6>
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>7. Achievement (Month & Year)</label>
-								<h6>Natioanl</h6>
+								<h6>{{ $request->sportsDisciplineHosp->achievement_date ?? 'N/A' }}</h6>
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>8.Tournament Venu</label>
@@ -274,10 +294,18 @@
 					<!--td>{{ $request->userDetails->block_town ?? 'N/A' }}</td>
 					<td>{{ $request->userDetails->ward_village ?? 'N/A' }}</td-->
 					<td>
+<<<<<<< HEAD
 						@php
 							$eventType = $request->sportsDisciplineHosp->event_type ?? null;
 							echo $eventType == '1' ? 'Individual' : ($eventType == '2' ? 'Team' : 'N/A');
 						@endphp
+=======
+						@if(isset($request->sportsDisciplineHosp->event_type))
+        {{ $request->sportsDisciplineHosp->event_type == '1' ? 'Individual' : 'Team' }}
+    @else
+        N/A
+    @endif
+>>>>>>> 1366364 (uploaded files)
 					</td>
 					<td>4-years World Cup/Championship</td>
 					<td>{{ $request->sportsDisciplineHosp->organizing_committee ?? 'N/A' }}</td>

@@ -27,4 +27,9 @@ class SportsDisciplineHosp extends Model
         'osp_achivement_certificate_path',
         'international_achievement_Verification_certificate_path',
     ];
+	
+	public function tournament()
+	{
+		return $this->belongsTo(Schedule12::class, 'tournament_id');
+	}
 }
