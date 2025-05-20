@@ -42,7 +42,7 @@ const BasicDetails = () => {
         // other_state: userDetails.other_state,
         played_national_level:userDetails.played_national_level??'',
         national_level_doc:userDetails.national_level_doc,
-        organisation_represented:userDetails.organisation_represented,
+        organisation_represented:userDetails.organisation_represented??'',
         organisation_doc:userDetails.organisation_doc,
     });
     const [errors, setErrors] = useState({
@@ -140,7 +140,7 @@ const BasicDetails = () => {
             return "Please upload file";
         return "";
     };
-
+    useEffect(() => {
         const fetchUserData = async () => {
             try {
                 const data = await fetchUserDetails();
@@ -152,6 +152,7 @@ const BasicDetails = () => {
             }
         };
         fetchUserData();
+    }, []); // <-- empty array ensures this only runs once
   
 
     useEffect(() => {
@@ -266,35 +267,39 @@ const BasicDetails = () => {
             {userData && (
                 <div>
                     <header className="hero-section">
-                        <div className="hero-content">
-                            <img
-                                src="./assets/images/logo-sports.png"
-                                alt="Sports Department Logo"
-                                className="header-logo mx-3"
-                            />
-                            <div className="hero-text">
-                                <h1>
-                                    Sports Department, Government of Haryana
-                                </h1>
-                                <p>
-                                    Let the young minds grow to the full
-                                    potential
-                                </p>
-                            </div>
-                        </div>
+                <div className="hero-content">
+                    <img
+                        src="/assets/images/logo-sports.png"
+                        alt="Sports Department Logo"
+                        className="header-logo mx-3"
+                    />
+                    <div className="hero-text">
+                        <h2>
+                            Haryana Outstanding Sportspersons Application
+                            <br />
+                            <small>Sports Department, Haryana</small>
+                        </h2>
+                        <p>Let the young minds grow to the full potential</p>
+                    </div>
+                    <div className="float-end m-2">
+                        <button
+                            className="btn btn-danger me-1"
+                            onClick={logout}
+                        >
+                                <i className="fa-solid fa-power-off"></i> Logout
+                        </button>
+                    </div>
+                </div>
 
-                        <div className="hero-wave">
-                            <svg
-                                viewBox="0 0 500 150"
-                                preserveAspectRatio="none"
-                            >
-                                <path
-                                    d="M0.00,49.98 C157.87,179.29 349.61,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
-                                    style={{ stroke: "none", fill: "#f0f0f0" }}
-                                ></path>
-                            </svg>
-                        </div>
-                    </header>
+                <div className="hero-wave">
+                    <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+                        <path
+                            d="M0.00,49.98 C157.87,179.29 349.61,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
+                            style={{ stroke: "none", fill: "#f0f0f0" }}
+                        ></path>
+                    </svg>
+                </div>
+            </header>
 
                     <div className="container form-container">
                     <div className="progress">
@@ -456,9 +461,9 @@ const BasicDetails = () => {
                                      {userDetails.dob_doc && 
                                         <div className="mt-1">
                                             <a
-                                               href={`/api/certificates/${encodeURIComponent(
+                                               href={`/storage/certificates/${encodeURIComponent(
                                                 userDetailsa.dob_doc
-                                            )}/certificates`}
+                                            )}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             >
@@ -635,9 +640,9 @@ const BasicDetails = () => {
                                     {userDetails.domicile_doc && userDetailsa.domicile_doc && 
                                     <div className="mt-1">
                                         <a
-                                            href={`/api/certificates/${encodeURIComponent(
+                                            href={`/storage/certificates/${encodeURIComponent(
                                                 userDetailsa.domicile_doc
-                                            )}/certificates`}
+                                            )}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
@@ -761,9 +766,9 @@ const BasicDetails = () => {
                                     {userDetails.national_level_doc && userDetailsa.national_level_doc && 
                                     <div className="mt-1">
                                         <a
-                                            href={`/api/certificates/${encodeURIComponent(
+                                            href={`/storage/certificates/${encodeURIComponent(
                                                 userDetailsa.national_level_doc
-                                            )}/certificates`}
+                                            )}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
@@ -839,9 +844,9 @@ const BasicDetails = () => {
                                         {userDetails.organisation_doc && userDetailsa.organisation_doc && 
                                         <div className="mt-1">
                                             <a
-                                                href={`/api/certificates/${encodeURIComponent(
+                                                href={`/storage/certificates/${encodeURIComponent(
                                                     userDetailsa.organisation_doc
-                                                )}/certificates`}
+                                                )}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                             >

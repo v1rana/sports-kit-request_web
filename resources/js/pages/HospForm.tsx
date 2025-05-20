@@ -18,6 +18,7 @@ import {
 } from "../services/hosp-service";
 
 import html2pdf from "html2pdf.js";
+import { toast } from 'react-toastify';
 
 const stepsTotal = 4;
 const HospForm = () => {
@@ -192,6 +193,7 @@ const HospForm = () => {
                 const data = await fetchEducation(); // Replace with your endpoint
                 if (data && data.length > 0) {
                     const formatted = data.map((item) => ({
+                        id: item.id || "",
                         qualification: item.qualification || "",
                         otherText: item.other_qualification || "",
                         certificate: null, // Initially no file selected
@@ -236,6 +238,7 @@ const HospForm = () => {
                     match_played_by_team: data.match_played_by_team ?? "",
                     match_played_by_me: data.match_played_by_me ?? "",
                 });
+                await fetchTournamentList(data.event_type);
             } catch (error) {
                 console.error("Error loading form data", error);
             }
@@ -299,11 +302,14 @@ const HospForm = () => {
             event_type == "1" ? "Individual Event" : "Team Event";
         setEventTitle(selectedText);
         setValue("tournament", ""); // Reset tournament selection
-        const response = await fetchSchedule12Listing(event_type);
-        if (response.status === "success") {
-            setTournamentList(response.list);
+        if(event_type) {
+            const response = await fetchSchedule12Listing(event_type);
+            if (response.status === "success") {
+                setTournamentList(response.list);
+            }
+            console.log("tournament listing", response.list);
         }
-        console.log("tournament listing", response.list);
+       
     };
     useEffect(() => {
         // const userData = JSON.parse(localStorage.getItem("user") || "null");
@@ -369,7 +375,7 @@ const HospForm = () => {
     };
 
     const [educationFields, setEducationFields] = useState([
-        { qualification: "", certificate: null, otherText: "" },
+        { qualification: "", certificate: null, otherText: "" ,id:''},
     ]);
     const handleAddEducation = () => {
         setEducationFields([
@@ -513,62 +519,65 @@ const HospForm = () => {
 
     const handlePrintDeclaration = (e) => {
         e.preventDefault();
-        const content: any = document.getElementById("print_declaration");
-        // const printWindow: any = window.open("", "", "width=800,height=600");
-        const htmlContent =`
-         <!DOCTYPE html>
-            <html>
-
-                <head>
-                    <title>Apply Certificate Form - Sports Haryana </title>
-                    <meta charset="UTF-8">
-                    <meta name="description" content="">
-                    <meta name="keywords" content=""> 
-                    <meta name="author" content="">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-                    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-                    
-                    <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
-
-                    <style>
-                        @page{orientation: A4;margin:0; padding:0}		
-                        body{background:#fafafc;margin:0;padding:0;}
-                        h1,h2,h3,h4,h5,h6{font-family: "Jost", sans-serif;color:#5f788a; margin:0}
-                        a,p,li,td{text-decoration:none; font-family: "Noto Sans", sans-serif;}
-                        .logo a{display:flex; align-items:center}
-                        .logo img{display: inline-block;vertical-align: middle;margin: 0 4px 0 0;max-width:70px; width:100%}
-                        td h4{font-size: 30px;}
-                        td h5{font-size: 20px;margin:0}
-                        .logo h1{color:#fff; font-size:26px; padding-left:10px}
-                        footer{background:#2f4858; color:#fff;width:100%;bottom:0;padding:10px 0; font-size:12px; left:0}
-                        footer p{margin:0}
-                        ol {margin:0; padding:0}
-                        ol li{padding: 0 10px 20px;margin-left:30px}
-                        @media print{
-                            * { -webkit-print-color-adjust: exact !important; color-adjust: exact !important;print-color-adjust: exact !important;}
-                            table tbody table{width: 90% !important}
-                        }
-                    </style>
-                    
-                    
-                </head>
-                <body>
-                ${content.innerHTML}
-                </body>
-          </html>
-        `;
-        // printWindow.document.close();
-        // printWindow.focus();
-        // printWindow.print();
-        // printWindow.close();
-        const blob = new Blob([htmlContent], { type: "text/html" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "declaration.html"; // or .doc for Word
-        link.click();
+        const content = document.getElementById("print_declaration");
+    
+        if (!content) {
+            alert("Declaration content not found.");
+            return;
+        }
+    
+        const htmlContent = `
+        <html>
+          <head>
+            <style>
+              .modal-title-details {
+                  background: rgba(0, 0, 0, 0.04);
+                  padding: 10px;
+                  margin: 0;
+                  color: #36454F;
+                  font-size: 20px;
+                  text-transform: uppercase;
+              }
+              .fa-solid, .fas {
+                  font-weight: 900;
+              }
+                #print_declaration .logo a {
+                    text-decoration: none;
+                }
+                    #print_declaration .logo a .h1-logo {
+                    font-size: 1.8rem;
+                }
+              /* Optional: add more styles if needed */
+            </style>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+          </head>
+          <body>
+            <div style="padding: 20px">
+              ${content.innerHTML}
+            </div>
+          </body>
+        </html>
+      `;
+      
+    
+        // Create temporary element
+        const tempElement = document.createElement("div");
+        tempElement.innerHTML = htmlContent;
+        document.body.appendChild(tempElement); // required for html2canvas to work
+    
+        const opt = {
+            margin: 0.5,
+            filename: "declaration.pdf",
+            image: { type: "jpeg", quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: "in", format: "a4", orientation: "portrait" },
+        };
+    
+        html2pdf().set(opt).from(tempElement).save().then(() => {
+            document.body.removeChild(tempElement); // clean up
+        });
     };
+    
 
     const onEventSubmit = async (data) => {
         const formData = new FormData();
@@ -679,6 +688,13 @@ const HospForm = () => {
 
         const formData = new FormData();
         educationFields.forEach((field, index) => {
+            if(field.id) {
+                formData.append(
+                    `educations[${index}][id]`,
+                    field.id
+                );
+            }
+            
             formData.append(
                 `educations[${index}][qualification]`,
                 field.qualification
@@ -714,6 +730,9 @@ const HospForm = () => {
             console.error(
                 "Save failed:",
                 error.response?.data || error.message
+            );
+            setEducationErrors( 
+                "Educational field/certificate required."
             );
         }
     };
@@ -810,6 +829,20 @@ const HospForm = () => {
                 newErrors.match_played_by_team = "Required";
             if (!formData.match_played_by_me)
                 newErrors.match_played_by_me = "Required";
+
+             // Both fields must be numbers before comparison
+            const teamMatches = Number(formData.match_played_by_team);
+            const myMatches = Number(formData.match_played_by_me);
+
+            if (
+                !isNaN(teamMatches) &&
+                !isNaN(myMatches) &&
+                myMatches >= teamMatches
+            ) {
+                newErrors.match_played_by_me =
+                    "Matches played by you must be less than matches played by the team";
+                    toast.error(newErrors.match_played_by_me);
+            }
         }
 
         setErrors(newErrors);
@@ -1294,7 +1327,7 @@ const HospForm = () => {
                                         </select>
                                     </div>
 
-                                    {field.qualification === "other" && (
+                                    {field.qualification === "Other" && (
                                         <div className="col-md-4">
                                             <label>
                                                 Specify Other Qualification
@@ -1332,9 +1365,9 @@ const HospForm = () => {
                                         {field.fileUrl && (
                                             <div className="mt-1">
                                                 <a
-                                                    href={`/api/certificates/${encodeURIComponent(
+                                                    href={`/storage/education-certificates/${encodeURIComponent(
                                                         field.fileUrl
-                                                    )}/education-certificates`}
+                                                    )}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                 >
@@ -1503,9 +1536,9 @@ const HospForm = () => {
                                         {formData.disability_doc && (
                                             <div className="mt-1">
                                                 <a
-                                                    href={`/api/certificates/${encodeURIComponent(
+                                                    href={`/storage/certificates/${encodeURIComponent(
                                                         formData.disability_doc
-                                                    )}/certificates`}
+                                                    )}`}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
                                                 >
@@ -1864,9 +1897,9 @@ const HospForm = () => {
                                 {formData.osp_achivement_certificate_path && (
                                     <div className="mt-1">
                                         <a
-                                            href={`/api/certificates/${encodeURIComponent(
+                                            href={`/storage/certificates/${encodeURIComponent(
                                                 formData.osp_achivement_certificate_path
-                                            )}/certificates`}
+                                            )}`}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                         >
@@ -2120,7 +2153,7 @@ const HospForm = () => {
                     <tbody>
                         <tr>
                             <td align="center" style={{ paddingTop: "30px" }}>
-                                <h4>Declaration by Sportsperson</h4>
+                                <h3>Haryana Outstanding Sportspersons Application</h3>
                             </td>
                         </tr>
                         <tr>
@@ -2135,46 +2168,56 @@ const HospForm = () => {
                                     }}
                                 >
                                     <tbody>
+                                        
+                                        <tr>
+                                            <td colSpan={4}>
+                                                <h3 className="modal-title-details"><i className="fa-solid fa-user"></i> Personal Details</h3>
+                                            </td>
+                                        </tr>
                                         <tr>
                                             <td style={{ padding: "6px 10px" }}>
-                                                Name
+                                                1. Parivar Pehchan Patra ID
                                                 <h5>{userData.name}</h5>
                                             </td>
-                                            <td style={{ padding: "6px 10px" }} align="center">
-                                                Date Of birth
+                                            <td style={{ padding: "6px 10px" }}>
+                                                2. Name
+                                                <h5>{userData.name}</h5>
+                                            </td>
+                                            <td  style={{ padding: "6px 10px" }} >
+                                                3. Caste Category
+                                                <h5>
+                                                    {userDetails.caste_category} <a href="" className="text-dark" target="_blank"><i className="fa-solid fa-paperclip"></i></a>
+                                                </h5>
+                                            </td>
+                                            <td style={{ padding: "6px 10px" }}>
+                                                4. Date of Birth
                                                 <h5>
                                                     {userDetails.date_of_birth}
                                                 </h5>
                                             </td>
-                                            <td
-                                                style={{ padding: "6px 10px" }} align="right" >
-                                                Aadhar No.
-                                                <h5>{userDetails.aadhaar}</h5>
-                                            </td>
                                         </tr>
                                         <tr>
                                             <td
-                                                style={{ padding: "6px 10px" }}
-                                                
-                                            >
-                                                Caste Category
-                                                <h5>
-                                                    {userDetails.caste_category}
-                                                </h5>
+                                                style={{ padding: "6px 10px" }} >
+                                                5. Age
+                                                <h5>{userDetails.aadhaar}</h5>
                                             </td>
                                             <td
-                                                style={{ padding: "6px 10px" }}
-                                                align="center"
-                                            >
-                                                Mobile
+                                                style={{ padding: "6px 10px" }}  >
+                                                6. Aadhar No.
+                                                <h5>{userDetails.aadhaar}</h5>
+                                            </td> 
+                                            <td
+                                                style={{ padding: "6px 10px" }} >
+                                                7. Mobile
                                                 <h5>{userData.mobile}</h5>
                                             </td>
-                                            <td style={{ padding: "6px 10px" }} align="right">
-                                                Haryana Domicle
+                                            <td style={{ padding: "6px 10px" }}>
+                                                8. Haryana Domicle
                                                 <h5>
                                                     {userDetails.domicile == "1"
                                                         ? "Yes"
-                                                        : "No"}
+                                                        : "No"} <a href="" className="text-dark" target="_blank"><i className="fa-solid fa-paperclip"></i></a>
                                                 </h5>
                                             </td>
                                         </tr>
@@ -2229,25 +2272,17 @@ const HospForm = () => {
                                       
                                         {userData.education_hosp.length && (
                                             <tr>
-                                                <td style={{ padding: "15px" }}>
-                                                   <h4> Educations{" "}</h4>
+                                                <td colSpan={4} >
+                                                    <h3 className="modal-title-details"><i className="fa-solid fa-user-graduate"></i> Educational  Details</h3> 
                                                 </td>
                                             </tr>
                                         )}
                                         {userData.education_hosp.map(
                                             (item, index) => (
                                                 <tr key={item.id || index}>
-                                                    <td>
+                                                    <td colspan="4">
                                                         <table width="100%">
-                                                        {index==0 && (
-                                                            <tr>
-                                                                <th>Qualification</th>
-                                                                <th>Certificate</th>
-                                                                {item.other_qualification && (
-                                                                    <th>Other Qualification</th>
-                                                                )}
-                                                            </tr>
-                                                        )}
+                                                       
                                                             <tr>
                                                                 <td>{item.qualification}</td>
                                                                 <td>{item.certificate_path
@@ -2274,11 +2309,32 @@ const HospForm = () => {
                                                 </tr>
                                             )
                                         )}
+                                        <tr>
+                                            <td colSpan={4}>
+                                                <h3 className="modal-title-details"><i className="fa-solid fa-trophy"></i> Achievement  Details</h3> 
+                                            </td>
+                                        </tr>
                                         {userData.sports_discipline_hosp && (
                                             <tr>
+
+                                            <td style={{ padding: "15px" }}>
+                                                Physical Disability
+                                                <h5>
+                                                    {userData
+                                                        .sports_discipline_hosp
+                                                        .physical_disability ===
+                                                    1
+                                                        ? "Yes"
+                                                        : userData
+                                                              .sports_discipline_hosp
+                                                              .physical_disability ===
+                                                          2
+                                                        ? "No"
+                                                        : "N/A"}
+                                                </h5>
+                                            </td>
                                                 <td style={{ padding: "15px" }}>
                                                     Sports Discipline{" "}
-                                                </td>
                                                 <h5>
                                                     {
                                                         userData
@@ -2286,10 +2342,7 @@ const HospForm = () => {
                                                             .tournament_id
                                                     }
                                                 </h5>
-                                            </tr>
-                                        )}
-                                        {userData.sports_discipline_hosp && (
-                                            <tr>
+                                                </td>
                                                 <td style={{ padding: "15px" }}>
                                                     Tournament Venue
                                                     <h5>
@@ -2310,24 +2363,8 @@ const HospForm = () => {
                                                             "None"}
                                                     </h5>
                                                 </td>
-
-                                                <td style={{ padding: "15px" }}>
-                                                    Physical Disability
-                                                    <h5>
-                                                        {userData
-                                                            .sports_discipline_hosp
-                                                            .physical_disability ===
-                                                        1
-                                                            ? "Yes"
-                                                            : userData
-                                                                  .sports_discipline_hosp
-                                                                  .physical_disability ===
-                                                              2
-                                                            ? "No"
-                                                            : "N/A"}
-                                                    </h5>
-                                                </td>
                                             </tr>
+                                        
                                         )}
                                         {userData.sports_discipline_hosp && (
                                             <tr>
@@ -2352,10 +2389,6 @@ const HospForm = () => {
                                                         }
                                                     </h5>
                                                 </td>
-                                            </tr>
-                                        )}
-                                        {userData.sports_discipline_hosp && (
-                                            <tr>
                                                 <td style={{ padding: "15px" }}>
                                                     OSP Certificate
                                                     <h6>
@@ -2380,14 +2413,14 @@ const HospForm = () => {
                                             </tr>
                                         )}
                                         <tr>
-                                            <td colSpan={3}>
+                                            <td colSpan={4}>
                                                 <hr style={{ marginTop: 0 }} />
                                             </td>
                                         </tr>
                                         <tr style={{ padding: "20px 0 0" }}>
                                             <td
                                                 style={{ padding: "0 20px" }}
-                                                colSpan={2}
+                                                colSpan={3}
                                             >
                                                 <strong>Date -</strong> <u> </u>
                                             </td>
@@ -2404,7 +2437,7 @@ const HospForm = () => {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td colSpan={3}>
+                                            <td colSpan={4}>
                                                 <ol type="1">
                                                     <li>
                                                         I have read the Haryana
@@ -2494,7 +2527,7 @@ const HospForm = () => {
                                         <tr style={{ padding: "20px 0 0" }}>
                                             <td
                                                 style={{ padding: "0 20px" }}
-                                                colSpan={2}
+                                                colSpan={3}
                                             >
                                                 <strong>Date -</strong> <u> </u>
                                             </td>
@@ -2522,7 +2555,7 @@ const HospForm = () => {
 
                                         <tr>
                                             <td
-                                                colSpan={3}
+                                                colSpan={4}
                                                 style={{
                                                     padding: "60px 20px 0",
                                                 }}
@@ -2535,20 +2568,51 @@ const HospForm = () => {
                                                     VERIFICATION BY NATIONAL
                                                     SPORTS FEDERATION
                                                 </h3>
-                                                <p>
+                                                
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style={{padding:"10px 10px 10px 40px"}}>Name : </td>
+                                            <td style={{padding:"10px"}} colSpan={3}>Father's Name : </td>
+                                        </tr>
+                                        <tr>
+                                            <td colSpan={4}>
+                                                <table width="95%" style={{margin:"0 auto"}}>
+                                                    <tr className="bg-light text-dark">
+                                                        <th style={{padding:"10px 6px", border:"1px solid #eee"}}>Sr. No.</th>
+                                                        <th style={{padding:"10px", border:"1px solid #eee"}}>Date of Achievement</th>
+                                                        <th style={{padding:"10px", border:"1px solid #eee"}}>Name of Tournament</th>
+                                                        <th style={{padding:"10px", border:"1px solid #eee"}}>Organising Authority</th>
+                                                        <th style={{padding:"10px", border:"1px solid #eee"}}>Sports Discipline</th>
+                                                        <th style={{padding:"10px", border:"1px solid #eee"}}>Sports Federation</th>
+                                                        <th style={{padding:"10px", border:"1px solid #eee"}}>Medal Won (If Any)</th>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style={{padding:"10px", border:"1px solid #eee"}}>1</td>
+                                                        <td style={{padding:"10px", border:"1px solid #eee"}}>27-03-2025</td>
+                                                        <td style={{padding:"10px", border:"1px solid #eee"}}> </td>
+                                                        <td style={{padding:"10px", border:"1px solid #eee"}}> </td>
+                                                        <td style={{padding:"10px", border:"1px solid #eee"}}>Wrestling</td>
+                                                        <td style={{padding:"10px", border:"1px solid #eee"}}>IOC</td>
+                                                        <td style={{padding:"10px", border:"1px solid #eee"}}>Silver medal</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colSpan={4} style={{padding: "30px"}}><p>
                                                     Certified that the
                                                     particulars declared by the
                                                     sportsperson have been
                                                     checked, verified and found
                                                     correct.
-                                                </p>
-                                            </td>
+                                                </p></td>
                                         </tr>
 
                                         <tr style={{ padding: "20px 20px 0" }}>
                                             <td
                                                 style={{ padding: "0 20px" }}
-                                                colSpan={2}
+                                                colSpan={3}
                                             >
                                                 <strong>Date -</strong> <u> </u>
                                             </td>

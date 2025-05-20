@@ -33,7 +33,7 @@ class HospController extends Controller
             'national_level_doc' => 'required_if:played_national_level,1',
             'organisation_represented' => 'required_if:played_national_level,2',
             'org_certificate' => 'required_if:played_national_level,2',
-           
+
         ]);
         try {
             $id = $request->user()->id;
@@ -42,25 +42,31 @@ class HospController extends Controller
             $user->mobile = $request->mobile;
             $user->email = $request->email_id;
             $user->save();
-   
+
             if ($request->hasFile('photo')) {
-                $path = $request->file('photo')->store('photo','public');
+                $path = $request->file('photo')->store('photo', 'public');
                 $user_details->photo = basename($path);
             }
             if ($request->hasFile('dob_doc')) {
-                $path = $request->file('dob_doc')->store('certificates');
+                $path = $request->file('dob_doc')->store('certificates', 'public');
                 $user_details->dob_doc = basename($path);
             }
-             if ($request->hasFile('domicile_doc')) {
-                $path = $request->file('domicile_doc')->store('certificates');
+            if ($request->hasFile('domicile_doc')) {
+                $path = $request->file('domicile_doc')->store('certificates', 'public');
                 $user_details->domicile_doc = basename($path);
             }
             if ($request->hasFile('national_level_doc')) {
-                $path = $request->file('national_level_doc')->store('certificates');
+                // Validate file size if the file is uploaded
+                $validationResponse = $this->validateFileSize(
+                    $request->file('national_level_doc'),
+                    500, // Max size in KB
+                    'The national level document must not exceed 500KB.'
+                );
+                $path = $request->file('national_level_doc')->store('certificates', 'public');
                 $user_details->national_level_doc = basename($path);
             }
             if ($request->hasFile('organisation_doc')) {
-                $path = $request->file('organisation_doc')->store('certificates');
+                $path = $request->file('organisation_doc')->store('certificates', 'public');
                 $user_details->organisation_doc = basename($path);
             }
             $user_details->domicile = $request->domicile;
@@ -69,7 +75,7 @@ class HospController extends Controller
             $user_details->played_national_level = $request->played_national_level;
             $user_details->organisation_represented = $request->organisation_represented;
             $user_details->save();
-            $user->load('userDetails', 'eventHosp', 'sportsDisciplineHosp','educationHosp', 'declarationsHosp');
+            $user->load('userDetails', 'eventHosp', 'sportsDisciplineHosp', 'educationHosp', 'declarationsHosp');
             return response()->json([
                 'status' => 'success',
                 'message' => 'User details saved successfully',
@@ -140,10 +146,10 @@ class HospController extends Controller
         //     $event->domicile_doc = $request->file('domicile_certificate')->store('certificates');
         // }
         if ($request->hasFile('national_certificate')) {
-            $event->national_level_doc = $request->file('national_certificate')->store('certificates');
+            $event->national_level_doc = $request->file('national_certificate')->store('certificates', 'public');
         }
         if ($request->played_national == 2 && $request->hasFile('org_certificate')) {
-            $event->organisation_doc = $request->file('org_certificate')->store('certificates');
+            $event->organisation_doc = $request->file('org_certificate')->store('certificates', 'public');
         }
 
         $event->save();
@@ -194,11 +200,11 @@ class HospController extends Controller
         // }
 
         if ($request->hasFile('national_certificate')) {
-            $event->national_level_doc = $request->file('national_certificate')->store('certificates');
+            $event->national_level_doc = $request->file('national_certificate')->store('certificates', 'public');
         }
 
         if ($request->played_national == 2 && $request->hasFile('org_certificate')) {
-            $event->organisation_doc = $request->file('org_certificate')->store('certificates');
+            $event->organisation_doc = $request->file('org_certificate')->store('certificates', 'public');
         }
 
         $event->save();
@@ -215,12 +221,14 @@ class HospController extends Controller
 
         $user = User::where('id', $user->id)->first();
 
-        $user->load('userDetails', 'eventHosp', 'sportsDisciplineHosp','educationHosp', 'declarationsHosp');
-            return response()->json([
-                'status' => 'success',
-                'message' => 'User details',
-                'user' => $user,
-            ]);
+        $user->load('userDetails', 'eventHosp', 'sportsDisciplineHosp', 'educationHosp', 'declarationsHosp');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User details',
+            'user' => collect($user)->map(function ($value) {
+                return $value === null ? '' : $value;
+            }),
+        ]);
     }
 
     public function getEventData(Request $request)
@@ -269,32 +277,46 @@ class HospController extends Controller
             'educations.*.qualification' => 'required|string',
             'educations.*.otherText' => 'nullable|string',
             'educations.*.certificate' => 'nullable|file|mimes:pdf|max:2048',
+            'educations.*.id' => 'nullable|integer' // for update tracking
         ]);
 
         $userId = $request->user()->id;
+        $incomingIds = [];
 
-        // Optional: Clear previous entries if you're replacing all
-        EducationHOSP::where('user_id', $userId)->delete();
+        foreach ($request->educations as $item) {
+            $education = isset($item['id'])
+                ? EducationHOSP::where('id', $item['id'])->where('user_id', $userId)->first()
+                : new EducationHOSP();
 
-        foreach ($request->educations as $index => $item) {
-            $education = new EducationHOSP();
+            if (!$education) {
+                $education = new EducationHOSP();
+                $education->user_id = $userId;
+            }
             $education->user_id = $userId;
             $education->qualification = $item['qualification'];
             $education->other_qualification = $item['otherText'] ?? null;
 
+            // Only replace file if new one is uploaded
             if (isset($item['certificate']) && $item['certificate'] instanceof \Illuminate\Http\UploadedFile) {
-                $path = $item['certificate']->store('education-certificates');
+                $path = $item['certificate']->store('education-certificates', 'public');
                 $education->certificate_path = basename($path);
             }
 
             $education->save();
+            $incomingIds[] = $education->id;
         }
+
+        // Optional: remove deleted items
+        EducationHOSP::where('user_id', $userId)
+            ->whereNotIn('id', $incomingIds)
+            ->delete();
 
         return response()->json([
             'status' => 'success',
             'message' => 'Education data saved successfully.',
         ]);
     }
+
 
     public function getSchedule($event_type)
     {
@@ -327,7 +349,7 @@ class HospController extends Controller
             'tournament_id' => 'required|exists:schedule_1_2,id',
             'game_id' => 'required|exists:games,id',
             'organizing_committee' => 'required|string',
-            
+
             'tournament_level' => 'required|in:1,2', // 1=National, 2=International
             'represented_india' => 'nullable|required_if:tournament_level,1|in:0,1,2',
 
@@ -367,16 +389,16 @@ class HospController extends Controller
         // }
         if ($request->hasFile('disability_doc')) {
             $pathDisability = $request->hasFile('disability_doc')
-                ? $request->file('disability_doc')->store('certificates')
+                ? $request->file('disability_doc')->store('certificates', 'public')
                 : null;
             $updateData['disability_doc'] = basename($pathDisability);
         }
         if ($request->hasFile('osp_achivement_certificate_path')) {
-            $pathCertificate = $request->file('osp_achivement_certificate_path')->store('certificates');
+            $pathCertificate = $request->file('osp_achivement_certificate_path')->store('certificates', 'public');
             $updateData['osp_achivement_certificate_path'] = basename($pathCertificate);
         }
         if ($request->hasFile('international_achievement_Verification_certificate_path')) {
-            $pathCertificate = $request->file('international_achievement_Verification_certificate_path')->store('certificates');
+            $pathCertificate = $request->file('international_achievement_Verification_certificate_path')->store('certificates', 'public');
             $updateData['international_achievement_Verification_certificate_path'] = basename($pathCertificate);
         }
         SportsDisciplineHosp::updateOrCreate(
@@ -416,14 +438,14 @@ class HospController extends Controller
         $filePath =  $request->declaration_file;
         if ($request->hasFile('declaration_file')) {
             // $filePath = $request->file('declaration_file')->store('declarations', 'public');
-            $filePath = $request->file('declaration_file')->store('declarations');
+            $filePath = $request->file('declaration_file')->store('declarations', 'public');
             $filePath = basename($filePath);
         }
 
         // Optional: Clear old records if needed
         DeclarationsHosp::where('user_id', $userId)->delete();
 
-          // Save declarations, attach file only once (e.g. to the first)
+        // Save declarations, attach file only once (e.g. to the first)
         foreach ($request->declaration_ids as $index => $declarationId) {
             DeclarationsHosp::create([
                 'user_id' => $userId,
@@ -454,5 +476,23 @@ class HospController extends Controller
         return response()->json([
             'declarations' => $declarations,
         ]);
+    }
+
+    private function validateFileSize($file, $maxSizeInKB, $errorMessage)
+    {
+        // Convert max size to bytes
+        $maxFileSize = $maxSizeInKB * 1024; // In bytes
+
+        // Check if the file size exceeds the limit
+        if ($file->getSize() > $maxFileSize) {
+            // Return error response if the file size exceeds the limit
+            return response()->json([
+                'status' => 'error',
+                'message' => $errorMessage
+            ], 422);
+        }
+
+        // Return null if no errors
+        return null;
     }
 }
