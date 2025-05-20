@@ -67,7 +67,7 @@ class AuthController extends Controller
             ]
         );
         // Eager load after creating/updating user
-        $user->load('userDetails','eventHosp','sportsDisciplineHosp','declarationsHosp');
+        $user->load('userDetails','sportsDisciplineHosp','declarationsHosp');
         // Log in
         $token = $user->createToken('api-token')->plainTextToken;
         $encryptedId = Crypt::encryptString($user->id);

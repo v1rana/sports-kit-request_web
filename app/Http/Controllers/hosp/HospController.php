@@ -75,7 +75,7 @@ class HospController extends Controller
             $user_details->played_national_level = $request->played_national_level;
             $user_details->organisation_represented = $request->organisation_represented;
             $user_details->save();
-            $user->load('userDetails', 'eventHosp', 'sportsDisciplineHosp', 'educationHosp', 'declarationsHosp');
+            $user->load('userDetails', 'sportsDisciplineHosp', 'educationHosp', 'declarationsHosp');
             return response()->json([
                 'status' => 'success',
                 'message' => 'User details saved successfully',
@@ -221,7 +221,7 @@ class HospController extends Controller
 
         $user = User::where('id', $user->id)->first();
 
-        $user->load('userDetails', 'eventHosp', 'sportsDisciplineHosp', 'educationHosp', 'declarationsHosp');
+        $user->load('userDetails', 'sportsDisciplineHosp', 'educationHosp', 'declarationsHosp');
         return response()->json([
             'status' => 'success',
             'message' => 'User details',
