@@ -1,6 +1,17 @@
 @extends('gm_main')
 
 @section('content')
+<style>
+	.label-bold {
+    font-size: 16px!important;
+    font-weight: 600!important;
+}
+
+.value-text {
+    font-size: 15px!important;
+    font-weight: 600!important;
+}
+</style>
 <section>
 <div class="container mt-4">
 			<h4>Haryana Provision of Sports Equipment Scheme 2025-2026</h4>
@@ -21,24 +32,24 @@
 @endif
 						<div class="row request-default-info">	
 							<div class="col-xs-12 col-sm-6 col-md-3 mb-3">
-								<label>1. Name of Applicant</label>
-								<h5>{{ $userDetail->full_name_en }}</h5>
+								<label class="label-bold">1. Name of Applicant</label>
+								<h5 class="value-text">{{ $userDetail->full_name_en }}</h5>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-3 mb-3">
-								<label>2. Body Type</label>
-								<h5>{{ $application->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }} </h5>
+								<label class="label-bold">2. Body Type</label>
+								<h5 class="value-text">{{ $application->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }} </h5>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-3 mb-3">
-								<label>3. Designation Of Applicant</label>
-								<h5>{{ $application->specific_designation }} </h5>
+								<label class="label-bold">3. Designation Of Applicant</label>
+								<h5 class="value-text">{{ $application->specific_designation }} </h5>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-3 mb-3">
-								<label>4. District</label>
-								<h5>{{ $application->district }}</h5>
+								<label class="label-bold">4. District</label>
+								<h5 class="value-text">{{ $application->district }}</h5>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-6 mb-3">
-								<label>5. Name of Municipal Body/ Gram Panchayat/ Ward/ Village</label>
-								<h5>{{ $application->area_name }}</h5>
+								<label class="label-bold">5. Name of Municipal Body/ Gram Panchayat/ Ward/ Village</label>
+								<h5 class="value-text">{{ $application->area_name }}</h5>
 							</div>
 							
 						</div>

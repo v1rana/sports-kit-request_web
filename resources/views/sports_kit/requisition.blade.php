@@ -34,6 +34,15 @@
       div#equipment-list .row .delete-row-area button{font-size:11px;padding: 7px }
        
     }
+    .label-bold {
+    font-size: 16px!important;
+    font-weight: 600!important;
+}
+
+.value-text {
+    font-size: 14px;
+    font-weight: normal;
+}
 </style>
 @section('content')
 <div class="container mt-4 request-registration-form">
@@ -50,13 +59,13 @@
         <div class="row mb-4">
             <div class="col-xs-12 col-sm-4 col-md-2 mb-3">
                 <div>
-                    <label>Name of Applicant</label>
+                    <label class="label-bold">Name of Applicant</label>
                     <input type="text" class="form-control" name="name" value="{{ old('name', session('first_form_data.name') ?? $userDetail->full_name_en ?? '') }}" required>
                 </div>
             </div>
             <!-- Designation Type Dropdown -->
             <div class="col-xs-12 col-sm-4 col-md-2 mb-3">
-                <label for="designation_type">Body Type</label>
+                <label class="label-bold" for="designation_type">Body Type</label>
                 <select class="form-control" name="designation" id="designation_type" required>
                     <option value="">-- Select Type --</option>
                     <option value="gram" {{ session( 'first_form_data.designation')=='gram' ? 'selected' : '' }}>Gram Panchayat</option>
@@ -66,27 +75,27 @@
 
             <!-- Specific Designation Dropdown -->
             <div class="col-xs-12 col-sm-4 col-md-2 mb-3">
-                <label for="specific_designation">Designation Of Applicant</label>
+                <label class="label-bold" for="specific_designation">Designation Of Applicant</label>
                 <select class="form-control" name="specific_designation" id="specific_designation" required>
                     <option value="">-- Select Designation --</option>
                 </select>
             </div>
             <div class="col-xs-12 col-sm-4 col-md-2 mb-3">
                 <div>
-                    <label>District</label>
+                    <label class="label-bold">District</label>
                     <input type="text" class="form-control" name="district" value="{{ old('district', session('first_form_data.district') ?? $userDetail->district ?? '') }}" required>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-4 col-md-2 mb-3" style="display:none;">
                 <div>
-                    <label>Block</label>
+                    <label class="label-bold">Block</label>
                     <input type="hidden" class="form-control" name="block" value="{{ old('block', session('first_form_data.block') ?? $userDetail->block_town ?? '') }}" required>
                 </div>
             </div>
 
             <div class="col-xs-12 col-sm-4 col-md-4 mb-3">
                 <div>
-                    <label>Name of Municipal Body/ Gram Panchayat/ Ward/ Village</label>
+                    <label class="label-bold">Name of Municipal Body/ Gram Panchayat/ Ward/ Village</label>
                     <input type="text" class="form-control" name="area_name" value="{{ old('area_name', session('first_form_data.area_name') ?? $userDetail->ward_village ?? '') }}" required>
                 </div>
             </div>

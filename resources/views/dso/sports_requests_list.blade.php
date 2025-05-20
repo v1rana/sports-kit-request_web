@@ -483,7 +483,7 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="fund_source" value="DSE" id="fundSourceDSE">
                 <label class="form-check-label" for="fundSourceDSE">
-                    Sourced by DSE 
+                    Sourced by DSC 
                 </label>
             </div>
             <div class="form-check">

@@ -24,6 +24,15 @@
 			table .table img{width: 40px !important; height: 40px !important}
 			table label{font-size:13px;}
         }
+		.label-bold {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.value-text {
+    font-size: 15px;
+    font-weight: 600;
+}
 </style>
 
 
@@ -81,26 +90,26 @@
 								</tr>
 								<tr>
 									<td style="padding: 10px 15px;">
-										<label>1. Name of Applicant</label>
-										<h5>{{ $kit->name }}</h5>
+										<label class="label-bold">1. Name of Applicant</label>
+										<h5 class="value-text">{{ $kit->name }}</h5>
 									</td>
 									<td style="padding: 10px 15px;">
-										<label>2. Body Type</label>
-										<h5>{{ $kit->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }} </h5>
+										<label class="label-bold">2. Body Type</label>
+										<h5 class="value-text">{{ $kit->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }} </h5>
 									</td>
 									<td style="padding: 10px 15px;">
-										<label>3. Designation Of Applicant</label>
-										<h5>{{ $kit->specific_designation }} </h5>
+										<label class="label-bold">3. Designation Of Applicant</label>
+										<h5 class="value-text">{{ $kit->specific_designation }} </h5>
 									</td>
 									<td style="padding: 10px 15px;">
-										<label>4. District</label>
-										<h5>{{ $kit->district }}</h5>
+										<label class="label-bold">4. District</label>
+										<h5 class="value-text">{{ $kit->district }}</h5>
 									</td>
 								</tr>
 								<tr>
 									<td style="padding: 10px 15px;" colspan="4">
-										<label>5. Name of Municipal Body/ Gram Panchayat/ Ward/ Village</label>
-										<h5>{{ $kit->area_name }} </h5>
+										<label class="label-bold">5. Name of Municipal Body/ Gram Panchayat/ Ward/ Village</label>
+										<h5 class="value-text">{{ $kit->area_name }} </h5>
 									</td>
 								</tr>
 							</table>

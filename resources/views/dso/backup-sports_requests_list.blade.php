@@ -322,7 +322,7 @@
             <div class="form-check">
                 <input class="form-check-input" type="radio" name="fund_source" value="DSE" id="fundSourceDSE">
                 <label class="form-check-label" for="fundSourceDSE">
-                    Sourced by DSE 
+                    Sourced by DSC 
                 </label>
             </div>
             <div class="form-check">

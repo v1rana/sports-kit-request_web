@@ -513,7 +513,7 @@ const BasicDetails = () => {
 
                                 
                                 <div className="col-md-6">
-                                    <label>Mailing Address</label>
+                                    <label>Email ID</label>
                                     <input
                                         type="email"
                                         className={`form-control required ${
