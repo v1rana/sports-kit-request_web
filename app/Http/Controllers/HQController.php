@@ -120,21 +120,8 @@ class HQController extends Controller
 
 	public function hosp_requests()
     {
-<<<<<<< HEAD
       $users = User::with(['userDetails', 'sportsDisciplineHosp', 'declarationsHosp'])->paginate(10);
 		// dd($users->userDetails());
-=======
-      $users = User::with([
-        'userDetails',
-        'eventHosp',
-        'sportsDisciplineHosp.tournament', // this is schedule_1_2
-        'declarationsHosp'
-    ])
-    ->whereHas('sportsDisciplineHosp', function ($query) {
-        $query->whereNotNull('tournament_id'); // Or add more filters if needed
-    })
-    ->paginate(10);
->>>>>>> 1366364 (uploaded files)
         return view('hq.hosp_requests_list', compact('users'));
     }
 	
