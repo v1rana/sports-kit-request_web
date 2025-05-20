@@ -84,7 +84,7 @@
 					<td>{{ $request->userDetails->ward_village ?? 'N/A' }}</td>
 					<td>
 						@php
-							$eventType = $request->eventHosp->event_type ?? null;
+							$eventType = $request->sportsDisciplineHosp->event_type ?? null;
 							echo $eventType == '1' ? 'Individual' : ($eventType == '2' ? 'Team' : 'N/A');
 						@endphp
 					</td>
