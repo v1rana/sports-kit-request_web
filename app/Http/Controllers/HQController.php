@@ -134,7 +134,6 @@ class HQController extends Controller
         $query->whereNotNull('tournament_id'); // Or add more filters if needed
     })
     ->paginate(10);
-
 >>>>>>> 1366364 (uploaded files)
         return view('hq.hosp_requests_list', compact('users'));
     }
