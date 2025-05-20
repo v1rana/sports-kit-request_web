@@ -294,18 +294,10 @@
 					<!--td>{{ $request->userDetails->block_town ?? 'N/A' }}</td>
 					<td>{{ $request->userDetails->ward_village ?? 'N/A' }}</td-->
 					<td>
-<<<<<<< HEAD
 						@php
 							$eventType = $request->sportsDisciplineHosp->event_type ?? null;
 							echo $eventType == '1' ? 'Individual' : ($eventType == '2' ? 'Team' : 'N/A');
 						@endphp
-=======
-						@if(isset($request->sportsDisciplineHosp->event_type))
-        {{ $request->sportsDisciplineHosp->event_type == '1' ? 'Individual' : 'Team' }}
-    @else
-        N/A
-    @endif
->>>>>>> 1366364 (uploaded files)
 					</td>
 					<td>4-years World Cup/Championship</td>
 					<td>{{ $request->sportsDisciplineHosp->organizing_committee ?? 'N/A' }}</td>
