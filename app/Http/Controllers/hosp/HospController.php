@@ -38,7 +38,7 @@ class HospController extends Controller
         try {
             $id = $request->user()->id;
             $user = User::where('id', $id)->findOrFail($id);
-            $user_details = UserDetails::where('user_id', $id)->findOrFail($id);
+           $user_details = UserDetails::where('user_id', $id)->firstOrFail();
             $user->mobile = $request->mobile;
             $user->email = $request->email_id;
             $user->save();
