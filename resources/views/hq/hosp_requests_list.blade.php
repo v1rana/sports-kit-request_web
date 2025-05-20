@@ -45,43 +45,234 @@
         .games-authorised-sec .row>div p {
             padding: 5px 10px;
             font-size: 14px;
-        }
+        }.app-id-view-btn {
+    border-width: 0 0 1px;
+    text-align: left;
+    border-style: dotted;
+    width: auto;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    border-color: blue;
+    font-weight: bold;
+}
+.modal label {
+    font-size: 15px;
+    margin-bottom: 0;
+    color: #6c757d !important;
+}
+.modal-title-details {
+    background: rgba(0, 0, 0, 0.04);
+    padding: 10px;
+    margin: 0;
+    color: #36454F;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+.education-area span{ font-size: 12px;
+    color: #00f;float:left;clear:both;
+    margin-left: 20px;
+    font-weight: normal;
+    border-bottom: 1px dotted;}
     </style>
     <h4 class="">Haryana Outstanding Sports Persons List <a href="" class="btn btn-secondary float-end"><i
                 class="fa-solid fa-arrow-left-long"></i> Back</a></h4>
-    <div class=" bg-white shadow mb-5 p-2">
+    <div class=" bg-white shadow mb-5 p-2 w-100 table-responsive">
         <table class="table table-bordered bg-white table-hover">
             <thead>
                 <tr class="bg-primary text-white">
                     <th>Sr. No.</th>
                     <th>Application Id</th>
-                    <th>Name</th>
-                    <th>Block</th>
+                    <th>Name</th>                    
                     <th>District</th>
-                    <th>Ward/Village</th>
+					<!--th>Block</th>
+                    <th>Ward/Village</th-->
                     <th>Event Type</th>
                     <th>Tournament</th>
                     <th>Organizing Committee</th>
-                    <th>Physical Disablity</th>
+                    <!--th>Physical Disablity</th>
                     <th>Level of Tournament</th>
                     <th>Game</th>
                     <th>venue</th>
                     <th>Medal</th>
-                    <th>Achievement Date</th>
-                    {{-- <th>Participation level</th> --}}
+                    <th>Achievement Date</th-->
+                    <!--th>Participation level</th-->
                     <th>Application status</th>
-                    <th>Action</th>
+                    <!--th>Action</th-->
                 </tr>
             </thead>
             <tbody>
 				@foreach($users as $index => $request)
+				@if(isset($request->declarationsHosp->id))
 				<tr>
-					<td>{{ $index + 1 }}</td>
-					<td>{{ $request->userDetails->application_id ?? 'N/A' }}</td>
+					<td>{{ $index + 1 }}.</td>
+					<td><button type="button" class="bg-transparent text-primary app-id-view-btn" data-bs-toggle="modal" data-bs-target="#modal{{ $request->declarationsHosp->id }}"> {{ $request->userDetails->application_id ?? 'N/A' }}</button>
+					<div class="modal fade" id="modal{{ $request->declarationsHosp->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header bg-white">
+                    <h5 class="modal-title" id="exampleModalLabel">Application ID - {{ $request->userDetails->application_id ?? 'N/A' }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-sm-12 col-sm-6 col-md-3">
+                            <label>Application Submitted Date</label>
+                            <h6>{{ \Carbon\Carbon::parse($request->created_at)->format('d M Y') }}</h6>
+						</div>
+                        <div class="col-sm-12 col-sm-6 col-md-3">
+                            <label>Application Status</label>
+							@php
+					$status = $request->status;
+					$statusText = 'In-Progress';
+					$badgeClass = 'bg-warning';
+					$icon = '<i class="fa-solid fa-hourglass-half"></i>';
+
+					if ($status == '1') {
+						$statusText = 'Approved';
+						$badgeClass = 'bg-success';
+						$icon = '<i class="fa-solid fa-thumbs-up"></i>';
+					} elseif ($status == '2') {
+						$statusText = 'Rejected';
+						$badgeClass = 'bg-danger';
+						$icon = '<i class="fa-solid fa-ban"></i>';
+					}
+				@endphp
+
+				
+                            <h6><strong>
+															@if($request->status == '1')
+																	<span class="badge bg-success"><i class="fa-solid fa-thumbs-up"></i> Approved</span>
+																@elseif($request->status == '2')
+																	<span class="badge bg-danger"><i class="fa-solid fa-ban"></i> Rejected</span>
+																@else
+																 <form action="{{ route('hq.approve', $request->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
+																		@csrf
+																		<button type="submit"  class="btn btn-success w-100 mb-2">
+																	 Approve
+																</button>
+																	</form>
+																<a href="javascript:void(0);" class="btn btn-danger" onclick="document.getElementById('rejection-remarks').classList.remove('d-none'); this.classList.add('d-none');"> Reject </a>
+																@endif
+															</strong></h6>
+						</div>
+					</div>
+					<h3 class="modal-title-details"><i class="fa-solid fa-user-large"></i> Personal Details</h3>
+					<div class="border p-3">
+						<div class="row">
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>1. Parivar Pehchan Patra ID</label>
+								<h6>{{ $request->userDetails->family_id ?? 'N/A' }}</h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>2. Name</label>
+								<h6>{{ $request->name ?? 'N/A' }}</h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>3. Caste Category</label>
+								<h6>{{ $request->userDetails->caste_category ?? 'N/A' }} </h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>4. Date of Birth</label>
+								<h6>{{ $request->userDetails->date_of_birth ?? 'N/A' }} <a href="ygFbWTvsYrmpNhLAcJGjX0LH1ubBspivld1dFEil.pdf" target="_blank"><i class="fa-solid fa-file-lines"></i></a></h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>5. Age</label>
+								<h6>{{ $request->userDetails->age ?? 'N/A' }}</h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>6. Aadhaar No.</label>
+								<h6>{{ $request->userDetails->aadhaar ?? 'N/A' }}</h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>7. Mailing Address</label>
+								<h6>{{ $request->email ?? 'N/A' }}</h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>8. Mobile No.</label>
+								<h6>{{ $request->mobile ?? 'N/A' }}</h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>9. Haryana Resident/Domicile</label>
+								<h6>Yes <a href="" target="_blank"><i class="fa-solid fa-file-lines"></i></a></h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>10. Played at Natioanl Level for Haryana</label>
+								<h6>Yes <a href="" target="_blank"><i class="fa-solid fa-file-lines"></i></a></h6>
+							</div>
+						</div>
+					</div>
+					<h3 class="modal-title-details mt-3"><i class="fa-solid fa-user-graduate"></i> Educational Details</h3>
+					<div class="border p-3 education-area">
+						<div class="row">
+							<div class="col-sm-12 col-sm-6 col-md-3">					
+								<h6>1. 10th <a href="" target="_blank"> <span>Click to View Certificate</span></a></h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3">					
+								<h6>2. 12th <a href="" target="_blank"><i class="fa-solid fa-file-lines"></i><br /><span>Click to View Certificate</span></a></h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3">					
+								<h6>3. Graduation <a href="" target="_blank"><i class="fa-solid fa-file-lines"></i><br /><span>Click to View Certificate</span></a></h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3">					
+								<h6>4. ITI (Others) <a href="" target="_blank"><i class="fa-solid fa-file-lines"></i><br /><span>Click to View Certificate</span></a></h6>
+							</div>
+							
+						</div>
+					</div>
+					<h3 class="modal-title-details mt-3"><i class="fa-solid fa-trophy"></i> Achievement Details</h3>
+					<div class="border p-3">
+						<div class="row">
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>1. Physical Disablity</label>
+								<h6>No</h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>2. Name of Sports Discipline</label>
+								<h6>No</h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>3. Name of Tournament</label>
+								<h6>No</h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>4. Organizing Authority</label>
+								<h6>No</h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>5. Level of Tournament</label>
+								<h6>Natioanl</h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>6 Represented India in any Sports Tournament</label>
+								<h6>Yees</h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>7. Achievement (Month & Year)</label>
+								<h6>Natioanl</h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>8.Tournament Venu</label>
+								<h6>Yees</h6>
+							</div>
+							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+								<label>9. Medal Won</label>
+								<h6>Yes <a href="" target="_blank"><i class="fa-solid fa-file-lines"></i></a></h6>
+							</div>
+									
+								
+						</div>
+					</div>
+					</div>
+
+            </div>
+        </div>
+    </div>
+					
+					</td>
 					<td>{{ $request->userDetails->full_name_en ?? 'N/A' }}</td>
-					<td>{{ $request->userDetails->block_town ?? 'N/A' }}</td>
 					<td>{{ $request->userDetails->district ?? 'N/A' }}</td>
-					<td>{{ $request->userDetails->ward_village ?? 'N/A' }}</td>
+					<!--td>{{ $request->userDetails->block_town ?? 'N/A' }}</td>
+					<td>{{ $request->userDetails->ward_village ?? 'N/A' }}</td-->
 					<td>
 						@php
 							$eventType = $request->sportsDisciplineHosp->event_type ?? null;
@@ -90,7 +281,7 @@
 					</td>
 					<td>4-years World Cup/Championship</td>
 					<td>{{ $request->sportsDisciplineHosp->organizing_committee ?? 'N/A' }}</td>
-					<td>
+					<!--td>
 						@php
 							$pd = $request->sportsDisciplineHosp->physical_disability ?? null;
 							echo $pd == 1 ? 'Yes' : ($pd == 2 ? 'No' : 'N/A');
@@ -109,16 +300,41 @@
 					<td>Basketball</td>
 					{{-- <td>{{ $request->sportsDisciplineHosp->game_id ?? 'N/A' }}</td> --}}
 					<td>{{ $request->sportsDisciplineHosp->tournament_venue ?? 'N/A' }}</td>
-					<td>{{ ucfirst($request->sportsDisciplineHosp->medal_won) ?? 'N/A' }}</td>
-					<td>{{ \Carbon\Carbon::parse($request->sportsDisciplineHosp->achievement_date)->format('d-m-Y') ?? 'N/A' }}</td>
-					{{-- <td>
-						{{ $request->sportsDisciplineHosp->represented_india == 1 ? 'International' : 'National' }}
-					</td> --}}
 					<td>
-						<span class="badge bg-warning {{$request->status =='1' ? 'bg-success' : 'bg-danger'}}">{{$request->status =='1' ? 'Approved' : 'Rejected'}}</span>
+    {{ $request->sportsDisciplineHosp && $request->sportsDisciplineHosp->medal_won 
+        ? ucfirst($request->sportsDisciplineHosp->medal_won) 
+        : 'N/A' }}
+</td>
+					<td>
+    {{ $request->sportsDisciplineHosp && $request->sportsDisciplineHosp->achievement_date 
+        ? \Carbon\Carbon::parse($request->sportsDisciplineHosp->achievement_date)->format('d-m-Y') 
+        : 'N/A' }}
+</td>
+					 <td>
+						{{ $request->sportsDisciplineHosp->represented_india == 1 ? 'International' : 'National' }}
+					</td--> 
+					<td>
+					@php
+					$status = $request->status;
+					$statusText = 'In-Progress';
+					$badgeClass = 'bg-warning';
+					$icon = '<i class="fa-solid fa-hourglass-half"></i>';
+
+					if ($status == '1') {
+						$statusText = 'Approved';
+						$badgeClass = 'bg-success';
+						$icon = '<i class="fa-solid fa-thumbs-up"></i>';
+					} elseif ($status == '2') {
+						$statusText = 'Rejected';
+						$badgeClass = 'bg-danger';
+						$icon = '<i class="fa-solid fa-ban"></i>';
+					}
+				@endphp
+
+				<span class="badge {{ $badgeClass }}">{!! $icon !!} {{ $statusText }}</span>
 					</td>
 					@if($request->status =='0')
-					<td>
+					<!--td>
 						<form action="{{ route('hq.approveReject', $request->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
 							@csrf
 							<input type="text" value="1" name="status" hidden>
@@ -129,9 +345,10 @@
 							<input type="text" value="2" name="status" hidden>
 							<button type="submit" class="btn btn-danger btn-sm">Reject</button>
 						</form>
-					</td>
+					</td-->
 					@endif
 				</tr>
+				@endif
 			@endforeach
 			
 
@@ -144,94 +361,7 @@
 
 
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header bg-success">
-                    <h5 class="modal-title" id="exampleModalLabel">Sports Equipments Center</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12 col-sm-6 col-md-3">
-                            <label>1. Name of the Owner</label>
-                            <h6>Navjot Kaur</h6>
-                        </div>
-                        <div class="col-sm-12 col-sm-6 col-md-3">
-                            <label>2. PAN No. </label>
-                            <h6>123Jdf123</h6>
-                        </div>
-                        <div class="col-sm-12 col-sm-6 col-md-6">
-                            <label>3. Firm Address</label>
-                            <h6>Sco. 109-110, Sector 17B, Chandigarh</h6>
-                        </div>
-                        <div class="col-sm-12 col-sm-6 col-md-3">
-                            <label>4. District</label>
-                            <h6>Chandigarh</h6>
-                        </div>
-                        <div class="col-sm-12 col-sm-6 col-md-3">
-                            <label>5. Pincode</label>
-                            <h6>160017</h6>
-                        </div>
-                        <div class="col-12 mt-3 games-authorised-sec">
-                            <p>Games Kit Authorised</p>
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-6 col-md-3">
-                                    <div class="card">
-                                        <div class="card-body text-center">
-                                            <h4>Volleyball</h4>
-                                            <p>₹ 300 (per unit)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-sm-6 col-md-3">
-                                    <div class="card">
-                                        <div class="card-body text-center">
-                                            <h4>Basketball</h4>
-                                            <p>₹ 500 (per unit)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-sm-6 col-md-3">
-                                    <div class="card">
-                                        <div class="card-body text-center">
-                                            <h4>Handball</h4>
-                                            <p>₹ 300 (per unit)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-sm-6 col-md-3">
-                                    <div class="card">
-                                        <div class="card-body text-center">
-                                            <h4>Cricket</h4>
-                                            <p>₹ 300 (per unit)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-sm-6 col-md-3">
-                                    <div class="card">
-                                        <div class="card-body text-center">
-                                            <h4>Judo</h4>
-                                            <p>₹ 300 (per unit)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xs-12 col-sm-6 col-md-3">
-                                    <div class="card">
-                                        <div class="card-body text-center">
-                                            <h4>Wrestling</h4>
-                                            <p>₹ 300 (per unit)</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
+	
     </div>
 @endsection
 <script src="{{ url('assets/js/jquery.min.js') }}"></script>

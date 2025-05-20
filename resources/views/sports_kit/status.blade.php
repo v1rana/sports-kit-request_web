@@ -3,7 +3,13 @@
 @section('content')
 <section>
 <div class="container mt-4">
-			<h4 class="">Haryana Provision of Sports Equipment Scheme 2025-2026  </h4>
+			<h4>Haryana Provision of Sports Equipment Scheme 2025-2026</h4>
+
+			<div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+				
+				<h4 style="color:black">Application ID : {{ $application->applicant_id }}</h4>
+			</div>
+			
 			
 			<div class=" bg-white shadow mb-5">
 				<div class="row justify-content-between py-1 pt-4 border-bottom align-items-center">
@@ -23,7 +29,7 @@
 								<h5>{{ $application->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }} </h5>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-3 mb-3">
-								<label>3. Designation Of Applicantt</label>
+								<label>3. Designation Of Applicant</label>
 								<h5>{{ $application->specific_designation }} </h5>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-3 mb-3">

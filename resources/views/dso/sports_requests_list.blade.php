@@ -8,8 +8,8 @@
     </div>
 @endif
 <style>
-	    label.info-label,small.info-label {font-weight: 500;font-size:14px;display: block; margin-bottom:0; line-height:normal}
-	    .modal-body h5{margin:0}
+	    label.info-label,small.info-label {font-weight: 500;font-size:17px;display: block; margin-bottom:0; line-height:normal}
+	    .modal-body h5{margin:0; margin-left: 16px;}
 	    .games-authorised-sec .row > div{font-size: 15px;padding:0}
 	    .games-authorised-sec .row > div h6 {
     margin: 0;
@@ -122,7 +122,7 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 						<th>Sr. No.</th>
 						<th>Application Id</th>
 						<th>Body Type</th>
-                        <th>Name Of Designation</th>						
+                        <!--<th>Name Of Designation</th>-->						
 						<th>District</th>
 						<th>Name Of Municipal Body<br>/ Gram Panchayat/ Ward/ Village</th>
 						<th>Sports</th>
@@ -157,60 +157,17 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 						<div class="modal fade" id="modal{{ $request->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 							<div class="modal-dialog modal-xl modal-dialog-centered">
 								<div class="modal-content">
-									<div class="modal-header bg-success">
-										<h5 class="modal-title" id="exampleModalLabel">Sports Equipments Center</h5>
+									<div class="modal-header">
+										<h5 class="modal-title text-muted" id="exampleModalLabel">Application Id : {{ $request->applicant_id }}</h5>
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
 									<div class="modal-body">
-										<!-- <div class="row">									
-											<div class="col-sm-12 col-sm-6 col-md-4">
-												<small class="info-label text-muted">Application Submitted Date</small>
-												<h5> {{ \Carbon\Carbon::parse($request->created_at)->format('d M Y, h:i A') }}</h5>
-											</div>
-
-											<div class="col-sm-12 col-sm-6 col-md-3">
-												<small class="info-label text-muted">Application Id</small>
-												<h5>{{ $request->applicant_id }}</h5>
-											</div>
-
-											<div class="col-sm-12 col-sm-6 col-md-3">
-												<small class="info-label text-muted">Application Status</small>
-												<h5> <strong>
-						                            @if($request->status == 'Approved')
-														<span class="badge rounded-pill bg-success "><i class="fa-solid fa-thumbs-up"></i> Approved</span> <br />
-													@elseif($request->status == 'Rejected')
-														<span class="badge rounded-pill bg-danger "><i class="fa-solid fa-ban"></i> Rejected</span>
-													@elseif($request->status == 'Verified')
-														<span class="badge rounded-pill bg-primary "><i class="fa-solid fa-check"></i> Verified</span>
-													@elseif($request->status == 'Not Verified')
-														<span class="badge rounded-pill bg-warning "><i class="fa-solid fa-xmark"></i> Not Verified</span>
-													@else
-														  <form action="{{ route('dso.verify', $request->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Verify this?');">
-															@csrf
-															<button type="submit"  class="btn btn-success"> Verify </button>
-														</form>
-														<a href="javascript:void(0);" class="btn btn-danger" onclick="document.getElementById('rejection-remarks').classList.remove('d-none'); this.classList.add('d-none');"> Not Verify </a>
-														@endif
-													</strong>
-												</h5>
-											</div>
-					
-											<div class="col-sm-12 col-md-2 d-none" id="rejection-remarks">
-												<label>Not Verify Remarks</label>
-													<form action="{{ route('dso.not_verify', $request->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to Not Verify this?');">
-													@csrf
-													<div class="d-flex flex-column flex-md-row gap-2">
-														<textarea class="form-control" name="not_verify_remark" rows="2" placeholder="Enter reason..." required></textarea>
-														<button type="submit" class="btn btn-primary">Submit</button>
-													</div>
-												</form>
-											</div>
-										</div> -->
+										
 										<style>
 											.badge-custom { font-size: 0.9rem; padding: 0.6rem 1rem; }
 											.card-custom {border-radius: 1rem;box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);padding: 1rem 1.5rem;background-color: #ffffff;margin-bottom: 1.5rem;}
 											.info-label {font-size: 0.85rem;font-weight: 500;color: #6c757d;}
-											h5 {font-weight: 600;font-size: 1rem;}
+											h5 {font-weight: 550;font-size: 0.9rem;}
 										</style>
 										
 										<div class="container">
@@ -219,13 +176,13 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 													<!-- Application Submitted Date -->
 													<div class="col-12 col-md-4">
 														<small class="info-label text-muted">Application Submitted Date</small>
-														<h5 class="mt-1">{{ \Carbon\Carbon::parse($request->created_at)->format('d M Y, h:i A') }}</h5>
+														<h5 class="mt-1">{{ \Carbon\Carbon::parse($request->created_at)->format('d M Y') }}</h5>
 													</div>
 
 													<!-- Application ID -->
 													<div class="col-12 col-md-4">
-														<small class="info-label text-muted">Application Id</small>
-														<h5 class="mt-1">{{ $request->applicant_id }}</h5>
+														<!--<small class="info-label text-muted">Application Id</small>
+														<h5 class="mt-1">{{ $request->applicant_id }}</h5>-->
 													</div>
 
 
@@ -408,7 +365,7 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 						</div>
 					</td>
 					<td>{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}</td>
-					<td>{{ $request->specific_designation }}</td>
+					<!--<td>{{ $request->specific_designation }}</td>-->
 					<td>{{ $request->district }}</td>
 					<td>{{ $request->area_name }}</td>
 
@@ -497,7 +454,7 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
     <div class="row">
         <div class="col-3 mb-2">
             <label>Date of Issue</label>
-            <h6>{{ \Carbon\Carbon::now()->format('d F Y h:ia') }}</h6>
+            <h6>{{ \Carbon\Carbon::now()->format('d F Y') }}</h6>
             <input type="hidden" name="issue_date" value="{{ \Carbon\Carbon::now()->toDateTimeString() }}">
         </div>
 		<input type="hidden" name="request_id" value="{{ $request->id }}">

@@ -292,7 +292,7 @@ public function printTemporary()
 			return view('sports_kit.status', [
 				'application' => $application,
 				'userDetail' => $userDetail,
-				'successMessage' => 'Form submitted successfully.'
+				'successMessage' => 'Application submitted successfully.'
 			]);
 		}
     }

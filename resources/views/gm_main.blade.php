@@ -37,6 +37,7 @@
 			</div>
 			<div class="col-2 text-end">
 				<img class="w-75" src="{{ url('assets/images/DigitalIndia.png') }}" alt="Sports Haryana Govt" style="filter:invert(1)">
+				<a href="{{ url('/logout') }}" class="btn btn-danger"><i class="fa-solid fa-power-off"></i> <span>Log Out</span></a>
 			</div>
 		</div>
 	</header>
@@ -46,28 +47,19 @@
        
         <!-- SideBar- aside sec Ends -->
         <div class="content-area">
-			<header>
+			<!--<header>
 				<div class="container-fluid">
 					<div class="row justify-content-between border-bottom align-items-center">
 						<div class="col-6 logo d-flex">
-							<!--<button class="navbar-toggler d-block" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-								<i class="fa-solid fa-angles-left"></i>
-							</button>
-							<div class="logo_text">
-								<h1 class="h1-logo">Sports Department , Government of Haryana</h1>								
-							</div>-->
+							
 						</div>
 						<div class="col-6 text-end">
-							<form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: inline;">
-    @csrf
-    <button type="submit" class="btn btn-danger">
-        <i class="fa-solid fa-power-off"></i> <span>Log Out</span>
-    </button>
-</form>
+							<a href="{{ url('/logout') }}" class="btn btn-danger"><i class="fa-solid fa-power-off"></i> <span>Log Out</span></a>
 						</div>
+						
 					</div>
 				</div>
-			</header>
+			</header>-->
         <div class="container mt-4">
             @yield('content')
         </div>

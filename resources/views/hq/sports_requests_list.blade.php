@@ -8,8 +8,8 @@
     </div>
 @endif
 <style>
-	    label.info-label,small.info-label {font-weight: 500;font-size:14px;display: block; margin-bottom:0; line-height:normal}
-	    .modal-body h5{margin:0}
+	    label.info-label,small.info-label {font-weight: 500;font-size:17px;display: block; margin-bottom:0; line-height:normal}
+	    .modal-body h5{margin:0; margin-left: 16px;font-size: 0.9rem; font-weight: 550;}
 	    .games-authorised-sec .row > div{font-size: 15px;padding:0}
 	    .games-authorised-sec .row > div h6 {
     margin: 0;
@@ -57,7 +57,7 @@ ul.list-unstyled li {
 				<th>Application Id</th>
 				<th>Name Of Applicant</th>
 				<th>Body Type</th>
-				<th>Name Of Designation</th>						
+				<!--<th>Name Of Designation</th>-->						
 				<th>District</th>
 				<th>Name Of Municipal Body<br>/ Gram Panchayat/ Ward/ Village</th>
 				<th>Sports</th>
@@ -89,8 +89,8 @@ ul.list-unstyled li {
 						<div class="modal fade" id="modal{{ $request->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 							<div class="modal-dialog modal-xl modal-dialog-centered">
 								<div class="modal-content">
-									<div class="modal-header bg-success">
-										<h5 class="modal-title" id="exampleModalLabel">Sports Equipments Center</h5>
+									<div class="modal-header">
+										<h5 class="modal-title text-muted" id="exampleModalLabel">Application Id : {{ $request['applicant_id'] }}</h5>
 										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 									</div>
 									<div class="modal-body">
@@ -99,12 +99,12 @@ ul.list-unstyled li {
 												<div class="row">									
 													<div class="col-sm-12 col-sm-6 col-md-4">
 														<small class="info-label text-muted">Application Submitted Date</small>
-														<h5>  {{ \Carbon\Carbon::parse($request->created_at)->format('d M Y, h:i A') }}</h5>
+														<h5>  {{ \Carbon\Carbon::parse($request->created_at)->format('d M Y') }}</h5>
 													</div>
 
 													<div class="col-sm-12 col-sm-6 col-md-3">
-														<small class="info-label text-muted">Application Id</small>
-														<h5>{{ $request['applicant_id'] }}</h5>
+														<!--<small class="info-label text-muted">Application Id</small>
+														<h5>{{ $request['applicant_id'] }}</h5>-->
 													</div>
 
 													<div class="col-sm-12 col-sm-6 col-md-3">
@@ -256,7 +256,7 @@ ul.list-unstyled li {
 					</td>
 					<td>{{ $request->name }}</td>
 					<td>{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}</td>
-					<td>{{ $request->specific_designation }}</td>
+					<!--<td>{{ $request->specific_designation }}</td>-->
 					<td>{{ $request->district }}</td>
 					<td>{{ $request->area_name }}</td>
 

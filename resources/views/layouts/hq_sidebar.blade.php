@@ -19,13 +19,12 @@
                     <i class="fa-solid fa-house"></i> <span>Dashboard</span>
                 </a>
             </li>
-            
-            <li class="nav-item">
-                <a href="{{ route('hq.vendor-list') }}" 
-                   class="nav-link {{ request()->routeIs('hq.vendor-list') ? 'active' : '' }}">
-                    <i class="fa-regular fa-rectangle-list"></i> <span> Vendor</span>
-                </a>
-            </li>
+            <li class="nav-item menu-item" data-tab="equipments">
+				<a href="{{ route('hq.vendor-list') }}" 
+				   class="nav-link {{ request()->routeIs('hq.vendor-list') ? 'active' : '' }}">
+					<i class="fa-regular fa-rectangle-list"></i> <span> Vendor</span>
+				</a>
+			</li>
                  {{-- Equipment menu --}}
     <li class="nav-item menu-item" data-tab="equipments">
         <a href="{{ route('hq.sports.requests') }}" 
@@ -72,13 +71,17 @@
 					</div>
 				</div>
 			</header>
+	<script>
+    // Set a JS variable from Laravel to detect the tab from current route
+    const currentRouteName = "{{ \Route::currentRouteName() }}";
+</script>		
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const tabButtons = document.querySelectorAll('.dashboard-stats .nav-link');
     const menuItems = document.querySelectorAll('.menu-item');
 
     // Save selected tab in localStorage and update sidebar
-   tabButtons.forEach(btn => {
+    tabButtons.forEach(btn => {
         btn.addEventListener('click', function () {
             const selected = this.textContent.trim().toLowerCase(); // "equipments", "gradations", "jobs"
             localStorage.setItem('selectedTab', selected);
@@ -86,18 +89,31 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Show only matched menu items in sidebar
+    function getTabFromRoute(routeName) {
+        if (routeName.includes('grad')) return 'gradations';
+        if (routeName.includes('hosp')) return 'jobs';
+        if (routeName.includes('sports') || routeName.includes('vendor')) return 'equipments';
+        return 'equipments'; // fallback
+    }
+
     function updateSidebar(tab) {
+        const validTabs = ['equipments', 'gradations', 'jobs'];
+        if (!validTabs.includes(tab)) tab = 'equipments';
         menuItems.forEach(item => {
             const tabKey = item.getAttribute('data-tab');
             item.style.display = (tabKey === tab) ? 'block' : 'none';
         });
     }
 
-    // On page load
-    const allowedTabs = ['equipments', 'jobs', 'gradations'];
-    const savedTab = localStorage.getItem('selectedTab');
-    updateSidebar(allowedTabs.includes(savedTab) ? savedTab : 'equipments');
+    // Load from localStorage, or fall back to current route
+    let savedTab = localStorage.getItem('selectedTab');
+    const fallbackTab = getTabFromRoute(currentRouteName);
+
+    if (!savedTab || savedTab !== fallbackTab) {
+        savedTab = fallbackTab;
+        localStorage.setItem('selectedTab', savedTab);
+    }
+
+    updateSidebar(savedTab);
 });
 </script>
-			

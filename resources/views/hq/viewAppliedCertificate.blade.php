@@ -109,7 +109,7 @@
                             </tr>
                             <tr>
                                 <td style="padding:5px 0px;">8. Best Sports Achievement </td>
-                                <td style="padding:5px 0px;">Type Of Events :- <strong class="underline">{{ $otpData->type_of_event }} </strong></td>
+                                <td style="padding:5px 0px;">Type Of Events :- {{ $otpData->type_of_event }} </td>
                             </tr>
                         </table>
                     </td>
@@ -125,9 +125,9 @@
                 <li style="padding: 5px;display: block;">iii). Venue of Tournament: <strong class="underline">{{ $otpData->venue_of_tournament ?? '' }}</strong></li>
                 <li style="padding: 5px;display: block;">iv). Organizing Authority: <strong class="underline">{{ $otpData->authority ?? '' }}</strong></li>
                 <li style="padding: 5px;display: block;">v). Tournament Type: <strong class="underline">{{$otpData->tournament_type}}</strong></li>
-                @if($otpData->type_of_event =='Team')<li style="padding: 5px;display: block;">vi). Medal Won: <strong class="underline">{{$otpData->medal_won}}</strong></li>
+                <li style="padding: 5px;display: block;">vi). Medal Won: <strong class="underline">{{$otpData->medal_won}}</strong></li>
 				<li style="padding: 5px;display: block;">vii). Participation Level: <strong class="underline">{{$otpData->participation_level ?? ''}}</strong></li>
-				@endif
+				
             </ul>
             <table class="signature-date-area">
                 <tr>

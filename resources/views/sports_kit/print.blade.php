@@ -35,12 +35,12 @@
         <div class=" bg-white shadow mb-5">
             <div class="no-print ">
 				<div class="card-header  bg-primary text-white d-flex justify-content-between align-items-center">
+					<button class="btn btn-light btn-sm no-print" onclick="window.print()"><i class="fa fa-print"></i> Download Unsigned Application Form</button>
 					<form action="{{ route('sports_kit.uploadform') }}" method="POST" enctype="multipart/form-data" class="d-flex gap-2 no-print m-0 align-items-center">
 						@csrf
 						<input type="file" name="signed_document" accept="application/pdf,image/*" class="form-control form-control-sm no-print" required />
-						<button type="submit" class="btn btn-success btn-sm w-75"><i class="fa-solid fa-print me-1"></i> Upload Signed Form</button>
+						<button type="submit" class="btn btn-success btn-sm w-75"><i class="fa-solid fa-print me-1"></i> Upload Signed Application Form</button>
 					</form>
-					<button class="btn btn-light btn-sm no-print" onclick="window.print()"><i class="fa fa-print"></i> Print</button>
 				</div>
 			</div>
 			

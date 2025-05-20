@@ -100,6 +100,36 @@ class DSOController extends Controller
         return view('dso.grad_list', compact('sportsCertificates'));
 
     }
+	
+	 public function viewAppliedCertificate(Request $request)
+{
+    // Validate POST input
+    $request->validate([
+        'certificate_id' => 'required|integer|exists:sports_gradation_certificates,id',
+    ]);
+
+    $id = $request->certificate_id;
+
+    $otpData = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
+        ->where('sports_gradation_certificates.id', $id)
+        ->whereIn('category_wise_gradations.gradation', ['C', 'D'])
+        ->orderBy('sports_gradation_certificates.created_at', 'desc')
+        ->select(
+            'sports_gradation_certificates.*',
+            'category_wise_gradations.gradation',
+            'category_wise_gradations.tournament',
+            'category_wise_gradations.organising_authority as authority'
+        )
+        ->first();
+
+    if (!$otpData) {
+        abort(404, 'Certificate not found or invalid gradation.');
+    }
+
+    return view('dso.viewAppliedCertificate', compact('otpData'));
+}
+
+	
     public function create() {
         
         return view('sports_kit.requisition');
@@ -167,7 +197,7 @@ class DSOController extends Controller
 
 		$request->verification_status = 'Verified';
 		$request->status = 'Verified'; // Update status
-		$request->verification_datetime = now();
+		$request->verification_datetime = \Carbon\Carbon::now('Asia/Kolkata');
 		$request->save();
 		
 		$result = DB::table('user_details')
@@ -249,7 +279,7 @@ class DSOController extends Controller
 
     $request->status = 'Approved';
     //$request->status = 'Verified'; // Update status
-    $request->approve_reject_datetime = now();
+    $request->approve_reject_datetime = \Carbon\Carbon::now('Asia/Kolkata');
     $request->save();
 	
 	$result = DB::table('user_details')
@@ -289,7 +319,7 @@ class DSOController extends Controller
 
 		$certificate->status = 'Rejected';
 		$certificate->rejection_remarks = $req->rejection_remark;
-		$certificate->approve_reject_datetime = now();
+		$certificate->approve_reject_datetime = \Carbon\Carbon::now('Asia/Kolkata');
 		$certificate->save();
 		
 		
@@ -350,7 +380,7 @@ class DSOController extends Controller
 		// Save to database
 		$certificate = sports_gradation_certificate::find($request->certificate_id);
 		$certificate->enquiry_pdf = $filePath;
-		$certificate->enquiry_pdf_datetime = now();
+		$certificate->enquiry_pdf_datetime =  \Carbon\Carbon::now('Asia/Kolkata');
 		$certificate->save();
 
 		return back()->with('success', 'Letter uploaded successfully.');
@@ -370,7 +400,7 @@ class DSOController extends Controller
 		// Save to database
 		$certificate = sports_gradation_certificate::find($request->certificate_id);
 		$certificate->replied_pdf = $filePath;
-		$certificate->replied_pdf_datetime = now();
+		$certificate->replied_pdf_datetime =  \Carbon\Carbon::now('Asia/Kolkata');
 		$certificate->save();
 
 		return back()->with('success', 'Letter uploaded successfully.');

@@ -14,7 +14,7 @@
     color: #36454F;
     font-size: 20px;
     text-transform: uppercase;}
-    label.info-label,small.info-label {font-weight: 500;font-size:14px;display: block; margin-bottom:4px; line-height:normal}
+    label.info-label,small.info-label {font-weight: 500;font-size:17px;display: block; margin-bottom:4px; line-height:normal}
 	
 .table td{vertical-align:top}
 .app-id-view-btn {
@@ -106,18 +106,20 @@ ul.list-unstyled li {
 								<div class="d-flex justify-content-between mb-3">
 									<div class="">
 										<label class="info-label text-muted ">Application Submitted Date</label>
-										<h5> {{ \Carbon\Carbon::parse($certificate->created_at)->format('d M Y, h:i A') }}</h5>
+										<h5> {{ \Carbon\Carbon::parse($certificate->date)->format('d M Y') }}</h5>
 									</div>
 										<div class="co">
-											<small class="info-label text-muted ">Certificate Number</small>
-											<h5>{{ $certificate->certificate_no }}</h5>
+											@if($certificate->status == 'Approved')<small class="info-label text-muted ">Certificate Number</small>
+											<h5>{{ $certificate->certificate_no }}</h5>@endif
 										</div>
 									<div class="">
 										<label class="info-label text-muted ">Application Status</label>
 										<h6>
 											<strong> 
-												@if($certificate->status == 'Approved')
+										@if($certificate->status == 'Approved' && empty($certificate->certificate_pdf))
 											<span class="badge rounded-pill bg-success"><i class="fa-solid fa-thumbs-up"></i> Approved</span>
+										@elseif($certificate->status == 'Approved' && !empty($certificate->certificate_pdf))
+											<span class="badge rounded-pill bg-success"><i class="fa-solid fa-thumbs-up"></i> Certificate Issued</span>
 										@elseif($certificate->status == 'Rejected')
 											<span class="badge rounded-pill bg-danger"><i class="fa-solid fa-ban"></i>  Rejected</span>
 										 @elseif(!empty($certificate->enquiry_pdf) && !empty($certificate->replied_pdf))
@@ -186,7 +188,8 @@ ul.list-unstyled li {
 										</div>
 						   
 										<div class="col-xs-12 col-sm-12 col-md-2">
-											<img src="http://164.100.137.70/storage/uploads/xO18eDzRgOertwfn2x9YE3IOlSUkpzR0dVH33DF7.jpg" width="150px" height="150px" style="border:5px solid #eee">
+											<img src="{{ asset('storage/' . $certificate->profile_picture) }}" width="150px" height="150px" style="border:5px solid #eee">
+
 										</div>
 									</div> 
 								</div>
@@ -238,7 +241,7 @@ ul.list-unstyled li {
 												</a>
 												<p>
 													<small class="mb-0 text-muted text-end">
-														📅 Datetime: {{ \Carbon\Carbon::parse($certificate->enquiry_pdf_datetime)->format('d M Y, h:i A') }}
+														📅 Date: {{ \Carbon\Carbon::parse($certificate->enquiry_pdf_datetime)->format('d M Y') }}
 													</small>
 												</p>
 											</div>
@@ -264,7 +267,7 @@ ul.list-unstyled li {
 												<a href="{{ asset('storage/' . $certificate->replied_pdf) }}" target="_blank" class="btn btn-primary mb-2"> <i class="fa-solid fa-file-lines"></i> View Reply Letter  </a>
 								
 												<p><small  class="mb-0 text-muted text-end">
-													📅 Datetime: {{ \Carbon\Carbon::parse($certificate->replied_pdf_datetime)->format('d M Y, h:i A') }}
+													📅 Date: {{ \Carbon\Carbon::parse($certificate->replied_pdf_datetime)->format('d M Y') }}
 												</small></p>
 											</div>
 
@@ -281,14 +284,16 @@ ul.list-unstyled li {
 										</div>
 										
 										<div class="col-xs-12 col-sm-6 col-md-3">
-											<label class="info-label text-muted ">Download Certificate</label>
-											
-											<h6><a href="{{ url('storage/'.($certificate->verification_by_sportsperson)) }}" target="_blank" >
-												<button  type="submit" class="btn btn-success">
+											<label class="info-label text-muted">Download Certificate</label>
+											<form id="pdfForm{{ $certificate->id }}" method="POST" action="{{ route('dso.certificates.downloadPDF') }}" target="_blank">
+												@csrf
+												<input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
+												<button type="submit" class="btn btn-success">
 													<i class="fa-solid fa-file-arrow-down"></i> PDF
-												</button></a>
-											</h6>
+												</button>
+											</form>
 										</div>
+
 										<div class="col-xs-12 col-sm-6 col-md-3">
 											
 											@if(!empty($certificate->enquiry_pdf) && !empty($certificate->replied_pdf) && ($certificate->status == 'Approved'))
@@ -316,7 +321,7 @@ ul.list-unstyled li {
 							  </div>
 							  <div class="modal-footer justify-content-between">
 								@php
-							$createdAt = \Illuminate\Support\Carbon::parse($certificate->created_at);
+							$createdAt = \Illuminate\Support\Carbon::parse($certificate->date);
 
 							// Use certificate_upload_datetime if available, otherwise use now
 							$endDate = $certificate->certificate_upload_datetime
@@ -329,7 +334,7 @@ ul.list-unstyled li {
 						@endphp
 
 						<h5 class="text-danger">
-							Application Timeline - {{ $totalDays }} Days
+							Application Enquiry Timeline - {{ $totalDays }} Days
 						</h5>
 
 
@@ -361,9 +366,17 @@ ul.list-unstyled li {
                    
 					
 					 <td>
-                        <strong>
-                            @if($certificate->status == 'Approved')
-                                <span class="badge rounded-pill bg-success"><i class="fa-solid fa-thumbs-up"></i> Approved</span>
+                        <strong> 
+							@if($certificate->status == 'Approved' && empty($certificate->certificate_pdf))
+								<span class="badge rounded-pill bg-success"><i class="fa-solid fa-thumbs-up"></i> Approved</span>
+							@elseif($certificate->status == 'Approved' && !empty($certificate->certificate_pdf))
+								<span class="badge rounded-pill bg-success"><i class="fa-solid fa-thumbs-up"></i> Certificate Issued</span>
+								<br>
+								<a href="{{ asset('storage/' . $certificate->certificate_pdf) }}" 
+								   target="_blank" 
+								   style="text-decoration: underline; color: #0d6efd;font-size: 9px;" class="mt-2 d-inline-block">
+									View Issued Certificate
+								</a>
                             @elseif($certificate->status == 'Rejected')
                                 <span class="badge rounded-pill bg-danger"><i class="fa-solid fa-ban"></i>  Rejected</span>
                             @else
@@ -450,5 +463,6 @@ ul.list-unstyled li {
 		});		
 	});
 </script>
+
 
 @endsection
