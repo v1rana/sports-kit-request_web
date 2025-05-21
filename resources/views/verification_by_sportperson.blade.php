@@ -49,7 +49,7 @@ h3 {
 
 <div class="container my-4">
 
-  <h4>Application ID - <strong>{{ $otpData->certificate_no }}</strong></h4>
+  <h4>Application ID - <strong>{{ $otpData->appl_id }}</strong></h4>
   <!-- Personal Info Card -->
   <div class="card mb-4">
     <div class="card-body">
@@ -310,10 +310,10 @@ h3 {
         <tr>
           <th style="padding:10px; display:flex; justify-content:space-between;align-items:center;">
             <div style="font-size:17px; font-weight: normal">
-              <img id="logo" src="http://164.100.137.70/assets/job_app/dash/images/logo-sports.png" alt="Sports Haryana Govt" class="img-fluid" style="height: 80px;"> Application for Sports Gradation Certificate
+              <img id="logo" src="{{ url('assets/job_app/dash/images/logo-sports.png') }}" alt="Sports Haryana Govt" class="img-fluid" style="height: 80px;"> Application for Sports Gradation Certificate
             </div>
             <div>
-              <p style="font-size:15px;margin:0 0 5px;color:#fff;font-weight: normal;">Application ID - <strong style="border-bottom: 1px dotted ">{{ $otpData->certificate_no }}</strong></p>
+              <p style="font-size:15px;margin:0 0 5px;color:#fff;font-weight: normal;">Application ID - <strong style="border-bottom: 1px dotted ">{{ $otpData->appl_id }}</strong></p>
               
             </div>
           </th>
@@ -456,7 +456,7 @@ h3 {
             </div>
           </td>
           <td>
-            <h6 style="margin-left: -173px;">Date - <strong>{{ \Carbon\Carbon::parse($otpData->created_at)->format('d-m-Y') }}</strong></h6>
+            <h6 style="margin-left: -173px;">Date - <strong>{{ \Carbon\Carbon::parse($otpData->date)->format('d-m-Y') }}</strong></h6>
           </td>
         </tr>
         

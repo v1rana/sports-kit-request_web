@@ -6,7 +6,7 @@
             <img id="logo" src="{{ url('assets/job_app/dash/images/logo-sports.png') }}" alt="Sports Haryana Govt" class="img-fluid" style="height: 60px;">
             <div>
                 <h4 class="m-0 fw-bold text-white">Sports Department, Haryana</h4>
-                <p class="m-0 small">Sports Gradation Certificate</p>
+                <p class="m-0 small">Sports Gradation Certificate - Player Login</p>
             </div>
         </div>
 

@@ -46,7 +46,7 @@
                 @foreach($otpData as $data)
                 <tr>
                     <td>{{ $i }}</td>  <!-- Corrected variable -->
-                    <td>{{ $data->certificate_no }}</td>
+                    <td>{{ $data->appl_id }}</td>
                     <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d-m-Y') }}</td>
                     <td>
                        @if($data->certificate_pdf == '' && $data->status == '') 
@@ -65,6 +65,10 @@
                             <span class="badge rounded-pill px-3 py-2" style="background: #007bff; color: #fff; font-weight: 600;">
                                 🎓 Released
                             </span>
+                            <br>
+                            <div style="background: #fff8d1; border-left: 6px solid #ffcc00; padding: 2px 0px; border-radius: 8px; font-weight: 500; margin-top: 15px;">
+                                📌 <strong>Note:</strong> Applicant can collect their certificate from the <strong>DS Office</strong>.
+                            </div>
                         @else
                             <span class="badge rounded-pill px-3 py-2" style="background: #6c757d; color: #fff; font-weight: 600;">
                                 ❔ Unknown
@@ -92,7 +96,8 @@
 								'{{ url('storage/' . ($data->aadhaar_card ?? 'default.jpg')) }}', 
 								'{{ url('storage/' . ($data->domicile_certificate ?? 'default.jpg')) }}', 
 								'{{ url('storage/' . ($data->sports_certificate ?? 'default.jpg')) }}', 
-								'{{ url('storage/' . ($data->more_than25_photo ?? 'default.jpg')) }}'
+								'{{ url('storage/' . ($data->more_than25_photo ?? 'default.jpg')) }}',
+                                '{{ url('storage/' . ($data->noc_upload ?? 'default.jpg')) }}'
 							)">
 							👁️ View Details
 						</button>
@@ -222,7 +227,13 @@
                         </div>
                         <div class="col-3 mb-3">
                             <div class="card"><div class="card-body p-0  text-center">
-                            <p class="text-muted p-3 mb-0">4. CERTIFICATE FOR AS PROOF FOR PLAYING MORE THAN 25% OF MATCHES. (PDF/JPG)</p><a id="more_than25_photo" class="btn btn-success w-100" href="#" target="_blank">View</a>
+                            <p class="text-muted p-3 mb-0">4. Add NOC Upload (for Certifying Played from Other State/UT/Organisation)</p><a id="noc_upload" class="btn btn-success w-100" href="#" target="_blank">View</a>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="col-3 mb-3">
+                            <div class="card"><div class="card-body p-0  text-center">
+                            <p class="text-muted p-3 mb-0">5. CERTIFICATE FOR AS PROOF FOR PLAYING MORE THAN 25% OF MATCHES. (PDF/JPG)</p><a id="more_than25_photo" class="btn btn-success w-100" href="#" target="_blank">View</a>
                             </div>
                             </div>
                         </div>
