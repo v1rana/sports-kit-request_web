@@ -101,7 +101,7 @@
 										<div class="input-group me-4">
 											<span class="input-group-btn">
 												<span class="btn btn-white btn-file border">
-													<span class="">Browse… </span><input type="file" name="profile_picture" class="" id="imgInp">
+													<span class="">Browse… </span><input type="file" name="profile_picture" class="" id="imgInp" required>
 												</span>
 											</span>
 											<input type="text" name="img" class="form-control" readonly>
@@ -230,8 +230,8 @@
 								</div>
 								<div class="col mb-3 border-end">
 									<label for="sports_certificate" class="form-label">Add NOC Upload (for Certifying Played from Other State/UT/Organisation) <span class="text-danger">*</span></label>
-									<input type="file" class="form-control" id="noc_upload" name="noc_upload" accept=".jpg,.jpeg,.png" required onchange="previewFile(event, 'sportsPreview')">
-									<div id="sportsPreview" class="preview-container"></div>
+									<input type="file" class="form-control" id="noc_upload" name="noc_upload" accept=".jpg,.jpeg,.png" required onchange="previewFile(event, 'nocPreview')">
+                                    <div id="nocPreview" class="preview-container"></div>
 								</div>
 
 								<!-- Self-Attested Photograph -->
@@ -280,13 +280,13 @@
 							<input class="form-check-input" id="terms_conditions" type="checkbox" name="terms_conditions" style="margin-top: 5px;font-size: 18px;margin-left: 22px;" required>
 							<label class="form-check-label" for="medalGold" style="margin-left: 8px;   margin-top: 2px;">  I Agree</label>
 						</div>
-</div>
+	</div>
 						</div>
 						<hr />
 						<div class="row mb-3">					
 							<div class="col-12 text-end">
 								<a href="" class="btn btn-secondary">Reset</a>
-								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">Submit</button>
+								<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmationModal">Save</button>
 							</div>
 						</div>
 						<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">

@@ -234,43 +234,35 @@ $(document).ready(function() {
 </script>
 <script>
     function previewFile(event, previewId) {
-        var file = event.target.files[0];
-        var previewContainer = document.getElementById(previewId);
-        previewContainer.innerHTML = ''; // Clear previous preview
+    const file = event.target.files[0];
+    const previewContainer = document.getElementById(previewId);
+    previewContainer.innerHTML = '';
 
-        if (file) {
-            var reader = new FileReader();
+    if (!file) return;
 
-            reader.onload = function(e) {
-                if (file.type.includes("image")) {
-                    // Display Image Preview
-                    var img = document.createElement("img");
-                    img.src = e.target.result;
-                    img.style.width = "150px";
-                    img.style.height = "150px";
-                    img.style.border = "1px solid #ddd";
-                    img.style.borderRadius = "5px";
-                    img.style.marginTop = "5px";
-                    previewContainer.appendChild(img);
-                } else if (file.type === "application/pdf") {
-                    // Display PDF File Name
-                    var link = document.createElement("a");
-                    link.href = e.target.result;
-                    link.innerText = file.name;
-                    link.target = "_blank";
-                    link.style.display = "block";
-                    link.style.marginTop = "5px";
-                    previewContainer.appendChild(link);
-                }
-            };
-
-            reader.readAsDataURL(file);
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        if (file.type.startsWith("image/")) {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.style.cssText = "width: 150px; height: 150px; border: 1px solid #ddd; border-radius: 5px; margin-top: 5px;";
+            previewContainer.appendChild(img);
+        } else if (file.type === "application/pdf") {
+            const link = document.createElement("a");
+            link.href = e.target.result;
+            link.textContent = file.name;
+            link.target = "_blank";
+            link.style.marginTop = "5px";
+            previewContainer.appendChild(link);
         }
-    }
+    };
+    reader.readAsDataURL(file);
+}
+
 </script>
 <script>
     function viewDetails(pro_pic,name, adhar_no, phone, belongTo,domiState,organisation,sport_displ,nameOfTounmnt,
-    month_year,vanueOfTournam,ornAthority,tounType,modalMedal,patiLevel,modalAadhaar,modalDomicile,modalSportsCert,more_than25_photo) {
+    month_year,vanueOfTournam,ornAthority,tounType,modalMedal,patiLevel,modalAadhaar,modalDomicile,modalSportsCert,more_than25_photo,noc_upload) {
         document.getElementById("modalProfilePic").src = pro_pic;
         document.getElementById('modalName').textContent = name;
         document.getElementById('adhar_no').textContent = adhar_no;
@@ -289,6 +281,7 @@ $(document).ready(function() {
         document.getElementById("modalAadhaar").href = modalAadhaar;
         document.getElementById("modalDomicile").href = modalDomicile;
         document.getElementById("modalSportsCert").href = modalSportsCert;
+        document.getElementById("noc_upload").href = noc_upload;
         document.getElementById("more_than25_photo").href = more_than25_photo;
 
         var modal = new bootstrap.Modal(document.getElementById('detailsModal'));

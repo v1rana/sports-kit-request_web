@@ -196,7 +196,7 @@ class SportsGradationCertificateController extends Controller
             'terms_conditions' => $request->terms_conditions,
             'user_id' => $user_id,
 			'appl_id' => $applId,
-            'date' => null
+            'date' => \Carbon\Carbon::now('Asia/Kolkata')
 
         ]);
 
