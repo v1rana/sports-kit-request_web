@@ -228,7 +228,7 @@ public function printTemporary()
 			return redirect()->back()->withErrors('Missing signed document or session data.');
 		}
 
-		$formData = session('form_data');
+	return	$formData = session('form_data');
 		$tempId = session('temp_id');
 
 		$destinationPath = public_path('uploads/gram_municipal_signed_document');
