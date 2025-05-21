@@ -35,7 +35,7 @@
        
     }
     .label-bold {
-    font-size: 16px!important;
+    font-size: 11px!important;
     font-weight: 600!important;
 }
 

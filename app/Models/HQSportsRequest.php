@@ -24,7 +24,8 @@ class HQSportsRequest extends Model
     }
 	public function vendorAssignment()
 {
-    return $this->belongsTo(EquipmentVendorAssignment::class, 'request_id'); // 'request_id' should match your FK
+    return $this->hasOne(EquipmentVendorAssignment::class, 'request_id', 'sports_kit_requisition_id');
 }
+
 
 }

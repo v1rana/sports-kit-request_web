@@ -10,17 +10,20 @@
             </div>
         </div>
 
-        <!-- Menu Section -->
-        <div class="col-md-6 text-end">
-            <a href="{{ route('dashboard') }}" class="text-white me-3">Dashboard</a>
+       @if (!request()->is('dso/certificates/download-pdf'))
+    <!-- Menu Section -->
+    <div class="col-md-6 text-end">
+        <a href="{{ route('dashboard') }}" class="text-white me-3">Dashboard</a>
 
-            <form method="POST" action="{{ route('logout') }}" class="d-inline">
-                @csrf
-                <button type="submit" class="btn btn-danger btn-sm">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </form>
-        </div>
+        <form method="POST" action="{{ route('logout') }}" class="d-inline">
+            @csrf
+            <button type="submit" class="btn btn-danger btn-sm">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </form>
+    </div>
+@endif
+
     </div>
 </div>
 

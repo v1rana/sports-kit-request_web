@@ -16,16 +16,20 @@ class DSOController extends Controller
     {
         // Fetch sports requests with their HQ verification status
         // $sportsRequests = SportsKitRequisition::with('hqSportsRequest')->get();
-       $sportsRequests = SportsKitRequisition::with([
-			'hqSportsRequest.vendorAssignment.vendor',
-			'hqSportsRequest.sport',
-			'hqSportsRequest.equipment'
-		])->get(); 
+      // return $sportsRequests = SportsKitRequisition::with([
+			// 'hqSportsRequest.vendorAssignment.vendor',
+			// 'hqSportsRequest.sport',
+			// 'hqSportsRequest.equipment'
+		// ])->get(); 
 		
-		// $sportsRequests = DB::table('sports_kit_requisitions')
-    // ->leftJoin('equipment_vendor_assignments', 'sports_kit_requisitions.id', '=', 'equipment_vendor_assignments.request_id')
-    // ->leftJoin('vendors', 'equipment_vendor_assignments.vendor_id', '=', 'vendors.id')
-    // ->get();
+		$sportsRequests = DB::table('sports_kit_requisitions')
+    ->leftJoin('equipment_vendor_assignments', 'sports_kit_requisitions.id', '=', 'equipment_vendor_assignments.request_id')
+    ->leftJoin('vendors', 'equipment_vendor_assignments.vendor_id', '=', 'vendors.id')
+    ->select(
+        'sports_kit_requisitions.id as requisition_id','vendors.id as vend_id',
+        DB::raw('equipment_vendor_assignments.*, vendors.*, sports_kit_requisitions.*')
+    )
+    ->get();
 		
         return view('dso.sports_requests_list', compact('sportsRequests'));
     }
@@ -409,47 +413,61 @@ class DSOController extends Controller
 	
 	
 	public function storeKitDisbursement(Request $request)
-	{
-		$validated = $request->validate([
-			'request_id' => 'required|exists:sports_kit_requisitions,id',
-			'vendor_id' => 'required|exists:vendors,id',
-			'fund_source' => 'required|in:DSE,HQ',
-			'procurement_amount' => 'required|numeric',
-			'bill_no' => 'required|string',
-			'voucher_file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
-		]);
-		$voucherPath = $request->file('voucher_file')->store('uploads/vouchers', 'public');
+{
+    // return $request->all(); // ← Comment this out after debugging
 
-		$assignment = EquipmentVendorAssignment::where('request_id', $validated['request_id'])
-			->where('vendor_id', $validated['vendor_id'])
-			->firstOrFail();
+    $validated = $request->validate([
+        'request_id' => 'required|exists:sports_kit_requisitions,id',
+        'vendor_id' => 'required|exists:vendors,id',
+        'fund_source' => 'required|in:DSE,HQ',
+        'procurement_amount' => 'required|numeric',
+        'bill_no' => 'required|string',
+        'voucher_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
+    ]);
 
-		$assignment->update([
-			'fund_source' => $validated['fund_source'],
-			'procurement_amount' => $validated['procurement_amount'],
-			'bill_no' => $validated['bill_no'],
-			'voucher_file_path' => $voucherPath,
-		]);
+    if ($request->hasFile('voucher_file')) {
+        $voucherFile = $request->file('voucher_file');
+        $voucherPath = $voucherFile->storeAs(
+            'uploads/vouchers',
+            uniqid() . '_' . $voucherFile->getClientOriginalName(),
+            'public'
+        );
+    } else {
+        $voucherPath = null;
+    }
 
-// return "hi";
-		$this->updateDisbursementStatus($validated['request_id'], $validated['vendor_id']);
+    $assignment = EquipmentVendorAssignment::where('request_id', $validated['request_id'])
+        ->where('vendor_id', $validated['vendor_id'])
+        ->firstOrFail();
 
-		return back()->with('success', 'Vendor disbursement recorded successfully.');
-	}
-	
-	protected function updateDisbursementStatus($requestId, $vendorId)
-	{
-		// Example logic: Mark fully disbursed if all vendor assignments under the request have disbursement data filled
-		$assignments = EquipmentVendorAssignment::where('request_id', $requestId)->where('vendor_id', $vendorId)->get();
+    $assignment->update([
+        'fund_source' => $validated['fund_source'],
+        'procurement_amount' => $validated['procurement_amount'],
+        'bill_no' => $validated['bill_no'],
+        'voucher_file_path' => $voucherPath,
+    ]);
 
-		$fullyDisbursed = $assignments->every(function ($assignment) {
-			return $assignment->procurement_amount && $assignment->voucher_file_path;
-		});
+    $this->updateDisbursementStatus($validated['request_id'], $validated['vendor_id']);
 
-		if ($fullyDisbursed) {
-			SportsKitRequisition::where('id', $requestId)->update(['disbursement_status' => 'Completed']);
-		}
-	}
+    return back()->with('success', 'Vendor disbursement recorded successfully.');
+}
+
+
+protected function updateDisbursementStatus($requestId, $vendorId)
+{
+    $assignments = EquipmentVendorAssignment::where('request_id', $requestId)
+        ->where('vendor_id', $vendorId)
+        ->get();
+
+    $fullyDisbursed = $assignments->every(function ($assignment) {
+        return !is_null($assignment->procurement_amount) && !is_null($assignment->voucher_file_path);
+    });
+
+    if ($fullyDisbursed) {
+        SportsKitRequisition::where('id', $requestId)->update(['disbursement_status' => 'Completed']);
+    }
+}
+
 
 
 	//Function to send single sms

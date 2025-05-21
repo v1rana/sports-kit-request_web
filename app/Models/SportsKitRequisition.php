@@ -44,4 +44,10 @@ class SportsKitRequisition extends Model {
     {
         return $this->verification_status === 'Verified' || $this->approval_status === 'Approved';
     }
+	
+	public function vendorAssignments()
+	{
+		return $this->hasMany(EquipmentVendorAssignment::class, 'request_id', 'id');
+	}
+
 }

@@ -223,6 +223,7 @@ public function printTemporary()
 
     public function uploadform(Request $request)
     {
+		// return $request->all();
 		if (!$request->hasFile('signed_document') || !session()->has('form_data')) {
 			return redirect()->back()->withErrors('Missing signed document or session data.');
 		}

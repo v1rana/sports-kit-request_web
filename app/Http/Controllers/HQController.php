@@ -59,7 +59,7 @@ class HQController extends Controller
 			if ($assigned === $total && $total > 0) {
 				$request->vendor_status = 'Vendors Assigned';
 			} elseif ($assigned > 0) {
-				$request->vendor_status = 'Partially Disbursed';
+				$request->vendor_status = 'Vendor Partially Assigned';
 			} else {
 				$request->vendor_status = 'Not Assigned';
 			}

@@ -436,7 +436,7 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 					
 					<td>
 						<strong>
-							@if($request->status == 'Approved')
+							@if(($request->status == 'Approved') && empty($request->disbursement_status) )
 								<span class="badge rounded-pill bg-success w-100"><i class="fa-solid fa-thumbs-up"></i> Approved</span> <br />
 								<!--@if($request->disbursement_status != 'Completed')-->
 								<a href="#" class="badge bg-primary w-100" data-bs-toggle="modal" data-bs-target="#requestDisclosure{{ $request->applicant_id }}">Request Disclosure</a>
@@ -462,7 +462,7 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
             <label>Firm Name</label>
             <h6>{{ $request->vendor_name }}</h6>
             <input type="hidden" name="firm_name" value="{{ $request->vendor_name }}">
-            <input type="hidden" name="vendor_id" value="{{ $request->vendor_id }}">
+            <input type="hidden" name="vendor_id" value="{{ $request->vend_id }}">
         </div>
         <div class="col-3 mb-2">
             <label>Name of the Owner</label>
@@ -518,6 +518,8 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
  	</div>
 </div>
                                 <!--@endif-->
+							@elseif(($request->status == 'Approved') && !empty($request->disbursement_status) )
+								<span class="badge rounded-pill bg-success w-100"><i class="fa-solid fa-thumbs-up"></i> Disbursed</span>
 							@elseif($request->status == 'Rejected')
 								<span class="badge rounded-pill bg-danger w-100"><i class="fa-solid fa-ban"></i> Rejected</span>
 							@elseif($request->status == 'Verified')
