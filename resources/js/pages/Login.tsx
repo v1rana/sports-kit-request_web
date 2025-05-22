@@ -4,10 +4,12 @@ import {
     getMemberbasicdetailsfromFIDUID,
     getOTPRequestforMEMID,
     login,
+    updateRole,
     verifyOTPRequestforMEMID,
 } from "../services/hosp-service";
-
+import { toast } from 'react-toastify';
 function Login() {
+    
     const [pppId, setPppId] = useState("1KQP3440");
     const [userId, setUserId] = useState("");
     const [otp_message, setOTPMsg] = useState("");
@@ -21,6 +23,7 @@ function Login() {
         []
     );
     const [loginType, setLoginType] = useState("");
+    const [btn_disabled, setBtnDisabled] = useState(false);
     const basic_data = {
         DeptCode: "NIC",
         ServiceCode: "TestCred",
@@ -67,10 +70,11 @@ function Login() {
 
         setErrors((err) => ({ ...err, pppId: "" })); // Clear error
         setErrors((err) => ({ ...err, loginType: "" })); // Clear error
+        setBtnDisabled(true);
         try {
             basic_data.UIDFID = pppId;
             const response = await getMemberbasicdetailsfromFIDUID(basic_data);
-
+            
             if (response.status === "Successfull") {
                 setMembers(response.result.dropdown);
                 setIsMembersVisible(true);
@@ -80,9 +84,12 @@ function Login() {
                 setIsMembersVisible(false);
                 setMembers([]);
             }
+            setBtnDisabled(false);
         } catch (error) {
+            setBtnDisabled(false);
+            toast.success("Login failed. Please try again.")
             console.error("Error fetching members:", error);
-            alert("Login failed. Please try again.");
+            // alert("Login failed. Please try again.");
         }
     };
 
@@ -98,9 +105,10 @@ function Login() {
         setErrors((err) => ({ ...err, selectedMember: "" })); // Clear error
 
         try {
+            setBtnDisabled(true);
             basic_data.MemberID = selectedMember;
             const response = await getOTPRequestforMEMID(basic_data);
-
+           
             if (response.status === "Successfull") {
                 setOTPMsg(response.result.message);
                 setTxn(response.result.txn);
@@ -114,9 +122,12 @@ function Login() {
                 setIsOtpVisible(false);
                 setMembers([]);
             }
+            setBtnDisabled(false);
         } catch (error) {
+            setBtnDisabled(false);
+            toast.success("Login failed. Please try again.")
             console.error("Error Sending Code:", error);
-            alert("Login failed. Please try again.");
+            // alert("Login failed. Please try again.");
         }
     };
 
@@ -136,8 +147,9 @@ function Login() {
             // navigate("/hosp/dashboard");
             basic_data.Txn = txn;
             basic_data.OTP = otp;
+            setBtnDisabled(true);
             const response = await verifyOTPRequestforMEMID(basic_data);
-
+           
             if (response.status === "Successfull") {
                 console.log(response.result);
 
@@ -152,9 +164,12 @@ function Login() {
             } else {
                 setErrors((err) => ({ ...err, otp: response.message }));
             }
+            setBtnDisabled(false);
         } catch (error) {
+            setBtnDisabled(false);
+            toast.success("Login failed. Please try again.")
             console.error("Login failed:", error);
-            alert("Login failed. Please try again.");
+            // alert("Login failed. Please try again.");
         }
     };
     const handleLogin = async (event: React.FormEvent) => {
@@ -167,13 +182,19 @@ function Login() {
             return;
         }
         localStorage.setItem("loginType", loginType);
-        if (loginType == "hosp") {
+        setBtnDisabled(true);
+        const response = await updateRole({role_id:loginType});
+        
+        // role/loginType 1 for equipment, 2 for gradation, 3 for hosp
+        toast.success("You’ve logged in successfully.");
+        setBtnDisabled(false);
+        if (loginType == "3") {
             navigate("/basic-details");
         }
-        if (loginType == "equipment") {
+        if (loginType == "1") {
             navigate("/registration-form/" + encodeURIComponent(userId));
             window.location.reload();
-        } else if (loginType == "gradation") {
+        } else if (loginType == "2") {
             navigate("/apply.certificate.form/" + encodeURIComponent(userId));
             window.location.reload();
         }
@@ -248,6 +269,7 @@ function Login() {
                                     className="btn btn-custom mt-2"
                                     hidden={isMembersVisible}
                                     onClick={displayMembers}
+                                    disabled={btn_disabled}
                                 >
                                     Display Members
                                 </button>
@@ -297,6 +319,7 @@ function Login() {
                                             className="btn btn-custom mt-2"
                                             hidden={isOtpVisible}
                                             onClick={getVerificationCode}
+                                            disabled={btn_disabled}
                                         >
                                             Send OTP
                                         </button>
@@ -327,6 +350,7 @@ function Login() {
                                                 href="javascript:;"
                                                 className="resendOtp"
                                                 onClick={getVerificationCode}
+                                                
                                             >
                                                 Resend code
                                             </a>
@@ -337,6 +361,7 @@ function Login() {
                                                 onClick={verifyOTP}
                                                 className="btn btn-custom mt-1"
                                                 type="button"
+                                                disabled={btn_disabled}
                                             >
                                                 Verify OTP
                                             </button>
@@ -351,9 +376,9 @@ function Login() {
                                     type="radio"
                                     name="loginType"
                                     id="equipment"
-                                    value="equipment"
+                                    value="1"
                                     onChange={handleLoginTypeChange}
-                                    checked={loginType === "equipment"}
+                                    checked={loginType === "1"}
                                     required
                                 />
                                 <label
@@ -369,9 +394,9 @@ function Login() {
                                     type="radio"
                                     name="loginType"
                                     id="gradation"
-                                    value="gradation"
+                                    value="2"
                                     onChange={handleLoginTypeChange}
-                                    checked={loginType === "gradation"}
+                                    checked={loginType === "2"}
                                 />
                                 <label
                                     className="form-check-label"
@@ -386,9 +411,9 @@ function Login() {
                                     type="radio"
                                     name="loginType"
                                     id="hosp"
-                                    value="hosp"
+                                    value="3"
                                     onChange={handleLoginTypeChange}
-                                    checked={loginType === "hosp"}
+                                    checked={loginType === "3"}
                                 />
                                 <label
                                     className="form-check-label"
@@ -403,6 +428,7 @@ function Login() {
                              <button
                                         className="btn btn-custom mt-1"
                                         type="submit"
+                                        disabled={btn_disabled}
                                     >
                                         Submit
                                     </button>

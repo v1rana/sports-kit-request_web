@@ -36,4 +36,8 @@ class SportsDisciplineHosp extends Model
     {
         return $this->belongsTo(GameHosp::class, 'game_id');
     }
+    public function disablilityType()
+    {
+        return $this->belongsTo(DisabilityType::class, 'disability_type_id');
+    }
 }

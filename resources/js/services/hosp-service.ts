@@ -88,6 +88,17 @@ export const updateUserData = async (form_data) => {
         throw error;
     }
 };
+export const updateRole = async (form_data) => {
+    try {
+        console.log('API_BASE_URL',API_BASE_URL);
+        const response = await api.post("/update-role",form_data,
+        );
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching hosp:", error);
+        throw error;
+    }
+};
 export const saveEvent = async (form_data) => {
     try {
         const response = await api.post("/hosp/event",form_data,

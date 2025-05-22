@@ -2102,7 +2102,7 @@ const HospForm = () => {
                 <div className="preloader-section section-right"></div>
             </div>
             {/* print declaration */}
-            <div id="print_declaration" style={{ display: "block", padding: "0", margin: "0" }}>
+            <div id="print_declaration" style={{ display: "none", padding: "0", margin: "0" }}>
                 <table width="100%" style={{pageBreakInside: "avoid"}}>
                     <thead style={{ background: "#4831d4", display: "table-header-group"}}>
                         <tr style={{   }}>
@@ -2305,8 +2305,9 @@ const HospForm = () => {
                                                 <td style={{ padding: "3px 7px"}}> Physical Disability Type
                                                     <h5 style={{fontSize: "16px"}}>
                                                         {userData
+                                                            .sports_discipline_hosp.disablility_type  && userData
                                                             .sports_discipline_hosp
-                                                            .disability_type_id}
+                                                            .disablility_type.type}
                                                             {userData
                                                         .sports_discipline_hosp
                                                         .disability_doc && (
@@ -2330,20 +2331,22 @@ const HospForm = () => {
                                             <td style={{ padding: "3px 7px"}}>
                                                     Sports Discipline{" "}
                                                     <h5 style={{fontSize: "16px"}}>
-                                                    {
+                                                    {userData
+                                                            .sports_discipline_hosp.game  &&
                                                         userData
                                                             .sports_discipline_hosp
-                                                            .game_id
+                                                            .game.name
                                                     }
                                                 </h5>
                                             </td>
                                             <td style={{ padding: "3px 7px"}}>
                                             Name of Tournament{" "}
                                                     <h5 style={{fontSize: "16px"}}>
-                                                    {
+                                                    {userData
+                                                            .sports_discipline_hosp.tournament  &&
                                                         userData
                                                             .sports_discipline_hosp
-                                                            .tournament_id
+                                                            .tournament.tournament
                                                     }
                                                 </h5>
                                             </td>
@@ -2511,73 +2514,13 @@ const HospForm = () => {
                                 <h3  style={{ textAlign: "center",fontSize: "20px", marginBottom:"20px"  }}  >
                                     DECLARATION BY SPORTS PERSON
                                 </h3>
-                                <ol type="1" style={{padding: "0", margin :"0"}}>
-                                                    <li style={{ textAlign:"justify"}}>
-                                                        I have read the Haryana
-                                                        Outstanding
-                                                        Sportspersons
-                                                        (Recruitment and
-                                                        Condition of Service)
-                                                        Rules, 2021 and declare
-                                                        that I am eligible for
-                                                        submission of my
-                                                        application for
-                                                        considration of
-                                                        appointment under these
-                                                        Rules.
-                                                    </li>
-                                                    <li style={{ textAlign:"justify"}}>
-                                                        I have enclosed
-                                                        self-attested copies of
-                                                        all documents in support
-                                                        of my application.
-                                                    </li>
-                                                    <li style={{ textAlign:"justify"}}>
-                                                        I have played 50% or
-                                                        more of the games played
-                                                        by team in the
-                                                        tournament.
-                                                    </li>
-                                                    <li style={{ textAlign:"justify"}}>
-                                                        I did not represent a
-                                                        State/UT other than
-                                                        Haryana at the national
-                                                        level.
-                                                    </li>
-                                                    <li style={{ textAlign:"justify"}}>
-                                                        I am guilty of doping,
-                                                        sexual harassment and
-                                                        abuse, competitive
-                                                        manipulation like
-                                                        betting, inside
-                                                        information, match
-                                                        fixing, tanking,
-                                                        threatening the
-                                                        integrity and essence of
-                                                        Sports.
-                                                    </li>
-                                                    <li style={{ textAlign:"justify"}}>
-                                                        If appointment is
-                                                        offered, I undertake
-                                                        that I shall have no
-                                                        subsisting contract for
-                                                        pecuniaryg gains like
-                                                        commercial endorsement
-                                                        or professional sport
-                                                        before joining the
-                                                        service.
-                                                    </li>
-                                                    <li style={{ textAlign:"justify"}}>
-                                                        I forego my earlier
-                                                        claim made under the
-                                                        Haryana Outstanding
-                                                        Sportsperson
-                                                        (Recruitment and
-                                                        Condition of Service)
-                                                        Rule, 2018, which have
-                                                        been repealed.
-                                                    </li>
-                                </ol>
+                                <ol type="1" style={{padding: "0", margin :"0"}} className="declaration-list">
+                                        {declarationList.map((label) => (
+                                                <li style={{ textAlign:"justify"}} className=""> {label} </li>
+                                           
+                                        ))}
+                                         </ol>
+                               
                                 <p  style={{ padding: "15px 5px", }} >
                                     It is certified that the above particulars given by me are true and correct to the best of my knowledge and  record and there is no  martial concealment . In  case of any wrong information furnished or material concealment, my service may be terminated without notice.
                                 </p>
@@ -2623,8 +2566,8 @@ const HospForm = () => {
                             <td>
                                 <table width="100%">
                                     <tr>
-                                        <td style={{padding:"10px 10px 10px 10px"}}>Name : </td>
-                                        <td style={{padding:"10px"}} >Father's Name : </td>
+                                        <td style={{padding:"10px 10px 10px 10px"}}>Name : {userDetails.full_name_en}</td>
+                                        <td style={{padding:"10px"}} >Father's Name : {userDetails.father_name_en}</td>
                                     </tr>
                                 </table>
                             </td>
@@ -2641,15 +2584,17 @@ const HospForm = () => {
                                         <th style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>Sports Federation</th>
                                         <th style={{padding:"10px", border:"1px solid #eee", fontSize:"14px", width:"200px"}}>Medal Won (If Any)</th>
                                     </tr>
+                                    {userData.sports_discipline_hosp && (
                                     <tr>
                                         <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>1</td>
-                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>27-03-2025</td>
-                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}> </td>
-                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}> </td>
-                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>Wrestling</td>
-                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>IOC</td>
-                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>Silver medal</td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData.sports_discipline_hosp.achievement_date}</td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData.sports_discipline_hosp.tournament.tournament} </td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData.sports_discipline_hosp.organizing_committee} </td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData.sports_discipline_hosp.game.name}</td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData.sports_discipline_hosp.tournament.organizing_authority_abbr}</td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData.sports_discipline_hosp.medal_won ?? 'N/A' }</td>
                                     </tr>
+                                    )}
                                 </table>
                             </td>
                         </tr>

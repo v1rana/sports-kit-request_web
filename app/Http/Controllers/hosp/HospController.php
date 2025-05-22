@@ -19,6 +19,16 @@ use Illuminate\Validation\Rule;
 class HospController extends Controller
 {
 
+    public function updateRole(Request $request)
+    {
+        $id = $request->user()->id;
+        $user = User::where('id', $id)->findOrFail($id);
+        $user->roles()->syncWithoutDetaching([$request->role_id]);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Role upadated',
+        ]);
+    }
     public function updateUserDetails(Request $request)
     {
         $request->validate([
@@ -42,7 +52,6 @@ class HospController extends Controller
             $user->mobile = $request->mobile;
             $user->email = $request->email_id;
             $user->save();
-
             if ($request->hasFile('photo')) {
                 $path = $request->file('photo')->store('photo', 'public');
                 $user_details->photo = basename($path);
@@ -79,7 +88,9 @@ class HospController extends Controller
             $user_details->played_national_level = $request->played_national_level;
             $user_details->organisation_represented = $request->organisation_represented;
             $user_details->save();
-            $user->load('userDetails', 'sportsDisciplineHosp', 'educationHosp', 'declarationsHosp');
+            $user->load('roles','userDetails', 'sportsDisciplineHosp', 'sportsDisciplineHosp.tournament',
+            'sportsDisciplineHosp.game',
+            'sportsDisciplineHosp.disablilityType' , 'educationHosp', 'declarationsHosp');
             return response()->json([
                 'status' => 'success',
                 'message' => 'User details saved successfully',
@@ -225,7 +236,9 @@ class HospController extends Controller
 
         $user = User::where('id', $user->id)->first();
 
-        $user->load('userDetails', 'sportsDisciplineHosp', 'educationHosp', 'declarationsHosp');
+        $user->load('roles','userDetails', 'sportsDisciplineHosp', 'sportsDisciplineHosp.tournament',
+        'sportsDisciplineHosp.game',
+        'sportsDisciplineHosp.disablilityType' , 'educationHosp', 'declarationsHosp');
         return response()->json([
             'status' => 'success',
             'message' => 'User details',
@@ -418,7 +431,7 @@ class HospController extends Controller
     public function getSportDiscipline(Request $request)
     {
         $user = $request->user();
-        $data = $user->sportsDisciplineHosp()->latest()->first();
+        $data = $user->sportsDisciplineHosp()->with(['tournament', 'game','disablilityType'])->latest()->first();
 
         if (!$data) {
             return response()->json(['message' => 'No event data found'], 404);

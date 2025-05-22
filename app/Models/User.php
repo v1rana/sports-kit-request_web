@@ -71,4 +71,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(DeclarationsHosp::class, 'user_id');
     }
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    // Helper method (optional)
+    public function hasRole($roleName)
+    {
+        return $this->roles()->where('name', $roleName)->exists();
+    }
 }
