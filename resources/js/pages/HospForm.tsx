@@ -572,7 +572,7 @@ const HospForm = () => {
         document.body.appendChild(tempElement); // required for html2canvas to work
     
         const opt = {
-            margin: 0.5,
+            margin: 0,
             filename: "declaration.pdf",
             image: { type: "jpeg", quality: 0.98 },
             html2canvas: { scale: 2 },
@@ -959,7 +959,7 @@ const HospForm = () => {
                                     currentStep === 1 ? "progress-active" : ""
                                 }
                             >
-                                <span>1. Basic Details</span>
+                                <a href="javascript:;" >1. Basic Details</a>
                             </li>
 
                             <li
@@ -967,21 +967,21 @@ const HospForm = () => {
                                     currentStep === 2 ? "progress-active" : ""
                                 }
                             >
-                                <span>2. Education Details</span>
-                            </li>
+                                <a href="javascript:;" >2. Education Details</a>
+                            </li>    
                             <li
                                 className={
                                     currentStep === 3 ? "progress-active" : ""
                                 }
                             >
-                                <span>3. Best Sports Achievement </span>
+                                <a href="javascript:;" >3. Best Sports Achievement </a>
                             </li>
                             <li
                                 className={
                                     currentStep === 4 ? "progress-active" : ""
                                 }
                             >
-                                <span>4. Declaration</span>
+                                <a href="javascript:;" >4. Declaration</a>
                             </li>
                         </ol>
                         <div
@@ -1006,12 +1006,7 @@ const HospForm = () => {
                     >
                         Print <i className="fa fa-print"></i>
                     </button> */}
-                    <Link
-                        className="btn btn-primary me-1"
-                        to="/hosp/preview-application"
-                    >
-                        Preview Form
-                    </Link>
+                   
                     {/* <button className="btn btn-primary me-1" onClick={downloadPDF}>Preview Form</button> */}
                 </div>
                 {!isSubmitted && !isSubmitting && (
@@ -1321,8 +1316,8 @@ const HospForm = () => {
                                             <option value="" selected disabled>
                                                 Select
                                             </option>
-                                            <option value="10">10th</option>
-                                            <option value="12">12th</option>
+                                            <option value="10th">10th</option>
+                                            <option value="12th">12th</option>
                                             <option value="Graduation">
                                                 Graduation
                                             </option>
@@ -1414,12 +1409,12 @@ const HospForm = () => {
                                 </button>
                             </div>
                             <hr />
-                            <div  className=" text-center mt-1">
+                            <div  className=" text-end mt-1">
                                 {currentStep > 1 && (
                                     <Link
                                         type="button"
                                         to="/basic-details"
-                                        className="float-none btn btn-primary mx-2"
+                                        className="float-none btn btn-secondary mx-2 text-capitalize"
                                     >
                                         Previous
                                     </Link>
@@ -1733,7 +1728,7 @@ const HospForm = () => {
                             </div>
 
                             <div className="col-md-6">
-                                <label>Achievement (Month & Year)</label>
+                                <label>Achievement Date(Month & Year)</label>
                                 <input
                                     type="date"
                                     name="achievement_date"
@@ -1879,7 +1874,7 @@ const HospForm = () => {
                             </div> */}
                             <div className="col-md-6">
                                 <label>
-                                    Attach Sports Achievment Certificate (pdf)
+                                    Attach Sports Achievment Certificates (pdf)
                                 </label>
                                 <br />
 
@@ -1954,12 +1949,12 @@ const HospForm = () => {
                             </div> */}
                             <hr />
 
-                            <div className="col-12 text-center mt-1">
+                            <div className="col-12 text-end mt-1">
                                 {currentStep > 1 && (
                                     <button
                                         type="button"
                                         onClick={prevStep}
-                                        className="btn btn-primary m-2"
+                                        className="btn btn-secondary m-2"
                                     >
                                         Previous
                                     </button>
@@ -2004,37 +1999,12 @@ const HospForm = () => {
                                 <div className="row">
                                     <div className="col-md-12 mb-3">
                                         {/* <p>Declaration by Sportsperson</p> */}
-                                        {declarationList.map((label, index) => (
-                                            <div
-                                                className=""
-                                                key={`d${index + 1}`}
-                                            >
-                                                <input
-                                                    className="form-check-input"
-                                                    type="checkbox"
-                                                    hidden
-                                                    id={`d${index + 1}`}
-                                                    checked={
-                                                        declarations[
-                                                            `d${
-                                                                index + 1
-                                                            }` as keyof typeof declarations
-                                                        ]
-                                                    }
-                                                    onChange={() =>
-                                                        handleSingleChange(
-                                                            `d${index + 1}`
-                                                        )
-                                                    }
-                                                />
-                                                <label
-                                                    className="form-check-label lb"
-                                                    htmlFor={`d${index + 1}`}
-                                                >
-                                                    {label}
-                                                </label>
-                                            </div>
+                                        <ol className="declaration-list">
+                                        {declarationList.map((label) => (
+                                                <li  className=""> {label} </li>
+                                           
                                         ))}
+                                         </ol>
 
                                         <div className="form-check mt-3">
                                             <input
@@ -2052,8 +2022,15 @@ const HospForm = () => {
                                             </label>
                                         </div>
                                     </div>
-                                    <div
-                                        className="col-md-6 float-end mt-4"
+
+                                   
+                                </div>
+                            </div>
+                            <hr />
+                            <div className="row mt-1 align-items-end">
+                                <div className="d-flex col-8 align-items-end">
+                            <div
+                                        className=""
                                         hidden={currentStep !== 4}
                                     >
                                         <button
@@ -2062,11 +2039,10 @@ const HospForm = () => {
                                                 handlePrintDeclaration(e)
                                             }
                                         >
-                                            Download Unsigned Application Form
-                                            <i className="fa fa-print"></i>
+                                            Download Unsigned Application Form <i className="fa fa-print"></i>
                                         </button>
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="ms-3">
                                         <label>
                                             Upload Signed Application Form
                                         </label>
@@ -2081,26 +2057,21 @@ const HospForm = () => {
                                          <div className="text-danger">
                                         {diclarationerrors.msg}
                                     </div>
-                                    </div>
-
-                                   
-                                </div>
-                            </div>
-                            <hr />
-                            <div className=" text-center mt-1">
+                                    </div></div>
                                 {currentStep === stepsTotal && (
-                                    <div>
+                                    
+                                    <div className="col-md-4 text-end">
                                         <button
                                             type="button"
                                             onClick={prevStep}
-                                            className="btn btn-primary m-2"
+                                            className="btn btn-secondary m-2"
                                         >
                                             Previous
                                         </button>
                                         <button
                                             id="submit-btn"
                                             type="submit"
-                                            className="btn btn-primary"
+                                            className="btn btn-success"
                                         >
                                             Submit
                                         </button>
@@ -2112,13 +2083,15 @@ const HospForm = () => {
                 )}
 
                 {isSubmitted && (
-                    <div
-                        className="text-center mt-5 p-4 border rounded shadow-sm bg-light"
-                        id="print-section"
-                    >
-                        <h4>Application is successfully submitted</h4>
+                    <div className="text-center p-4 " id="print-section"  >
+                        <i className="fa-solid fa-circle-check text-success"></i>
+
+                        <h3 className="text-success">Successfully submitted!</h3>
                         <p>Application ID: {userDetails?.application_id}</p>
-                        <Link to="/hosp/login">Go Login</Link>
+                        <Link className="btn btn-primary me-1 fs-5 px-4 py-2" to="/hosp/preview-application" ><i className="fa-solid fa-eye"></i> Preview Form
+                        </Link>
+                        <Link className="btn btn-success me-1 fs-5 px-4 py-2" to="/hosp/login"><i className="fa-solid fa-house"></i> Go To Home</Link> 
+                           
                     </div>
                 )}
             </div>
@@ -2129,30 +2102,21 @@ const HospForm = () => {
                 <div className="preloader-section section-right"></div>
             </div>
             {/* print declaration */}
-            <div id="print_declaration" style={{ display: "none", padding: "0", margin: "0" }}>
-                <table width="100%">
-                    <thead style={{ background: "#4831d4" }}>
-                        <tr>
+            <div id="print_declaration" style={{ display: "block", padding: "0", margin: "0" }}>
+                <table width="100%" style={{pageBreakInside: "avoid"}}>
+                    <thead style={{ background: "#4831d4", display: "table-header-group"}}>
+                        <tr style={{   }}>
                             <th style={{ padding: "10px" }}>
-                                <div className="logo ">
-                                    <a
-                                        href="#"
-                                        title="Go to home"
-                                        className="site_logo d-flex align-items-center"
-                                        rel="home"
-                                    >
-                                        <img
-                                            id="logo"
-                                            src="../assets/images/logo-sports.png"
-                                            alt="Sports Haryana Govt"
-                                        />
-                                        <div className="logo_text ms-3">
-                                            <h1 className="h1-logo text-white mb-0" style={{ fontSize: "24px" }}>
-                                                Sports Department<br />
-                                                <small style={{ fontSize: "15px" }}>Let the young minds grow to the full potential</small>
-                                            </h1>
-                                        </div>
-                                    </a>
+                                <div className="logo " style={{display: "flex", alignItems:"center" }}>
+                                    <img  id="logo" src="../assets/images/logo-sports.png" alt="Sports Haryana Govt"
+                                    />
+                                    <div className="logo_text ms-3">
+                                        <h1 className="h1-logo text-white mb-0" style={{ fontSize: "24px" }}>
+                                            Sports Department<br />
+                                            <small style={{ fontSize: "15px" }}>Let the young minds grow to the full potential</small>
+                                        </h1>
+                                    </div>
+                                    
                                 </div>
                             </th>
                         </tr>
@@ -2165,167 +2129,163 @@ const HospForm = () => {
                         </tr>
                         <tr>
                             <td>
-                                <table
-                                    width="100%"
-                                    style={{
-                                        margin: "0 auto 50px",
-                                        border: "1px solid #efefef",
-                                        background: "#fff",
-                                        tableLayout:"fixed",
-                                    }}
-                                >
-                                    <tbody>
+                                <table width="100%" style={{ 
+                                        border: "1px solid #efefef",background: "#fff",
+                                        tableLayout:"fixed",}}>
+                                    <tr>
+                                        <td colSpan={3}>
+                                            <h3 className="modal-title-details"><i className="fa-solid fa-user"></i> Basic Details</h3>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ padding: "3px 7px",}}>
+                                            1. Parivar Pehchan Patra ID
+                                            <h5 style={{fontSize: "16px"}}>{userDetails.family_id}</h5>
+                                        </td>
+                                        <td style={{ padding: "3px 7px",}}>
+                                            2. Name
+                                            <h5 style={{fontSize: "16px"}}>{userData.name}</h5>
+                                        </td>
+                                        <td  style={{ padding: "3px 7px"}} >
+                                            3. Caste Category
+                                            <h5 style={{fontSize: "16px"}}>
+                                                {userDetails.caste_category} <a href="javascript:;" className="text-dark" target="_blank"><i className="fa-solid fa-paperclip"></i></a>
+                                            </h5>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style={{ padding: "3px 7px"}}>
+                                            4. Date of Birth
+                                            <h5 style={{fontSize: "16px"}}>
+                                                {userDetails.date_of_birth} 
+
+                                                {userDetails.dob_doc &&
+                                                      <a href="javascript:;" className="text-dark" target="_blank"><i className="fa-solid fa-paperclip"></i></a>
+                                                    }
+                                            </h5>
+                                        </td>
+                                        <td  style={{ padding: "3px 7px"}}>
+                                            5. Age
+                                            <h5 style={{fontSize: "16px"}}>{userDetails.age}</h5>
+                                        </td>
+                                        <td style={{ padding: "3px 7px"}}>
+                                            6. Aadhar No.
+                                            <h5 style={{fontSize: "16px"}}>{userDetails.aadhaar}</h5>
+                                        </td>
+                                         
+                                    </tr>
+                                    <tr>
+                                        <td style={{ padding: "3px 7px"}}>
+                                            7. Mobile
+                                            <h5 style={{fontSize: "16px"}}>{userData.mobile}</h5>
+                                        </td>
+                                        <td style={{ padding: "3px 7px"}}>
+                                            8. Email ID
+                                            <h5 style={{fontSize: "16px"}}>{userData.email}</h5>
+                                        </td>
+                                       
+                                    </tr>
+                                   
+                                    <tr>
+                                    <td   style={{ padding: "3px 7px"}}>
+                                            9. Haryana Domicle
+                                            <h5 style={{fontSize: "16px"}}>
+                                                {userDetails.domicile == "1"
+                                                    ? "Yes "
+                                                    : "No "}
+                                                     {userDetails.domicile_doc &&
+                                                     <a href="javascript:;" className="text-dark" target="_blank"><i className="fa-solid fa-paperclip"></i></a>
+                                                    }
+                                            </h5>
+                                        </td>
+                                        <td   style={{ padding: "3px 7px"}}>
+                                            10. Played National Level
+                                            <h5 style={{fontSize: "16px"}}>
+                                                {userDetails.played_national_level == "1"
+                                                    ? "Yes "
+                                                    : "No "}
+                                                    {userDetails.national_level_doc &&
+                                                     <a href="javascript:;" className="text-dark" target="_blank"><i className="fa-solid fa-paperclip"></i></a>
+                                                    }
+                                            </h5>
+                                        </td>
+                                    {userDetails.organisation_doc && userDetails.played_national_level == "2" &&
+                                        <td  style={{ padding: "3px 7px"}}>
+                                            11. Organisation represented
+                                            <h5 style={{fontSize: "16px"}}>
+                                                {userDetails.organisation_represented}
+                                                     {userDetails.organisation_doc &&
+                                                     <a href="javascript:;" className="text-dark" target="_blank"> <i className="fa-solid fa-paperclip"></i></a>
+                                                    }
+                                            </h5>
+                                        </td>
+                                         } 
+                                    </tr>
+                                         
+                            
+                                </table>
+                            </td>
+                        </tr>
+                        
+                       
+                       
+                        
+                        {userData.education_hosp.length && (
+                            <tr>
+                                <td style={{paddingTop: "20px"}}>
+                                    <h3 className="modal-title-details"><i className="fa-solid fa-user-graduate"></i> Educational  Qualifications</h3> 
+                                </td>
+                            </tr>
+                        )}
+                        {userData.education_hosp.map( (item, index) => (
+                            <tr key={item.id || index}>
+                                <td >
+                                    <table width="100%" style={{ 
+                                        border: "1px solid #efefef",background: "#fff",
+                                        tableLayout:"fixed",}}>
+                                        <tr>
+                                            
+                                            {!item.other_qualification && (
+                                                <>
+                                            <td style={{ padding: "3px 7px" }}>{item.qualification}</td>
+                                            <td style={{ padding: "3px 7px"}}>{item.certificate_path
+                                            ? "(Attached doc)"
+                                            : "(No Attachment)"}</td>
+                                            </>
+                                            )}
+                                            {item.other_qualification && (
+                                                 <>
+                                              
+                                                <td style={{ padding: "3px 7px"}}>{item.other_qualification ||
+                                                    "N/A"} (Other)</td>
+                                                    </>
+                                            )}
                                         
-                                        <tr>
-                                            <td colSpan={3}>
-                                                <h3 className="modal-title-details"><i className="fa-solid fa-user"></i> Personal Details</h3>
-                                            </td>
+                                            {item.other_qualification && (
+                                            
+                                                <td style={{ padding: "3px 7px"}}> {item.certificate_path
+                                            ? "(Attached doc)"
+                                            : "(No Attachment)"}</td>
+                                            )}
+                                            
                                         </tr>
-                                        <tr>
-                                            <td style={{ padding: "3px 7px",}}>
-                                                1. Parivar Pehchan Patra ID
-                                                <h5 style={{fontSize: "16px"}}>{userData.name}</h5>
-                                            </td>
-                                            <td style={{ padding: "3px 7px",}}>
-                                                2. Name
-                                                <h5 style={{fontSize: "16px"}}>{userData.name}</h5>
-                                            </td>
-                                            <td  style={{ padding: "3px 7px"}} >
-                                                3. Caste Category
-                                                <h5 style={{fontSize: "16px"}}>
-                                                    {userDetails.caste_category} <a href="" className="text-dark" target="_blank"><i className="fa-solid fa-paperclip"></i></a>
-                                                </h5>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style={{ padding: "3px 7px"}}>
-                                                4. Date of Birth
-                                                <h5 style={{fontSize: "16px"}}>
-                                                    {userDetails.date_of_birth}
-                                                </h5>
-                                            </td>
-                                            <td  style={{ padding: "3px 7px"}}>
-                                                5. Age
-                                                <h5 style={{fontSize: "16px"}}>{userDetails.aadhaar}</h5>
-                                            </td>
-                                            <td style={{ padding: "3px 7px"}}>
-                                                6. Aadhar No.
-                                                <h5 style={{fontSize: "16px"}}>{userDetails.aadhaar}</h5>
-                                            </td> 
-                                        </tr>
-                                        <tr>
-                                            <td style={{ padding: "3px 7px"}}>
-                                                7. Mobile
-                                                <h5 style={{fontSize: "16px"}}>{userData.mobile}</h5>
-                                            </td>
-                                            <td colSpan={2}  style={{ padding: "3px 7px"}}>
-                                                8. Haryana Domicle
-                                                <h5 style={{fontSize: "16px"}}>
-                                                    {userDetails.domicile == "1"
-                                                        ? "Yes"
-                                                        : "No"} <a href="" className="text-dark" target="_blank"><i className="fa-solid fa-paperclip"></i></a>
-                                                </h5>
-                                            </td>
-                                        </tr>
-                                        {/* <tr>
-                                        <td style={{ padding: "15px" }}>
-                                        Event </td>
-                                        </tr> */}
-                                        {userData.event_hosp && (
-                                            <tr>
-                                                <td  style={{ padding: "3px 7px"}}>
-                                                    Event type
-                                                    <h5 style={{fontSize: "16px"}}>
-                                                        {userData.event_hosp
-                                                            .event_type == "1"
-                                                            ? "Individual"
-                                                            : "Team"}
-                                                    </h5>
-                                                </td>
-                                                <td style={{ padding: "3px 7px"}}>
-                                                    Played National Level
-                                                    <h5 style={{fontSize: "16px"}}>
-                                                        {userData.event_hosp
-                                                            .played_national_level ==
-                                                        "1"
-                                                            ? "Yes"
-                                                            : "No"}
-                                                    </h5>
-                                                    <h6>
-                                                        {userData.event_hosp
-                                                            .national_level_doc
-                                                            ? "(Attached doc)"
-                                                            : "(No Attachment)"}
-                                                    </h6>
-                                                </td>
-                                                <td style={{ padding: "3px 7px"}}>
-                                                    Name of Central Organisation
-                                                    Represented
-                                                    <h5 style={{fontSize: "16px"}}>
-                                                        {
-                                                            userData.organisation_represented
-                                                        }
-                                                    </h5>
-                                                    <h6>
-                                                        {userData.event_hosp
-                                                            .organisation_doc
-                                                            ? "(Attached doc)"
-                                                            : "(No Attachment)"}
-                                                    </h6>
-                                                </td>
-                                            </tr>
-                                        )}
-                                      
-                                        {userData.education_hosp.length && (
-                                            <tr>
-                                                <td colSpan={3} >
-                                                    <h3 className="modal-title-details"><i className="fa-solid fa-user-graduate"></i> Educational  Details</h3> 
-                                                </td>
-                                            </tr>
-                                        )}
-                                        {userData.education_hosp.map(
-                                            (item, index) => (
-                                                <tr key={item.id || index}>
-                                                    <td colSpan={3}>
-                                                        <table width="100%">
-                                                       
-                                                            <tr>
-                                                                <td style={{ padding: "3px 7px" }}>{item.qualification}</td>
-                                                                <td style={{ padding: "3px 7px"}}>{item.certificate_path
-                                                                ? "(Attached doc)"
-                                                                : "(No Attachment)"}</td>
-                                                                {item.other_qualification && (
-                                                                    <td style={{ padding: "3px 7px"}}>{item.other_qualification ||
-                                                                        "N/A"}</td>
-                                                                )}
-                                                            
-                                                                 {item.other_qualification && (
-                                                                   
-                                                                        <td style={{ padding: "3px 7px"}}> {item.certificate_path
-                                                                    ? "(Attached doc)"
-                                                                    : "(No Attachment)"}</td>
-                                                                )}
-                                                                
-                                                            </tr>
-
-
-                                                        </table>
-                                                       
-                                                    </td>
-                                                   
-                                                </tr>
-                                            )
-                                        )}
-                                        <tr>
-                                            <td colSpan={3}>
-                                                <h3 className="modal-title-details"><i className="fa-solid fa-trophy"></i> Achievement  Details</h3> 
-                                            </td>
-                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        ))}
+                        <tr>
+                            <td style={{paddingTop: "20px"}}>
+                                <h3 className="modal-title-details"><i className="fa-solid fa-trophy"></i> Best Sports Achievement</h3> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table width="100%" style={{ 
+                                    border: "1px solid #efefef",background: "#fff",
+                                    tableLayout:"fixed",}}>
                                         {userData.sports_discipline_hosp && (
-                                            <tr>
-
-                                            <td style={{ padding: "3px 7px"}}>
-                                                Physical Disability
+                                        <tr>
+                                            <td style={{ padding: "3px 7px"}}> Physical Disability
                                                 <h5 style={{fontSize: "16px"}}>
                                                     {userData
                                                         .sports_discipline_hosp
@@ -2333,15 +2293,52 @@ const HospForm = () => {
                                                     1
                                                         ? "Yes"
                                                         : userData
-                                                              .sports_discipline_hosp
-                                                              .physical_disability ===
-                                                          2
+                                                                .sports_discipline_hosp
+                                                                .physical_disability ===
+                                                            2
                                                         ? "No"
                                                         : "N/A"}
                                                 </h5>
                                             </td>
-                                                <td style={{ padding: "15px" }}>
+                                            {userData.sports_discipline_hosp.physical_disability == 1 &&
+                                           
+                                                <td style={{ padding: "3px 7px"}}> Physical Disability Type
+                                                    <h5 style={{fontSize: "16px"}}>
+                                                        {userData
+                                                            .sports_discipline_hosp
+                                                            .disability_type_id}
+                                                            {userData
+                                                        .sports_discipline_hosp
+                                                        .disability_doc && (
+                                                            <a href="javascript:;" className="text-dark" target="_blank"> <i className="fa-solid fa-paperclip"></i></a>
+                                                            )}
+                                                    </h5>
+                                                </td>
+                                                
+                                            
+                                            }  
+                                             <td style={{ padding: "3px 7px"}}>
+                                                   Event Type{" "}
+                                                    <h5 style={{fontSize: "16px"}}>
+                                                    {
+                                                        userData
+                                                            .sports_discipline_hosp
+                                                            .event_type == '1' ? 'Individual' : 'Team'
+                                                    }
+                                                </h5>
+                                            </td>         
+                                            <td style={{ padding: "3px 7px"}}>
                                                     Sports Discipline{" "}
+                                                    <h5 style={{fontSize: "16px"}}>
+                                                    {
+                                                        userData
+                                                            .sports_discipline_hosp
+                                                            .game_id
+                                                    }
+                                                </h5>
+                                            </td>
+                                            <td style={{ padding: "3px 7px"}}>
+                                            Name of Tournament{" "}
                                                     <h5 style={{fontSize: "16px"}}>
                                                     {
                                                         userData
@@ -2349,114 +2346,173 @@ const HospForm = () => {
                                                             .tournament_id
                                                     }
                                                 </h5>
-                                                </td>
-                                                <td style={{ padding: "15px" }}>
-                                                    Tournament Venue
-                                                    <h5 style={{fontSize: "16px"}}>
-                                                        {
-                                                            userData
-                                                                .sports_discipline_hosp
-                                                                .tournament_venue
-                                                        }
-                                                    </h5>
-                                                </td>
-                                            </tr>
-                                        
-                                        )}
+                                            </td>
+                                           
+                                            
+                                        </tr> 
+                                        )} 
+                                         {userData.sports_discipline_hosp && (
+                                        <tr>
+                                             <td style={{ padding: "3px 7px"}}>
+                                                Organizing Authority
+                                                <h5 style={{fontSize: "16px"}}>
+                                                    {
+                                                        userData
+                                                            .sports_discipline_hosp
+                                                            .organizing_committee
+                                                    }
+                                                </h5>
+                                            </td>
+                                             <td style={{ padding: "3px 7px"}}>
+                                                Tournament_level
+                                                <h5 style={{fontSize: "16px"}}>
+                                                    {userData
+                                                        .sports_discipline_hosp
+                                                        .tournament_level ===
+                                                    1
+                                                        ? "National"
+                                                        : "International"}
+                                                </h5>
+                                            </td>
+                                            <td style={{ padding: "3px 7px"}}>
+                                                Represented India
+                                                <h5 style={{fontSize: "16px"}}>
+                                                    {userData
+                                                        .sports_discipline_hosp
+                                                        .represented_india ===
+                                                    1
+                                                        ? "Yes"
+                                                        : "No"}
+                                                </h5>
+                                            </td>
+                                        </tr>
+                                         )}
                                         {userData.sports_discipline_hosp && (
-                                            <tr>
+                                        <tr>
+                                            <td style={{ padding: "3px 7px"}}>
+                                                Medal Won
+                                                <h5 style={{fontSize: "16px"}}>
+                                                    {userData
+                                                        .sports_discipline_hosp
+                                                        .medal_won ||
+                                                        "N/A"}
+                                                </h5>
+                                            </td>
+                                            <td style={{ padding: "3px 7px"}}>
+                                                Tournament Venue
+                                                <h5 style={{fontSize: "16px"}}>
+                                                    {
+                                                        userData
+                                                            .sports_discipline_hosp
+                                                            .tournament_venue
+                                                    }
+                                                </h5>
+                                            </td>
+                                            {
+                                                        userData
+                                                            .sports_discipline_hosp.event_type == '2' && (
 
-                                                <td style={{ padding: "15px" }}>
-                                                    Medal Won
-                                                    <h5 style={{fontSize: "16px"}}>
-                                                        {userData
+                                                <>           
+                                            <td style={{ padding: "3px 7px"}}>
+                                            Matches played by team in the tournament
+                                                <h5 style={{fontSize: "16px"}}>
+                                                    {
+                                                        userData
                                                             .sports_discipline_hosp
-                                                            .medal_won ||
-                                                            "None"}
-                                                    </h5>
-                                                </td>
-                                                <td style={{ padding: "15px" }}>
-                                                    Represented India
-                                                    <h5 style={{fontSize: "16px"}}>
-                                                        {userData
+                                                            .match_played_by_team
+                                                    }
+                                                </h5>
+                                            </td>
+                                            <td style={{ padding: "3px 7px"}}>
+                                           Matches played by me in the tournament
+                                                <h5 style={{fontSize: "16px"}}>
+                                                    {
+                                                        userData
                                                             .sports_discipline_hosp
-                                                            .represented_india ===
-                                                        1
-                                                            ? "Yes"
-                                                            : "No"}
-                                                    </h5>
-                                                </td>
-                                                <td style={{ padding: "15px" }}>
-                                                    Organizing Committee
-                                                    <h5 style={{fontSize: "16px"}}>
-                                                        {
-                                                            userData
-                                                                .sports_discipline_hosp
-                                                                .organizing_committee
-                                                        }
-                                                    </h5>
-                                                </td>
-                                            </tr>
-                                        
-                                        )}
-                                        {userData.sports_discipline_hosp && (
-                                            <tr>
-                                                <td style={{ padding: "15px" }}>
-                                                    OSP Certificate
-                                                    <h5 style={{fontSize: "16px"}}>
-                                                        {userData
+                                                            .match_played_by_me
+                                                    }
+                                                </h5>
+                                            </td>
+                                            </> 
+                                            )}
+                                        </tr>
+                                    
+                                        )} {userData.sports_discipline_hosp && (
+                                        <tr>
+                                           <td style={{ padding: "3px 7px"}}>
+                                           Achievement Date
+                                                <h5 style={{fontSize: "16px"}}>
+                                                    {
+                                                        userData
                                                             .sports_discipline_hosp
-                                                            .osp_achivement_certificate_path
-                                                            ? "(Attached doc)"
-                                                            : "(No Attachment)"}
-                                                    </h5>
-                                                </td>
+                                                            .achievement_date
+                                                    }
+                                                </h5>
+                                            </td>
+                                                <td style={{ padding: "3px 7px"}}>
+                                                Sports Achievment Certificates
+                                                <h5 style={{fontSize: "16px"}}>
+                                                    {userData
+                                                        .sports_discipline_hosp
+                                                        .osp_achivement_certificate_path
+                                                        ? "(Attached doc)"
+                                                        : "(No Attachment)"}
+                                                </h5>
+                                            </td>
 
-                                                <td style={{ padding: "15px" }}>
-                                                    International Certificate
-                                                    <h5 style={{fontSize: "16px"}}>
-                                                        {userData
-                                                            .sports_discipline_hosp
-                                                            .international_achievement_Verification_certificate_path
-                                                            ? "(Attached doc)"
-                                                            : "(No Attachment)"}
-                                                    </h5>
-                                                </td>
-                                            </tr>
-                                        )}
-                                        <tr>
-                                            <td colSpan={3}>
-                                                <hr style={{ marginTop: "0", marginBottom:"0" }} />
-                                            </td>
+                                            {/* <td style={{ padding: "3px 7px"}}>
+                                                International Certificate
+                                                <h5 style={{fontSize: "16px"}}>
+                                                    {userData
+                                                        .sports_discipline_hosp
+                                                        .international_achievement_Verification_certificate_path
+                                                        ? "(Attached doc)"
+                                                        : "(No Attachment)"}
+                                                </h5>
+                                            </td> */}
                                         </tr>
-                                        <tr style={{ padding: "20px 0 0" }}>
-                                            <td
-                                                style={{ padding: "0 20px" }}
-                                                
-                                            >
-                                                <strong>Date -</strong> <u> </u>
-                                            </td>
-                                            <td
-                                                align="right"colSpan={2}
-                                                style={{
-                                                    padding: "40px 20px 20px",
-                                                    textAlign: "right",
-                                                }}
-                                            >
-                                                <strong>
-                                                    (Signature of Sportsperson)
-                                                </strong>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={3}>
-                                                <div style={{pageBreakAfter:"always"}}></div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={3}>
-                                                <ol type="1">
-                                                    <li>
+                                            )}
+                                </table>
+
+                            </td>
+                        </tr>
+                       
+                        
+                         <tr style={{ padding: "60px 0 0" }}>
+                            <td>
+                                <table width="100%">
+                                    <tr>
+                                        <td style={{ padding: "0 10px" }} >
+                                            <strong>Date -</strong> <u> </u>
+                                        </td>
+                                        <td
+                                            align="right" 
+                                            style={{
+                                                padding: "40px 10px 20px",
+                                                textAlign: "right",
+                                            }}
+                                        >
+                                            <strong>
+                                                (Signature of Sportsperson)
+                                            </strong>
+                                        </td>
+
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td  >
+                                <div style={{pageBreakAfter:"always"}}></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style={{padding: "50px 10px 0 30px"}}>
+                                <h3  style={{ textAlign: "center",fontSize: "20px", marginBottom:"20px"  }}  >
+                                    DECLARATION BY SPORTS PERSON
+                                </h3>
+                                <ol type="1" style={{padding: "0", margin :"0"}}>
+                                                    <li style={{ textAlign:"justify"}}>
                                                         I have read the Haryana
                                                         Outstanding
                                                         Sportspersons
@@ -2470,25 +2526,25 @@ const HospForm = () => {
                                                         appointment under these
                                                         Rules.
                                                     </li>
-                                                    <li>
+                                                    <li style={{ textAlign:"justify"}}>
                                                         I have enclosed
                                                         self-attested copies of
                                                         all documents in support
                                                         of my application.
                                                     </li>
-                                                    <li>
+                                                    <li style={{ textAlign:"justify"}}>
                                                         I have played 50% or
                                                         more of the games played
                                                         by team in the
                                                         tournament.
                                                     </li>
-                                                    <li>
+                                                    <li style={{ textAlign:"justify"}}>
                                                         I did not represent a
                                                         State/UT other than
                                                         Haryana at the national
                                                         level.
                                                     </li>
-                                                    <li>
+                                                    <li style={{ textAlign:"justify"}}>
                                                         I am guilty of doping,
                                                         sexual harassment and
                                                         abuse, competitive
@@ -2500,7 +2556,7 @@ const HospForm = () => {
                                                         integrity and essence of
                                                         Sports.
                                                     </li>
-                                                    <li>
+                                                    <li style={{ textAlign:"justify"}}>
                                                         If appointment is
                                                         offered, I undertake
                                                         that I shall have no
@@ -2511,7 +2567,7 @@ const HospForm = () => {
                                                         before joining the
                                                         service.
                                                     </li>
-                                                    <li>
+                                                    <li style={{ textAlign:"justify"}}>
                                                         I forego my earlier
                                                         claim made under the
                                                         Haryana Outstanding
@@ -2521,129 +2577,107 @@ const HospForm = () => {
                                                         Rule, 2018, which have
                                                         been repealed.
                                                     </li>
-                                                </ol>
-                                                <p
-                                                    style={{
-                                                        padding: "10px 15px",
-                                                    }}
-                                                >
-                                                    It is certified that the
-                                                    above particulars given by
-                                                    me are true and correct to
-                                                    the best of my knowledge and
-                                                    record and there is no
-                                                    martial concealment . In
-                                                    case of any wrong
-                                                    information furnished or
-                                                    material concealment, my
-                                                    service may be terminated
-                                                    without notice.
-                                                </p>
-                                            </td>
-                                        </tr>
-                                        <tr style={{ padding: "20px 0 0" }}>
-                                            <td
-                                                style={{ padding: "0 20px" }}
-                                            >
-                                                <strong>Date -</strong> <u> </u>
-                                            </td>
-                                            <td
-                                                align="right"
-                                                style={{
-                                                    padding: "40px 20px 20px",
-                                                    textAlign: "right",
-                                                }}
-                                                colSpan={2}
-                                            >
-                                                <strong>
-                                                    (Signature of Sportsperson)
-                                                </strong>
-                                            </td>
-                                        </tr>
+                                </ol>
+                                <p  style={{ padding: "15px 5px", }} >
+                                    It is certified that the above particulars given by me are true and correct to the best of my knowledge and  record and there is no  martial concealment . In  case of any wrong information furnished or material concealment, my service may be terminated without notice.
+                                </p>
+                            </td>
+                        </tr>
+                        <tr style={{ padding: "20px 0 0" }}>
+                            <td style={{ padding: "0 20px" }} >
+                                <table width="100%">
+                                    <tr>
+                                        <td><strong>Date -</strong> <u> </u></td>
+                                        <td
+                                            align="right"
+                                            style={{
+                                                padding: "40px 20px 20px",
+                                                textAlign: "right",
+                                            }}
+                                            
+                                        >
+                                            <strong>
+                                                (Signature of Sportsperson)
+                                            </strong>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td> 
+                        </tr>
 
-                                         <tr>
-                                            <td
-                                                colSpan={3}
-                                                style={{
-                                                    padding: "60px 20px 0",
-                                                }}
-                                            >
-                                                <h3
-                                                    style={{
-                                                        textAlign: "center",fontSize: "20px", marginBottom:"20px"
-                                                    }}
-                                                >
-                                                    VERIFICATION BY NATIONAL
-                                                    SPORTS FEDERATION
-                                                </h3>
-                                                
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td style={{padding:"10px 10px 10px 10px"}}>Name : </td>
-                                            <td style={{padding:"10px"}} colSpan={2}>Father's Name : </td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={3}>
-                                                <table width="95%" style={{margin:"0 auto"}}>
-                                                    <tr className="bg-light text-dark">
-                                                        <th style={{padding:"10px 6px", border:"1px solid #eee", fontSize:"15px"}}>Sr. No.</th>
-                                                        <th style={{padding:"10px", border:"1px solid #eee", fontSize:"15px"}}>Date of Achievement</th>
-                                                        <th style={{padding:"10px", border:"1px solid #eee", fontSize:"15px"}}>Name of Tournament</th>
-                                                        <th style={{padding:"10px", border:"1px solid #eee", fontSize:"15px"}}>Organising Authority</th>
-                                                        <th style={{padding:"10px", border:"1px solid #eee", fontSize:"15px"}}>Sports Discipline</th>
-                                                        <th style={{padding:"10px", border:"1px solid #eee", fontSize:"15px"}}>Sports Federation</th>
-                                                        <th style={{padding:"10px", border:"1px solid #eee", fontSize:"15px"}}>Medal Won (If Any)</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"15px"}}>1</td>
-                                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"15px"}}>27-03-2025</td>
-                                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"15px"}}> </td>
-                                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"15px"}}> </td>
-                                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"15px"}}>Wrestling</td>
-                                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"15px"}}>IOC</td>
-                                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"15px"}}>Silver medal</td>
-                                                    </tr>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colSpan={3} style={{padding: "30px 0 30px"}}><p>
-                                                    Certified that the
-                                                    particulars declared by the
-                                                    sportsperson have been
-                                                    checked, verified and found
-                                                    correct.
-                                                </p></td>
-                                        </tr>
 
-                                        <tr>
-                                            <td
-                                                style={{ padding: "0 20px" }}
-                                            >
-                                                <strong>Date -</strong> <u> </u>
-                                            </td>
-                                            <td
-                                                align="right"
-                                                style={{
-                                                    padding: "40px 20px 20px",
-                                                    textAlign: "right",
-                                                }}
-                                                colSpan={2}
-                                            >
-                                                <strong>
-                                                    (Signature and Seal of the
-                                                    Secretary/President
-                                                    <br />
-                                                    of National Sports
-                                                    Federation concerned)
-                                                </strong>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                        <tr>
+                            <td  >
+                                <div style={{pageBreakAfter:"always"}}></div>
+                            </td>
+                        </tr>
+                        <tr>
+                          <td style={{padding: "50px 10px 0 30px"}}>
+                                <h3  style={{ textAlign: "center",fontSize: "20px", marginBottom:"20px"  }}  >
+                                    VERIFICATION BY NATIONAL SPORTS FEDERATION
+                                </h3>
+                                
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <table width="100%">
+                                    <tr>
+                                        <td style={{padding:"10px 10px 10px 10px"}}>Name : </td>
+                                        <td style={{padding:"10px"}} >Father's Name : </td>
+                                    </tr>
                                 </table>
                             </td>
                         </tr>
+                        <tr>
+                            <td >
+                                <table width="98%" style={{margin:"0 auto"}}>
+                                    <tr className="bg-light text-dark">
+                                        <th style={{padding:"10px 6px", border:"1px solid #eee", fontSize:"14px"}}>Sr. No.</th>
+                                        <th style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>Date of Achievement</th>
+                                        <th style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>Name of Tournament</th>
+                                        <th style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>Organising Authority</th>
+                                        <th style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>Sports Discipline</th>
+                                        <th style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>Sports Federation</th>
+                                        <th style={{padding:"10px", border:"1px solid #eee", fontSize:"14px", width:"200px"}}>Medal Won (If Any)</th>
+                                    </tr>
+                                    <tr>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>1</td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>27-03-2025</td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}> </td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}> </td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>Wrestling</td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>IOC</td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>Silver medal</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style={{padding: "15px 10px 0"}}><p>
+                                    Certified that the particulars declared by the sportsperson have been checked, verified and found correct.
+                                </p></td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <table width="100%">
+                                    <td style={{ padding: "0 20px" }} >
+                                        <strong>Date -</strong> <u> </u>
+                                    </td>
+                                    <td align="right"  style={{  padding: "30px 20px 20px", textAlign: "right", }} >
+                                        <strong>
+                                            (Signature and Seal of the
+                                            Secretary/President
+                                            <br />
+                                            of National Sports
+                                            Federation concerned)
+                                        </strong>
+                                    </td>
+                                </table>
+                            </td>
+                        </tr>
+                                    
                     </tbody>
                 </table>
             </div>

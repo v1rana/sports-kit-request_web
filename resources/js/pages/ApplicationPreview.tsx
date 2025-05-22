@@ -90,7 +90,7 @@ const certificateRef = useRef<HTMLDivElement>(null);
             <div ref={certificateRef} >
                 <div className="certificate-card">
                     <table width="100%">
-                        <thead style={{ background: "#225395", color: "#fff" }}>
+                        <thead style={{ background: "#4831d4", color: "#fff" }}>
                             <tr>
                                 <th
                                     style={{
@@ -104,15 +104,17 @@ const certificateRef = useRef<HTMLDivElement>(null);
                                         style={{
                                             fontSize: "17px",
                                             fontWeight: "normal",
+                                            display:"flex", alignItems:"center"
                                         }}
                                     >
                                         <img
-                                            src="http://164.100.137.70/assets/job_app/dash/images/logo-sports.png"
+                                            src="../assets/job_app/dash/images/logo-sports.png"
                                             alt="Sports Haryana Govt"
                                             style={{ height: "80px" }}
                                         />{" "}
-                                        Application for Sports Gradation
-                                        Certificate
+                                        <h3 style={{marginLeft:"10px"}}>Sports Gradation Certificate
+                                        <small style={{fontSize:"16px", fontWeight:"normal", float:"left", width:"100%"}}>Let the young minds grow to the full potential</small>
+                                        </h3>
 
                                       
                                     </div>

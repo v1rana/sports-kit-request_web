@@ -4,8 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Registration Form</title>
-
+        
+        <title>Sports Department - Applicant Login</title>
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
@@ -18,7 +18,8 @@
         <link rel="stylesheet" href="{{ url('assets/job_app/bootstrap/css/bootstrap.min.css') }}" />
         <link rel="stylesheet" href="{{ url('assets/job_app/css/login-style.css') }}" />
         <link rel="stylesheet" href="{{ url('assets/job_app/css/hosp-form.css') }}" />
-    
+       
+        <link rel="shortcut icon" href="{{ url('assets/job_app/dash/images/logo-sports.png') }}" />
         
         <title>React in Laravel</title>
         @vite(['resources/js/app.tsx'])

@@ -32,7 +32,7 @@ class HospController extends Controller
             'played_national_level' => 'required|in:1,2',
             'national_level_doc' => 'required_if:played_national_level,1',
             'organisation_represented' => 'required_if:played_national_level,2',
-            'org_certificate' => 'required_if:played_national_level,2',
+            'organisation_doc' => 'required_if:played_national_level,2',
 
         ]);
         try {
@@ -64,11 +64,15 @@ class HospController extends Controller
                 );
                 $path = $request->file('national_level_doc')->store('certificates', 'public');
                 $user_details->national_level_doc = basename($path);
+                $user_details->organisation_doc =NULL;
+                $request['organisation_represented'] =NULL;
             }
             if ($request->hasFile('organisation_doc')) {
                 $path = $request->file('organisation_doc')->store('certificates', 'public');
                 $user_details->organisation_doc = basename($path);
+                $user_details->national_level_doc = NULL;
             }
+            
             $user_details->domicile = $request->domicile;
             $user_details->aadhaar = $request->aadhaar;
             $user_details->age = $request->age;

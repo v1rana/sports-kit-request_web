@@ -857,11 +857,11 @@ const BasicDetails = () => {
                                     </div>
                                 )}
                                 <hr />
-                                <div className="text-center mt-1">
+                                <div className="text-end mt-1">
                                     <button
                                         type="button"
                                         onClick={() => save(true)}
-                                        className="btn btn-primary"
+                                        className="btn btn-success"
                                     >
                                         Save
                                     </button>

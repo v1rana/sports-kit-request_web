@@ -467,10 +467,9 @@ input[type="radio"]:hover {
       border-radius: 20px;
       padding: 30px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      max-width: 1000px;
+      max-width: 1200px;
       margin: 50px auto;
     }
-
     .form-heading {
       text-align: center;
       font-weight: 700;
@@ -552,6 +551,8 @@ input[type="radio"]:hover {
       height: 100px;
     }
 
+    .declaration-list {padding:0}
+    .declaration-list li{list-style:none;margin-bottom: 15px;}
     @media (max-width: 768px) {
       .hero-section {
         padding: 80px 15px 40px;
@@ -669,6 +670,17 @@ input[type="radio"]:hover {
 .progress ol li.progress-active:has(+ li){color:#000}
   .progress > div{position:absolute; height: 8px; top:0; left:0}
   
+
+.progress ol li a {
+    text-decoration: none;
+    color: rgba(0, 0, 0, 0.4);
+}
+.progress ol li:hover a {
+    color: #4831d4;
+}
+.progress ol li:hover:before {
+    background: #4831d4;
+}
   form div a{text-decoration:none;    float: right;
     font-size: 13px;
     text-transform: uppercase;
@@ -691,7 +703,8 @@ input[type="radio"]:hover {
     font-weight: normal;
 }
 .modal-title-details{background:rgba(0,0,0,0.04);padding:10px;margin:0; color:#36454F; font-size:20px; text-transform: uppercase;}
-
+#print-section p{font-size: 40px;margin: 40px 0}
+#print-section i.text-success{font-size:100px}
   /* Responsive adjustments */
   @media (min-width: 768px) {
 	.hero-title {
