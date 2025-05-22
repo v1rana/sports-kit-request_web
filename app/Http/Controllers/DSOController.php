@@ -449,7 +449,7 @@ class DSOController extends Controller
 
     $this->updateDisbursementStatus($validated['request_id'], $validated['vendor_id']);
 
-    return back()->with('success', 'Vendor disbursement recorded successfully.');
+    return back()->with('success', 'Kit disbursement done successfully.');
 }
 
 

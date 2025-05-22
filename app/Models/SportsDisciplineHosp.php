@@ -32,4 +32,8 @@ class SportsDisciplineHosp extends Model
 	{
 		return $this->belongsTo(Schedule12::class, 'tournament_id');
 	}
+	public function game()
+    {
+        return $this->belongsTo(GameHosp::class, 'game_id');
+    }
 }

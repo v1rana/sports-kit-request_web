@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Equipment Request Form - Sports Haryana </title>
+     <title>Dashboard Sports Haryana </title>
     <meta charset="UTF-8">
     <meta name="description" content="">
     <meta name="keywords" content=""> 
@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 	
 	<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-
+	<link rel="shortcut icon" href="{{ url('assets/job_app/dash/images/logo-sports.png') }}" />
 
     <link rel="stylesheet" href="{{ url('assets/fontawesome/css/all.min.css') }}" />
     <link rel="stylesheet" href="{{ url('assets/bootstrap/css/bootstrap.min.css') }}" />

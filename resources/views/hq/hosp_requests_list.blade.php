@@ -122,38 +122,53 @@
                         <div class="col-sm-12 col-sm-6 col-md-3">
                             <label>Application Status</label>
 							@php
-					$status = $request->status;
-					$statusText = 'In-Progress';
-					$badgeClass = 'bg-warning';
-					$icon = '<i class="fa-solid fa-hourglass-half"></i>';
+							$status = $request->status;
+							$statusText = 'In-Progress';
+							$badgeClass = 'bg-warning';
+							$icon = '<i class="fa-solid fa-hourglass-half"></i>';
 
-					if ($status == '1') {
-						$statusText = 'Approved';
-						$badgeClass = 'bg-success';
-						$icon = '<i class="fa-solid fa-thumbs-up"></i>';
-					} elseif ($status == '2') {
-						$statusText = 'Rejected';
-						$badgeClass = 'bg-danger';
-						$icon = '<i class="fa-solid fa-ban"></i>';
-					}
-				@endphp
+							if ($status == '1') {
+								$statusText = 'Approved';
+								$badgeClass = 'bg-success';
+								$icon = '<i class="fa-solid fa-thumbs-up"></i>';
+							} elseif ($status == '2') {
+								$statusText = 'Rejected';
+								$badgeClass = 'bg-danger';
+								$icon = '<i class="fa-solid fa-ban"></i>';
+							}
+							@endphp
 
 				
                             <h6><strong>
-															@if($request->status == '1')
-																	<span class="badge bg-success"><i class="fa-solid fa-thumbs-up"></i> Approved</span>
-																@elseif($request->status == '2')
-																	<span class="badge bg-danger"><i class="fa-solid fa-ban"></i> Rejected</span>
-																@else
-																 <form action="{{ route('hq.approve', $request->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
-																		@csrf
-																		<button type="submit"  class="btn btn-success w-100 mb-2">
-																	 Approve
-																</button>
-																	</form>
-																<a href="javascript:void(0);" class="btn btn-danger" onclick="document.getElementById('rejection-remarks').classList.remove('d-none'); this.classList.add('d-none');"> Reject </a>
-																@endif
-															</strong></h6>
+							@if($request->status == '1')
+									<span class="badge bg-success"><i class="fa-solid fa-thumbs-up"></i> Approved</span>
+								@elseif($request->status == '2')
+									<span class="badge bg-danger"><i class="fa-solid fa-ban"></i> Rejected</span>
+								@else
+								 <form action="{{ route('hq.approveReject', $request->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
+							@csrf
+							<input type="text" value="1" name="status" hidden>
+							<button type="submit" class="btn btn-success btn-sm mb-1">Approve</button>
+						</form>
+						<form action="{{ route('hq.approveReject', $request->id) }}" method="POST" style="display:inline;" id="rejectForm-{{ $request->id }}">
+    @csrf
+    <input type="hidden" name="status" value="2">
+    
+    {{-- Remarks textarea + Submit Rejection button (initially hidden) --}}
+    <div id="remarksBox-{{ $request->id }}" style="display:none; margin-top: 10px;">
+        <textarea name="remarks" class="form-control mb-2" rows="3" placeholder="Enter remarks (required)"></textarea>
+        <button type="submit" class="btn btn-danger btn-sm">Submit Rejection</button>
+    </div>
+
+    {{-- Initial Reject button --}}
+    <button type="button" class="btn btn-danger btn-sm mb-1" id="rejectBtn-{{ $request->id }}" onclick="showRemarks({{ $request->id }})">
+        Reject
+    </button>
+</form>
+
+
+								@endif
+							</strong></h6>
 						</div>
 					</div>
 					<h3 class="modal-title-details"><i class="fa-solid fa-user-large"></i> Personal Details</h3>
@@ -194,37 +209,58 @@
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>9. Haryana Resident/Domicile</label>
 								<h6>@if(isset($request->userDetails->domicile))
-        {{ $request->userDetails->domicile == 1 ? 'Yes' : 'No' }}
-    @else
-        N/A
-    @endif <a href="{{ url('storage/certificates/'.($request->userDetails->domicile_doc)) }}" target="_blank"><i class="fa-solid fa-file-lines"></i></a></h6>
+									{{ $request->userDetails->domicile == 1 ? 'Yes' : 'No' }}
+								@else
+									N/A
+								@endif <a href="{{ url('storage/certificates/'.($request->userDetails->domicile_doc)) }}" target="_blank"><i class="fa-solid fa-file-lines"></i></a>
+								</h6>
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>10. Played at Natioanl Level for Haryana</label>
 								<h6>@if(isset($request->userDetails->played_national_level))
-        {{ $request->userDetails->played_national_level == 1 ? 'Yes' : 'No' }}
-    @else
-        N/A
-    @endif  <a href="{{ url('storage/certificates/'.($request->userDetails->national_level_doc)) }}" target="_blank"><i class="fa-solid fa-file-lines"></i></a></h6>
+									{{ $request->userDetails->played_national_level == 1 ? 'Yes' : 'No' }}
+								@else
+									N/A
+								@endif  
+								<a href="{{ url('storage/certificates/'.($request->userDetails->national_level_doc)) }}" target="_blank"><i class="fa-solid fa-file-lines"></i></a>
+								</h6>
 							</div>
 						</div>
 					</div>
 					<h3 class="modal-title-details mt-3"><i class="fa-solid fa-user-graduate"></i> Educational Details</h3>
 					<div class="border p-3 education-area">
 						<div class="row">
-							<div class="col-sm-12 col-sm-6 col-md-3">					
-								<h6>1. 10th <a href="" target="_blank"> <span>Click to View Certificate</span></a></h6>
-							</div>
-							<div class="col-sm-12 col-sm-6 col-md-3">					
-								<h6>2. 12th <a href="" target="_blank"><i class="fa-solid fa-file-lines"></i><br /><span>Click to View Certificate</span></a></h6>
-							</div>
-							<div class="col-sm-12 col-sm-6 col-md-3">					
-								<h6>3. Graduation <a href="" target="_blank"><i class="fa-solid fa-file-lines"></i><br /><span>Click to View Certificate</span></a></h6>
-							</div>
-							<div class="col-sm-12 col-sm-6 col-md-3">					
-								<h6>4. ITI (Others) <a href="" target="_blank"><i class="fa-solid fa-file-lines"></i><br /><span>Click to View Certificate</span></a></h6>
-							</div>
+						
+						@php
+							$educationHosp = json_decode($request->educationHosp, true);
+						@endphp
+						@if (!empty($educationHosp) && is_array($educationHosp))
 							
+						@php $count = 1; @endphp
+						
+						@foreach ($educationHosp as $qualif)
+							
+							@if ($qualif['qualification'])
+								<div class="col-sm-12 col-sm-6 col-md-3">
+									<h6>{{ $qualif['qualification'] }} @if(isset($qualif['other_qualification']))
+											{{ $qualif['other_qualification'] ? ': ' . $qualif['other_qualification'] : '' }}
+										@else
+										@endif
+										<a href="{{ url('storage/education-certificates/' . $qualif['certificate_path']) }}" target="_blank">
+											<i class="fa-solid fa-file-lines"></i><br />
+											<span>Click to View Certificate</span>
+										</a>
+									</h6>
+								</div>
+								@php $count++; @endphp
+							@endif
+						@endforeach
+						@else
+							<div class="col-sm-12">
+								<h6>No qualification records found</h6>
+							</div>
+						@endif
+
 						</div>
 					</div>
 					<h3 class="modal-title-details mt-3"><i class="fa-solid fa-trophy"></i> Achievement Details</h3>
@@ -233,14 +269,20 @@
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>1. Physical Disablity</label>
 								<h6>@if(isset($request->sportsDisciplineHosp->physical_disability))
-        {{ $request->sportsDisciplineHosp->physical_disability == 1 ? 'Yes' : 'No' }}
-    @else
-        N/A
-    @endif</h6>
+									{{ $request->sportsDisciplineHosp->physical_disability == 1 ? 'Yes' : 'No' }}
+								@else
+									N/A
+								@endif
+								</h6>
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>2. Name of Sports Discipline</label>
-								<h6>No</h6>
+								<h6>@if ($request->sportsDisciplineHosp && $request->sportsDisciplineHosp->game)
+								{{ $request->sportsDisciplineHosp->game->name }}
+								@else
+									<p>No game found.</p>
+								@endif
+								</h6>
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>3. Name of Tournament</label>
@@ -253,18 +295,20 @@
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>5. Level of Tournament</label>
 								<h6>@if(isset($request->sportsDisciplineHosp->tournament_level))
-        {{ $request->sportsDisciplineHosp->tournament_level == '1' ? 'National' : 'International' }}
-    @else
-        N/A
-    @endif</h6>
+									{{ $request->sportsDisciplineHosp->tournament_level == '1' ? 'National' : 'International' }}
+								@else
+									N/A
+								@endif
+								</h6>
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>6 Represented India in any Sports Tournament</label>
 								<h6>@if(isset($request->sportsDisciplineHosp->represented_india))
-        {{ $request->sportsDisciplineHosp->represented_india == '1' ? 'Yes' : 'No' }}
-    @else
-        N/A
-    @endif</h6>
+									{{ $request->sportsDisciplineHosp->represented_india == '1' ? 'Yes' : 'No' }}
+								@else
+									N/A
+								@endif
+								</h6>
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>7. Achievement (Month & Year)</label>
@@ -272,11 +316,11 @@
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>8.Tournament Venu</label>
-								<h6>Yees</h6>
+								<h6>{{ $request->sportsDisciplineHosp->tournament_venue ?? 'N/A' }}</h6>
 							</div>
 							<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
 								<label>9. Medal Won</label>
-								<h6>Yes <a href="" target="_blank"><i class="fa-solid fa-file-lines"></i></a></h6>
+								<h6>{{ $request->sportsDisciplineHosp->medal_won ?? 'N/A' }} </h6>
 							</div>
 									
 								
@@ -410,3 +454,10 @@
 
     });
 </script>
+<script>
+function showRemarks(id) {
+    document.getElementById('remarksBox-' + id).style.display = 'block';
+    document.getElementById('rejectBtn-' + id).style.display = 'none';
+}
+</script>
+

@@ -121,7 +121,7 @@
 								<h6 class="text-dark">Declaration by Applicant (Self-Declaration)</h6>
 								<p>
 									All the above particulars given by me are true and correct. Nothing has been concealed by me. False information or concealment of material information in the registration form by me will render me ineligible in future for said scheme and department is
-									free to take appropriate action as deemed suitable against me in this regard.
+                                    free to take appropriate action as deemed suitable against me in this regard.
 								</p>
 
 								<div class="row justify-content-between align-items-end">
@@ -207,9 +207,8 @@
                                     <h6 class="text-success">Terms & Conditions</h6>
                                     <ul>
                                         <li>✅ Only the sports equipment mentioned in the scheme shall be given.</li>
-                                        <li>✅ Municipal Bodies/ Gram Panchayats are eligible to apply for sports equipment during a two-year period.</li>
-                                        <li>✅ Equipment for Wrestling and Judo will be provided for only one of the two sports.</li>
-                                        <li>✅ All issued sports equipment must be registered in the official record of the Municipal Body/ Gram Panchayat.</li>
+                                        <li>✅ Municipal Bodies/ Gram Panchayats would be eligible to apply for sports equipment for all sports which are popular in the area, during the period of two financial years. In case of Wrestling nad Judo, sports equipments shall be provided for either of sport. The eligible applicant shall be as per Para 4 (c) and (d) of the policy.</li>
+                                        <li>✅ After the sports equipments are issued, the same shall be entered in the proceeding register of the concerned Municipal Body/ Gram Panchayat.</li>
                                     </ul>
                                 </div>
                             </div>
@@ -220,9 +219,8 @@
 							<div class="alert alert-secondary declaration-area">
 								<h6 class="text-dark">Declaration by Applicant (Field of Play)</h6>
 								<p>
-									It is certified that proper Field of Play (FoP) for the requisite sports is available, and I have not received any sports items during the last two financial years. The photographs attached with the application are the latest. All the above particulars
-									given by me are true and correct. Nothing has been concealed by me. False information or concealment of material information in the application form by me will render me ineligible in the future for said scheme
-									and may invite penal consequences.
+									It is certified that proper Field of Play (FoP) for the requisite sports is available, and I have not received any sports items during the last two financial years and the photographs attached with the application are the latest. All the above particulars given by me are true and correct. Nothing has been concealed by me. False information or concealment of material information in the application form by me will render me ineligible in the future for said scheme
+                                    and may invite penal consequences.
 								</p>
 
 								<div class="row justify-content-between align-items-end">

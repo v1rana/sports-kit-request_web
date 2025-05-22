@@ -37,7 +37,7 @@
 			</div>
 			<div class="col-2 text-end">
 				<img class="w-75" src="{{ url('assets/images/DigitalIndia.png') }}" alt="Sports Haryana Govt" style="filter:invert(1)">
-				<a href="{{ url('/logout') }}" class="btn btn-danger"><i class="fa-solid fa-power-off"></i> Log Out</a>
+				<a href="{{ route('sk.logout') }}" class="btn btn-danger"><i class="fa-solid fa-power-off"></i> Log Out</a>
 				
 			</div>
 		</div>

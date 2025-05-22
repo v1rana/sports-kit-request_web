@@ -5,7 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sports Department - Offical Login</title>
   <link rel="stylesheet" href="{{ url('assets/job_app/bootstrap/css/bootstrap.min.css') }}" />
-        <link rel="stylesheet" href="{{ url('assets/job_app/css/login-style.css') }}" />
+  <link rel="stylesheet" href="{{ url('assets/job_app/css/login-style.css') }}" />
+  <link rel="shortcut icon" href="{{ url('assets/job_app/dash/images/logo-sports.png') }}" />
   <style>
     /* Form section style */
     .form-check {

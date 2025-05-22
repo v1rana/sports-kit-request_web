@@ -120,7 +120,7 @@ class HQController extends Controller
 
 	public function hosp_requests()
     {
-      $users = User::with(['userDetails', 'sportsDisciplineHosp', 'declarationsHosp'])->paginate(10);
+       $users = User::with(['userDetails', 'sportsDisciplineHosp', 'declarationsHosp','educationHosp'])->paginate(10);
 		// dd($users->userDetails());
         return view('hq.hosp_requests_list', compact('users'));
     }

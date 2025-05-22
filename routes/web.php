@@ -49,7 +49,7 @@ Route::get('/municipal', [MunicipalBodyMemberController::class, 'index']);
 	Route::post('/sports-kit/uploadform', [SportsKitRequisitionController::class, 'uploadform'])->name('sports_kit.uploadform');
 	Route::get('/sports-kit/print-temp', [SportsKitRequisitionController::class, 'printTemporary'])->name('sports-kit.print.temp');
 	Route::get('/sports-kit/sms', [SportsKitRequisitionController::class, 'sendsms'])->name('sports-kit.send.sms');
-    Route::post('/logout', [SportsKitRequisitionController::class, 'logout'])->name('sk.logout');
+    Route::get('/user-logout', [SportsKitRequisitionController::class, 'logout'])->name('sk.logout');
 	Route::get('/sports-requests', [SportsKitRequisitionController::class, 'index'])->name('sports.requests');
     Route::get('/gm/dashboard', [SportsKitRequisitionController::class, 'dashboard'])->name('sports_kit.dashboard');
     Route::get('/sport-skit/list', [SportsKitRequisitionController::class, 'list'])->name('sports_kit.list');

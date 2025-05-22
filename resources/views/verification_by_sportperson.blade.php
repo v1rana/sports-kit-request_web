@@ -167,7 +167,7 @@ h3 {
           <div class="d-flex justify-content-between align-items-center">
             <!-- Download Performa Button -->
             <div>
-                <small class="info-label text-muted">Download Application</small><br />
+                <small class="info-label text-muted">Download Unsigned Application</small><br />
                 <a href="#" class="btn btn-success" onclick="downloadPDF()">
                     <i class="fa-solid fa-file-arrow-down"></i> PDF
                 </a>

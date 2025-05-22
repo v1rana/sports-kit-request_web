@@ -439,7 +439,7 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 							@if(($request->status == 'Approved') && empty($request->disbursement_status) )
 								<span class="badge rounded-pill bg-success w-100"><i class="fa-solid fa-thumbs-up"></i> Approved</span> <br />
 								<!--@if($request->disbursement_status != 'Completed')-->
-								<a href="#" class="badge bg-primary w-100" data-bs-toggle="modal" data-bs-target="#requestDisclosure{{ $request->applicant_id }}">Request Disclosure</a>
+								<a href="#" class="badge bg-primary w-100" data-bs-toggle="modal" data-bs-target="#requestDisclosure{{ $request->applicant_id }}">Disburse Kit</a>
 								
                                 <div class="modal fade" id="requestDisclosure{{ $request->applicant_id }}" tabindex="-1" aria-labelledby="requestDisclosureLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg">

@@ -52,8 +52,8 @@ class SportsKitRequisitionController extends Controller {
     }
     $userId = session('user_id'); // Assuming user ID is stored in session
     if(empty($userId)){
-        $userId ='1';
-        $_SESSION['user_id'] = '1';
+        $userId ='7';
+        $_SESSION['user_id'] = '7';
     }
 	//return $userId;
     // Get the user details
@@ -227,8 +227,9 @@ public function printTemporary()
 		if (!$request->hasFile('signed_document') || !session()->has('form_data')) {
 			return redirect()->back()->withErrors('Missing signed document or session data.');
 		}
+	$formData = session('form_data');
 
-	return	$formData = session('form_data');
+	
 		$tempId = session('temp_id');
 
 		$destinationPath = public_path('uploads/gram_municipal_signed_document');
@@ -282,7 +283,7 @@ public function printTemporary()
 
 		session()->forget(['form_data', 'temp_id']);
 
-		 $userDetail = UserDetails::where('user_id', '1')->first();
+		$userDetail = UserDetails::where('user_id', '7')->first();
 		$application = SportsKitRequisition::where([
 			['district', '=', $userDetail->district],
 			['block', '=', $userDetail->block_town],

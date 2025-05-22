@@ -284,6 +284,7 @@ ul.list-unstyled li {
 										</div>
 										
 										<div class="col-xs-12 col-sm-6 col-md-3">
+										@if(!empty($certificate->enquiry_pdf) && !empty($certificate->replied_pdf) && ($certificate->status == 'Approved'))
 											<label class="info-label text-muted">Download Certificate</label>
 											<form id="pdfForm{{ $certificate->id }}" method="POST" action="{{ route('dso.certificates.downloadPDF') }}" target="_blank">
 												@csrf
@@ -292,6 +293,7 @@ ul.list-unstyled li {
 													<i class="fa-solid fa-file-arrow-down"></i> PDF
 												</button>
 											</form>
+											@endif
 										</div>
 
 										<div class="col-xs-12 col-sm-6 col-md-3">
