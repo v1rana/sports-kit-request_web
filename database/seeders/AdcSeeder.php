@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB; // ✅ Add this line
 
 class AdcSeeder extends Seeder
 {
@@ -12,11 +12,11 @@ class AdcSeeder extends Seeder
      */
     public function run(): void
     {
-        // DB::table('adcs')->insert([
-        //     'name' => 'ADC',
-        //     'designation' => 'ADC',
-        //     'district' => 'BHIWANI',
-        //     'mob' => '9999999999',
-        // ]);
+        DB::table('adcs')->insert([
+            'name' => 'ADC',
+            'designation' => 'ADC',
+            'district' => 'FARIDABAD',
+            'mob' => '7973972631',
+        ]);
     }
 }

@@ -93,8 +93,23 @@
 				<td>{{ $item['players_count'] ?? 'N/A' }}</td>
 				<td>{{ $item['last_issued_date'] ?? 'N/A' }}</td>
 				<td>{{ $item['fop_available'] ?? 'N/A' }}</td>
-                <td>{{ $application->disbursement_status != '' ? 'Ready for Disbursement' : 'In-Progress' }}</td>
-            </tr>
+                <td>
+    @if(($application->status == 'Approved') && empty($application->disbursement_status))
+        <span class="badge rounded-pill bg-success w-100"><i class="fa-solid fa-thumbs-up"></i> Approved</span> <br />
+    @elseif(($application->status == 'Approved') && !empty($application->disbursement_status))
+        <span class="badge rounded-pill bg-success w-100"><i class="fa-solid fa-thumbs-up"></i> Disbursed</span>
+    @elseif($application->status == 'Rejected')
+        <span class="badge rounded-pill bg-danger w-100"><i class="fa-solid fa-ban"></i> Rejected</span>
+    @elseif($application->status == 'Verified')
+        <span class="badge rounded-pill bg-primary w-100"><i class="fa-solid fa-check"></i> Verified</span>
+    @elseif($application->status == 'Not Verified')
+        <span class="badge rounded-pill bg-warning w-100"><i class="fa-solid fa-xmark"></i> Not Verified</span>
+    @else
+        <span class="badge rounded-pill bg-primary w-100"><i class="fa-solid fa-check"></i> In-Progress</span>
+    @endif
+</td>
+</tr>
+
 @endforeach
 
 															

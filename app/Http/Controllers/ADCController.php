@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SportsKitRequisition;
+use App\Models\Vendor;
+use App\Models\Sport;
+use App\Models\EquipmentVendorAssignment;
 use Illuminate\Support\Facades\DB;
 
 class ADCController extends Controller
@@ -46,6 +49,39 @@ public function approveRequest($id)
     $request->status = 'Approved';
     $request->approval_rejection_datetime = now();
     $request->save();
+	
+	 // ✅ Auto-assign vendor per sport
+    $sportsEquipment = json_decode($request->sports_equipment, true);
+
+    // Get unique sport names
+    $sports = collect($sportsEquipment)->pluck('name')->unique();
+	
+	$sportIdMap = Sport::whereIn('sports_name', $sports)
+    ->pluck('id', 'sports_name');
+
+   foreach ($sports as $sportName) {
+		$sportId = $sportIdMap[$sportName] ?? null;
+
+		if ($sportId) {
+			// Step 3: Get vendor for this sport
+			$vendorMapping = DB::table('sport_vendor')
+				->where('sport_id', $sportId)
+				->first();
+
+			if ($vendorMapping) {
+				// Step 4: Assign vendor
+				EquipmentVendorAssignment::updateOrCreate(
+					[
+						'request_id' => $request->id,
+						'equipment_name' => $sportName,
+					],
+					[
+						'vendor_id' => $vendorMapping->vendor_id,
+					]
+				);
+			}
+		}
+	}
 	
 	$result = DB::table('user_details')
 		->join('users', 'user_details.user_id', '=', 'users.id')
