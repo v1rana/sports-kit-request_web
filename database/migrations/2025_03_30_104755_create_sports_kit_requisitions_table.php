@@ -9,6 +9,7 @@ return new class extends Migration {
         Schema::create('sports_kit_requisitions', function (Blueprint $table) {
             $table->id(); // Primary Key
             $table->string('applicant_id'); // Foreign Key
+            $table->string('user_id'); // Foreign Key
             $table->string('district', 100);
             $table->string('name', 100);
             $table->string('block', 100);

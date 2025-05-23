@@ -52,9 +52,12 @@ class SportsKitRequisitionController extends Controller {
     }
     $userId = session('user_id'); // Assuming user ID is stored in session
     if(empty($userId)){
-        $userId ='7';
-        $_SESSION['user_id'] = '7';
-    }
+        $userId ='1';
+        session(['user_id' => $userId]);
+    }else{
+		$userId ='1';
+		session(['user_id' => $userId]);
+	}
 	//return $userId;
     // Get the user details
     $userDetail = UserDetails::where('user_id', $userId)->first();
@@ -62,9 +65,7 @@ class SportsKitRequisitionController extends Controller {
 	
 	// return $userDetail->area_name;
      $tempEntry = TemporarySportsKitRequisition::where([
-        ['district', '=', $userDetail->district],
-        ['block', '=', $userDetail->block_town],
-        ['area_name', '=', $userDetail->ward_village]
+        ['user_id', '=', $userDetail->id]
     ])->first();
 
     if ($tempEntry) {
@@ -75,9 +76,7 @@ class SportsKitRequisitionController extends Controller {
 
     // ✅ Second check: if a final submitted application exists
     $application = SportsKitRequisition::where([
-        ['district', '=', $userDetail->district],
-        ['block', '=', $userDetail->block_town],
-        ['area_name', '=', $userDetail->ward_village]
+        ['user_id', '=', $userDetail->id]
     ])->latest()->first();
 
     if ($application) {
@@ -150,6 +149,7 @@ class SportsKitRequisitionController extends Controller {
 	
 	$temp = TemporarySportsKitRequisition::create([
         'applicant_id' => $applicationId,
+        'user_id' => session('user_id'),
         'name' => $validatedData['name'],
         'district' => $validatedData['district'],
         'block' => $validatedData['block'],
@@ -184,9 +184,6 @@ public function printTemporary()
     $kit = (object) $tempEntry->toArray();
     return view('sports_kit.print', compact('kit'));
 }
-
-
-
 
 	
 	public function print($id)
@@ -247,9 +244,7 @@ public function printTemporary()
         ? json_encode($formData['sports_equipment'])
         : $formData['sports_equipment'];
 		$existing = SportsKitRequisition::where([
-			['district', '=', $formData['district']],
-			['block', '=', $formData['block']],
-			['area_name', '=', $formData['area_name']],
+			'user_id' => session('user_id')
 		])->where('sports_equipment', $encodedEquipments)->first();
 
 		if ($existing) {
@@ -264,6 +259,7 @@ public function printTemporary()
 		// ✅ Save to DB
 		$kit = SportsKitRequisition::create([
 			'applicant_id' => $formData['applicant_id'],
+			'user_id' => session('user_id'),
 			'name' => $formData['name'],
 			'district' => $formData['district'],
 			'block' => $formData['block'],
@@ -283,11 +279,14 @@ public function printTemporary()
 
 		session()->forget(['form_data', 'temp_id']);
 
-		$userDetail = UserDetails::where('user_id', '7')->first();
+		$userDetail = UserDetails::where('user_id', session('user_id'))->first();
+		$userDetail->update([
+			'district' => $formData['district'],
+			'block_town' => $formData['block'],
+			'ward_village' => $formData['area_name']
+		]);
 		$application = SportsKitRequisition::where([
-			['district', '=', $userDetail->district],
-			['block', '=', $userDetail->block_town],
-			['area_name', '=', $userDetail->ward_village]
+			'user_id' => session('user_id')
 		])->latest()->first();
 
 		if ($application) {
@@ -358,6 +357,7 @@ public function printTemporary()
 			'message' => 'OTP sent successfully'
 		]);
 }
+
 
 public function verifyOTP(Request $request)
 {

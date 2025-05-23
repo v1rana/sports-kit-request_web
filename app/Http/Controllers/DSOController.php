@@ -21,10 +21,11 @@ class DSOController extends Controller
 			// 'hqSportsRequest.sport',
 			// 'hqSportsRequest.equipment'
 		// ])->get(); 
-		
+		// dd(session()->all());
 		$sportsRequests = DB::table('sports_kit_requisitions')
     ->leftJoin('equipment_vendor_assignments', 'sports_kit_requisitions.id', '=', 'equipment_vendor_assignments.request_id')
     ->leftJoin('vendors', 'equipment_vendor_assignments.vendor_id', '=', 'vendors.id')
+	
     ->select(
         'sports_kit_requisitions.id as requisition_id','vendors.id as vend_id',
         DB::raw('equipment_vendor_assignments.*, vendors.*, sports_kit_requisitions.*')

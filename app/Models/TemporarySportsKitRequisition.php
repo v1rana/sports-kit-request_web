@@ -13,6 +13,7 @@ class TemporarySportsKitRequisition extends Model
 
     protected $fillable = [
         'applicant_id',
+        'user_id',
         'name',
         'district',
         'block',

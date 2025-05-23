@@ -14,6 +14,7 @@ return new class extends Migration
        Schema::create('temporary_sports_kit_requisitions', function (Blueprint $table) {
 		$table->id();
 		$table->string('applicant_id');
+		$table->string('user_id');
 		$table->string('name');
 		$table->string('district');
 		$table->string('block');

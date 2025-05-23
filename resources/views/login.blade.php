@@ -87,6 +87,9 @@
     background: blue;
     border-color: blue;
 }
+.resendOtp{
+	float: right;
+}
   </style>
 </head>
 <body>
@@ -115,13 +118,14 @@
         <div class="mb-3">
           <label for="pppId" class="form-label">Mobile Number</label>
           <input type="text" class="form-control" id="mob" name="mobile" placeholder="Enter your mobile no." maxlength='10' required>
-          <small class="form-text" style="color: #ff5b75;">We will send you a verification code.</small>
+          <!--<small class="form-text" style="color: #ff5b75;">We will send you a verification code.</small>-->
           <button type="submit" class="btn btn-custom mt-1" id="sendOtpBtn">Send OTP</button>
         </div>
           <!-- OTP Input field, initially hidden -->
           <div class="mb-2" id="otpField">
             <label for="otp" class="form-label mb-0">Enter OTP</label>
             <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter OTP" required>
+			<div>Didn't receive OTP? <a href="" class="resendOtp">Resend code</a></div>
           </div>
 
           <!-- Send OTP button, triggers OTP input visibility -->
@@ -151,6 +155,7 @@
   
 
   <script src="{{ url('assets/job_app/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{ url('assets/job_app/js/jquery.min.js')}}"></script>
 
   <script>
 document.addEventListener('DOMContentLoaded', function () {
@@ -221,6 +226,39 @@ submitBtn.addEventListener('click', function () {
 
 
 </script>
+<script>
+$(document).ready(function() {
+	$('#mob').prop('disabled', false);
+  $('.resendOtp').click(function(e) {
+    e.preventDefault();
+
+    let mobile = $('#mob').val();
+	$('#mob').prop('disabled', true);
+
+    if (!mobile || mobile.length !== 10) {
+      alert('Invalid or missing mobile number.');
+      return;
+    }
+
+    $.ajax({
+      url: "{{ route('send.otp') }}",
+      type: 'POST',
+      data: {
+        mobile: mobile,
+        _token: '{{ csrf_token() }}'
+      },
+      success: function(response) {
+		  console.log(response);
+        alert(response.message || 'OTP resent successfully!');
+      },
+      error: function(xhr) {
+        alert('Failed to resend OTP. Please try again.');
+      }
+    });
+  });
+});
+</script>
+
 
 </body>
 </html>
