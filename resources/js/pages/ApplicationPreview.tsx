@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import html2pdf from "html2pdf.js";
 
 interface OtpData {
@@ -145,11 +145,18 @@ const ApplicationPreview = () => {
                                             </strong>
                                         </p>
                                         <button
-                                            className="btn btn-primary me-1 download-PDF-btn float-end"
+                                            className="btn btn-success me-1 download-PDF-btn float-end"
                                             onClick={downloadPDF}
                                         >
                                             Download Form
                                         </button>
+                                        <Link
+                                            className="btn btn-primary me-1 download-PDF-btn float-end"
+                                           to="/hosp/dashboard"
+                                        >
+                                            Dashboard
+                                        </Link> 
+                                       
                                     </div>
                                 </th>
                             </tr>

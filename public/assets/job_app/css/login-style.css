@@ -132,19 +132,6 @@ select.form-control {
 }
 
 
-footer {
-	background: #000;
-	color: #fff;
-	position: fixed;
-	width: 100%;
-	bottom: 0;
-	padding: 10px 0;
-	font-size: 12px
-}
-
-footer p {
-	margin: 0
-}
 
 .input-verify-otp {
 	position: relative
@@ -208,6 +195,23 @@ footer p {
 	font-family: 'Segoe UI', sans-serif;
   } */
 
+  footer {
+	background: #000;
+	color: #fff;
+	position: fixed;
+	width: 100%;
+	bottom: 0;text-align: center;
+	padding: 10px 0;
+	font-size: 15px
+}
+
+footer p {
+	margin: 0
+}
+.application-status .table{margin:0}
+.application-status .table th, 
+.application-status .table td{padding: 6px 10px;}
+.application-status .table th{font-weight:normal ;font-size:14px;}
   .background-image {
 	background-image: url('../images/new-bann.jpg');
 	position: fixed;

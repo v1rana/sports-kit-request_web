@@ -2126,7 +2126,7 @@ const HospForm = () => {
                         <p>Application ID: {userDetails?.application_id}</p>
                         <Link className="btn btn-primary me-1 fs-5 px-4 py-2" to="/hosp/preview-application" ><i className="fa-solid fa-eye"></i> Preview Form
                         </Link>
-                        <Link className="btn btn-success me-1 fs-5 px-4 py-2" to="/hosp/login"><i className="fa-solid fa-house"></i> Go To Home</Link> 
+                        <Link className="btn btn-success me-1 fs-5 px-4 py-2" to="/hosp/dashboard"><i className="fa-solid fa-house"></i> Go To Dashboard</Link> 
                            
                     </div>
                 )}
