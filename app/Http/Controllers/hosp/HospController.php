@@ -106,17 +106,6 @@ class HospController extends Controller
 
         $request->validate([
             'event_type' => 'required|string',
-            // 'aadhaar' => 'required|digits:12',
-            // 'tournament' => 'required|exists:schedule_1_2,id',
-
-            // 'domicile' => 'required|in:1,2',
-            // 'domicile_certificate' => [
-            //     Rule::requiredIf($request->domicile == 1),
-            //     'nullable',
-            //     'file',
-            //     'mimes:pdf,jpg,jpeg,png',
-            // ],
-
             'played_national' => 'required|in:1,2',
             'national_certificate' => [
                 Rule::requiredIf($request->played_national == 1),
@@ -140,26 +129,16 @@ class HospController extends Controller
             'national_certificate.required_if' => 'The national certificate is required when played national is Yes.',
             'org_certificate.required_if' => 'The organisation certificate is required when played national is No.',
         ]);
-
-
         $user = $request->user();
-
         $event = EventHosp::updateOrCreate(
             ['user_id' => $request->user()->id], // condition
             [
                 'event_type' => $request->event_type,
-                // 'aadhaar' => $request->aadhaar,
-                // 'tournament_id' => $request->tournament,
-                // 'domicile' => $request->domicile,
                 'played_national_level' => $request->played_national,
                 'organisation_represented' => $request->played_national == 2 ? $request->central_org_name : null,
             ]
         );
 
-        // File uploads (optional)
-        // if ($request->hasFile('domicile_certificate')) {
-        //     $event->domicile_doc = $request->file('domicile_certificate')->store('certificates');
-        // }
         if ($request->hasFile('national_certificate')) {
             $event->national_level_doc = $request->file('national_certificate')->store('certificates', 'public');
         }
@@ -168,7 +147,6 @@ class HospController extends Controller
         }
 
         $event->save();
-
         return response()->json([
             'status' => 'success',
             'message' => 'Event details saved successfully',
@@ -182,15 +160,6 @@ class HospController extends Controller
 
         $request->validate([
             'event_type' => 'required|string',
-            // 'aadhaar' => 'required|digits:12',
-            // 'tournament' => 'required|exists:schedule_1_2,id',
-
-            // 'domicile' => 'required|in:1,2',
-            // 'domicile_certificate' => 'required_if:domicile,1',
-            // [
-            //     'domicile_certificate.required_if' => 'The domicile certificate field is required when domicile is Yes.',
-            // ],
-
             'played_national' => 'required|in:1,2',
             'national_certificate' => 'required_if:played_national,1',
 
@@ -201,19 +170,9 @@ class HospController extends Controller
             ],
             'org_certificate' => 'required_if:played_national,2',
         ]);
-
         $event->event_type = $request->event_type;
-        // $event->aadhaar = $request->aadhaar;
-        // $event->tournament_id = $request->tournament;
-        // $event->domicile = $request->domicile;
         $event->played_national_level = $request->played_national;
         $event->organisation_represented = $request->played_national == 2 ? $request->central_org_name : null;
-
-        // Handle optional file uploads
-        // if ($request->hasFile('domicile_certificate')) {
-        //     $event->domicile_doc = $request->file('domicile_certificate')->store('certificates');
-        // }
-
         if ($request->hasFile('national_certificate')) {
             $event->national_level_doc = $request->file('national_certificate')->store('certificates', 'public');
         }
@@ -292,10 +251,29 @@ class HospController extends Controller
         $request->validate([
             'educations' => 'required|array',
             'educations.*.qualification' => 'required|string',
-            'educations.*.otherText' => 'nullable|string',
-            'educations.*.certificate' => 'nullable|file|mimes:pdf|max:2048',
-            'educations.*.id' => 'nullable|integer' // for update tracking
+            'educations.*.otherText' => [
+                'nullable',
+                'string',
+                function ($attribute, $value, $fail) use ($request) {
+                    $index = explode('.', $attribute)[1];
+                    $qualification = $request->input("educations.$index.qualification");
+                    if ($qualification === 'Other' && is_null($value)) {
+                        $fail("The otherText field is required when qualification is 'Other'.");
+                    }
+                },
+            ],
+            'educations.*.certificate' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if (!is_string($value) && !($value instanceof \Illuminate\Http\UploadedFile)) {
+                        $fail('The certificate must be a string or a valid file.');
+                    }
+                },
+                
+            ],
+            'educations.*.id' => 'nullable|integer',
         ]);
+        
 
         $userId = $request->user()->id;
         $incomingIds = [];
@@ -372,16 +350,10 @@ class HospController extends Controller
 
             'achievement_date' => 'required|date',
             'tournament_venue' => 'required|string',
-            // 'medal_won' => 'required|string',
-            // 'match_played_by_me' => 'required|string',
-            // 'participation_level' => 'required|string',
             'osp_achivement_certificate_path' => 'required|nullable',
-            // 'international_achievement_Verification_certificate_path' => 'required|nullable',
         ]);
-        // As above
-
+       
         $user =  $request->user();
-        // $user =  $request->user()->id;
 
         // Base update data
         $updateData = [
@@ -400,10 +372,6 @@ class HospController extends Controller
             'match_played_by_me' => $request->match_played_by_me,
         ];
 
-        // Add certificate_path only if it's not null
-        // if ($pathCertificate !== null) {
-        //     $updateData['certificate_path'] = $pathCertificate;
-        // }
         if ($request->hasFile('disability_doc')) {
             $pathDisability = $request->hasFile('disability_doc')
                 ? $request->file('disability_doc')->store('certificates', 'public')

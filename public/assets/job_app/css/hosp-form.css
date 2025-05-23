@@ -705,6 +705,20 @@ input[type="radio"]:hover {
 .modal-title-details{background:rgba(0,0,0,0.04);padding:10px;margin:0; color:#36454F; font-size:20px; text-transform: uppercase;}
 #print-section p{font-size: 40px;margin: 40px 0}
 #print-section i.text-success{font-size:100px}
+.preview-form-page .modal-title-details{font-size: 24px; padding: 12px 15px}
+.download-PDF-btn{display:none;}
+.preview-form-page  .download-PDF-btn{display: block !important;}
+.preview-form-page td.profile-pic-area {
+    width: 22%;
+}
+td.profile-pic-area {
+    width: 42%;
+}
+.preview-form-page .certificate-card > table > tbody >tr > td > table{width:70% !important; margin-top: 3em !important}
+.preview-form-page .certificate-card table table small{font-size:18px !important;}
+.preview-form-page .certificate-card table table h5{font-size:20px !important;}
+.preview-form-page .certificate-card table table h6{font-size:18px !important;}
+.preview-form-page .certificate-card table table .uploaded-doc img{width:120px !important;}
   /* Responsive adjustments */
   @media (min-width: 768px) {
 	.hero-title {
