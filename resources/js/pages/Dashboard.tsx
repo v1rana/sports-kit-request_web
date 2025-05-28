@@ -1,14 +1,36 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { fetchUserDetails } from "../services/hosp-service";
 
 function Dashboard() {
     const navigate = useNavigate();
     let userData = JSON.parse(localStorage.getItem("user")!);
     let userDetails = userData?.user_details || {};
+    let loginType = JSON.parse(localStorage.getItem("loginType")!);
     const logout = () => {
         localStorage.clear();
         navigate("/");
     };
+    useEffect(() => {
+                const fetchUserData = async () => {
+                    try {
+                        const data = await fetchUserDetails();
+                        localStorage.setItem("user", JSON.stringify(data.user));
+                        userData = JSON.parse(localStorage.getItem("user")!);
+                        userDetails = userData?.user_details || {};
+                    } catch (error) {
+                        console.error("Error loading form data", error);
+                    }
+                };
+                fetchUserData();
+            }, []); // <-- empty array ensures this only runs once
+       useEffect(() => {
+            // const userData = JSON.parse(localStorage.getItem("user") || "null");
+            if (!userData || !loginType || loginType != '3') {
+                localStorage.clear();
+                navigate("/");
+            }
+        }, [navigate]);
     return (
         <div>
             {/* <h1>Home Page</h1>
@@ -100,19 +122,19 @@ function Dashboard() {
 
                                         <td>
                                             {
-                                                userData.sports_discipline_hosp
+                                                userData?.sports_discipline_hosp
                                                     .game.name
                                             }
                                         </td>
                                         <td>
                                             {
-                                                userData.sports_discipline_hosp
+                                                userData?.sports_discipline_hosp
                                                     .tournament.tournament
                                             }
                                         </td>
                                         <td>
                                             {
-                                                userData.sports_discipline_hosp
+                                                userData?.sports_discipline_hosp
                                                     .medal_won
                                             }
                                         </td>
@@ -126,16 +148,16 @@ function Dashboard() {
                                         <td>
                                             <span
                                                 className={`badge rounded-pill ${
-                                                    userData.status === 0
+                                                    userData?.status === 0
                                                         ? "bg-primary"
-                                                        : userData.status === 1
+                                                        : userData?.status === 1
                                                         ? "bg-success"
                                                         : "bg-danger"
                                                 }`}
                                             >
-                                                {userData.status === 0
+                                                {userData?.status === 0
                                                     ? "In-progress"
-                                                    : userData.status === 1
+                                                    : userData?.status === 1
                                                     ? "Approved"
                                                     : "Rejected"}
                                             </span>

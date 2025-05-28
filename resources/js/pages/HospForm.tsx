@@ -26,7 +26,8 @@ const HospForm = () => {
     const navigate = useNavigate();
     let userData = JSON.parse(localStorage.getItem("user")!);
     let userDetails = userData?.user_details || {};
-    if (userData.declarations_hosp && userData.declarations_hosp.id) {
+    let loginType = JSON.parse(localStorage.getItem("loginType")!);
+    if (userData && userData.declarations_hosp && userData.declarations_hosp.id) {
         // navigate("/hosp/preview-application");
     }
     // Get user data from localStorage
@@ -314,9 +315,9 @@ const HospForm = () => {
     };
     useEffect(() => {
         // const userData = JSON.parse(localStorage.getItem("user") || "null");
-        if (!userData) {
+        if (!userData || !loginType || loginType != '3') {
             localStorage.clear();
-            navigate("/login");
+            navigate("/");
         }
     }, [navigate]);
 
@@ -2180,7 +2181,7 @@ const HospForm = () => {
                                         </td>
                                         <td style={{ padding: "3px 7px",fontSize: "14px"}}>
                                             2. Name
-                                            <h5 style={{fontSize: "15px"}}>{userData.name}</h5>
+                                            <h5 style={{fontSize: "15px"}}>{userData?.name}</h5>
                                         </td>
                                         <td  style={{ padding: "3px 7px",fontSize: "14px"}} >
                                             3. Caste Category
@@ -2211,11 +2212,11 @@ const HospForm = () => {
                                          
                                         <td style={{ padding: "3px 7px",fontSize: "14px"}}>
                                             7. Mobile
-                                            <h5 style={{fontSize: "15px"}}>{userData.mobile}</h5>
+                                            <h5 style={{fontSize: "15px"}}>{userData?.mobile}</h5>
                                         </td>
                                         <td style={{ padding: "3px 7px",fontSize: "14px"}}>
                                             8. Email ID
-                                            <h5 style={{fontSize: "15px"}}>{userData.email}</h5>
+                                            <h5 style={{fontSize: "15px"}}>{userData?.email}</h5>
                                         </td>
                                        
                                     <td   style={{ padding: "3px 7px",fontSize: "14px"}}>
@@ -2261,14 +2262,14 @@ const HospForm = () => {
                        
                        
                         
-                        {userData.education_hosp.length && (
+                        {userData?.education_hosp.length && (
                             <tr>
                                 <td style={{paddingTop: "20px"}}>
                                     <h3 className="modal-title-details"><i className="fa-solid fa-user-graduate"></i> Educational  Qualifications</h3> 
                                 </td>
                             </tr>
                         )}
-                        {userData.education_hosp.map( (item, index) => (
+                        {userData?.education_hosp.map( (item, index) => (
                             <tr key={item.id || index}>
                                 <td >
                                     <table width="100%" style={{ 
@@ -2314,7 +2315,7 @@ const HospForm = () => {
                                 <table width="100%" style={{ 
                                     border: "1px solid #efefef",background: "#fff",
                                     tableLayout:"fixed",}}>
-                                        {userData.sports_discipline_hosp && (
+                                        {userData?.sports_discipline_hosp && (
                                         <tr>
                                             <td style={{ padding: "3px 7px",fontSize: "14px"}}> Physical Disability
                                                 <h5 style={{fontSize: "15px"}}>
@@ -2331,7 +2332,7 @@ const HospForm = () => {
                                                         : "N/A"}
                                                 </h5>
                                             </td>
-                                            {userData.sports_discipline_hosp.physical_disability == 1 &&
+                                            {userData?.sports_discipline_hosp.physical_disability == 1 &&
                                            
                                                 <td style={{ padding: "3px 7px",fontSize: "14px"}}> Physical Disability Type
                                                     <h5 style={{fontSize: "15px"}}>
@@ -2385,7 +2386,7 @@ const HospForm = () => {
                                             
                                         </tr> 
                                         )} 
-                                         {userData.sports_discipline_hosp && (
+                                         {userData?.sports_discipline_hosp && (
                                         <tr>
                                              <td colSpan={2} style={{ padding: "3px 7px",fontSize: "14px"}}>
                                                 Organizing Authority
@@ -2430,7 +2431,7 @@ const HospForm = () => {
                                                 </h5>
                                             </td></tr>
                                          )}
-                                        {userData.sports_discipline_hosp && (
+                                        {userData?.sports_discipline_hosp && (
                                         <tr>
                                             <td style={{ padding: "3px 7px",fontSize: "14px"}}>
                                                 Tournament Venue
@@ -2613,15 +2614,15 @@ const HospForm = () => {
                                         <th style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>Sports Federation</th>
                                         <th style={{padding:"10px", border:"1px solid #eee", fontSize:"14px", width:"150px"}}>Medal Won (If Any)</th>
                                     </tr>
-                                    {userData.sports_discipline_hosp && (
+                                    {userData?.sports_discipline_hosp && (
                                     <tr>
                                         <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>1</td>
-                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData.sports_discipline_hosp.achievement_date}</td>
-                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData.sports_discipline_hosp.tournament.tournament} </td>
-                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData.sports_discipline_hosp.organizing_committee} </td>
-                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData.sports_discipline_hosp.game.name}</td>
-                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData.sports_discipline_hosp.tournament.organizing_authority_abbr}</td>
-                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData.sports_discipline_hosp.medal_won ?? 'N/A' }</td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData?.sports_discipline_hosp.achievement_date}</td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData?.sports_discipline_hosp.tournament.tournament} </td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData?.sports_discipline_hosp.organizing_committee} </td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData?.sports_discipline_hosp.game.name}</td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData?.sports_discipline_hosp.tournament.organizing_authority_abbr}</td>
+                                        <td style={{padding:"10px", border:"1px solid #eee", fontSize:"14px"}}>{userData?.sports_discipline_hosp.medal_won ?? 'N/A' }</td>
                                     </tr>
                                     )}
                                 </table>

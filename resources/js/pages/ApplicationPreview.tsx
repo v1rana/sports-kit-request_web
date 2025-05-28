@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import html2pdf from "html2pdf.js";
+import { fetchUserDetails } from "../services/hosp-service";
 
 interface OtpData {
     certificate_no: string;
@@ -55,8 +56,9 @@ const ApplicationPreview = () => {
     };
     const otpData: OtpData = defaultOtpData;
     const navigate = useNavigate();
-    const userData = JSON.parse(localStorage.getItem("user")!);
-    const userDetails = userData?.user_details || {};
+    let userData = JSON.parse(localStorage.getItem("user")!);
+    let userDetails = userData?.user_details || {};
+    let loginType = JSON.parse(localStorage.getItem("loginType")!);
     const certificateRef = useRef<HTMLDivElement>(null);
     const downloadPDF = () => {
         const element = certificateRef.current;
@@ -80,7 +82,26 @@ const ApplicationPreview = () => {
                 // element.style.display = 'none';
             });
     };
-
+     useEffect(() => {
+            const fetchUserData = async () => {
+                try {
+                    const data = await fetchUserDetails();
+                    localStorage.setItem("user", JSON.stringify(data.user));
+                    userData = JSON.parse(localStorage.getItem("user")!);
+                    userDetails = userData?.user_details || {};
+                } catch (error) {
+                    console.error("Error loading form data", error);
+                }
+            };
+            fetchUserData();
+        }, []); // <-- empty array ensures this only runs once
+   useEffect(() => {
+        // const userData = JSON.parse(localStorage.getItem("user") || "null");
+        if (!userData || !loginType || loginType != '3') {
+            localStorage.clear();
+            navigate("/");
+        }
+    }, [navigate]);
     return (
         <div className="preview-form-page">
             <div ref={certificateRef}>
@@ -219,7 +240,7 @@ const ApplicationPreview = () => {
                                                             >
                                                                 3. Mobile No.
                                                             </small>
-                                                            <h5 style={{ fontSize: "15px", }}>{userData.mobile}</h5>
+                                                            <h5 style={{ fontSize: "15px", }}>{userData?.mobile}</h5>
                                                         </td>
                                                     
                                                     </tr>
@@ -278,7 +299,7 @@ const ApplicationPreview = () => {
                                                                 7. Event type
                                                             </small>
                                                             <h5 style={{ fontSize: "15px", }}>
-                                                                {/* {userData.event_hosp
+                                                                {/* {userData?.event_hosp
                                                                 .event_type == "1"
                                                                 ? "Individual"
                                                                 : "Team"} */}
@@ -294,7 +315,7 @@ const ApplicationPreview = () => {
                                                                 8. Played National Level
                                                             </small>
                                                             <h5 style={{ fontSize: "15px", }}>
-                                                                {/* {userData.event_hosp
+                                                                {/* {userData?.event_hosp
                                                                 .played_national_level ==
                                                             "1"
                                                                 ? "Yes"
@@ -315,7 +336,7 @@ const ApplicationPreview = () => {
                                                             </small>
                                                             <h5 style={{ fontSize: "15px", }}>
                                                                 {/* {
-                                                                userData.event_hosp.organisation_represented ?? 'N/A'
+                                                                userData?.event_hosp.organisation_represented ?? 'N/A'
                                                             } */}
                                                                 'N/A'
                                                             </h5>
@@ -357,7 +378,7 @@ const ApplicationPreview = () => {
                                                     </h3>
                                                 </td>
                                             </tr>
-                                            {userData.education_hosp.map(
+                                            {userData?.education_hosp.map(
                                                 (item, index) => (
                                                     <tr key={item.id || index}>
                                                         <td colSpan={4}>
@@ -443,8 +464,8 @@ const ApplicationPreview = () => {
                                                     </tr>
                                                 )
                                             )}
-                                            {/* {userData.education_hosp.length > 0 && 
-                                            userData.education_hosp.map((item, index) => (
+                                            {/* {userData?.education_hosp.length > 0 && 
+                                            userData?.education_hosp.map((item, index) => (
                                                 <tr key={item.id || index}>
                                                 <td >
                                                     <small>Qualification</small>
@@ -495,7 +516,7 @@ const ApplicationPreview = () => {
                                                     </small>
                                                     <h5 style={{ fontSize: "15px", }}>
                                                     
-                                                        {
+                                                        {userData &&
                                                             userData
                                                                 .sports_discipline_hosp
                                                                 .tournament_id
@@ -515,7 +536,7 @@ const ApplicationPreview = () => {
                                                     </small>
                                                     <h5 style={{ fontSize: "15px", }}>
                                                   
-                                                        {
+                                                        { userData &&
                                                             userData
                                                                 .sports_discipline_hosp
                                                                 .organizing_committee
@@ -534,7 +555,7 @@ const ApplicationPreview = () => {
                                                     </small>
                                                     <h5 style={{ fontSize: "15px", }}>
 
-                                                        {
+                                                        {userData &&
                                                             userData
                                                                 .sports_discipline_hosp
                                                                 .tournament_venue
@@ -551,7 +572,7 @@ const ApplicationPreview = () => {
                                                         Medal Won
                                                     </small>
                                                     <h5 style={{ fontSize: "15px", }}>
-                                                        {userData
+                                                        {userData && userData
                                                             .sports_discipline_hosp
                                                             .medal_won ||
                                                             "None"}
@@ -567,7 +588,7 @@ const ApplicationPreview = () => {
                                                     </small>
                                                     <h5 style={{ fontSize: "15px", }}>
                                                         {new Date(
-                                                            userData.sports_discipline_hosp.achievement_date
+                                                            userData?.sports_discipline_hosp.achievement_date
                                                         ).toLocaleDateString()}
                                                     </h5>
                                                 </td>
@@ -582,7 +603,7 @@ const ApplicationPreview = () => {
                                                         Match played by team
                                                     </small>
                                                     <h5 style={{ fontSize: "15px", }}>
-                                                        {
+                                                        {userData &&
                                                             userData
                                                                 .sports_discipline_hosp
                                                                 .match_played_by_team

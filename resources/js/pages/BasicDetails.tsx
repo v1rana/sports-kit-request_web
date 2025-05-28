@@ -7,9 +7,33 @@ import { toast } from 'react-toastify';
 const BasicDetails = () => {
     const navigate = useNavigate();
     let userData = JSON.parse(localStorage.getItem("user")!);
+    let loginType = JSON.parse(localStorage.getItem("loginType")!);
     let userDetails = userData?.user_details || {};
 
     console.log('userDetails',userDetails.date_of_birth);
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const data = await fetchUserDetails();
+                localStorage.setItem("user", JSON.stringify(data.user));
+                userData = JSON.parse(localStorage.getItem("user")!);
+                userDetails = userData?.user_details || {};
+            } catch (error) {
+                console.error("Error loading form data", error);
+            }
+        };
+        fetchUserData();
+    }, []); // <-- empty array ensures this only runs once
+  
+
+    useEffect(() => {
+        // const userData = JSON.parse(localStorage.getItem("user") || "null");
+        if (!userData || !loginType || loginType != '3') {
+            localStorage.clear();
+            navigate("/");
+        }
+    }, [navigate]);
+    // Get user data from localStorage
 
 
     const dob = userDetails.date_of_birth; // dd-mm-yyyy
@@ -30,20 +54,19 @@ const BasicDetails = () => {
     //   ];
     
     const [userDetailsa, setUserDetails] = useState({
-        email_id: userData.email??'',
-        mobile: userData.mobile,
-        aadhaar: userDetails.aadhaar??'',
-        photo: userDetails.photo,
-        dob_doc: userDetails.dob_doc,
-        domicile: userDetails.domicile??null,
-        domicile_doc: userDetails.domicile_doc,
-        caste_category: userDetails.caste_category,
-        age: userDetails.age,
-        // other_state: userDetails.other_state,
-        played_national_level:userDetails.played_national_level??'',
-        national_level_doc:userDetails.national_level_doc,
-        organisation_represented:userDetails.organisation_represented??'',
-        organisation_doc:userDetails.organisation_doc,
+        email_id: userData?.email ?? '',
+        mobile: userData?.mobile ?? '',
+        aadhaar: userDetails?.aadhaar ?? '',
+        photo: userDetails?.photo ?? '',
+        dob_doc: userDetails?.dob_doc ?? '',
+        domicile: userDetails?.domicile ?? null,
+        domicile_doc: userDetails?.domicile_doc ?? '',
+        caste_category: userDetails?.caste_category ?? '',
+        age: userDetails?.age ?? '',
+        played_national_level: userDetails?.played_national_level ?? '',
+        national_level_doc: userDetails?.national_level_doc ?? '',
+        organisation_represented: userDetails?.organisation_represented ?? '',
+        organisation_doc: userDetails?.organisation_doc ?? '',
     });
     const [errors, setErrors] = useState({
         email_id: "",
@@ -140,29 +163,7 @@ const BasicDetails = () => {
             return "Please upload file";
         return "";
     };
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const data = await fetchUserDetails();
-                localStorage.setItem("user", JSON.stringify(data.user));
-                userData = JSON.parse(localStorage.getItem("user")!);
-                userDetails = userData?.user_details || {};
-            } catch (error) {
-                console.error("Error loading form data", error);
-            }
-        };
-        fetchUserData();
-    }, []); // <-- empty array ensures this only runs once
-  
-
-    useEffect(() => {
-        // const userData = JSON.parse(localStorage.getItem("user") || "null");
-        if (!userData) {
-            localStorage.clear();
-            navigate("/login");
-        }
-    }, [navigate]);
-    // Get user data from localStorage
+   
 
     const logout = () => {
         localStorage.clear();
