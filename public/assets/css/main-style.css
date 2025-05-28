@@ -1,4 +1,4 @@
-body{background:#fafafc}
+body{background:/*#fafafc*/rgba(0,0,0,0.06)}
 
 h1,h2,h3,h4,h5,h6{font-family: "Jost", sans-serif;color:#5f788a}
 a{text-decoration:none; font-family: "Noto Sans", sans-serif;}
@@ -24,23 +24,21 @@ header a.btn:hover span {font-size: 13px;opacity: 1;}
 
 .main {flex: 1 auto;align-items: stretch;overflow: hidden;position: relative;}
 aside.show {margin-left: 0;}
-aside {width: 100%;max-width: 220px;min-width: 220px;background: #474747;box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);transition: margin-left .3s ease-in-out, left .3s ease-in-out, margin-right .3s ease-in-out, right .3s ease-in-out;display: block;}
-aside .logo-area{padding: 9px;border-bottom:1px dashed rgba(255,255,255,0.3)}
-aside .logo img{max-width:60px;}
+aside {width: 100%;max-width: 220px;min-width: 220px;background: #fff;box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);transition: margin-left .3s ease-in-out, left .3s ease-in-out, margin-right .3s ease-in-out, right .3s ease-in-out;display: block;}
+aside .logo-area{padding: 9px;border-bottom:1px dashed rgba(0,0,0,0.3)}
+aside .logo img{max-width:80px;}
 .main.collapse {display: block;min-width: 84px;max-width: 84px;width: auto;}
 aside.collapsing{transition:width .35s ease}
 aside.main li a span{display: none}
-aside .nav-link{color:rgba(255,255,255,0.5);font-size:14px;}
+aside .nav-link{color:rgba(0,0,0,0.5);font-size:14px;}
 aside ul li{margin:3px 0;}
 aside .nav-link i{font-size: 18px;margin-right:10px;}
 aside.main .nav-link{font-size:18px;text-align:center}
-aside .nav-linka:focus,aside .nav-link:hover{color:#fff}
+aside .nav-linka:focus,aside .nav-link:hover{color:blue}
 aside .nav-item{float:left;width:100%}
 aside .nav-item a.active {position: relative; padding-left: 10px; border:none;}
-aside .nav-item a.active:after {top: 0;border-radius: 4px 4px;content: "";position: absolute;right: 10px;
-    width: 92%;height: 100%;z-index: 0;}
-aside .nav-item .nav-link.active{color:#fff;position:relative; z-index:9;background: rgba(0, 0, 0, 0.1);
-    margin: 0 6px;}
+aside .nav-item a.active:after {top: 0;border-radius: 4px 4px;content: "";position: absolute;right: 10px;  width: 92%;height: 100%;z-index: 0;}
+aside .nav-item .nav-link.active{color:#fff;position:relative; z-index:9;background: #4831d4;margin: 0 6px;}
 aside li.nav-item a span {
     font-size: 13px;
     display: inline-block;
@@ -49,10 +47,10 @@ aside li.nav-item a span {
 }
 .table-responsive{min-width: none;height: 350px}
 .table-responsive thead{position: sticky;top:0}
-.navbar a{color:#fff}
+/*.navbar a{color:#fff}*/
 .content-area {display: flex;flex-direction: column;min-width: 0;transition: margin-left .3s ease-in-out, left .3s ease-in-out, margin-right .3s ease-in-out, right .3s ease-in-out;
 width: 100%;min-height: 81vh;}
-.content-area header .row{padding:22px 0}
+.content-area header .row{padding:32px 0}
 
 
 .table-container, .table thead{border-radius:10px}

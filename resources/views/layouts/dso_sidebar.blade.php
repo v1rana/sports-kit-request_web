@@ -1,10 +1,5 @@
 <style>
-    aside {
-    background: #474747;  
-}
-header {
-    background: #4831d4!important;
-}
+  
 </style>
 <!-- SideBar- aside sec -->
 <aside class="collapse show" id="navbarToggleExternalContent">

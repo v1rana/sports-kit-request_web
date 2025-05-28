@@ -328,8 +328,8 @@ ul.list-unstyled li {
     </div>
 	
     @endsection
-    <script src="{{ url('assets/js/jquery.min.js') }}"></script>
-		<script src="{{ url('assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!--script src="{{ url('assets/js/jquery.min.js') }}"></script>
+		<script src="{{ url('assets/bootstrap/js/bootstrap.bundle.min.js') }}"></script-->
 	<script>
         function readURL(input) {
             if (input.files && input.files[0]) {
@@ -347,11 +347,6 @@ ul.list-unstyled li {
             readURL(this);
         }); 
 		
-		$(document).ready(function(){
-			$('.navbar-toggler').click(function(){
-				$('aside').toggleClass('main');
-			});
 		
-		});
 			
 	</script>

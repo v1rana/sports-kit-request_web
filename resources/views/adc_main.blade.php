@@ -29,20 +29,41 @@
             @yield('content')
         </div>
     </div>
-    <footer>
-				<div class="container-fluid">
-					<div class="row justify-content-center">
-						<div class="col-xs-12 col-sm-8">
-							<p>All rights reserved. Powered by <strong>Citizen Resources Information Department, Haryana</strong></p>
-						</div>
-						<div class="col-xs-12 col-sm-4 text-end">
-							<div class="visitor-counter">
-							
-								<strong>Visitor Count</strong> <span>130361</span>
-							</div>
-						</div>
-					</div>
-				</div>
-			</footer>
+   <footer class="footer-custom bg-dark text-white py-3 mt-auto">
+  <div class="container-fluid">
+    <div class="row align-items-center text-center text-sm-start">
+      
+      <!-- Left Side: Text -->
+      <div class="col-12 col-sm-8 mb-2 mb-sm-0">
+        <p class="mb-0 small">
+          All rights reserved. Powered by <strong>Citizen Resources Information Department, Haryana</strong>
+        </p>
+      </div>
+      
+      <!-- Right Side: Visitor Counter -->
+      <div class="col-12 col-sm-4 text-sm-end">
+        <div class="visitor-counter small">
+          <i class="fa-solid fa-eye me-1"></i> <strong>Visitor Count:</strong> <span class="badge bg-primary">130361</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<style>
+.footer-custom {
+  border-top: 2px solid #444;
+  font-size: 0.95rem;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+.visitor-counter span {
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+</style>
 </body>
 </html>
