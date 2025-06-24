@@ -56,7 +56,9 @@ class HQController extends Controller
 			 }
 			$assigned = EquipmentVendorAssignment::where('request_id', $request->id)->count();
 
-			if ($assigned === $total && $total > 0) {
+			if (!empty($request->disbursement_status)) {
+				$request->vendor_status = 'Kit Disbursed';
+			} elseif ($assigned === $total && $total > 0) {
 				$request->vendor_status = 'Vendors Assigned';
 			} elseif ($assigned > 0) {
 				$request->vendor_status = 'Vendor Partially Assigned';

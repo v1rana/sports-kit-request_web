@@ -445,7 +445,7 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 	<div class="modal-dialog modal-lg">
     	<div class="modal-content">
     		<div class="modal-header">
-       			<h5 class="modal-title" id="requestDisclosureLabel">Request Closure: Disbursal Receipt </h5>
+       			<h5 class="modal-title" id="requestDisclosureLabel">Disbursal Receipt </h5>
        			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
      		<div class="modal-body">
@@ -519,7 +519,7 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 </div>
                                 <!--@endif-->
 							@elseif(($request->status == 'Approved') && !empty($request->disbursement_status) )
-								<span class="badge rounded-pill bg-success w-100"><i class="fa-solid fa-thumbs-up"></i> Disbursed</span>
+								<span class="badge rounded-pill bg-success w-100"><i class="fa-solid fa-thumbs-up"></i> Kit Disbursed</span>
 							@elseif($request->status == 'Rejected')
 								<span class="badge rounded-pill bg-danger w-100"><i class="fa-solid fa-ban"></i> Rejected</span>
 							@elseif($request->status == 'Verified')

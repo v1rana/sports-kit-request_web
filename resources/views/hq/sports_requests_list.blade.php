@@ -65,7 +65,7 @@ ul.list-unstyled li {
 				<th>Quantity</th>
 				<!--th>Action</th>
 				<th>Download <br>Application PDF</th-->
-				<th>Vendor</th>
+				<th>Status</th>
 			<!--<th width="160px">Assign Vendor</th>-->
 		</tr>
 	</thead>
@@ -110,8 +110,10 @@ ul.list-unstyled li {
 													<div class="col-sm-12 col-sm-6 col-md-3">
 														<small class="info-label text-muted">Application Status</small>
 														<h5> <strong>
-															@if($request->status == 'Approved')
+															@if(($request->status == 'Approved') && empty($request->disbursement_status))
 																	<span class="badge bg-success"><i class="fa-solid fa-thumbs-up"></i> Approved</span>
+																@elseif(($request->status == 'Approved') && !empty($request->disbursement_status) )
+																<span class="badge rounded-pill bg-success"><i class="fa-solid fa-thumbs-up"></i> Kit Disbursed</span>
 																@elseif($request->status == 'Rejected')
 																	<span class="badge bg-danger"><i class="fa-solid fa-ban"></i> Rejected</span>
 																@else
@@ -310,6 +312,7 @@ ul.list-unstyled li {
     <span class="badge 
         @if($request->vendor_status == 'Vendors Assigned') bg-success
         @elseif($request->vendor_status == 'Partially Disbursed') bg-warning
+        @elseif($request->vendor_status == 'Kit Disbursed') bg-success
         @else bg-danger
         @endif">
         {{ $request->vendor_status }}

@@ -258,8 +258,10 @@ ul.list-unstyled li {
 				</td>
 
 				<td>
-				@if($request->status == 'Approved')
+				@if(($request->status == 'Approved') && empty($request->disbursement_status))
 					<span class="badge bg-success"><i class="fa-solid fa-thumbs-up"></i> Approved</span>
+				@elseif(($request->status == 'Approved') && !empty($request->disbursement_status) )
+					<span class="badge rounded-pill bg-success w-100"><i class="fa-solid fa-thumbs-up"></i> Kit Disbursed</span>
 				@elseif($request->status == 'Rejected')
 					<span class="badge bg-danger"><i class="fa-solid fa-ban"></i> Rejected</span>
 				@else
