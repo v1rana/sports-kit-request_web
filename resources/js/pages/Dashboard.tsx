@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchUserDetails } from "../services/hosp-service";
-
+import { toast } from 'react-toastify';
 function Dashboard() {
     const navigate = useNavigate();
     let userData = JSON.parse(localStorage.getItem("user")!);
@@ -18,6 +18,10 @@ function Dashboard() {
                         localStorage.setItem("user", JSON.stringify(data.user));
                         userData = JSON.parse(localStorage.getItem("user")!);
                         userDetails = userData?.user_details || {};
+                         if(userData&& (!userData.declarations_hosp || !userData.sports_discipline_hosp || !userData.education_hosp)) {
+                                                toast.error('Please fill all required fields')
+                                                navigate("/basic-details");
+                                            }
                     } catch (error) {
                         console.error("Error loading form data", error);
                     }
@@ -123,13 +127,13 @@ function Dashboard() {
                                         <td>
                                             {
                                                 userData?.sports_discipline_hosp
-                                                    .game.name
+                                                    .game?.name
                                             }
                                         </td>
                                         <td>
                                             {
                                                 userData?.sports_discipline_hosp
-                                                    .tournament.tournament
+                                                    .tournament?.tournament
                                             }
                                         </td>
                                         <td>

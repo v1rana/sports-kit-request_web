@@ -400,7 +400,6 @@ class HospController extends Controller
     {
         $user = $request->user();
         $data = $user->sportsDisciplineHosp()->with(['tournament', 'game','disablilityType'])->latest()->first();
-
         if (!$data) {
             return response()->json(['message' => 'No event data found'], 404);
         }

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import html2pdf from "html2pdf.js";
 import { fetchUserDetails } from "../services/hosp-service";
-
+import { toast } from 'react-toastify';
 interface OtpData {
     certificate_no: string;
     sports_person_name: string;
@@ -89,6 +89,10 @@ const ApplicationPreview = () => {
                     localStorage.setItem("user", JSON.stringify(data.user));
                     userData = JSON.parse(localStorage.getItem("user")!);
                     userDetails = userData?.user_details || {};
+                    if(userData&& !userData.declarations_hosp) {
+                        toast.error('Please fill all required fields')
+                        navigate("/basic-details");
+                    }
                 } catch (error) {
                     console.error("Error loading form data", error);
                 }

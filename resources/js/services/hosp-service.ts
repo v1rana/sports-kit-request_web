@@ -16,7 +16,7 @@ export const getMemberbasicdetailsfromFIDUID = async (data) => {
     try {
         console.log('PPP_BASE_URL', PPP_BASE_URL);
         const response = await api.post(
-            "/PPPapi/api/Account/GetMemberbasicdetailsfromFIDUID",
+            "/api/Account/GetMemberbasicdetailsfromFIDUID",
             { ...data },
             {
                 baseURL: PPP_BASE_URL, // Custom baseURL for this call
@@ -34,7 +34,7 @@ export const getOTPRequestforMEMID = async (data) => {
     try {
         console.log('PPP_BASE_URL', PPP_BASE_URL);
         const response = await api.post(
-            "/PPPapi/api/Account/OTPRequestforMEMID",
+            "/api/Account/OTPRequestforMEMID",
             { ...data },
             {
                 baseURL: PPP_BASE_URL, // Custom baseURL for this call
@@ -52,7 +52,7 @@ export const verifyOTPRequestforMEMID = async (data) => {
     try {
         console.log('PPP_BASE_URL', PPP_BASE_URL);
         const response = await api.post(
-            "/PPPapi/api/Account/VerifyOTPRequestforMEMID",
+            "/api/Account/VerifyOTPRequestforMEMID",
             { ...data },
             {
                 baseURL: PPP_BASE_URL, // Custom baseURL for this call

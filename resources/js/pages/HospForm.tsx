@@ -153,10 +153,19 @@ const HospForm = () => {
             localStorage.setItem("user", JSON.stringify(data.user));
             userData = JSON.parse(localStorage.getItem("user")!);
             userDetails = userData?.user_details || {};
+            console.log('userDetails',userDetails);
+            
+            if(userDetails&& (!userDetails.dob_doc || !userDetails.domicile_doc || !userDetails.aadhaar)) {
+                toast.error('Please fill all required fields')
+                navigate("/basic-details");
+            }
         } catch (error) {
             console.error("Error loading form data", error);
         }
     };
+    useEffect(() => {
+        fetchUserData(); // ✅ Automatically run on component mount
+    }, []);
 
     useEffect(() => {
         const fetchEventData = async () => {
@@ -492,7 +501,8 @@ const HospForm = () => {
                     // setFormErrors(validationErrors);
 
                     setDiclarationErrors({
-                        msg: backendErrors[field][0] || "",
+                        // msg: backendErrors[field][0] || "",
+                        msg: 'Pleas Accept all terms & conditions and upload signed declaration pdf',
                     });
                 });
             }
@@ -2199,12 +2209,27 @@ const HospForm = () => {
                                                     }
                                             </h5>
                                         </td>
-                                        <td  style={{ padding: "3px 7px",fontSize: "14px"}}>
-                                            5. Age
-                                            <h5 style={{fontSize: "15px"}}>{userDetails.age}</h5>
+                                        <td >
+                                        <img
+                                                        src={
+                                                            userDetails.photo
+                                                                ? `/storage/photo/${userDetails.photo}`
+                                                                : "default.jpg"
+                                                        }
+                                                        width="80%"
+                                                        height="80%"
+                                                        style={{
+                                                            border: "5px solid #eee",
+                                                        }}
+                                                        alt="Profile"
+                                                    />
                                         </td>
                                     </tr>
                                     <tr>
+                                    <td  style={{ padding: "3px 7px",fontSize: "14px"}}>
+                                            5. Age
+                                            <h5 style={{fontSize: "15px"}}>{userDetails.age}</h5>
+                                        </td>
                                         <td style={{ padding: "3px 7px",fontSize: "14px"}}>
                                             6. Aadhar No.
                                             <h5 style={{fontSize: "15px"}}>{userDetails.aadhaar}</h5>
@@ -2219,7 +2244,10 @@ const HospForm = () => {
                                             <h5 style={{fontSize: "15px"}}>{userData?.email}</h5>
                                         </td>
                                        
-                                    <td   style={{ padding: "3px 7px",fontSize: "14px"}}>
+                                  
+                                    </tr>
+                                        <tr>
+                                        <td   style={{ padding: "3px 7px",fontSize: "14px"}}>
                                             9. Haryana Domicle
                                             <h5 style={{fontSize: "15px"}}>
                                                 {userDetails.domicile == "1"
@@ -2252,8 +2280,7 @@ const HospForm = () => {
                                             </h5>
                                         </td>
                                          } 
-                                    </tr>
-                                         
+                                        </tr>
                             
                                 </table>
                             </td>
@@ -2552,7 +2579,7 @@ const HospForm = () => {
                                          </ol>
                                
                                 <p  style={{ padding: "15px 5px",fontSize: "14px" }} >
-                                    It is certified that the above particulars given by me are true and correct to the best of my knowledge and  record and there is no  martial concealment . In  case of any wrong information furnished or material concealment, my service may be terminated without notice.
+                                    It is certified that the above particulars given by me are true and correct to the best of my knowledge and  record and there is no  material concealment . In  case of any wrong information furnished or material concealment, my service may be terminated without notice.
                                 </p>
                             </td>
                         </tr>

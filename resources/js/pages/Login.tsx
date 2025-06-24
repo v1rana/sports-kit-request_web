@@ -25,9 +25,16 @@ function Login() {
     const [loginType, setLoginType] = useState("");
     const [btn_disabled, setBtnDisabled] = useState(false);
     const basic_data = {
-        DeptCode: "NIC",
+        // stage server
+        DeptCode: "NIC",  
         ServiceCode: "TestCred",
         DeptKey: "o2etc739ut",
+
+        //  live server 
+        // DeptCode: "SPT",  
+        // ServiceCode: "CAW",
+        // DeptKey: "0A5CDE2406",
+
         UIDFID: pppId,
         MemberID: selectedMember,
         Txn: txn,
