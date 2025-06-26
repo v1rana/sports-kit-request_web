@@ -16,11 +16,12 @@ export const getMemberbasicdetailsfromFIDUID = async (data) => {
     try {
         console.log('PPP_BASE_URL', PPP_BASE_URL);
         const response = await api.post(
-            "/api/Account/GetMemberbasicdetailsfromFIDUID",
+            // "/api/Account/GetMemberbasicdetailsfromFIDUID",
+            "/member-details",
             { ...data },
-            {
-                baseURL: PPP_BASE_URL, // Custom baseURL for this call
-            }
+            // {
+            //     baseURL: PPP_BASE_URL, // Custom baseURL for this call
+            // }
         );
 
         return response.data;

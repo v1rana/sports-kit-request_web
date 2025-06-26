@@ -8,6 +8,7 @@ use App\Models\UserDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Http;
 
 class AuthController extends Controller
 {
@@ -84,5 +85,35 @@ class AuthController extends Controller
         //     'message' => 'Login successful',
         //     'user' => $user,
         // ]);
+    }
+
+    public function getMemberbasicdetailsfromFIDUID(Request $request) {
+        $response = Http::withHeaders([
+            'Accept' => 'application/json',
+        ])
+        // ->post('http://164.100.137.245/PPPapi/api/Account/GetMemberbasicdetailsfromFIDUID', [
+        //     'DeptCode'    => 'NIC',
+        //     'DeptKey'     => 'o2etc739ut',
+        //     'MemberID'    => '',
+        //     'OTP'         => '',
+        //     'ServiceCode' => 'TestCred',
+        //     'Txn'         => '',
+        //     'UIDFID'      => '1KQP3440',
+        // ]);
+        ->post('https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID', [
+            'DeptCode'    => 'SPT',
+            'DeptKey'     => '0A5CDE2406',
+            'MemberID'    => '',
+            'OTP'         => '',
+            'ServiceCode' => 'CAW',
+            'Txn'         => '',
+            'UIDFID'      => $request->UIDFID,
+        ]);
+        
+        // Get response as JSON
+        $data = $response->json();
+        
+        // Debug (optional)
+        return $data;
     }
 }

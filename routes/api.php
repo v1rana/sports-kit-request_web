@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::post('/login', [AuthController::class, 'login'])->name('user.login');
+Route::post('/member-details', [AuthController::class, 'getMemberbasicdetailsfromFIDUID'])->name('user.login');
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
