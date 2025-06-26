@@ -191,8 +191,10 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 														<small class="info-label text-muted">Application Status</small>
 														<h5 class="mt-1">
 															  <strong>
-																@if($request->status == 'Approved')
+																@if(($request->status == 'Approved') && empty($request->disbursement_status))
 																  <span class="badge rounded-pill bg-success badge-custom"><i class="fa-solid fa-thumbs-up me-1"></i> Approved</span>
+															  @elseif(($request->status == 'Approved') && !empty($request->disbursement_status) )
+																<span class="badge rounded-pill bg-success"><i class="fa-solid fa-thumbs-up"></i> Kit Disbursed</span>
 																@elseif($request->status == 'Rejected')
 																  <span class="badge rounded-pill bg-danger badge-custom"><i class="fa-solid fa-ban me-1"></i> Rejected</span>
 																@elseif($request->status == 'Verified')
