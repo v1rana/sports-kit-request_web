@@ -90,7 +90,7 @@ class AuthController extends Controller
     public function getMemberbasicdetailsfromFIDUID(Request $request)
     {
         // Optional: Get UIDFID from request if dynamic
-        $uidfid = $request->input('uidfid', '1KQP3440');
+        $uidfid = $request->input('uidfid', '8VDV2532');
 
 
         $payload = [
