@@ -26,9 +26,9 @@ function Login() {
     const [btn_disabled, setBtnDisabled] = useState(false);
     const basic_data = {
         // stage server
-        // DeptCode: "NIC",  
-        // ServiceCode: "TestCred",
-        // DeptKey: "o2etc739ut",
+        DeptCode: "NIC",  
+        ServiceCode: "TestCred",
+        DeptKey: "o2etc739ut",
 
         //  live server 
         // DeptCode: "SPT",  
