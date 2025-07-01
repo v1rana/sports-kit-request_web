@@ -104,7 +104,7 @@ class AuthController extends Controller
                 $data = $response->json();
                 return response()->json( [
                     'success' => true,
-                    'data' => $data->data
+                    'data' => $data['data']
                 ] );
             } else {
                 return response()->json( [
