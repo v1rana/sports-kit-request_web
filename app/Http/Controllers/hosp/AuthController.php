@@ -90,7 +90,7 @@ class AuthController extends Controller
     public function getMemberbasicdetailsfromFIDUID(Request $request)
     {
 
-
+        $uidfid = $request->input('uidfid', '6vdc9173');
         $url =  'https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID';
 
             $parameters = [
@@ -98,7 +98,7 @@ class AuthController extends Controller
                 'Servicecode' => 'CAW',
                 'DeptKey' => '0A5CDE2406',
                 // 'UIDFID' => '1KQP3440',
-                'UIDFID' => $request->family_id,
+                'UIDFID' => $uidfid,
             ];
             $response = Http::post( $url, $parameters );
             if ( $response->successful() ) {
