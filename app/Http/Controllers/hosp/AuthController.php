@@ -89,10 +89,9 @@ class AuthController extends Controller
 
     public function getMemberbasicdetailsfromFIDUID(Request $request)
     {
-
-        $uidfid = $request->input('uidfid', '6vdc9173');
-        $url =  'https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID';
-
+        try {
+            $uidfid = $request->input('uidfid', '6vdc9173');
+            $url =  'https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID';
             $parameters = [
                 'DeptCode' => 'SPT',
                 'Servicecode' => 'CAW',
@@ -105,7 +104,7 @@ class AuthController extends Controller
                 $data = $response->json();
                 return response()->json( [
                     'success' => true,
-                    'data' => $data
+                    'data' => $data->data
                 ] );
             } else {
                 return response()->json( [
@@ -114,75 +113,12 @@ class AuthController extends Controller
                     'error' => $response->body()
                 ], $response->status() );
             }
-        // Optional: Get UIDFID from request if dynamic
-        $uidfid = $request->input('uidfid', '8VDV2532');
-
-
-        $payload = [
-            "DeptCode"     => "SPT",
-            "ServiceCode"  => "CAW",
-            "DeptKey"      => "0A5CDE2406",
-            "UIDFID"       =>  $uidfid
-        ];
-    
-        $curl = curl_init();
-    
-        curl_setopt_array($curl, [
-            CURLOPT_URL => "https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID",
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_SSL_VERIFYPEER => false, // Optional: skip SSL verification (use only in dev)
-            CURLOPT_SSL_VERIFYHOST => false,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => json_encode($payload),
-            CURLOPT_HTTPHEADER => [
-                "Content-Type: application/json"
-            ],
-        ]);
-    
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-        curl_close($curl);
-    
-        if ($err) {
-            return response()->json([
-                'error' => 'cURL Error',
-                'message' => $err
-            ], 500);
-        } else {
-            return response()->json(json_decode($response, true));
-        }
-    
-        try {
-            $response = Http::withHeaders([
-                'Content-Type' => 'application/json',
-            ])->post('https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID', [
-                'DeptCode'     => 'SPT',
-                'ServiceCode'  => 'CAW',
-                'DeptKey'      => '0A5CDE2406',
-                'UIDFID'       => $uidfid,
-            ]);
-    
-            // Check if the request was successful
-            if ($response->successful()) {
-                return response()->json($response->json(), 200);
-            }
-    
-            // If the response failed
-            return response()->json([
-                'error' => 'API request failed.',
-                'status' => $response->status(),
-                'body' => $response->body()
-            ], $response->status());
-    
-        } catch (\Illuminate\Http\Client\RequestException $e) {
+        }catch (\Illuminate\Http\Client\RequestException $e) {
             return response()->json([
                 'error' => 'Request failed',
                 'message' => $e->getMessage()
             ], 500);
         }
+      
     }
 }
