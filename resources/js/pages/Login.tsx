@@ -26,14 +26,14 @@ function Login() {
     const [btn_disabled, setBtnDisabled] = useState(false);
     const basic_data = {
         // stage server
-        // DeptCode: "NIC",  
-        // ServiceCode: "TestCred",
-        // DeptKey: "o2etc739ut",
+        DeptCode: "NIC",  
+        ServiceCode: "TestCred",
+        DeptKey: "o2etc739ut",
 
         //  live server 
-        DeptCode: "SPT",  
-        ServiceCode: "CAW",
-        DeptKey: "0A5CDE2406",
+        // DeptCode: "SPT",  
+        // ServiceCode: "CAW",
+        // DeptKey: "0A5CDE2406",
 
         UIDFID: pppId,
         MemberID: selectedMember,
@@ -81,6 +81,7 @@ function Login() {
         try {
             basic_data.UIDFID = pppId;
             const response = await getMemberbasicdetailsfromFIDUID(basic_data);
+            
             if (response.status === "Successfull") {
                 setMembers(response.result.dropdown);
                 setIsMembersVisible(true);
