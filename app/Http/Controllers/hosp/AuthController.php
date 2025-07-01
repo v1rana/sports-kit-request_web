@@ -97,7 +97,8 @@ class AuthController extends Controller
                 'DeptCode' => 'SPT',
                 'Servicecode' => 'CAW',
                 'DeptKey' => '0A5CDE2406',
-                'UIDFID' => '1KQP3440',
+                // 'UIDFID' => '1KQP3440',
+                'UIDFID' => $request->family_id,
             ];
             $response = Http::post( $url, $parameters );
             if ( $response->successful() ) {
