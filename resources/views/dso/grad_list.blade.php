@@ -116,18 +116,20 @@ ul.list-unstyled li {
 										<label class="info-label text-muted ">Application Status</label>
 										<h6>
 											<strong> 
+											<div id="approval-section-{{ $certificate->id }}" style="{{ (!empty($certificate->enquiry_pdf) && !empty($certificate->replied_pdf) && $certificate->status != 'Approved' && $certificate->status != 'Rejected') ? '' : 'display:none;' }}">
+    <form action="{{ route('dso.approve', $certificate->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
+        @csrf
+        <button type="submit" class="btn btn-success">Approve</button>
+    </form>
+    <a href="javascript:void(0);" id="reject-application-{{ $certificate->id }}" class="btn btn-danger">Reject</a>	
+</div>
 										@if($certificate->status == 'Approved' && empty($certificate->certificate_pdf))
 											<span class="badge rounded-pill bg-success"><i class="fa-solid fa-thumbs-up"></i> Approved</span>
 										@elseif($certificate->status == 'Approved' && !empty($certificate->certificate_pdf))
 											<span class="badge rounded-pill bg-success"><i class="fa-solid fa-thumbs-up"></i> Certificate Issued</span>
 										@elseif($certificate->status == 'Rejected')
 											<span class="badge rounded-pill bg-danger"><i class="fa-solid fa-ban"></i>  Rejected</span>
-										 @elseif(!empty($certificate->enquiry_pdf) && !empty($certificate->replied_pdf))
-											<form action="{{ route('dso.approve', $certificate->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
-												@csrf
-												<button type="submit"  class="btn btn-success">  Approve </button>
-											</form>
-											<a href="javascript:void(0);" id="reject-application" class="btn btn-danger">Reject</a>	
+										
 										@else
 											
 										@endif
@@ -229,7 +231,7 @@ ul.list-unstyled li {
 									</div>
 								</div>
 
-								<h3 class="modal-title-details"><i class="fa-solid fa-folder-open"></i> Uploaded Documents</h3>
+								<h3 class="modal-title-details"><i class="fa-solid fa-folder-open"></i> Application Enquiry</h3>
 								<div class="border p-3">       
 									<div class="row">
 										<div class="col-xs-12 col-sm-6 col-md-4">
@@ -241,20 +243,20 @@ ul.list-unstyled li {
 												</a>
 												<p>
 													<small class="mb-0 text-muted text-end">
-														📅 Date: {{ \Carbon\Carbon::parse($certificate->enquiry_pdf_datetime)->format('d M Y') }}
+														Date: {{ \Carbon\Carbon::parse($certificate->enquiry_pdf_datetime)->format('d M Y') }}
 													</small>
 												</p>
 											</div>
 
 											@else
-												<form action="{{ route('dso.enquiry.UploadLetter') }}" method="POST" enctype="multipart/form-data" style="display:flex;">
-													@csrf
-													<input type="file" name="enquiry_pdf" accept="application/pdf" required class="form-control">
-													<input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
-													<button type="submit" class="btn btn-warning" style=" margin-left: 3px;">
-														Upload
-													</button>
-												</form>
+												<form id="enquiry-upload-form-{{ $certificate->id }}" action="{{ route('dso.enquiry.UploadLetter') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    <input type="file" name="enquiry_pdf" accept="application/pdf" required class="form-control">
+    <input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
+    <button type="submit" class="btn btn-warning mt-2">Upload</button>
+</form>
+<div id="upload-status-{{ $certificate->id }}"></div>
+
 											@endif
 
 										</div>
@@ -267,19 +269,18 @@ ul.list-unstyled li {
 												<a href="{{ asset('storage/' . $certificate->replied_pdf) }}" target="_blank" class="btn btn-primary mb-2"> <i class="fa-solid fa-file-lines"></i> View Reply Letter  </a>
 								
 												<p><small  class="mb-0 text-muted text-end">
-													📅 Date: {{ \Carbon\Carbon::parse($certificate->replied_pdf_datetime)->format('d M Y') }}
+													Date: {{ \Carbon\Carbon::parse($certificate->replied_pdf_datetime)->format('d M Y') }}
 												</small></p>
 											</div>
 
 											@else
-											<form action="{{ route('dso.enquiry.ReplyLetter') }}" method="POST" enctype="multipart/form-data" style="display:flex;">
-												@csrf
-												<input type="file" name="replied_pdf" accept="application/pdf" required class="form-control">
-												<input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
-												<button type="submit" class="btn btn-warning" style="margin-left:5px">
-													Upload
-												</button>
-											</form>
+											<form id="reply-upload-form-{{ $certificate->id }}" action="{{ route('dso.enquiry.ReplyLetter') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <input type="file" name="replied_pdf" accept="application/pdf" required class="form-control">
+            <input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
+            <button type="submit" class="btn btn-warning mt-2" style="margin-left:5px">Upload</button>
+        </form>
+        <div id="reply-upload-status-{{ $certificate->id }}" class="mt-2"></div>
 											@endif
 										</div>
 										
@@ -465,6 +466,120 @@ ul.list-unstyled li {
 		});		
 	});
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const forms = document.querySelectorAll('[id^="enquiry-upload-form-"]');
+
+    forms.forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const certId = formData.get('certificate_id');
+            const statusDiv = document.getElementById(`upload-status-${certId}`);
+
+            // Disable form while uploading
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Uploading...';
+
+            fetch(this.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success and update UI
+                    statusDiv.innerHTML = `
+                        <a href="${data.file_url}" target="_blank" class="btn btn-primary mt-2">
+                            <i class="fa-solid fa-file-lines"></i> View Letter
+                        </a>
+                        <p>
+                            <small class="mb-0 text-muted text-end">Date: ${data.upload_date}</small>
+                        </p>
+                    `;
+                    form.remove(); // Remove the form after success
+                } else {
+                    alert('Upload failed: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Upload error:', error);
+                alert('Upload failed due to error.');
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Upload';
+            });
+        });
+    });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const replyForms = document.querySelectorAll('[id^="reply-upload-form-"]');
+
+    replyForms.forEach(form => {
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const certId = formData.get('certificate_id');
+            const statusDiv = document.getElementById(`reply-upload-status-${certId}`);
+            const approvalDiv = document.getElementById(`approval-section-${certId}`); // jo div tumne blade me add kiya, initially hidden
+            const submitBtn = form.querySelector('button[type="submit"]');
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Uploading...';
+
+            fetch(this.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Show the uploaded file link
+                    statusDiv.innerHTML = `
+                        <a href="${data.file_url}" target="_blank" class="btn btn-primary mt-2">
+                            <i class="fa-solid fa-file-lines"></i> View Reply
+                        </a>
+                        <p>
+                            <small class="mb-0 text-muted text-end">Date: ${data.upload_date}</small>
+                        </p>
+                    `;
+
+                    form.remove(); // remove the upload form
+
+                    // Show the approval buttons div which was hidden initially
+                    if (approvalDiv) {
+                        approvalDiv.style.display = 'block';
+                    }
+                } else {
+                    statusDiv.innerHTML = `<p class="text-danger">Upload failed: ${data.message}</p>`;
+                }
+            })
+            .catch(error => {
+                statusDiv.innerHTML = `<p class="text-danger">Upload error.</p>`;
+                console.error('Upload error:', error);
+            })
+            .finally(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Upload';
+            });
+        });
+    });
+});
+
+</script>
+
 
 
 @endsection

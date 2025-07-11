@@ -55,6 +55,7 @@ Route::get('/municipal', [MunicipalBodyMemberController::class, 'index']);
     Route::get('/sport-skit/list', [SportsKitRequisitionController::class, 'list'])->name('sports_kit.list');
 	Route::get('/sports-kit/print/{id}', [SportsKitRequisitionController::class, 'print'])->name('sports-kit.print');
     Route::post('/assign-vendor', [SportsKitRequisitionController::class, 'storeVendorAssignment'])->name('assign.vendor.store');
+	Route::get('/get-areas/{type}/{district}', [SportsKitRequisitionController::class, 'getAreas']);
 	
 	
 	Route::post('/send-otp', [SportsKitRequisitionController::class, 'sendOTP'])->name('send.otp');
@@ -91,12 +92,12 @@ Route::get('/municipal', [MunicipalBodyMemberController::class, 'index']);
 	Route::post('/dso/kit-disbursement', [DSOController::class, 'storeKitDisbursement'])->name('dso.kit-disbursement.store');
 	
 
-	Route::get('/adc/dashboard', [ADCController::class, 'dashboard'])->name('adc.sports_kit.dashboard');
-	Route::get('/dso/gradlist', [DSOController::class, 'grad_list'])->name('dso.grad.list');
+	/* Route::get('/adc/dashboard', [ADCController::class, 'dashboard'])->name('adc.sports_kit.dashboard');
 	Route::get('/adc/sports-requests', [ADCController::class, 'index'])->name('adc.sports.requests');
 	Route::post('/adc/sports-request/approve/{id}', [ADCController::class, 'approveRequest'])->name('adc.approve');
-	Route::post('/adc/sports-request/reject/{id}', [ADCController::class, 'rejectRequest'])->name('adc.reject');
+	Route::post('/adc/sports-request/reject/{id}', [ADCController::class, 'rejectRequest'])->name('adc.reject'); */
 
+	Route::get('/dso/gradlist', [DSOController::class, 'grad_list'])->name('dso.grad.list');
 	Route::post('/dso/sports-request/verify/{id}', [DSOController::class, 'verifyRequest'])->name('dso.verify');
 	Route::post('/dso/sports-request/not-verify/{id}', [DSOController::class, 'notVerifyRequest'])->name('dso.not_verify');
 	Route::post('/dso/sports-request/approve/{id}', [DSOController::class, 'ApproveRequest'])->name('dso.approve');

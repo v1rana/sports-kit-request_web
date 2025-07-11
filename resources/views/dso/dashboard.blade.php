@@ -11,7 +11,7 @@
                 <h3 class="mb-0 text-dark">Welcome, <strong>DSO</strong></h3>
             </div>
             <div class="col-5 text-end">
-                <h6 class="mb-0"><i class="fa-solid fa-location-dot"></i> Bhiwani</h6>
+                <h6 class="mb-0"><i class="fa-solid fa-location-dot"></i> </h6>
             </div>
         </div>
         <hr />

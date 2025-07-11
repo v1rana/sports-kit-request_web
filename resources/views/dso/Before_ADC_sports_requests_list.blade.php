@@ -438,8 +438,8 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 					
 					<td>
 						<strong>
-							@if(($request->status == 'Verified') && empty($request->disbursement_status) )
-								<span class="badge rounded-pill bg-success w-100"><i class="fa-solid fa-thumbs-up"></i> Verified</span> <br />
+							@if(($request->status == 'Approved') && empty($request->disbursement_status) )
+								<span class="badge rounded-pill bg-success w-100"><i class="fa-solid fa-thumbs-up"></i> Approved</span> <br />
 								<!--@if($request->disbursement_status != 'Completed')-->
 								<a href="#" class="badge bg-primary w-100" data-bs-toggle="modal" data-bs-target="#requestDisclosure{{ $request->applicant_id }}">Disburse Kit</a>
 								
@@ -463,21 +463,19 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
         <div class="col-4 mb-2">
             <label>Firm Name</label>
             <h6>{{ $request->vendor_name }}</h6>
-           
-			<input type="text" class="form-control" name="firm_name" required />
+            <input type="hidden" name="firm_name" value="{{ $request->vendor_name }}">
+            <input type="hidden" name="vendor_id" value="{{ $request->vend_id }}">
         </div>
         <div class="col-3 mb-2">
             <label>Name of the Owner</label>
             <h6>{{ $request->owner_name }}</h6>
-           
-			<input type="text" class="form-control" name="owner_name" required />
+            <input type="hidden" name="owner_name" value="{{ $request->owner_name }}">
         </div>
 		 
         <div class="col mb-2">
             <label>Mobile Number</label>
             <h6>{{ $request->mob }}</h6>
-        
-			<input type="text" class="form-control" name="mobile_number" required />
+            <input type="hidden" name="mobile_number" value="{{ $request->mob }}">
         </div>
     </div>
     <hr class="mt-0" />
@@ -522,7 +520,7 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
  	</div>
 </div>
                                 <!--@endif-->
-							@elseif(($request->status == 'Verified') && !empty($request->disbursement_status) )
+							@elseif(($request->status == 'Approved') && !empty($request->disbursement_status) )
 								<span class="badge rounded-pill bg-success w-100"><i class="fa-solid fa-thumbs-up"></i> Kit Disbursed</span>
 							@elseif($request->status == 'Rejected')
 								<span class="badge rounded-pill bg-danger w-100"><i class="fa-solid fa-ban"></i> Rejected</span>

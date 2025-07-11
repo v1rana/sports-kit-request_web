@@ -433,31 +433,17 @@ class DSOController extends Controller
 	
 	public function storeKitDisbursement(Request $request)
 {
-    // Step 1: Validate vendor-related fields
-    $vendorData = $request->validate([
-        'firm_name'      => 'required|string|max:255',
-        'owner_name'     => 'required|string|max:255',
-        'mobile_number'  => 'required|string|size:10',
+    // return $request->all(); // ← Comment this out after debugging
+
+    $validated = $request->validate([
+        'request_id' => 'required|exists:sports_kit_requisitions,id',
+        'vendor_id' => 'required|exists:vendors,id',
+        'fund_source' => 'required|in:DSE,HQ',
+        'procurement_amount' => 'required|numeric',
+        'bill_no' => 'required|string',
+        'voucher_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
     ]);
 
-    // Step 2: Create vendor
-    $vendor = Vendor::create([
-        'vendor_name' => $vendorData['firm_name'],
-        'owner_name'  => $vendorData['owner_name'],
-        'mob'         => $vendorData['mobile_number']
-    ]);
-
-    // Step 3: Validate disbursement-related fields
-    $disbursementData = $request->validate([
-        'request_id'          => 'required|exists:sports_kit_requisitions,id',
-        'fund_source'         => 'required|in:DSE,HQ',
-        'procurement_amount'  => 'required|numeric',
-        'bill_no'             => 'required|string',
-        'voucher_file'        => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-    ]);
-
-    // Step 4: Handle voucher file upload
-    $voucherPath = null;
     if ($request->hasFile('voucher_file')) {
         $voucherFile = $request->file('voucher_file');
         $voucherPath = $voucherFile->storeAs(
@@ -465,31 +451,25 @@ class DSOController extends Controller
             uniqid() . '_' . $voucherFile->getClientOriginalName(),
             'public'
         );
+    } else {
+        $voucherPath = null;
     }
 
-	EquipmentVendorAssignment::create([
-		 'request_id' => $disbursementData['request_id'],
-		 'vendor_id' => $vendor->id
-	 ]);
-						 
-    // Step 5: Find assignment and update
-    $assignment = EquipmentVendorAssignment::where('request_id', $disbursementData['request_id'])
-        ->where('vendor_id', $vendor->id)
+    $assignment = EquipmentVendorAssignment::where('request_id', $validated['request_id'])
+        ->where('vendor_id', $validated['vendor_id'])
         ->firstOrFail();
 
     $assignment->update([
-        'fund_source'         => $disbursementData['fund_source'],
-        'procurement_amount'  => $disbursementData['procurement_amount'],
-        'bill_no'             => $disbursementData['bill_no'],
-        'voucher_file_path'   => $voucherPath,
+        'fund_source' => $validated['fund_source'],
+        'procurement_amount' => $validated['procurement_amount'],
+        'bill_no' => $validated['bill_no'],
+        'voucher_file_path' => $voucherPath,
     ]);
 
-    // Step 6: Update disbursement status
-    $this->updateDisbursementStatus($disbursementData['request_id'], $vendor->id);
+    $this->updateDisbursementStatus($validated['request_id'], $validated['vendor_id']);
 
     return back()->with('success', 'Kit disbursement done successfully.');
 }
-
 
 
 protected function updateDisbursementStatus($requestId, $vendorId)

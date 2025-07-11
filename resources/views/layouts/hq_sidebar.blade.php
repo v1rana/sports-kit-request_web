@@ -19,12 +19,12 @@
                     <i class="fa-solid fa-house"></i> <span>Dashboard</span>
                 </a>
             </li>
-            <li class="nav-item menu-item" data-tab="equipments">
+            <!--<li class="nav-item menu-item" data-tab="equipments">
 				<a href="{{ route('hq.vendor-list') }}" 
 				   class="nav-link {{ request()->routeIs('hq.vendor-list') ? 'active' : '' }}">
 					<i class="fa-regular fa-rectangle-list"></i> <span> Vendor</span>
 				</a>
-			</li>
+			</li>-->
                  {{-- Equipment menu --}}
     <li class="nav-item menu-item" data-tab="equipments">
         <a href="{{ route('hq.sports.requests') }}" 

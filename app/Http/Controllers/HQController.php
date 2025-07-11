@@ -354,27 +354,39 @@ class HQController extends Controller
 	}
 	
 	public function UploadLetter(Request $request)
-	{
-		//return $request->all();
-		 \Log::info('Request Data:', $request->all());
-		$request->validate([
-			'enquiry_pdf' => 'required|mimes:pdf|max:2048',
-			'certificate_id' => 'required|exists:sports_gradation_certificates,id'
-		]);
+{
+   
+        $request->validate([
+            'enquiry_pdf' => 'required|mimes:pdf|max:2048',
+            'certificate_id' => 'required|exists:sports_gradation_certificates,id'
+        ]);
 
-		// Upload file
-		$file = $request->file('enquiry_pdf');
-		$filePath = $file->store('uploads/enquiries/hq', 'public');
+	try {
+        // Upload file to HQ folder
+        $file = $request->file('enquiry_pdf');
+        $filePath = $file->store('uploads/enquiries/hq', 'public');
 
-		//return $filePath;
-		// Save to database
-		$certificate = sports_gradation_certificate::find($request->certificate_id);
-		$certificate->enquiry_pdf = $filePath;
-		$certificate->enquiry_pdf_datetime = \Carbon\Carbon::now('Asia/Kolkata');
-		$certificate->save();
+        // Save to database
+        $certificate = sports_gradation_certificate::find($request->certificate_id);
+        $certificate->enquiry_pdf = $filePath;
+        $certificate->enquiry_pdf_datetime = now('Asia/Kolkata');
+        $certificate->save();
 
-		return back()->with('success', 'Letter uploaded successfully.');
-	}
+       return response()->json([
+				'success' => true,
+				'file_url' => asset('storage/' . $filePath),
+				'upload_date' => \Carbon\Carbon::parse($certificate->enquiry_pdf_datetime)->format('d M Y')
+			]);
+
+    } catch (\Exception $e) {
+			\Log::error('Upload error: ' . $e->getMessage());
+			return response()->json(['success' => false, 'message' => 'Upload failed.']);
+		}
+}
+
+
+
+
 	
 	public function RepliedLetter(Request $request)
 	{
@@ -383,17 +395,29 @@ class HQController extends Controller
 			'certificate_id' => 'required|exists:sports_gradation_certificates,id'
 		]);
 
-		// Upload file
-		$file = $request->file('replied_pdf');
-		$filePath = $file->store('uploads/enquiries/hq', 'public');
+		try {
+			// Upload file
+			$file = $request->file('replied_pdf');
+			$filePath = $file->store('uploads/enquiries/hq', 'public');
 
-		// Save to database
-		$certificate = sports_gradation_certificate::find($request->certificate_id);
-		$certificate->replied_pdf = $filePath;
-		$certificate->replied_pdf_datetime = \Carbon\Carbon::now('Asia/Kolkata');
-		$certificate->save();
+			// Save to database
+			$certificate = sports_gradation_certificate::find($request->certificate_id);
+			$certificate->replied_pdf = $filePath;
+			$certificate->replied_pdf_datetime = \Carbon\Carbon::now('Asia/Kolkata');
+			$certificate->save();
 
-		return back()->with('success', 'Letter uploaded successfully.');
+			return response()->json([
+            'success' => true,
+            'file_url' => asset('storage/' . $filePath),
+            'upload_date' => \Carbon\Carbon::parse($certificate->replied_pdf_datetime)->format('d M Y')
+        ]);
+		} catch (\Exception $e) {
+			\Log::error('Reply upload error: ' . $e->getMessage());
+			return response()->json([
+				'success' => false,
+				'message' => 'Upload failed. Please try again.'
+			]);
+		}
 	}
 
 	//Function to send single sms

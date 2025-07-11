@@ -7,6 +7,8 @@ use App\Models\SportsKitRequisition;
 use App\Models\ADC;
 use App\Models\HQ;
 use App\Models\DSO;
+use App\Models\GramPanchayatSarpanch;
+use App\Models\MunicipalBodyMember;
 use App\Models\TemporarySportsKitRequisition;
 use App\Models\UserDetails;
 use App\Models\Vendor;
@@ -86,9 +88,15 @@ class SportsKitRequisitionController extends Controller {
         ]);
     }
 
-    // If no application, show the requisition form
+    $gramDistricts = GramPanchayatSarpanch::select('district')->distinct()->pluck('district')->toArray();
+    $municipalDistricts = MunicipalBodyMember::select('district')->distinct()->pluck('district')->toArray();
+    $allDistricts = array_unique(array_merge($gramDistricts, $municipalDistricts));
+    sort($allDistricts); // optional: sort alphabetically
+
+    // ✅ Final view
     return view('sports_kit.requisition', [
-        'userDetail' => $userDetail
+        'userDetail' => $userDetail,
+        'districts' => $allDistricts
     ]);
 }
 
@@ -358,6 +366,22 @@ public function printTemporary()
 		]);
 }
 
+public function getAreas($type, $district)
+{
+    if ($type === 'gram') {
+        $areas = GramPanchayatSarpanch::where('district', $district)
+            ->distinct()
+            ->pluck('gram_panchayat'); // Replace with correct column if different
+    } elseif ($type === 'municipal') {
+        $areas = MunicipalBodyMember::where('district', $district)
+            ->distinct()
+            ->pluck('municipal_area'); // Replace with correct column
+    } else {
+        $areas = [];
+    }
+
+    return response()->json($areas);
+}
 
 public function verifyOTP(Request $request)
 {
