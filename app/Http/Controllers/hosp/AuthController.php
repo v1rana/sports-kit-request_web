@@ -93,17 +93,9 @@ class AuthController extends Controller
             // $uidfid = $request->input('uidfid', '6vdc9173');
             // $url =  'https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID';
             $url =  config('custom.ppp_base_url').'/api/Account/GetMemberbasicdetailsfromFIDUID';
-            $parameters = [
-                // 'DeptCode' => 'SPT',
-                // 'Servicecode' => 'CAW',
-                // 'DeptKey' => '0A5CDE2406',
-
-                'DeptCode' => 'NIC',
-                'Servicecode' => 'TestCred',
-                'DeptKey' => 'o2etc739ut',
-                // 'UIDFID' => '1KQP3440',
+            $parameters = array_merge($this->getCommonParams(), [
                 'UIDFID' => $request->UIDFID,
-            ];
+            ]);
             $response = Http::post( $url, $parameters );
             if ( $response->successful() ) {
                 $data = $response->json();
@@ -135,19 +127,9 @@ class AuthController extends Controller
             // $uidfid = $request->input('uidfid', '6vdc9173');
             // $url =  'https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID';
             $url =  config('custom.ppp_base_url').'/api/Account/OTPRequestforMEMID';
-            $parameters = [
-                // 'DeptCode' => 'SPT',
-                // 'Servicecode' => 'CAW',
-                // 'DeptKey' => '0A5CDE2406',
-
-                'DeptCode' => 'NIC',
-                'Servicecode' => 'TestCred',
-                'DeptKey' => 'o2etc739ut',
-                // 'UIDFID' => '1KQP3440',
-                // 'UIDFID' => $request->UIDFID,
+            $parameters = array_merge($this->getCommonParams(), [
                 'MemberID' => $request->MemberID,
-                
-            ];
+            ]);
             $response = Http::post( $url, $parameters );
             if ( $response->successful() ) {
                 $data = $response->json();
@@ -178,20 +160,11 @@ class AuthController extends Controller
             // $uidfid = $request->input('uidfid', '6vdc9173');
             // $url =  'https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID';
             $url =  config('custom.ppp_base_url').'/api/Account/VerifyOTPRequestforMEMID';
-            $parameters = [
-                // 'DeptCode' => 'SPT',
-                // 'Servicecode' => 'CAW',
-                // 'DeptKey' => '0A5CDE2406',
-
-                'DeptCode' => 'NIC',
-                'Servicecode' => 'TestCred',
-                'DeptKey' => 'o2etc739ut',
-                // 'UIDFID' => '1KQP3440',
+            $parameters = array_merge($this->getCommonParams(), [
                 'MemberID' => $request->MemberID,
                 'otp' => $request->OTP,
                 'txn' => $request->Txn,
-                
-            ];
+            ]);
             $response = Http::post( $url, $parameters );
             if ( $response->successful() ) {
                 $data = $response->json();
@@ -213,5 +186,22 @@ class AuthController extends Controller
             ], 500);
         }
       
+    }
+
+
+    private function getCommonParams(): array
+    {
+        return [
+            // stagging
+            // 'DeptCode' => 'NIC',
+            // 'Servicecode' => 'TestCred',
+            // 'DeptKey' => 'o2etc739ut',
+
+            // live server
+                'DeptCode' => 'SPT',
+                'Servicecode' => 'CAW',
+                'DeptKey' => '0A5CDE2406',
+
+        ];
     }
 }
