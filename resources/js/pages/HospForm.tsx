@@ -2605,6 +2605,8 @@ const HospForm = () => {
                             </td> 
                         </tr>
 
+                        {/* pdf pages here */}
+
 
                         <tr>
                             <td  >

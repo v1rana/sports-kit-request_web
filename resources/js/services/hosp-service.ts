@@ -16,15 +16,15 @@ export const getMemberbasicdetailsfromFIDUID = async (data) => {
     try {
         console.log('PPP_BASE_URL', PPP_BASE_URL);
         const response = await api.post(
-            "/api/Account/GetMemberbasicdetailsfromFIDUID",
-            // "/member-details",
+            // "/api/Account/GetMemberbasicdetailsfromFIDUID",
+            "/member-details",
             { ...data },
-            {
-                baseURL: PPP_BASE_URL, // Custom baseURL for this call
-            }
+            // {
+            //     baseURL: PPP_BASE_URL, // Custom baseURL for this call
+            // }
         );
 
-        return response.data;
+        return response.data.data;
     } catch (error) {
         console.error("Error fetching hosp:", error);
         throw error;
@@ -33,16 +33,16 @@ export const getMemberbasicdetailsfromFIDUID = async (data) => {
 
 export const getOTPRequestforMEMID = async (data) => {
     try {
-        console.log('PPP_BASE_URL', PPP_BASE_URL);
         const response = await api.post(
-            "/api/Account/OTPRequestforMEMID",
+            // "/api/Account/OTPRequestforMEMID",
+            '/otp-request',
             { ...data },
-            {
-                baseURL: PPP_BASE_URL, // Custom baseURL for this call
-            }
+            // {
+            //     baseURL: PPP_BASE_URL, // Custom baseURL for this call
+            // }
         );
 
-        return response.data;
+        return response.data.data;
     } catch (error) {
         console.error("Error fetching hosp:", error);
         throw error;
@@ -53,14 +53,15 @@ export const verifyOTPRequestforMEMID = async (data) => {
     try {
         console.log('PPP_BASE_URL', PPP_BASE_URL);
         const response = await api.post(
-            "/api/Account/VerifyOTPRequestforMEMID",
+            // "/api/Account/VerifyOTPRequestforMEMID",
+            "/verify-otp",
             { ...data },
-            {
-                baseURL: PPP_BASE_URL, // Custom baseURL for this call
-            }
+            // {
+            //     baseURL: PPP_BASE_URL, // Custom baseURL for this call
+            // }
         );
 
-        return response.data;
+        return response.data.data;
     } catch (error) {
         console.error("Error fetching hosp:", error);
         throw error;

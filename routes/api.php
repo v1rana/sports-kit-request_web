@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::post('/login', [AuthController::class, 'login'])->name('user.login');
-Route::post('/member-details', [AuthController::class, 'getMemberbasicdetailsfromFIDUID'])->name('user.login');
+Route::post('/member-details', [AuthController::class, 'getMemberbasicdetailsfromFIDUID'])->name('ppp.details');
+Route::post('/otp-request', [AuthController::class, 'requestOTPforMEMID'])->name('ppp.otp');
+Route::post('/verify-otp', [AuthController::class, 'verifyOTPRequestforMEMID'])->name('otp.verify');
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();

@@ -90,14 +90,19 @@ class AuthController extends Controller
     public function getMemberbasicdetailsfromFIDUID(Request $request)
     {
         try {
-            $uidfid = $request->input('uidfid', '6vdc9173');
-            $url =  'https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID';
+            // $uidfid = $request->input('uidfid', '6vdc9173');
+            // $url =  'https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID';
+            $url =  config('custom.ppp_base_url').'/api/Account/GetMemberbasicdetailsfromFIDUID';
             $parameters = [
-                'DeptCode' => 'SPT',
-                'Servicecode' => 'CAW',
-                'DeptKey' => '0A5CDE2406',
+                // 'DeptCode' => 'SPT',
+                // 'Servicecode' => 'CAW',
+                // 'DeptKey' => '0A5CDE2406',
+
+                'DeptCode' => 'NIC',
+                'Servicecode' => 'TestCred',
+                'DeptKey' => 'o2etc739ut',
                 // 'UIDFID' => '1KQP3440',
-                'UIDFID' => $uidfid,
+                'UIDFID' => $request->UIDFID,
             ];
             $response = Http::post( $url, $parameters );
             if ( $response->successful() ) {
@@ -110,6 +115,94 @@ class AuthController extends Controller
                 return response()->json( [
                     'success' => false,
                     'message' => 'Failed to fetch member details',
+                    'error' => $response->body()
+                ], $response->status() );
+            }
+        }catch (\Illuminate\Http\Client\RequestException $e) {
+            return response()->json([
+                'error' => 'Request failed',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+      
+    }
+
+
+
+    public function requestOTPforMEMID(Request $request)
+    {
+        try {
+            // $uidfid = $request->input('uidfid', '6vdc9173');
+            // $url =  'https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID';
+            $url =  config('custom.ppp_base_url').'/api/Account/OTPRequestforMEMID';
+            $parameters = [
+                // 'DeptCode' => 'SPT',
+                // 'Servicecode' => 'CAW',
+                // 'DeptKey' => '0A5CDE2406',
+
+                'DeptCode' => 'NIC',
+                'Servicecode' => 'TestCred',
+                'DeptKey' => 'o2etc739ut',
+                // 'UIDFID' => '1KQP3440',
+                // 'UIDFID' => $request->UIDFID,
+                'MemberID' => $request->MemberID,
+                
+            ];
+            $response = Http::post( $url, $parameters );
+            if ( $response->successful() ) {
+                $data = $response->json();
+                return response()->json( [
+                    'success' => true,
+                    'data' => $data
+                ] );
+            } else {
+                return response()->json( [
+                    'success' => false,
+                    'message' => 'Invalid OTP',
+                    'error' => $response->body()
+                ], $response->status() );
+            }
+        }catch (\Illuminate\Http\Client\RequestException $e) {
+            return response()->json([
+                'error' => 'Request failed',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+      
+    }
+
+
+    public function verifyOTPRequestforMEMID(Request $request)
+    {
+        try {
+            // $uidfid = $request->input('uidfid', '6vdc9173');
+            // $url =  'https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID';
+            $url =  config('custom.ppp_base_url').'/api/Account/VerifyOTPRequestforMEMID';
+            $parameters = [
+                // 'DeptCode' => 'SPT',
+                // 'Servicecode' => 'CAW',
+                // 'DeptKey' => '0A5CDE2406',
+
+                'DeptCode' => 'NIC',
+                'Servicecode' => 'TestCred',
+                'DeptKey' => 'o2etc739ut',
+                // 'UIDFID' => '1KQP3440',
+                'MemberID' => $request->MemberID,
+                'otp' => $request->OTP,
+                'txn' => $request->Txn,
+                
+            ];
+            $response = Http::post( $url, $parameters );
+            if ( $response->successful() ) {
+                $data = $response->json();
+                return response()->json( [
+                    'success' => true,
+                    'data' => $data
+                ] );
+            } else {
+                return response()->json( [
+                    'success' => false,
+                    'message' => 'Invalid OTP',
                     'error' => $response->body()
                 ], $response->status() );
             }
