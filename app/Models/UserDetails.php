@@ -53,4 +53,19 @@ class UserDetails extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function sportsDisciplineHosp()
+    {
+        return $this->hasOne(SportsDisciplineHosp::class, 'application_id', 'application_id');
+    }
+
+    public function educationHosp()
+    {
+        return $this->hasMany(EducationHOSP::class, 'application_id', 'application_id');
+    }
+
+    public function declarationsHosp()
+    {
+        return $this->hasMany(DeclarationsHosp::class, 'application_id', 'application_id');
+    }
 }

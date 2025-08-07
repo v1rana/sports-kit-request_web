@@ -17,18 +17,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-details', [HospController::class, 'updateUserDetails']);
     Route::post('/update-role', [HospController::class, 'updateRole']);
     Route::get('/user-details', [HospController::class, 'getUserData']);
-    Route::post('/hosp/event', [HospController::class, 'store']);
-    Route::post('/event/{id}', [HospController::class, 'update']);
-    Route::get('/event-details', [HospController::class, 'getEventData']);
+    Route::get('/application-list', [HospController::class, 'getUserApplications']);
+    Route::get('/pending-application-details', [HospController::class, 'getPendingApplication']);
+    Route::get('/completed-application-preview/{application_id}', [HospController::class, 'getCompleteApplication']);
+
 
     Route::post('/hosp/education', [HospController::class, 'storeOrUpdateEducation']);
-    Route::get('/education-details', [HospController::class, 'getEducationData']);
+    Route::get('/education-details/{application_id}', [HospController::class, 'getEducationData']);
 
     Route::post('/hosp/sports-discipline', [HospController::class, 'storeSportDiscipline']);
-    Route::get('/sports-discipline-details', [HospController::class, 'getSportDiscipline']);
+    Route::get('/sports-discipline-details/{application_id}', [HospController::class, 'getSportDiscipline']);
 
     Route::post('/hosp/declarations', [HospController::class, 'storeDeclarations']);
-    Route::get('/declaration-details', [HospController::class, 'getHospDeclarations']);
+    Route::get('/declaration-details/{application_id}', [HospController::class, 'getHospDeclarations']);
     Route::get('/declarations-list', [HospController::class, 'getDeclarations']);
     // to view uploaded file
     

@@ -1,4 +1,5 @@
 import api, { API_BASE_URL } from "./api";
+import { toast } from 'react-toastify';
 
 export const PPP_BASE_URL = import.meta.env.VITE_PPP_BASE_URL;
 
@@ -87,7 +88,10 @@ export const updateUserData = async (form_data) => {
         return response.data;
     } catch (error) {
         console.error("Error fetching hosp:", error);
+        // return error.response.data;
+        errorAlert(error.response.data);
         throw error;
+       
     }
 };
 export const updateRole = async (form_data) => {
@@ -101,26 +105,8 @@ export const updateRole = async (form_data) => {
         throw error;
     }
 };
-export const saveEvent = async (form_data) => {
-    try {
-        const response = await api.post("/hosp/event",form_data,
-        );
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching hosp:", error);
-        throw error;
-    }
-};
-export const updateEvent = async (form_data,id) => {
-    try {
-        const response = await api.post(`/event/${id}`,form_data,
-        );
-        return response.data;
-    } catch (error) {
-        console.error("Error fetching hosp:", error);
-        throw error;
-    }
-};
+
+
 export const fetchUserDetails = async () => {
     try {
         const response = await api.get("/user-details");
@@ -130,18 +116,27 @@ export const fetchUserDetails = async () => {
         throw error;
     }
 };
-export const fetchEvent = async () => {
+export const fetchApplicationPreviewDetails = async (application_id) => {
     try {
-        const response = await api.get("/event-details");
+        const response = await api.get(`/completed-application-preview/${application_id}`);
         return response.data;
     } catch (error) {
         console.error("Error fetching hosp:", error);
         throw error;
     }
 };
-export const fetchEducation = async () => {
+export const fetchUserApplications = async () => {
     try {
-        const response = await api.get("/education-details");
+        const response = await api.get("/application-list");
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching hosp:", error);
+        throw error;
+    }
+};
+export const fetchApplicationDetails = async () => {
+    try {
+        const response = await api.get("/pending-application-details");
         return response.data;
     } catch (error) {
         console.error("Error fetching hosp:", error);
@@ -149,9 +144,19 @@ export const fetchEducation = async () => {
     }
 };
 
-export const fetchSportsDiscipline = async () => {
+export const fetchEducation = async (application_id) => {
     try {
-        const response = await api.get("/sports-discipline-details");
+        const response = await api.get(`/education-details/${application_id}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching hosp:", error);
+        throw error;
+    }
+};
+
+export const fetchSportsDiscipline = async (application_id) => {
+    try {
+        const response = await api.get(`/sports-discipline-details/${application_id}`);
         return response.data;
     } catch (error) {
         console.error("Error fetching hosp:", error);
@@ -176,6 +181,7 @@ export const saveEducation = async (form_data) => {
         return response.data;
     } catch (error) {
         console.error("Error fetching hosp:", error);
+        errorAlert(error.response.data);
         throw error;
     }
 };
@@ -186,6 +192,7 @@ export const saveDeclarations = async (form_data) => {
         return response.data;
     } catch (error) {
         console.error("Error fetching hosp:", error);
+        errorAlert(error.response.data);
         throw error;
     }
 };
@@ -196,6 +203,7 @@ export const saveSportsDiscipline = async (form_data) => {
         return response.data;
     } catch (error) {
         console.error("Error fetching hosp:", error);
+        errorAlert(error.response.data);
         throw error;
     }
 };
@@ -209,9 +217,9 @@ export const fetchSchedule12Listing = async (event_type) => {
         throw error;
     }
 };
-export const fetchDeclarationDetails = async () => {
+export const fetchDeclarationDetails = async (application_id) => {
     try {
-        const response = await api.get(`/declaration-details`);
+        const response = await api.get(`/declaration-details/${application_id}`);
         return response.data;
     } catch (error) {
         console.error("Error fetching hosp:", error);
@@ -227,3 +235,7 @@ export const fetchDeclarationsList = async () => {
         throw error;
     }
 };
+
+const errorAlert = async (data) => {
+    toast.error(data.message);
+}

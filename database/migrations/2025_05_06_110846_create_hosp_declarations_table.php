@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('hosp_declarations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('application_id'); 
+            $table->foreign('application_id')->references('application_id')->on('user_details')->onDelete('cascade');
             $table->foreignId('declaration_id')->constrained('declarations')->onDelete('cascade');
+     
             // $table->json('points');
             $table->string('declaration_file');
             $table->timestamps();

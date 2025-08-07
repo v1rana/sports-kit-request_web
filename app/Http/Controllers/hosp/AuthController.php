@@ -193,14 +193,14 @@ class AuthController extends Controller
     {
         return [
             // stagging
-            // 'DeptCode' => 'NIC',
-            // 'Servicecode' => 'TestCred',
-            // 'DeptKey' => 'o2etc739ut',
+            'DeptCode' => 'NIC',
+            'Servicecode' => 'TestCred',
+            'DeptKey' => 'o2etc739ut',
 
             // live server
-                'DeptCode' => 'SPT',
-                'Servicecode' => 'CAW',
-                'DeptKey' => '0A5CDE2406',
+                // 'DeptCode' => 'SPT',
+                // 'Servicecode' => 'CAW',
+                // 'DeptKey' => '0A5CDE2406',
 
         ];
     }

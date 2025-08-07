@@ -1,32 +1,40 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { fetchUserDetails } from "../services/hosp-service";
+import { fetchUserApplications, fetchUserDetails } from "../services/hosp-service";
 import { toast } from 'react-toastify';
 function Dashboard() {
     const navigate = useNavigate();
     let userData = JSON.parse(localStorage.getItem("user")!);
     let userDetails = userData?.user_details || {};
     let loginType = JSON.parse(localStorage.getItem("loginType")!);
+    const [applicationList, setApplicationList] = useState<any[]>([]);
+    const [applicant, setApplicant] = useState(); 
     const logout = () => {
         localStorage.clear();
         navigate("/");
     };
     useEffect(() => {
-                const fetchUserData = async () => {
+                const fetchApplications = async () => {
                     try {
-                        const data = await fetchUserDetails();
-                        localStorage.setItem("user", JSON.stringify(data.user));
-                        userData = JSON.parse(localStorage.getItem("user")!);
-                        userDetails = userData?.user_details || {};
-                         if(userData&& (!userData.declarations_hosp || !userData.sports_discipline_hosp || !userData.education_hosp)) {
-                                                toast.error('Please fill all required fields')
-                                                navigate("/basic-details");
-                                            }
+                        const data = await fetchUserApplications();
+                        console.log('data',data);
+                        
+                        setApplicant(data.user);
+                        setApplicationList(data.user.user_details);
+                        // localStorage.setItem("user", JSON.stringify(data.user));
+                        // userData = JSON.parse(localStorage.getItem("user")!);
+                        // userDetails = userData?.user_details || {};
+                        // console.log('userDetails',userDetails);
+                        
+                        //  if(userData&& (!userData.declarations_hosp || !userData.sports_discipline_hosp || !userData.education_hosp)) {
+                        //                         toast.error('Please fill all required fields')
+                        //                         navigate("/basic-details");
+                        //                     }
                     } catch (error) {
                         console.error("Error loading form data", error);
                     }
                 };
-                fetchUserData();
+                fetchApplications();
             }, []); // <-- empty array ensures this only runs once
        useEffect(() => {
             // const userData = JSON.parse(localStorage.getItem("user") || "null");
@@ -94,7 +102,9 @@ function Dashboard() {
                         {/* <a href="" className="btn btn-primary my-2">
                             📝 Fill your HOSA Form
                         </a> */}
-
+                         <Link className="btn btn-primary" to="/basic-details" ><i className="fa-solid fa-form"></i> Apply New
+                                                </Link>
+                        
                         <div className="card shadow p-0 application-status mt-5">
                             <div className="card-body p-0">
                                 <table className="table table-striped table-hovered table-bordered">
@@ -113,63 +123,52 @@ function Dashboard() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <td>
-                                            <Link
-                                                className=""
-                                                to="/hosp/preview-application"
-                                            >
-                                                {userDetails.application_id}
-                                            </Link>
-                                            {/* <a href="#">HOSA00001</a> */}
-                                        </td>
-                                        <td>{userDetails.full_name_en}</td>
+  {applicationList.map((item, index) => (
+    <tr key={index}>
+      <td>
+      <Link to={`/hosp/preview-application/${item.application_id}`}>
+            {item.application_id}
+        </Link>
+      </td>
+      <td>{item.full_name_en}</td>
+      <td>{item.sports_discipline_hosp?.game?.name || "—"}</td>
+      <td>{item.sports_discipline_hosp?.tournament?.tournament || "—"}</td>
+      <td>{item.sports_discipline_hosp?.medal_won || "—"}</td>
+      <td>{item.date_of_birth}</td>
+      <td>{item.domicile === 1 ? "Yes" : "No"}</td>
+      <td>{item.caste_category}</td>
+      <td>
+        <span
+          className={`badge rounded-pill ${
+            item.status === 0
+              ? "bg-primary"
+              : item.status === 1
+              ? "bg-success"
+              : "bg-danger"
+          }`}
+        >
+          {applicant?.status === 0
+            ? "In-progress"
+            : item.status === 1
+            ? "Approved"
+            : "Rejected"}
+        </span>
+      </td>
+    </tr>
+  ))}
+  {!applicationList.length && 
+  <tr>
+    <td colSpan={9}>Not Found</td>
+  </tr>
+}
+</tbody>
 
-                                        <td>
-                                            {
-                                                userData?.sports_discipline_hosp
-                                                    .game?.name
-                                            }
-                                        </td>
-                                        <td>
-                                            {
-                                                userData?.sports_discipline_hosp
-                                                    .tournament?.tournament
-                                            }
-                                        </td>
-                                        <td>
-                                            {
-                                                userData?.sports_discipline_hosp
-                                                    .medal_won
-                                            }
-                                        </td>
-                                        <td>{userDetails.date_of_birth}</td>
-                                        <td>
-                                            {userDetails.domicile == 1
-                                                ? "Yes"
-                                                : "No"}
-                                        </td>
-                                        <td>{userDetails.caste_category}</td>
-                                        <td>
-                                            <span
-                                                className={`badge rounded-pill ${
-                                                    userData?.status === 0
-                                                        ? "bg-primary"
-                                                        : userData?.status === 1
-                                                        ? "bg-success"
-                                                        : "bg-danger"
-                                                }`}
-                                            >
-                                                {userData?.status === 0
-                                                    ? "In-progress"
-                                                    : userData?.status === 1
-                                                    ? "Approved"
-                                                    : "Rejected"}
-                                            </span>
-                                        </td>
-                                    </tbody>
                                 </table>
                             </div>
                         </div>
+                        
+
+
                     </div>
                 </div>
             </div>

@@ -2,19 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import { createSearchParams, Link, useNavigate } from "react-router-dom";
 import { useForm, useFormState } from "react-hook-form";
 import {
+    fetchApplicationDetails,
     fetchDeclarationDetails,
     fetchDeclarationsList,
     fetchEducation,
-    fetchEvent,
     fetchGameList,
     fetchSchedule12Listing,
     fetchSportsDiscipline,
-    fetchUserDetails,
     saveDeclarations,
     saveEducation,
-    saveEvent,
     saveSportsDiscipline,
-    updateEvent,
 } from "../services/hosp-service";
 
 import html2pdf from "html2pdf.js";
@@ -25,7 +22,7 @@ const HospForm = () => {
     // const HospForm = () => {
     const navigate = useNavigate();
     let userData = JSON.parse(localStorage.getItem("user")!);
-    let userDetails = userData?.user_details || {};
+    let userDetails = userData?.application_details || {};
     let loginType = JSON.parse(localStorage.getItem("loginType")!);
     if (userData && userData.declarations_hosp && userData.declarations_hosp.id) {
         // navigate("/hosp/preview-application");
@@ -34,7 +31,7 @@ const HospForm = () => {
 
     const logout = () => {
         localStorage.clear();
-        navigate("/login");
+        navigate("/");
     };
     const params = new URLSearchParams(window.location.search);
     // const step: any = params.get("step") ? parseInt(params.get("step")!) : 1;
@@ -132,30 +129,18 @@ const HospForm = () => {
 
             if (data.status === "success") {
                 setGamesList(data.list);
-                console.log("formData.physical_disability", gamesList);
-                // if (formData && formData.physical_disability =='1') {
-                //     const filteredGames = gamesList.filter((game:any) => game.is_para === 1);
-                //     console.log('filteredGames',filteredGames);
-                //     setGamesList(filteredGames);
-                // }else {
-                //     const filteredGames = gamesList.filter((game:any) => game.is_para === 0);
-                //     console.log('filteredGames',filteredGames);
-                //     setGamesList(filteredGames);
-                // }
             }
         } catch (error) {
             console.error("Error loading form data", error);
         }
-    };
+    }; 
     const fetchUserData = async () => {
         try {
-            const data = await fetchUserDetails();
+            const data = await fetchApplicationDetails();
             localStorage.setItem("user", JSON.stringify(data.user));
             userData = JSON.parse(localStorage.getItem("user")!);
-            userDetails = userData?.user_details || {};
-            console.log('userDetails',userDetails);
-            
-            if(userDetails&& (!userDetails.dob_doc || !userDetails.domicile_doc || !userDetails.aadhaar)) {
+            userDetails = userData?.application_details || {};
+            if(userDetails&& (!userDetails.dob_doc || !userDetails.domicile_doc || !userDetails.aadhaar || userDetails.active_step < 2)) {
                 toast.error('Please fill all required fields')
                 navigate("/basic-details");
             }
@@ -168,40 +153,12 @@ const HospForm = () => {
     }, []);
 
     useEffect(() => {
-        const fetchEventData = async () => {
-            try {
-                const data = await fetchEvent(); // Replace with your endpoint
-                // Option 1: Set fields one-by-one
-                setValue("id", data.id);
-                // setValue("aadhaar", data.aadhaar);
-                setValue("event_type", data.event_type);
-                const selectedText =
-                    data.event_type == "1" ? "Individual Event" : "Team Event";
-                setEventTitle(selectedText);
-
-                // setValue("domicile", data.domicile?.toString());
-                setValue(
-                    "played_national",
-                    data.played_national_level?.toString()
-                );
-                setValue("central_org_name", data.organisation_represented);
-                // setValue("domicile_doc", data.domicile_doc);
-                setValue("national_level_doc", data.national_level_doc);
-                setValue("organisation_doc", data.organisation_doc);
-
-                // Option 2: Reset entire form (if keys match)
-                // reset(data);
-                await fetchTournamentList(data.event_type);
-                setTimeout(() => {
-                    setValue("tournament", data.tournament_id);
-                }, 1);
-            } catch (error) {
-                console.error("Error loading form data", error);
-            }
-        };
+       
         const fetchEducationData = async () => {
+           
+            
             try {
-                const data = await fetchEducation(); // Replace with your endpoint
+                const data = await fetchEducation(userDetails?.application_id); // Replace with your endpoint
                 if (data && data.length > 0) {
                     const formatted = data.map((item) => ({
                         id: item.id || "",
@@ -219,12 +176,8 @@ const HospForm = () => {
 
         const fetchSportsDisciplineData = async () => {
             try {
-                const data = await fetchSportsDiscipline(); // Replace with your endpoint
-                console.log("data && data.physical_disability", data);
-                console.log(
-                    "data && data.physical_disability",
-                    data && data.physical_disability == 1
-                );
+                const data = await fetchSportsDiscipline(userDetails?.application_id); // Replace with your endpoint
+              
 
                 setFormData({
                     physical_disability: String(data.physical_disability ?? ""),
@@ -256,7 +209,7 @@ const HospForm = () => {
         };
         const fetchDeclarationDetail = async () => {
             try {
-                const data = await fetchDeclarationDetails();
+                const data = await fetchDeclarationDetails(userDetails?.application_id);
 
                 const fetchedDeclarations = data.declaration_ids;
 
@@ -300,7 +253,6 @@ const HospForm = () => {
                 console.error("Error loading form data", error);
             }
         };
-        // fetchEventData();
         fetchEducationData();
         fetchSportsDisciplineData();
         fetchGames();
@@ -318,7 +270,6 @@ const HospForm = () => {
             if (response.status === "success") {
                 setTournamentList(response.list);
             }
-            console.log("tournament listing", response.list);
         }
        
     };
@@ -350,13 +301,9 @@ const HospForm = () => {
         };
     }, []);
     // Watch individual fields for conditional logic
-    const playedNational = watch("played_national");
-    const domicile = watch("domicile");
+    // const playedNational = watch("played_national");
+    // const domicile = watch("domicile");
 
-    // const onSubmit = (data) => {
-    //     console.log("Form Data:", data);
-    //     // Here you can handle the form submission (e.g. send to API)
-    // };
     const progressPercent = (100 / stepsTotal) * currentStep;
 
     const nextStep = () => {
@@ -407,17 +354,14 @@ const HospForm = () => {
         setEducationFields(updated);
     };
     const handlePhysicalDisability = (value) => {
-        console.log(value.checked);
         const is_para = value.checked ? 1 : 0;
         setPhysicalDisability(value.checked);
         setFormData((prev) => ({ ...prev, game_id: "" }));
     };
     const handleRepresentedIndia = (value) => {
-        console.log("value", value);
         setRepresentedIndia(value);
     };
     const handleTournamentLevel = (value) => {
-        console.log("value", value);
         setTournamentLevel(value);
     };
 
@@ -477,7 +421,7 @@ const HospForm = () => {
         declarationIds.forEach((id) =>
             formData.append("declaration_ids[]", id.toString())
         );
-
+        formData.append("application_id",userDetails.application_id);
         if (declarationFile) {
             formData.append("declaration_file", declarationFile);
         }
@@ -492,17 +436,11 @@ const HospForm = () => {
             if (error.response?.status === 422) {
                 const backendErrors = error.response.data.errors;
                 Object.keys(backendErrors).forEach((field) => {
-                    console.log("field", field);
-                    console.log("backendErrors[field]", backendErrors[field]);
-                    console.log(
-                        "backendErrors[field][0]",
-                        backendErrors[field][0]
-                    );
                     // setFormErrors(validationErrors);
 
                     setDiclarationErrors({
                         // msg: backendErrors[field][0] || "",
-                        msg: 'Pleas Accept all terms & conditions and upload signed declaration pdf',
+                        msg: 'Please Accept all terms & conditions and upload signed declaration pdf',
                     });
                 });
             }
@@ -599,95 +537,7 @@ const HospForm = () => {
     };
     
 
-    const onEventSubmit = async (data) => {
-        const formData = new FormData();
-
-        formData.append("id", data.id ?? null);
-        formData.append("event_type", data.event_type);
-        // formData.append("aadhaar", data.aadhaar);
-        // formData.append("tournament", data.tournament);
-        // formData.append("domicile", data.domicile);
-        formData.append("played_national", data.played_national);
-        if (data.id) {
-            // formData.append(
-            //     "domicile_certificate",
-            //     data.domicile_doc ? data.domicile_doc : ""
-            // );
-            formData.append(
-                "national_certificate",
-                data.national_level_doc ? data.national_level_doc : ""
-            );
-            formData.append(
-                "org_certificate",
-                data.organisation_doc ? data.organisation_doc : ""
-            );
-        }
-
-        if (data.played_national == "2") {
-            formData.delete("national_certificate");
-        }
-        // if (data.domicile == "2") {
-        //     formData.delete("domicile_certificate");
-        // }
-        if (data.played_national == "1") {
-            formData.delete("org_certificate");
-        }
-
-        // if (data.domicile_certificate?.[0]) {
-        //     formData.append(
-        //         "domicile_certificate",
-        //         data.domicile_certificate[0]
-        //     );
-        // }
-
-        if (data.national_certificate?.[0]) {
-            formData.append(
-                "national_certificate",
-                data.national_certificate[0]
-            );
-        }
-
-        if (playedNational === "2") {
-            formData.append(
-                "central_org_name",
-                data.central_org_name ? data.central_org_name : ""
-            );
-            if (data.org_certificate?.[0]) {
-                formData.append("org_certificate", data.org_certificate[0]);
-            }
-        }
-
-        try {
-            const token = localStorage.getItem("token");
-            if (data.id) {
-                const response = await updateEvent(formData, data.id);
-            } else {
-                const response = await saveEvent(formData);
-            }
-
-            if (currentStep < stepsTotal) setCurrentStep((nxt) => nxt + 1);
-            // ✅ Update URL with query param ?step=1
-            navigate({
-                pathname: location.pathname, // or keep current path
-                // search: createSearchParams({
-                //     step: currentStep + 1,
-                // }).toString(),
-            });
-            console.log("Event submitted:", response.data);
-            // Move to next step or show success
-        } catch (error) {
-            console.error("Event submission failed", error);
-            if (error.response?.status === 422) {
-                const backendErrors = error.response.data.errors;
-                Object.keys(backendErrors).forEach((field) => {
-                    setError(field, {
-                        type: "server",
-                        message: backendErrors[field][0],
-                    });
-                });
-            }
-        }
-    };
+   
     const onEducationSubmit = async () => {
         const hasValidEntry = educationFields.some(
             (field: any) => {
@@ -702,7 +552,6 @@ const HospForm = () => {
                 );
             }
         );
-        console.log("hasValidEntry", educationFields);
 
         if (!hasValidEntry) {
             setEducationErrors(
@@ -714,9 +563,12 @@ const HospForm = () => {
         setEducationErrors(""); // clear error if validation passes
 
         const formData = new FormData();
-        console.log('educationFields',educationFields);
         
         educationFields.forEach((field:any, index) => {
+            formData.append(
+                `educations[${index}][application_id]`,
+                userDetails.application_id
+            );
             if(field.id) {
                 formData.append(
                     `educations[${index}][id]`,
@@ -747,6 +599,7 @@ const HospForm = () => {
 
         try {
             setIsbtnDisabled(true)
+            
             const response = await saveEducation(formData);
             setIsbtnDisabled(false)
             //   const response = await axios.post("/api/education/store", formData, {
@@ -761,6 +614,7 @@ const HospForm = () => {
                 //     step: currentStep + 1,
                 // }).toString(),
             });
+            toast.success(response.message);
         } catch (error) {
             setIsbtnDisabled(false)
             console.error(
@@ -782,11 +636,8 @@ const HospForm = () => {
     // };
 
     const setOrganizationCommittee = (e) => {
-        console.log(e.target.value);
         tournamentList.forEach((element: any) => {
             if (element.id == e.target.value) {
-                console.log(element);
-
                 setFormData((d) => ({
                     ...d,
                     organizing_committee: element.organizing_authority,
@@ -798,16 +649,12 @@ const HospForm = () => {
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
     ) => {
         const { name, value, type } = e.target;
-        // console.log(type);
 
         if (type === "file") {
             const file = (e.target as HTMLInputElement).files?.[0] || null;
-            console.log("name", name);
-            console.log("file", file);
 
             setFormData({ ...formData, [name]: file });
         } else {
-            console.log("formdata", formData);
 
             setFormData({ ...formData, [name]: value });
 
@@ -886,10 +733,6 @@ const HospForm = () => {
     };
 
     const onSportDisciplineSubmit = async (e: React.FormEvent) => {
-        console.log(
-            "formData.physical_disability",
-            formData.physical_disability
-        );
 
         e.preventDefault();
         if (!validate()) return;
@@ -898,9 +741,9 @@ const HospForm = () => {
         Object.entries(formData).forEach(([key, value]) => {
             submissionData.append(key, value ?? "");
         });
+        submissionData.append('application_id',userDetails.application_id);
         try {
              // Submit using fetch or axios
-            console.log("Submitting form...", formData);
             setIsbtnDisabled(true)
             const response = await saveSportsDiscipline(submissionData);
             fetchUserData();
@@ -1046,284 +889,7 @@ const HospForm = () => {
                 </div>
                 {!isSubmitted && !isSubmitting && (
                     <div>
-                        <form
-                            onSubmit={handleSubmit(onEventSubmit)}
-                            className="needs-validation row g-3"
-                            hidden={currentStep === 3 ? false : true}
-                        >
-                            <div className="row g-3">
-                                {/* {eventTitle === "Individual Event" ? (
-                                    <h6 className="text-center mt-4">
-                                        FORM - I
-                                        <br />
-                                        [See rule 9 (1)]
-                                    </h6>
-                                ) : (
-                                    <h6 className="text-center mt-4">
-                                        FORM - II
-                                        <br />
-                                        [See rule 9 (1)]
-                                        <br />
-                                    </h6>
-                                )}
-                                <h5 className="text-center mt-1">
-                                    {eventTitle}
-                                </h5> */}
-
-                                {/* <div className="col-md-6">
-                                    <label>Select Tournament</label>
-                                    <select
-                                        {...register("tournament")}
-                                        className={`form-select ${
-                                            errors.tournament
-                                                ? "is-invalid"
-                                                : ""
-                                        }`}
-                                    >
-                                        <option value="" selected disabled>
-                                            Select
-                                        </option>
-                                        {tournamentList.map((item: any) => (
-                                            <option
-                                                key={item.id}
-                                                value={item.id}
-                                            >
-                                                {item.tournament}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {errors.tournament && (
-                                        <div className="invalid-feedback">
-                                            {
-                                                errors.tournament
-                                                    .message as string
-                                            }
-                                        </div>
-                                    )}
-                                </div> */}
-
-                                {/* <div className="col-md-6">
-                                    <label>Haryana Resident/Domicile</label>
-                                    <select
-                                        {...register("domicile")}
-                                        className={`form-select ${
-                                            errors.domicile ? "is-invalid" : ""
-                                        }`}
-                                    >
-                                        <option value="" selected disabled>
-                                            Select
-                                        </option>
-                                        <option value="1">Yes</option>
-                                        <option value="2">No</option>
-                                    </select>
-                                    {errors.domicile && (
-                                        <div className="invalid-feedback">
-                                            {errors.domicile.message as string}
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label>Attach Certificate (Domicile)</label>
-                                    <input
-                                        type="file"
-                                        accept="application/pdf"
-                                        className={`form-control ${
-                                            errors.domicile_certificate
-                                                ? "is-invalid"
-                                                : ""
-                                        }`}
-                                        {...register("domicile_certificate")}
-                                        disabled={domicile !== "1"}
-                                    />
-                                    {getValues("domicile") == "1" &&
-                                        getValues("domicile_doc") && (
-                                            <div className="mt-1">
-                                                <a
-                                                    href={`/api/${encodeURIComponent(
-                                                        getValues(
-                                                            "domicile_doc"
-                                                        )
-                                                    )}`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    Click here to view uploaded
-                                                    file
-                                                </a>
-                                            </div>
-                                        )}
-                                    {errors.domicile_certificate && (
-                                        <div className="invalid-feedback">
-                                            {
-                                                errors.domicile_certificate
-                                                    .message as string
-                                            }
-                                        </div>
-                                    )}
-                                </div> */}
-
-                                {/* <div className="col-md-6">
-                                    <label>
-                                        Played at National Level for Haryana
-                                    </label>
-                                    <select
-                                        {...register("played_national")}
-                                        className={`form-select ${
-                                            errors.played_national
-                                                ? "is-invalid"
-                                                : ""
-                                        }`}
-                                    >
-                                        <option value="" selected disabled>
-                                            Select
-                                        </option>
-                                        <option value="1">Yes</option>
-                                        <option value="2">No</option>
-                                    </select>
-                                    {errors.played_national && (
-                                        <div className="invalid-feedback">
-                                            {
-                                                errors.played_national
-                                                    .message as string
-                                            }
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label>
-                                        Attach Certificate (National Level)
-                                    </label>
-                                    <input
-                                        type="file"
-                                        accept="application/pdf"
-                                        className={`form-control ${
-                                            errors.national_certificate
-                                                ? "is-invalid"
-                                                : ""
-                                        }`}
-                                        {...register("national_certificate")}
-                                        disabled={playedNational !== "1"}
-                                    />
-                                    {getValues("played_national") == "1" &&
-                                        getValues("national_level_doc") && (
-                                            <div className="mt-1">
-                                                <a
-                                                    href={`/api/${encodeURIComponent(
-                                                        getValues(
-                                                            "national_level_doc"
-                                                        )
-                                                    )}/certificates`}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                >
-                                                    Click here to view uploaded
-                                                    file
-                                                </a>
-                                            </div>
-                                        )}
-                                    {errors.national_certificate && (
-                                        <div className="invalid-feedback">
-                                            {
-                                                errors.national_certificate
-                                                    .message as string
-                                            }
-                                        </div>
-                                    )}
-                                </div>
-                                {playedNational == "2" && (
-                                    <div className="col-md-6">
-                                        <label>
-                                            Name of Central Organisation
-                                            Represented
-                                        </label>
-                                        <input
-                                            type="text"
-                                            className={`form-control ${
-                                                errors.central_org_name
-                                                    ? "is-invalid"
-                                                    : ""
-                                            }`}
-                                            {...register("central_org_name")}
-                                            disabled={playedNational !== "2"}
-                                        />
-                                        {errors.central_org_name && (
-                                            <div className="invalid-feedback">
-                                                {
-                                                    errors.central_org_name
-                                                        .message as string
-                                                }
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                                {playedNational == "2" && (
-                                    <div className="col-md-6">
-                                        <label>
-                                            Attach Certificate (Organisation
-                                            Represented)
-                                        </label>
-                                        <input
-                                            type="file"
-                                            accept="application/pdf"
-                                            className={`form-control ${
-                                                errors.org_certificate
-                                                    ? "is-invalid"
-                                                    : ""
-                                            }`}
-                                            {...register("org_certificate")}
-                                            disabled={playedNational !== "2"}
-                                        />
-                                        {getValues("played_national") == "2" &&
-                                            getValues("organisation_doc") && (
-                                                <div className="mt-1">
-                                                    <a
-                                                        href={`/api/${encodeURIComponent(
-                                                            getValues(
-                                                                "organisation_doc"
-                                                            )
-                                                        )}/certificates`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        Click here to view
-                                                        uploaded file
-                                                    </a>
-                                                </div>
-                                            )}
-                                        {errors.org_certificate && (
-                                            <div className="invalid-feedback">
-                                                {
-                                                    errors.org_certificate
-                                                        .message as string
-                                                }
-                                            </div>
-                                        )}
-                                    </div>
-                                )} */}
-                                {/* <hr /> */}
-                                {/* <div className="col-12 text-end">
-                                    <button
-                                        id="next-btn"
-                                        type="submit"
-                                        className="btn btn-primary me-2"
-                                        onClick={() =>
-                                            navigate("/basic-details")
-                                        }
-                                    >
-                                        Previous
-                                    </button>
-                                    <button
-                                        id="next-btn"
-                                        type="submit"
-                                        className="btn btn-primary me-2"
-                                    >
-                                        Next
-                                    </button>
-                                </div> */}
-                            </div>
-                        </form>
+                       
                         <form
                             className="needs-validation row g-3"
                             hidden={currentStep !== 2}
@@ -1332,7 +898,9 @@ const HospForm = () => {
                             <h3 className="text-center mt-5">
                                 Educational Qualification
                             </h3>
-
+                            <div className="text-danger text-center">
+                                            *All Certificates should be self attested.
+                                        </div>
                             {educationFields.map((field:any, index) => (
                                 <div key={index} className="row g-3">
                                     <div className="col">
@@ -1405,6 +973,9 @@ const HospForm = () => {
                                                 )
                                             }
                                         />
+                                        <div className="text-danger">
+                                            * Document size must not be greater than 2 MB.
+                                        </div>
                                         {field.fileUrl && (
                                             <div className="mt-1">
                                                 <a
@@ -1498,7 +1069,9 @@ const HospForm = () => {
                             <h2 className="text-center mt-1">
                                 Best Sports Achievement{" "}
                             </h2>
-
+                            <div className="text-danger text-center">
+                            *All Certificates/Photos should be self attested.
+                                        </div>
                             <div className="col-md-12 ms-4">
                                 <div className="form-check p-0">
                                     <input
@@ -1576,6 +1149,9 @@ const HospForm = () => {
                                             }`}
                                             onChange={handleSportsDiscChanges}
                                         />
+                                      <div className="text-danger">
+                                            * Certificate size must not be greater than 2 MB.
+                                        </div>
                                         <div className="invalid-feedback">
                                             {sportdiserrors.disability_doc}
                                         </div>
@@ -1934,6 +1510,9 @@ const HospForm = () => {
                                     }`}
                                     onChange={handleSportsDiscChanges}
                                 />
+                                 <div className="text-danger">
+                                            * Certificate size must not be greater than 2 MB.
+                                        </div>
                                 <div className="invalid-feedback">
                                     {
                                         sportdiserrors.osp_achivement_certificate_path
@@ -2074,13 +1653,13 @@ const HospForm = () => {
                             </div>
                             <hr />
                             <div className="row mt-1 align-items-end">
-                                <div className="d-flex col-8 align-items-end">
+                                <div className="d-flex col-9 align-items-end">
                             <div
                                         className=""
                                         hidden={currentStep !== 4}
                                     >
                                         <button
-                                            className="btn btn-primary"
+                                            className="btn btn-primary mb-3"
                                             onClick={(e) =>
                                                 handlePrintDeclaration(e)
                                             }
@@ -2100,13 +1679,16 @@ const HospForm = () => {
                                                 handleDeclarationFileChange
                                             }
                                         />
+                                          <div className="text-danger">
+                                            * Declaration Document size must not be greater than 2 MB.
+                                        </div>
                                          <div className="text-danger">
                                         {diclarationerrors.msg}
                                     </div>
                                     </div></div>
                                 {currentStep === stepsTotal && (
                                     
-                                    <div className="col-md-4 text-end">
+                                    <div className="col-md-3 text-end">
                                         <button
                                             type="button"
                                             onClick={prevStep}
@@ -2150,6 +1732,7 @@ const HospForm = () => {
             </div>
             {/* print declaration */}
             <div id="print_declaration" style={{ display: "none", padding: "0", margin: "0" }}>
+            {userData?.sports_discipline_hosp && 
                 <table width="100%" style={{pageBreakInside: "avoid"}}>
                     <thead style={{ background: "#4831d4", display: "table-header-group"}}>
                         <tr style={{   }}>
@@ -2168,6 +1751,7 @@ const HospForm = () => {
                             </th>
                         </tr>
                     </thead>
+                   
                     <tbody>
                         <tr>
                             <td align="center" style={{ paddingTop: "30px" }}>
@@ -2683,7 +2267,9 @@ const HospForm = () => {
                         </tr>
                                     
                     </tbody>
+                    
                 </table>
+                }
             </div>
         </div>
     );

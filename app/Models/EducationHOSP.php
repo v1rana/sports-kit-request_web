@@ -14,5 +14,6 @@ class EducationHOSP extends Model
         'other_qualification',
         'domicile',
         'certificate_path',
+        'application_id'
     ];
 }

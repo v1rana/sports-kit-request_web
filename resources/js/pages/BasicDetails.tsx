@@ -2,27 +2,49 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
-import { fetchUserDetails, updateUserData } from "../services/hosp-service";
+import { fetchApplicationDetails, updateUserData } from "../services/hosp-service";
 import { toast } from 'react-toastify';
 const BasicDetails = () => {
     const navigate = useNavigate();
     let userData = JSON.parse(localStorage.getItem("user")!);
     let loginType = JSON.parse(localStorage.getItem("loginType")!);
-    let userDetails = userData?.user_details || {};
-
+    const [userDetails, updateUserDetails] = useState<any>({});
+   
+    // let userDetails = userData?.application_details || {};
+    
     console.log('userDetails',userDetails.date_of_birth);
     useEffect(() => {
-        const fetchUserData = async () => {
+        // updateUserDetails(userData?.application_details || {});
+        const fetchApplicationData = async () => {
             try {
-                const data = await fetchUserDetails();
+                const data = await fetchApplicationDetails();
+                console.log('data',data);
+                
                 localStorage.setItem("user", JSON.stringify(data.user));
                 userData = JSON.parse(localStorage.getItem("user")!);
-                userDetails = userData?.user_details || {};
+                console.log('userData?.user_details[0]',userData?.application_details);
+                // userDetails = userData?.application_details || {};
+                updateUserDetails(userData?.application_details || {});
+                setUserDetails({
+                    email_id: userData?.email ?? '',
+                    mobile: userData?.mobile ?? '',
+                    aadhaar: userData?.application_details?.aadhaar ?? '',
+                    photo: userData?.application_details?.photo ?? '',
+                    dob_doc: userData?.application_details?.dob_doc ?? '',
+                    domicile: userData?.application_details?.domicile ?? null,
+                    domicile_doc: userData?.application_details?.domicile_doc ?? '',
+                    caste_category: userData?.application_details?.caste_category ?? '',
+                    age: userData?.application_details?.age ?? '',
+                    played_national_level: userData?.application_details?.played_national_level ?? '',
+                    national_level_doc: userData?.application_details?.national_level_doc ?? '',
+                    organisation_represented: userData?.application_details?.organisation_represented ?? '',
+                    organisation_doc: userData?.application_details?.organisation_doc ?? '',
+                  });
             } catch (error) {
                 console.error("Error loading form data", error);
             }
         };
-        fetchUserData();
+        fetchApplicationData();
     }, []); // <-- empty array ensures this only runs once
   
 
@@ -54,20 +76,20 @@ const BasicDetails = () => {
     //   ];
     
     const [userDetailsa, setUserDetails] = useState({
-        email_id: userData?.email ?? '',
-        mobile: userData?.mobile ?? '',
-        aadhaar: userDetails?.aadhaar ?? '',
-        photo: userDetails?.photo ?? '',
-        dob_doc: userDetails?.dob_doc ?? '',
-        domicile: userDetails?.domicile ?? null,
-        domicile_doc: userDetails?.domicile_doc ?? '',
-        caste_category: userDetails?.caste_category ?? '',
-        age: userDetails?.age ?? '',
-        played_national_level: userDetails?.played_national_level ?? '',
-        national_level_doc: userDetails?.national_level_doc ?? '',
-        organisation_represented: userDetails?.organisation_represented ?? '',
-        organisation_doc: userDetails?.organisation_doc ?? '',
-    });
+        email_id: '',
+        mobile: '',
+        aadhaar: '',
+        photo: '',
+        dob_doc: '',
+        domicile: null,
+        domicile_doc: '',
+        caste_category: '',
+        age: '',
+        played_national_level: '',
+        national_level_doc: '',
+        organisation_represented: '',
+        organisation_doc: ''
+      });
     const [errors, setErrors] = useState({
         email_id: "",
         mobile: "",
@@ -167,7 +189,7 @@ const BasicDetails = () => {
 
     const logout = () => {
         localStorage.clear();
-        navigate("/login");
+        navigate("/");
     };
 
     const save = async (is_save = false) => {
@@ -215,6 +237,7 @@ const BasicDetails = () => {
         // Build FormData for API
         const formData = new FormData();
         formData.append("email_id", userDetailsa.email_id);
+        formData.append("application_id", userDetails?.application_id);
         formData.append("mobile", userDetailsa.mobile);
         formData.append("age", userDetailsa.age);
         formData.append("aadhaar", userDetailsa.aadhaar);
@@ -227,12 +250,18 @@ const BasicDetails = () => {
         formData.append("national_level_doc", userDetailsa.played_national_level== '1'? userDetailsa.national_level_doc : null); // This must be a File
         formData.append("organisation_doc", userDetailsa.played_national_level== '2'? userDetailsa.organisation_doc : null); // This must be a File
         const response = await updateUserData(formData);
+        console.log('resp',response);
+        
         if (response.status === "success") {
             localStorage.setItem("user", JSON.stringify(response.user));
             if(!is_save) {
                 navigate("/hosp/hosp-form");
+            }else {
+                toast.success("Saved Successfully.")
             }
             
+        }else if(response.status === "error") {
+            toast.success(response.message);
         }
     };
 
@@ -333,6 +362,9 @@ const BasicDetails = () => {
                     ></div>
                 </div>
                         <h3 className="text-center mt-5">Basic Details Form</h3>
+                        <div className="text-danger text-center">
+                                            *All Certificates/Photos should be self attested.
+                                        </div>
                         <form>
                        
                             <div className="row g-3">
@@ -404,11 +436,15 @@ const BasicDetails = () => {
                                             
                                         }}
                                     />
+                                    <div className="text-danger">
+                                            * Photo size must not be greater than 100 KB.
+                                        </div>
                                     {errors.photo && (
                                         <div className="text-danger">
                                             {errors.photo}
                                         </div>
                                     )}
+
                                      {userDetails.photo && 
                                         <div className="mt-1">
                                             <a
@@ -454,6 +490,9 @@ const BasicDetails = () => {
                                             
                                         }}
                                     />
+                                     <div className="text-danger">
+                                            * Certificate size must not be greater than 500 KB.
+                                        </div>
                                     {errors.dob_doc && (
                                         <div className="text-danger">
                                             {errors.dob_doc}
@@ -631,7 +670,9 @@ const BasicDetails = () => {
 
                                         disabled={ !userDetailsa.domicile ||  userDetailsa.domicile == '2'}
                                     />
-
+                                        <div className="text-danger">
+                                            * Certificate size must not be greater than 500 KB.
+                                        </div>
                                     {errors.domicile_doc &&
                                         userDetailsa.domicile == "1" && (
                                             <div className="text-danger">
@@ -757,7 +798,9 @@ const BasicDetails = () => {
 
                                         disabled={ !userDetailsa.played_national_level ||  userDetailsa.played_national_level == '2'}
                                     />
-
+                                        <div className="text-danger">
+                                            * Certificate size must not be greater than 500 KB.
+                                        </div>
                                     {errors.national_level_doc &&
                                         userDetailsa.played_national_level == "1" && (
                                             <div className="text-danger">
@@ -835,7 +878,9 @@ const BasicDetails = () => {
     
                                             disabled={ !userDetailsa.played_national_level ||  userDetailsa.played_national_level == '1'}
                                         />
-    
+                                        <div className="text-danger">
+                                            * Certificate size must not be greater than 500 KB.
+                                        </div>
                                         {errors.organisation_doc &&
                                             userDetailsa.played_national_level == "2" && (
                                                 <div className="text-danger">
@@ -877,6 +922,7 @@ const BasicDetails = () => {
                             </div>
                         </form>
                     </div>
+                    
                 </div>
             )}
             {/* <div id="preloader-wrapper">

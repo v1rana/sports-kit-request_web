@@ -26,6 +26,7 @@ class SportsDisciplineHosp extends Model
         'match_played_by_me',
         'osp_achivement_certificate_path',
         'international_achievement_Verification_certificate_path',
+        'application_id'
     ];
 	
 	public function tournament()
@@ -36,7 +37,7 @@ class SportsDisciplineHosp extends Model
     {
         return $this->belongsTo(GameHosp::class, 'game_id');
     }
-    public function disablilityType()
+    public function disabilityType()
     {
         return $this->belongsTo(DisabilityType::class, 'disability_type_id');
     }

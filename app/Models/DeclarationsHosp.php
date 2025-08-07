@@ -9,7 +9,7 @@ class DeclarationsHosp extends Model
     protected $table = 'hosp_declarations';
 
 
-    protected $fillable = ['user_id','declaration_id','declaration_file'];
+    protected $fillable = ['user_id','declaration_id','declaration_file','application_id'];
 
     public function declaration()
     {

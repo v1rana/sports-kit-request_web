@@ -53,12 +53,13 @@ class User extends Authenticatable
 
     public function userDetails()
     {
+        return $this->hasMany(UserDetails::class, 'user_id');
+    }
+    public function applicationDetails()
+    {
         return $this->hasOne(UserDetails::class, 'user_id');
     }
-    public function eventHosp()
-    {
-        return $this->hasOne(EventHosp::class, 'user_id');
-    }
+   
     public function sportsDisciplineHosp()
     {
         return $this->hasOne(SportsDisciplineHosp::class, 'user_id');

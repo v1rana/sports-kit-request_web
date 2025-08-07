@@ -10,7 +10,8 @@ import {
 import { toast } from 'react-toastify';
 function Login() {
     
-    const [pppId, setPppId] = useState("1KQP3440");
+    const isLocalhost = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+    const [pppId, setPppId] = useState(isLocalhost ? "1KQP3440" : "");
     const [userId, setUserId] = useState("");
     const [otp_message, setOTPMsg] = useState("");
     const [txn, setTxn] = useState("");
@@ -31,9 +32,9 @@ function Login() {
         // DeptKey: "o2etc739ut",
 
         //  live server 
-        DeptCode: "SPT",  
-        ServiceCode: "CAW",
-        DeptKey: "0A5CDE2406",
+        // DeptCode: "SPT",  
+        // ServiceCode: "CAW",
+        // DeptKey: "0A5CDE2406",
 
         UIDFID: pppId,
         MemberID: selectedMember,
@@ -196,7 +197,8 @@ function Login() {
         toast.success("You’ve logged in successfully.");
         setBtnDisabled(false);
         if (loginType == "3") {
-            navigate("/basic-details");
+            // navigate("/basic-details");
+            navigate("/hosp/dashboard");
         }
         if (loginType == "1") {
             navigate("/registration-form/" + encodeURIComponent(userId));

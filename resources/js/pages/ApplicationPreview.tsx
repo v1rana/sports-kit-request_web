@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import html2pdf from "html2pdf.js";
-import { fetchUserDetails } from "../services/hosp-service";
+import { fetchApplicationDetails, fetchApplicationPreviewDetails, fetchDeclarationsList, fetchUserDetails } from "../services/hosp-service";
 import { toast } from 'react-toastify';
 interface OtpData {
     certificate_no: string;
@@ -54,11 +54,24 @@ const ApplicationPreview = () => {
         more_than25_photo: "",
         created_at: "",
     };
+    const { application_id } = useParams();
     const otpData: OtpData = defaultOtpData;
     const navigate = useNavigate();
     let userData = JSON.parse(localStorage.getItem("user")!);
     let userDetails = userData?.user_details || {};
     let loginType = JSON.parse(localStorage.getItem("loginType")!);
+    const [previewDetails, setPreviewDetails] = useState<any>({});
+    const defaultDeclarations = [
+        "1. I have read the Haryana Outstanding Sportspersons (Recruitment and Condition of Service) Rules, 2021 and declare that I am eligible for submission of my application for consideration of appointment under these Rules.",
+        "2. I have enclosed self-attested copies of all documents in support of my application.",
+        "3. I have played in 50% or more of the games played by team in the tournament.",
+        "4. I did not represent a State/UT other than Haryana at the national level.",
+        "5. I am not guilty of doping, sexual harassment and abuse, competitive manipulation like betting, inside information, match fixing, tanking, threatening the integrity and essence of sports.",
+        "6. If appointment is offered, I undertake that I shall have no subsisting contract for pecuniary gains like commercial endorsement or professional sport before joining the service.",
+        "7. I forego my earlier claim made under the Haryana Outstanding Sportsperson.",
+    ];
+    const [declarationList, setDeclarationList] =
+            useState<string[]>(defaultDeclarations);
     const certificateRef = useRef<HTMLDivElement>(null);
     const downloadPDF = () => {
         const element = certificateRef.current;
@@ -83,21 +96,40 @@ const ApplicationPreview = () => {
             });
     };
      useEffect(() => {
-            const fetchUserData = async () => {
+            const fetchApplicationDetails = async () => {
                 try {
-                    const data = await fetchUserDetails();
-                    localStorage.setItem("user", JSON.stringify(data.user));
-                    userData = JSON.parse(localStorage.getItem("user")!);
-                    userDetails = userData?.user_details || {};
-                    if(userData&& !userData.declarations_hosp) {
-                        toast.error('Please fill all required fields')
-                        navigate("/basic-details");
-                    }
+                    const data = await fetchApplicationPreviewDetails(application_id);
+                    console.log('data',data);
+                    setPreviewDetails(data.user);
+                    // localStorage.setItem("user", JSON.stringify(data.user));
+                    // userData = JSON.parse(localStorage.getItem("user")!);
+                    // userDetails = userData?.user_details || {};
+                    // if(userData&& !userData.declarations_hosp) {
+                    //     toast.error('Please fill all required fields')
+                    //     navigate("/basic-details");
+                    // }
                 } catch (error) {
                     console.error("Error loading form data", error);
                 }
             };
-            fetchUserData();
+            const fetchDeclarations = async () => {
+                try {
+                    const data = await fetchDeclarationsList();
+                    console.log('data',data.declarations);
+                    setDeclarationList(data.declarations);
+                    // localStorage.setItem("user", JSON.stringify(data.user));
+                    // userData = JSON.parse(localStorage.getItem("user")!);
+                    // userDetails = userData?.user_details || {};
+                    // if(userData&& !userData.declarations_hosp) {
+                    //     toast.error('Please fill all required fields')
+                    //     navigate("/basic-details");
+                    // }
+                } catch (error) {
+                    console.error("Error loading form data", error);
+                }
+            };
+            fetchApplicationDetails();
+            fetchDeclarations();
         }, []); // <-- empty array ensures this only runs once
    useEffect(() => {
         // const userData = JSON.parse(localStorage.getItem("user") || "null");
@@ -130,7 +162,7 @@ const ApplicationPreview = () => {
                                         }}
                                     >
                                         <img
-                                            src="../assets/job_app/dash/images/logo-sports.png"
+                                            src="/assets/job_app/dash/images/logo-sports.png"
                                             alt="Sports Haryana Govt"
                                             style={{ height: "80px" }}
                                         />{" "}
@@ -160,7 +192,7 @@ const ApplicationPreview = () => {
                                             }}
                                         >
                                             Application ID -
-                                            {userDetails?.application_id}
+                                            {previewDetails?.application_details?.application_id}
                                             <strong
                                                 style={{
                                                     borderBottom: "1px dotted",
@@ -209,6 +241,7 @@ const ApplicationPreview = () => {
                                             <tr>
                                                 <td colSpan={3}>
                                                     <table width="100%">
+                                                        <tbody>
                                                     <tr>
                                                         <td style={{ padding: "10px" }}>
                                                             <small
@@ -220,7 +253,7 @@ const ApplicationPreview = () => {
                                                             </small>
                                                             <h5 style={{ fontSize: "15px", }}>
                                                                 {
-                                                                    userDetails.full_name_en
+                                                                    previewDetails?.application_details?.full_name_en
                                                                 }
                                                             </h5>
                                                         </td>
@@ -233,7 +266,7 @@ const ApplicationPreview = () => {
                                                                 2. Aadhar No.
                                                             </small>
                                                             <h5 style={{ fontSize: "15px", }}>
-                                                                {userDetails.aadhaar}
+                                                                { previewDetails?.application_details?.aadhaar}
                                                             </h5>
                                                         </td>
                                                         <td style={{ padding: "10px" }}>
@@ -244,7 +277,7 @@ const ApplicationPreview = () => {
                                                             >
                                                                 3. Mobile No.
                                                             </small>
-                                                            <h5 style={{ fontSize: "15px", }}>{userData?.mobile}</h5>
+                                                            <h5 style={{ fontSize: "15px", }}>{ previewDetails?.mobile}</h5>
                                                         </td>
                                                     
                                                     </tr>
@@ -259,7 +292,7 @@ const ApplicationPreview = () => {
                                                             </small>
                                                             <h5 style={{ fontSize: "15px", }}>
                                                                 {
-                                                                    userDetails.date_of_birth
+                                                                     previewDetails?.application_details?.date_of_birth
                                                                 }
                                                             </h5>
                                                         </td>
@@ -273,7 +306,7 @@ const ApplicationPreview = () => {
                                                             </small>
                                                             <h5 style={{ fontSize: "15px", }}>
                                                                 {
-                                                                    userDetails.caste_category
+                                                                     previewDetails?.application_details?.caste_category
                                                                 }
                                                             </h5>
                                                         </td>
@@ -286,7 +319,7 @@ const ApplicationPreview = () => {
                                                                 6. Haryana Domicle
                                                             </small>
                                                             <h5 style={{ fontSize: "15px", }}>
-                                                                {userDetails.domicile ==
+                                                                { previewDetails?.application_details?.domicile ==
                                                                 "1"
                                                                     ? "Yes"
                                                                     : "No"}
@@ -303,11 +336,10 @@ const ApplicationPreview = () => {
                                                                 7. Event type
                                                             </small>
                                                             <h5 style={{ fontSize: "15px", }}>
-                                                                {/* {userData?.event_hosp
-                                                                .event_type == "1"
+                                                                { previewDetails?.application_details?.sports_discipline_hosp?.event_type == "1"
                                                                 ? "Individual"
-                                                                : "Team"} */}
-                                                                Individual
+                                                                : "Team"}
+                                                                {/* Individual */}
                                                             </h5>
                                                         </td>
                                                         <td style={{ padding: "10px" }}>
@@ -319,12 +351,11 @@ const ApplicationPreview = () => {
                                                                 8. Played National Level
                                                             </small>
                                                             <h5 style={{ fontSize: "15px", }}>
-                                                                {/* {userData?.event_hosp
-                                                                .played_national_level ==
+                                                                { previewDetails?.application_details?.played_national_level ==
                                                             "1"
                                                                 ? "Yes"
-                                                                : "No"} */}
-                                                                yes
+                                                                : "No"}
+                                                                {/* yes */}
                                                             </h5>
                                                         </td>
                                                         <td
@@ -339,13 +370,14 @@ const ApplicationPreview = () => {
                                                                 Organisation Represented
                                                             </small>
                                                             <h5 style={{ fontSize: "15px", }}>
-                                                                {/* {
-                                                                userData?.event_hosp.organisation_represented ?? 'N/A'
-                                                            } */}
-                                                                'N/A'
+                                                                {
+                                                                 previewDetails?.application_details?.organisation_represented ?? 'N/A'
+                                                            }
+                                                                {/* 'N/A' */}
                                                             </h5>
                                                         </td>
                                                     </tr>
+                                                    </tbody>
                                                     </table>
 
                                                 </td>
@@ -354,8 +386,8 @@ const ApplicationPreview = () => {
                                                 >
                                                     <img
                                                         src={
-                                                            userDetails.photo
-                                                                ? `/storage/photo/${userDetails.photo}`
+                                                            previewDetails?.application_details?.photo
+                                                                ? `/storage/photo/${ previewDetails?.application_details?.photo}`
                                                                 : "default.jpg"
                                                         }
                                                         width="100%"
@@ -382,7 +414,7 @@ const ApplicationPreview = () => {
                                                     </h3>
                                                 </td>
                                             </tr>
-                                            {userData?.education_hosp.map(
+                                            { previewDetails?.application_details?.education_hosp?.map(
                                                 (item, index) => (
                                                     <tr key={item.id || index}>
                                                         <td colSpan={4}>
@@ -395,6 +427,7 @@ const ApplicationPreview = () => {
                                                                         "fixed",
                                                                 }}
                                                             >
+                                                                <tbody>
                                                                 <tr>
                                                                     {!item.other_qualification && (
                                                                         <>
@@ -463,36 +496,13 @@ const ApplicationPreview = () => {
                                                                         </td>
                                                                     )}
                                                                 </tr>
+                                                                </tbody>
                                                             </table>
                                                         </td>
                                                     </tr>
                                                 )
                                             )}
-                                            {/* {userData?.education_hosp.length > 0 && 
-                                            userData?.education_hosp.map((item, index) => (
-                                                <tr key={item.id || index}>
-                                                <td >
-                                                    <small>Qualification</small>
-                                                    <h5 style={{ width: "95%" }}>
-                                                    {item.qualification}
-                                                    </h5>
-                                                </td>
-                                                {item.other_qualification && (
-                                                        <td
-                                                            style={{
-                                                                padding: "15px",
-                                                            }}
-                                                        >
-                                                           <small>Other Qualification</small>
-                                                           <h5 style={{ width: "95%" }}>
-                                                           {item.other_qualification ||
-                                                                    "N/A"}
-                                                    </h5>
-                                                        </td>
-                                                    )}
-                                                </tr>
-                                            ))
-                                            } */}
+                                           
                                             <tr>
                                                 <td
                                                     style={{
@@ -520,10 +530,9 @@ const ApplicationPreview = () => {
                                                     </small>
                                                     <h5 style={{ fontSize: "15px", }}>
                                                     
-                                                        {userData &&
-                                                            userData
-                                                                .sports_discipline_hosp
-                                                                .tournament_id
+                                                        { previewDetails &&
+                                                             previewDetails?.application_details?.sports_discipline_hosp
+                                                                .tournament.tournament
                                                         } 
                                                     </h5>
                                                 </td>
@@ -540,9 +549,8 @@ const ApplicationPreview = () => {
                                                     </small>
                                                     <h5 style={{ fontSize: "15px", }}>
                                                   
-                                                        { userData &&
-                                                            userData
-                                                                .sports_discipline_hosp
+                                                        {  previewDetails?.application_details &&
+                                                             previewDetails?.application_details?.sports_discipline_hosp
                                                                 .organizing_committee
                                                         } 
                                                     </h5>
@@ -559,9 +567,8 @@ const ApplicationPreview = () => {
                                                     </small>
                                                     <h5 style={{ fontSize: "15px", }}>
 
-                                                        {userData &&
-                                                            userData
-                                                                .sports_discipline_hosp
+                                                        { previewDetails?.application_details &&
+                                                             previewDetails?.application_details?.sports_discipline_hosp
                                                                 .tournament_venue
                                                         }
                                                     </h5>
@@ -576,8 +583,7 @@ const ApplicationPreview = () => {
                                                         Medal Won
                                                     </small>
                                                     <h5 style={{ fontSize: "15px", }}>
-                                                        {userData && userData
-                                                            .sports_discipline_hosp
+                                                        { previewDetails?.application_details &&  previewDetails?.application_details?.sports_discipline_hosp
                                                             .medal_won ||
                                                             "None"}
                                                     </h5>
@@ -592,10 +598,11 @@ const ApplicationPreview = () => {
                                                     </small>
                                                     <h5 style={{ fontSize: "15px", }}>
                                                         {new Date(
-                                                            userData?.sports_discipline_hosp.achievement_date
+                                                             previewDetails?.application_details?.sports_discipline_hosp.achievement_date
                                                         ).toLocaleDateString()}
                                                     </h5>
                                                 </td>
+                                                { previewDetails?.application_details?.sports_discipline_hosp?.event_type == "2" &&
                                                 <td
                                                     style={{ padding: "10px" }}
                                                 >
@@ -607,13 +614,35 @@ const ApplicationPreview = () => {
                                                         Match played by team
                                                     </small>
                                                     <h5 style={{ fontSize: "15px", }}>
-                                                        {userData &&
-                                                            userData
-                                                                .sports_discipline_hosp
-                                                                .match_played_by_team
+                                                        { previewDetails?.application_details &&
+                                                             previewDetails?.application_details?.sports_discipline_hosp
+                                                                .match_played_by_team ||
+                                                            "N/A"
                                                         }
                                                     </h5>
                                                 </td>
+                                                }
+                                                </tr>
+                                                <tr>
+                                                { previewDetails?.application_details?.sports_discipline_hosp?.event_type == "2" &&
+                                                <td
+                                                    style={{ padding: "10px" }}
+                                                >
+                                                    <small
+                                                        style={{
+                                                            fontSize: "16px",
+                                                        }}
+                                                    >
+                                                        Match played by me
+                                                    </small>
+                                                    <h5 style={{ fontSize: "15px", }}>
+                                                        { previewDetails?.application_details &&
+                                                             previewDetails?.application_details?.sports_discipline_hosp
+                                                                .match_played_by_me
+                                                        }
+                                                    </h5>
+                                                </td>
+                                                }
                                             </tr>
                                             <tr>
                                                 <td colSpan={4} style={{pageBreakAfter:"always"}}></td>
@@ -646,22 +675,47 @@ const ApplicationPreview = () => {
                                                         }}
                                                     >
                                                         {[
-                                                            {
-                                                                src:"../assets/job_app/dash/images/PDF_file_icon.svg",
-                                                                label: "Haryana Domicile",
-                                                            },
-                                                            {
-                                                                src:"../assets/job_app/dash/images/PDF_file_icon.svg",
-                                                                label: "Nation Level Certificate",
-                                                            },
-                                                            {
-                                                                src:"../assets/job_app/dash/images/PDF_file_icon.svg",
-                                                                label: " International Achievement and Verification Certificate",
-                                                            },
-                                                            {
-                                                                src:"../assets/job_app/dash/images/PDF_file_icon.svg",
-                                                                label: "Outstanding Sports Person Achievment Certificate ",
-                                                            },
+                                                              ...(previewDetails?.application_details?.domicile_doc
+                                                                ? [
+                                                                    {
+                                                                      src: "/assets/job_app/dash/images/PDF_file_icon.svg",
+                                                                      label: "Haryana Domicile",
+                                                                    },
+                                                                  ]
+                                                                : []),
+                                                              ...(previewDetails?.application_details?.national_level_doc
+                                                                ? [
+                                                                    {
+                                                                      src: "/assets/job_app/dash/images/PDF_file_icon.svg",
+                                                                      label: "Nation Level Certificate",
+                                                                    },
+                                                                  ]
+                                                                : []),
+                                                              ...(previewDetails?.application_details?.organisation_doc
+                                                                ? [
+                                                                    {
+                                                                      src: "/assets/job_app/dash/images/PDF_file_icon.svg",
+                                                                      label: "Organisation Represented Certificate",
+                                                                    },
+                                                                  ]
+                                                                : []),
+                                                                ...(previewDetails?.application_details?.sports_discipline_hosp?.osp_achivement_certificate_path
+                                                                    ? [
+                                                                        {
+                                                                          src: "/assets/job_app/dash/images/PDF_file_icon.svg",
+                                                                          label: "Outstanding Sports Person Achievment Certificate",
+                                                                        },
+                                                                      ]
+                                                                    : []),  
+                                                                    ...(previewDetails?.application_details?.sports_discipline_hosp?.international_achievement_Verification_certificate_path
+                                                                        ? [
+                                                                            {
+                                                                              src: "../assets/job_app/dash/images/PDF_file_icon.svg",
+                                                                              label: "International Achievement and Verification Certificate",
+                                                                            },
+                                                                          ]
+                                                                        : []),  
+                                                            
                                                         ].map((doc, i) => (
                                                             <div
                                                                 key={i}
@@ -706,69 +760,12 @@ const ApplicationPreview = () => {
                                                 >
                                                     <h4>Declaration</h4>
                                                     <ul>
-                                                        <li>
-                                                            I have read the
-                                                            Haryana Outstanding
-                                                            Sportspersons
-                                                            (Recruitment and
-                                                            Condition of
-                                                            Service) Rules, 2021
-                                                            and declare that I
-                                                            am eligible for
-                                                            submission of my
-                                                            application for
-                                                            considration of
-                                                            appointment under
-                                                            these Rules.
-                                                        </li>
-                                                        <li>
-                                                            I have enclosed
-                                                            self-attested copies
-                                                            of all documents in
-                                                            support of my
-                                                            application.
-                                                        </li>
-                                                        <li>
-                                                            I have played 50% or
-                                                            more of the games
-                                                            played by team in
-                                                            the tournament at
-                                                            serial no. 12 above.
-                                                        </li>
-                                                        <li>
-                                                            I did not represent
-                                                            a State/UT other
-                                                            than Haryana at the
-                                                            national level.
-                                                        </li>
-                                                        <li>
-                                                            I am guilty of
-                                                            doping, sexual
-                                                            harassment and
-                                                            abuse, competitive
-                                                            manipulation like
-                                                            betting, inside
-                                                            information, match
-                                                            fixing, tanking,
-                                                            threatening the
-                                                            integrity and
-                                                            essence of Sports.
-                                                        </li>
-                                                        <li>
-                                                            If appointment is
-                                                            offered, I undertake
-                                                            that I shall have no
-                                                            subsisting contract
-                                                            for pecuniaryg gains
-                                                            like commercial
-                                                            endorsement or
-                                                            professional sport
-                                                            before joining the
-                                                            service.
-                                                        </li>
+                                                    {declarationList.map((label:any, index) => (
+  <li key={index}>{typeof label === 'string' ? label : label?.point_text}</li>
+))}
                                                     </ul>
                                                 </td>
-                                            </tr>{" "}
+                                            </tr>
                                         </tbody>
                                         <tfoot>
                                             <tr>

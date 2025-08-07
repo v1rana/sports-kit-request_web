@@ -13,7 +13,7 @@ function HOSPRoutes() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/hosp-form" element={<HospForm />} />
-            <Route path="/preview-application" element={<ApplicationPreview />} />
+            <Route path="/preview-application/:application_id" element={<ApplicationPreview />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
     );

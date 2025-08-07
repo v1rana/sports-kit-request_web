@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('family_id');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-         
+            $table->string('application_id')->nullable()->unique(); 
+            $table->tinyInteger('active_step')->default(1);  // update at last step
+            $table->tinyInteger('is_form_completed')->default(0)->comment('1 for completed,0 for pending'); // update 1 on last step 
             $table->string('full_name_en');
             $table->string('full_name_hi')->nullable();
             $table->string('father_name_en');
@@ -40,8 +42,7 @@ return new class extends Migration
             $table->boolean('income_verified');
             $table->string('alternate_number')->nullable();
             $table->string('alternate_email')->nullable();
-            $table->string('application_id')->nullable()->unique(); // create after all steps submit
-            $table->tinyInteger('active_step')->default(1); // create after all steps submit
+           
             $table->string('photo')->nullable(); 
             $table->string('aadhaar')->nullable(); 
             $table->string('dob_doc')->nullable();

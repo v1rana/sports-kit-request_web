@@ -31,7 +31,6 @@ api.interceptors.request.use(
 // Response Interceptor: Handle Global Errors (Optional)
 api.interceptors.response.use(
     (response) => {
-        console.log('resp',response.data);
         return response;
     },
     (error) => {
