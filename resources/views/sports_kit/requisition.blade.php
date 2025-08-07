@@ -83,7 +83,18 @@
             <div class="col-xs-12 col-sm-4 col-md-2 mb-3">
                 <div>
                     <label class="label-bold">District</label>
-                    <input type="text" class="form-control" name="district" value="{{ old('district', session('first_form_data.district') ?? $userDetail->district ?? '') }}" required>
+					<select name="district" id="district-dropdown" class="form-control" required>
+    <option value="">-- Select District --</option>
+    @php
+        $selectedDistrict = old('district', session('first_form_data.district') ?? $userDetail->district ?? '');
+    @endphp
+    @foreach($districts as $district)
+        <option value="{{ $district }}" {{ $district == $selectedDistrict ? 'selected' : '' }}>
+            {{ $district }}
+        </option>
+    @endforeach
+</select>
+                    <!--<input type="text" class="form-control" name="district" value="{{ old('district', session('first_form_data.district') ?? $userDetail->district ?? '') }}" required>-->
                 </div>
             </div>
             <div class="col-xs-12 col-sm-4 col-md-2 mb-3" style="display:none;">
@@ -94,11 +105,18 @@
             </div>
 
             <div class="col-xs-12 col-sm-4 col-md-4 mb-3">
-                <div>
-                    <label class="label-bold">Name of Municipal Body/ Gram Panchayat/ Ward/ Village</label>
-                    <input type="text" class="form-control" name="area_name" value="{{ old('area_name', session('first_form_data.area_name') ?? $userDetail->ward_village ?? '') }}" required>
-                </div>
-            </div>
+    <label class="label-bold">Name of Municipal Body/ Gram Panchayat/ Ward/ Village</label>
+    <select class="form-control" name="area_name" id="area-dropdown" required>
+        <option value="">-- Select Area --</option>
+        @php
+            $selectedArea = old('area_name', session('first_form_data.area_name') ?? $userDetail->ward_village ?? '');
+        @endphp
+        @if($selectedArea)
+            <option selected value="{{ $selectedArea }}">{{ $selectedArea }}</option>
+        @endif
+    </select>
+</div>
+
 
 
         </div>
@@ -146,7 +164,7 @@
 							<p>NOTE - <span class="text-danger fs-16">*</span> marked fields are required to fill. </p>
 							<table class="table table-striped table-bordered">
 								<thead>
-									<tr>
+									<tr style="font-size: 13px;!important">
 										<th width="120px">Sports <sup class="text-danger">*</sup></th>
 										<th>Equipements <sup class="text-danger">*</sup></th>
 										<th width="80px">Quantity <sup class="text-danger">*</sup></th>
@@ -626,4 +644,66 @@
             equipmentSelect.value = '';
         }
     }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const designationSelect = document.getElementById('designation_type');
+        const districtSelect = document.getElementById('district-dropdown');
+        const areaSelect = document.getElementById('area-dropdown');
+
+        function resetAreaDropdown(selectedText = '-- Select Area --') {
+            areaSelect.innerHTML = '';
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.text = selectedText;
+            areaSelect.appendChild(defaultOption);
+        }
+
+        function fetchAreas(type, district) {
+            // Step 1: Reset with default prompt
+            resetAreaDropdown();
+
+            // Step 2: If no type or district, don't fetch
+            if (!type || !district) return;
+
+            // Step 3: Fetch data
+            fetch(`/get-areas/${type}/${district}`)
+                .then(res => res.json())
+                .then(data => {
+                    // Step 4: Keep "-- Select Area --" at top
+                    resetAreaDropdown();
+
+                    // Step 5: Add each option
+                    data.forEach(area => {
+                        const option = document.createElement('option');
+                        option.value = area;
+                        option.text = area;
+                        areaSelect.appendChild(option);
+                    });
+
+                    // Step 6: Re-select old value if available
+                    const preSelected = `{{ old('area_name', session('first_form_data.area_name') ?? $userDetail->ward_village ?? '') }}`;
+                    if (preSelected) {
+                        areaSelect.value = preSelected;
+                    }
+                })
+                .catch(() => {
+                    resetAreaDropdown('Error loading areas');
+                });
+        }
+
+        // Trigger on dropdown changes
+        designationSelect.addEventListener('change', () => {
+            fetchAreas(designationSelect.value, districtSelect.value);
+        });
+
+        districtSelect.addEventListener('change', () => {
+            fetchAreas(designationSelect.value, districtSelect.value);
+        });
+
+        // On page load
+        if (designationSelect.value && districtSelect.value) {
+            fetchAreas(designationSelect.value, districtSelect.value);
+        }
+    });
 </script>

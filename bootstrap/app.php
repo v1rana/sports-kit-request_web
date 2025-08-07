@@ -15,7 +15,8 @@ return Application::configure(basePath: dirname(__DIR__))
         //  
         // Route Middleware (Assign short names)
         $middleware->alias([
-            'auth.session' => \App\Http\Middleware\SessionAuth::class,
+            // 'auth.session' => \App\Http\Middleware\SessionAuth::class,
+            'session.auth' => \App\Http\Middleware\SessionAuth::class,
             'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class, 
         ]);
     })

@@ -12,7 +12,7 @@
             </div>
             <div class="col-5 text-end">
                 <h6 class="mb-0 d-flex justify-content-end align-items-center"><i class="fa-solid fa-location-dot"></i> 
-                    <select class="form-control">
+                    <!--<select class="form-control">
                         <option>--Select--</option>
                         <option selected>Ambala</option>
                         <option>Bhiwani</option>
@@ -20,7 +20,7 @@
                         <option>Jind</option>
                         <option>Kurukshetra</option>
                         <option>Mahendargarh</option>
-                    </select>
+                    </select>-->
                 </h6>
             </div>
         </div>
@@ -52,7 +52,7 @@
             <div class="col-8">
                 <div class="row application-details">
                     <div class="col-md-4">
-                        <div class="p-3 rounded  text-center shadow text-white mb-3">
+                         <div class="p-3 rounded  text-center bg-success shadow text-white mb-3">
                             <h2 class="text-white">{{ $totalVerified }}</h2>
                             <small class="text-white">Verified</small>
                             <i class="fa-solid fa-thumbs-up"></i>
@@ -73,7 +73,7 @@
                             <i class="fa-solid fa-hourglass-half"></i>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                   <!-- <div class="col-md-4">
                         <div class="p-3 rounded text-center bg-success shadow text-white mb-3">
                             <h2 class="text-white">{{ $totalApproved }}</h2>
                             <small class="text-white">Approved</small>
@@ -86,10 +86,10 @@
                             <small class="text-white">Rejected</small>
                             <i class="fa-solid fa-ban"></i>
                         </div>
-                    </div>
+                    </div>-->
                    
                     <div class="col-md-4">
-                        <div class="p-3 rounded text-center bg-dispersment  shadow text-white mb-3">
+                       <div class="p-3 rounded text-center bg-info shadow text-white mb-3">
                             <h2 class="text-white">{{ $totalDisbursed }}</h2>
                             <small class="text-white">Total Disbursement</small>
                             <i class="fa-solid fa-table"></i>

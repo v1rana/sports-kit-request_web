@@ -16,9 +16,9 @@
 <div class="container mt-4">
 			<h4>Haryana Provision of Sports Equipment Scheme 2025-2026</h4>
 
-			<div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+			<div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
 				
-				<h4 style="color:black">Application ID : {{ $application->applicant_id }}</h4>
+				<h4 style="color:white">Application ID : {{ $application->applicant_id }}</h4>
 			</div>
 			
 			

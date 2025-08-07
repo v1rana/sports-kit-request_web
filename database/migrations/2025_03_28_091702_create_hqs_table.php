@@ -11,8 +11,8 @@ return new class extends Migration {
             $table->string('hq_name')->unique();
             $table->enum('status', ['Active', 'Inactive']);
             $table->string('mob');
-            $table->string('otp');
-            $table->string('expires_at');
+            $table->string('otp')->nullable();
+            $table->string('expires_at')->nullable();
             $table->timestamps(); // Automatically creates created_at & updated_at
         });
     }

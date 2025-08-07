@@ -13,29 +13,31 @@ use App\Models\EquipmentVendorAssignment;
 class DSOController extends Controller
 {
     public function index()
-	{
+    {
+        // Fetch sports requests with their HQ verification status
+        // $sportsRequests = SportsKitRequisition::with('hqSportsRequest')->get();
+      // return $sportsRequests = SportsKitRequisition::with([
+			// 'hqSportsRequest.vendorAssignment.vendor',
+			// 'hqSportsRequest.sport',
+			// 'hqSportsRequest.equipment'
+		// ])->get(); 
 		// dd(session()->all());
-		$district = session('district');
-
 		$sportsRequests = DB::table('sports_kit_requisitions')
-			->leftJoin('equipment_vendor_assignments', 'sports_kit_requisitions.id', '=', 'equipment_vendor_assignments.request_id')
-			->leftJoin('vendors', 'equipment_vendor_assignments.vendor_id', '=', 'vendors.id')
-			->where('sports_kit_requisitions.district', $district) 
-			->where('sports_kit_requisitions.status', 'Pending')
-			->select(
-				'sports_kit_requisitions.id as requisition_id', 'vendors.id as vend_id',
-				DB::raw('equipment_vendor_assignments.*, vendors.*, sports_kit_requisitions.*')
-			)
-			->get();
-
-		return view('dso.sports_requests_list', compact('sportsRequests'));
-	}
-
+    ->leftJoin('equipment_vendor_assignments', 'sports_kit_requisitions.id', '=', 'equipment_vendor_assignments.request_id')
+    ->leftJoin('vendors', 'equipment_vendor_assignments.vendor_id', '=', 'vendors.id')
+	
+    ->select(
+        'sports_kit_requisitions.id as requisition_id','vendors.id as vend_id',
+        DB::raw('equipment_vendor_assignments.*, vendors.*, sports_kit_requisitions.*')
+    )
+    ->get();
+		
+        return view('dso.sports_requests_list', compact('sportsRequests'));
+    }
 
     public function dashboard() {
-		// dd(session()->all());
        
-	   $district = session('district');
+	   
 	   ////////////////////////////[START]///////////////////////////////////////////////////////////////////////
 		////////////////////////////[SPORTS CERTIFICATE]/////////////////////////////////////////////////////
 		////////////////////////////[START]/////////////////////////////////////////////////////////////////////
@@ -44,7 +46,6 @@ class DSOController extends Controller
 		->whereIn('category_wise_gradations.gradation', ['C', 'D'])
 		->where('sports_gradation_certificates.verification_by_sportsperson', '!=', '')
 		->where('sports_gradation_certificates.verify_status', '!=', '')
-		->where('sports_gradation_certificates.district_sportsperson_belongs', $district)
 		->count();
 
         // Fetch total approved applications
@@ -52,92 +53,42 @@ class DSOController extends Controller
 		->whereIn('category_wise_gradations.gradation', ['C', 'D'])
 		->where('sports_gradation_certificates.verification_by_sportsperson', '!=', '')
 		->where('sports_gradation_certificates.verify_status', '!=', '')
-		->where('sports_gradation_certificates.district_sportsperson_belongs', $district)
 		->where('status', 'Approved')->count();
 		
         $totalgrad_c_d_Rejected = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
 		->whereIn('category_wise_gradations.gradation', ['C', 'D'])
 		->where('sports_gradation_certificates.verification_by_sportsperson', '!=', '')
 		->where('sports_gradation_certificates.verify_status', '!=', '')
-		->where('sports_gradation_certificates.district_sportsperson_belongs', $district)
 		->where('status', 'Rejected')->count();
 		
         $totalgrad_c_d_Pending = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
 		->whereIn('category_wise_gradations.gradation', ['C', 'D'])
 		->where('sports_gradation_certificates.verification_by_sportsperson', '!=', '')
 		->where('sports_gradation_certificates.verify_status', '!=', '')
-		->where('sports_gradation_certificates.district_sportsperson_belongs', $district)
 		->where('status', null)->count();
 		
 		////////////////////////////[START]///////////////////////////////////////////////////////////////////////
 		////////////////////////////[SPORTS KIT REQUISITION]/////////////////////////////////////////////////////
 		////////////////////////////[START]/////////////////////////////////////////////////////////////////////
-		$totalApplications = SportsKitRequisition::where('district', $district)->count();
+		$totalApplications = SportsKitRequisition::count();
 		
-        $totalApproved = SportsKitRequisition::where('district', $district)->where('status', 'Approved')->count();
-        $totalRejected = SportsKitRequisition::where('district', $district)->where('status', 'Rejected')->count(); 
-        $totalPending = SportsKitRequisition::where('district', $district)->where('status', 'Pending')->count();
-        $totalVerified = SportsKitRequisition::where('district', $district)->where('status', 'Verified')->whereNull('sports_kit_requisitions.disbursement_status')->count();
-        $totalNotVerified = SportsKitRequisition::where('district', $district)->where('status', 'Not Verified')->count();
-        $totalDisbursed = SportsKitRequisition::where('district', $district)->where('status', 'Verified')->where('disbursement_status', 'Completed')->count();
+        $totalApproved = SportsKitRequisition::where('status', 'Approved')->count();
+        $totalRejected = SportsKitRequisition::where('status', 'Rejected')->count();
+        $totalPending = SportsKitRequisition::where('status', 'Pending')->count();
+        $totalVerified = SportsKitRequisition::where('status', 'Verified')->count();
+        $totalNotVerified = SportsKitRequisition::where('status', 'Not Verified')->count();
+        $totalDisbursed = SportsKitRequisition::where('status', 'Disbursed')->count();
 		
         return view('dso.dashboard', compact('totalApplications','totalsportsCertificatesCount', 'totalApproved', 'totalRejected', 'totalPending', 'totalVerified', 'totalNotVerified', 'totalDisbursed','totalgrad_c_d_Approved','totalgrad_c_d_Rejected','totalgrad_c_d_Pending'));
-		
-		// return view('dso.dashboard', compact('totalApplications','totalsportsCertificatesCount', 'totalPending', 'totalVerified', 'totalNotVerified', 'totalDisbursed','totalgrad_c_d_Approved','totalgrad_c_d_Rejected','totalgrad_c_d_Pending'));
     }
-	
-	public function kit_verified_list()
-	{
-		// dd(session()->all());
-		$district = session('district');
-
-		$sportsRequests = DB::table('sports_kit_requisitions')
-			->leftJoin('equipment_vendor_assignments', 'sports_kit_requisitions.id', '=', 'equipment_vendor_assignments.request_id')
-			->leftJoin('vendors', 'equipment_vendor_assignments.vendor_id', '=', 'vendors.id')
-			->where('sports_kit_requisitions.district', $district) 
-			->where('sports_kit_requisitions.status', 'Verified')
-			->whereNull('sports_kit_requisitions.disbursement_status')
-			->select(
-				'sports_kit_requisitions.id as requisition_id', 'vendors.id as vend_id',
-				DB::raw('equipment_vendor_assignments.*, vendors.*, sports_kit_requisitions.*')
-			)
-			->get();
-
-		return view('dso.kit_verified_list', compact('sportsRequests'));
-	}
-	
-	public function kit_disbursed_list()
-	{
-		// dd(session()->all());
-		$district = session('district');
-
-		$sportsRequests = DB::table('sports_kit_requisitions')
-			->leftJoin('equipment_vendor_assignments', 'sports_kit_requisitions.id', '=', 'equipment_vendor_assignments.request_id')
-			->leftJoin('vendors', 'equipment_vendor_assignments.vendor_id', '=', 'vendors.id')
-			->where('sports_kit_requisitions.district', $district) 
-			->where('sports_kit_requisitions.status', 'Verified') 
-			->where('sports_kit_requisitions.disbursement_status', '=', 'Completed')
-			->select(
-				'sports_kit_requisitions.id as requisition_id', 'vendors.id as vend_id',
-				DB::raw('equipment_vendor_assignments.*, vendors.*, sports_kit_requisitions.*')
-			)
-			->get();
-
-		return view('dso.kit_disbursed_list', compact('sportsRequests'));
-	}
 
     public function grad_list(){
-		
-		 $district = session('district');
-		 // dd($district);
         //return "hi";
          // Fetch total application count
         $sportsCertificates = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
          ->whereIn('category_wise_gradations.gradation', ['C', 'D'])
 		 ->where('sports_gradation_certificates.verification_by_sportsperson', '!=', '')
 		->where('sports_gradation_certificates.verify_status', '!=', '')
-		->whereNull('sports_gradation_certificates.status')
-		->where('sports_gradation_certificates.district_sportsperson_belongs', $district)
          ->orderBy('sports_gradation_certificates.created_at', 'desc')
          ->select('sports_gradation_certificates.*', 'category_wise_gradations.gradation', 'category_wise_gradations.tournament', 'category_wise_gradations.organising_authority as authority')
          ->get();
@@ -155,95 +106,8 @@ class DSOController extends Controller
 
     }
 	
-	public function approved_list(){
-		
-		 $district = session('district');
-        //return "hi";
-         // Fetch total application count
-        $sportsCertificates = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
-         ->whereIn('category_wise_gradations.gradation', ['C', 'D'])
-		 ->where('sports_gradation_certificates.verification_by_sportsperson', '!=', '')
-		->where('sports_gradation_certificates.verify_status', '!=', '')
-		->where('sports_gradation_certificates.status', '=', 'Approved')
-		->whereNull('sports_gradation_certificates.certificate_pdf')
-		->where('sports_gradation_certificates.district_sportsperson_belongs', $district)
-         ->orderBy('sports_gradation_certificates.created_at', 'desc')
-         ->select('sports_gradation_certificates.*', 'category_wise_gradations.gradation', 'category_wise_gradations.tournament', 'category_wise_gradations.organising_authority as authority')
-         ->get();
-
-         // Format Month-Year after fetching results
-		foreach ($sportsCertificates as $certificate) {
-			if (!empty($certificate->month_year)) {
-				$certificate->formatted_month_year = \Carbon\Carbon::createFromFormat('Y-m-d', $certificate->month_year)->format('F Y');
-			} else {
-				$certificate->formatted_month_year = 'N/A';
-			}
-		}
-
-        return view('dso.approved_grad_list', compact('sportsCertificates'));
-
-    }
-	
-	public function rejected_list(){
-		
-		 $district = session('district');
-        //return "hi";
-         // Fetch total application count
-        $sportsCertificates = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
-         ->whereIn('category_wise_gradations.gradation', ['C', 'D'])
-		 ->where('sports_gradation_certificates.verification_by_sportsperson', '!=', '')
-		->where('sports_gradation_certificates.verify_status', '!=', '')
-		->where('sports_gradation_certificates.status', '=', 'Rejected')
-		->where('sports_gradation_certificates.district_sportsperson_belongs', $district)
-         ->orderBy('sports_gradation_certificates.created_at', 'desc')
-         ->select('sports_gradation_certificates.*', 'category_wise_gradations.gradation', 'category_wise_gradations.tournament', 'category_wise_gradations.organising_authority as authority')
-         ->get();
-
-         // Format Month-Year after fetching results
-		foreach ($sportsCertificates as $certificate) {
-			if (!empty($certificate->month_year)) {
-				$certificate->formatted_month_year = \Carbon\Carbon::createFromFormat('Y-m-d', $certificate->month_year)->format('F Y');
-			} else {
-				$certificate->formatted_month_year = 'N/A';
-			}
-		}
-
-        return view('dso.rejected_grad_list', compact('sportsCertificates'));
-
-    }
-	
-	public function certificate_issued_list(){
-		
-		 $district = session('district');
-        //return "hi";
-         // Fetch total application count
-        $sportsCertificates = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
-         ->whereIn('category_wise_gradations.gradation', ['C', 'D'])
-		 ->where('sports_gradation_certificates.verification_by_sportsperson', '!=', '')
-		->where('sports_gradation_certificates.verify_status', '!=', '')
-		->where('sports_gradation_certificates.status', '=', 'Approved')
-		->whereNotNull('sports_gradation_certificates.certificate_pdf')
-		->where('sports_gradation_certificates.district_sportsperson_belongs', $district)
-         ->orderBy('sports_gradation_certificates.created_at', 'desc')
-         ->select('sports_gradation_certificates.*', 'category_wise_gradations.gradation', 'category_wise_gradations.tournament', 'category_wise_gradations.organising_authority as authority')
-         ->get();
-
-         // Format Month-Year after fetching results
-		foreach ($sportsCertificates as $certificate) {
-			if (!empty($certificate->month_year)) {
-				$certificate->formatted_month_year = \Carbon\Carbon::createFromFormat('Y-m-d', $certificate->month_year)->format('F Y');
-			} else {
-				$certificate->formatted_month_year = 'N/A';
-			}
-		}
-
-        return view('dso.certificate_grad_list', compact('sportsCertificates'));
-
-    }
-	
 	 public function viewAppliedCertificate(Request $request)
 {
-	$district = session('district');
     // Validate POST input
     $request->validate([
         'certificate_id' => 'required|integer|exists:sports_gradation_certificates,id',
@@ -253,7 +117,6 @@ class DSOController extends Controller
 
     $otpData = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
         ->where('sports_gradation_certificates.id', $id)
-		->where('sports_gradation_certificates.district_sportsperson_belongs', $district)
         ->whereIn('category_wise_gradations.gradation', ['C', 'D'])
         ->orderBy('sports_gradation_certificates.created_at', 'desc')
         ->select(
@@ -274,16 +137,14 @@ class DSOController extends Controller
 	
     public function create() {
         
-		$district = session('district');
-        return view('sports_kit.requisition', compact('district'));
+        return view('sports_kit.requisition');
    }
 
    // Store the requisition request
    public function store(Request $request) {
 
-   $district = session('district');
        $request->validate([
-           //'district' => 'required|string|max:100',
+           'district' => 'required|string|max:100',
            'block' => 'required|string|max:100',
            'area_name' => 'required|string|max:100',
            'designation' => 'required|string|max:50',
@@ -315,7 +176,7 @@ class DSOController extends Controller
        // Store Data
        SportsKitRequisition::create([
            'applicant_id' => '1',
-           'district' => $district,
+           'district' => $request->district,
            'block' => $request->block,
            'area_name' => $request->area_name,
            'designation' => $request->designation,
@@ -333,10 +194,7 @@ class DSOController extends Controller
   
    public function verifyRequest($id)
    {
-	   $district = session('district');
-		$request = SportsKitRequisition::where('id', $id)
-        ->where('district', $district) 
-        ->first();
+		$request = SportsKitRequisition::find($id);
 
 		if (!$request) {
 			return redirect()->back()->with('error', 'Request not found!');
@@ -377,11 +235,8 @@ class DSOController extends Controller
 
    public function notVerifyRequest(Request $req,$id)
    {
-    $district = session('district');
+    $request = SportsKitRequisition::find($id);
 
-    $request = SportsKitRequisition::where('id', $id)
-        ->where('district', $district) 
-        ->first();
     if (!$request) {
         return redirect()->back()->with('error', 'Request not found!');
     }
@@ -421,11 +276,7 @@ class DSOController extends Controller
 
    public function ApproveRequest($id)
    {
-    $district = session('district');
-
-    $request = sports_gradation_certificate::where('id', $id)
-        ->where('district_sportsperson_belongs', $district) 
-        ->first();
+    $request = sports_gradation_certificate::find($id);
 
     if (!$request) {
         return redirect()->back()->with('error', 'Request not found!');
@@ -465,11 +316,7 @@ class DSOController extends Controller
 
    public function RejectRequest(Request $req,$id)
    {
-		$district = session('district');
-
-		$certificate = sports_gradation_certificate::where('id', $id)
-			->where('district_sportsperson_belongs', $district)
-			->first();
+		$certificate = sports_gradation_certificate::find($id);
 
 		if (!$certificate) {
 			return redirect()->back()->with('error', 'Request not found!');
@@ -586,31 +433,17 @@ class DSOController extends Controller
 	
 	public function storeKitDisbursement(Request $request)
 {
-    // Step 1: Validate vendor-related fields
-    $vendorData = $request->validate([
-        'firm_name'      => 'required|string|max:255',
-        'owner_name'     => 'required|string|max:255',
-        'mobile_number'  => 'required|string|size:10',
+    // return $request->all(); // ← Comment this out after debugging
+
+    $validated = $request->validate([
+        'request_id' => 'required|exists:sports_kit_requisitions,id',
+        'vendor_id' => 'required|exists:vendors,id',
+        'fund_source' => 'required|in:DSE,HQ',
+        'procurement_amount' => 'required|numeric',
+        'bill_no' => 'required|string',
+        'voucher_file' => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
     ]);
 
-    // Step 2: Create vendor
-    $vendor = Vendor::create([
-        'vendor_name' => $vendorData['firm_name'],
-        'owner_name'  => $vendorData['owner_name'],
-        'mob'         => $vendorData['mobile_number']
-    ]);
-
-    // Step 3: Validate disbursement-related fields
-    $disbursementData = $request->validate([
-        'request_id'          => 'required|exists:sports_kit_requisitions,id',
-        'fund_source'         => 'required|in:DSE,HQ',
-        'procurement_amount'  => 'required|numeric',
-        'bill_no'             => 'required|string',
-        'voucher_file'        => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:2048',
-    ]);
-
-    // Step 4: Handle voucher file upload
-    $voucherPath = null;
     if ($request->hasFile('voucher_file')) {
         $voucherFile = $request->file('voucher_file');
         $voucherPath = $voucherFile->storeAs(
@@ -618,31 +451,25 @@ class DSOController extends Controller
             uniqid() . '_' . $voucherFile->getClientOriginalName(),
             'public'
         );
+    } else {
+        $voucherPath = null;
     }
 
-	EquipmentVendorAssignment::create([
-		 'request_id' => $disbursementData['request_id'],
-		 'vendor_id' => $vendor->id
-	 ]);
-						 
-    // Step 5: Find assignment and update
-    $assignment = EquipmentVendorAssignment::where('request_id', $disbursementData['request_id'])
-        ->where('vendor_id', $vendor->id)
+    $assignment = EquipmentVendorAssignment::where('request_id', $validated['request_id'])
+        ->where('vendor_id', $validated['vendor_id'])
         ->firstOrFail();
 
     $assignment->update([
-        'fund_source'         => $disbursementData['fund_source'],
-        'procurement_amount'  => $disbursementData['procurement_amount'],
-        'bill_no'             => $disbursementData['bill_no'],
-        'voucher_file_path'   => $voucherPath,
+        'fund_source' => $validated['fund_source'],
+        'procurement_amount' => $validated['procurement_amount'],
+        'bill_no' => $validated['bill_no'],
+        'voucher_file_path' => $voucherPath,
     ]);
 
-    // Step 6: Update disbursement status
-    $this->updateDisbursementStatus($disbursementData['request_id'], $vendor->id);
+    $this->updateDisbursementStatus($validated['request_id'], $validated['vendor_id']);
 
     return back()->with('success', 'Kit disbursement done successfully.');
 }
-
 
 
 protected function updateDisbursementStatus($requestId, $vendorId)

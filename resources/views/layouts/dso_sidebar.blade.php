@@ -24,7 +24,19 @@
     <li class="nav-item menu-item" data-tab="equipments">
         <a href="{{ route('dso.sports.requests') }}" 
            class="nav-link {{ request()->routeIs('dso.sports.requests') ? 'active' : '' }}">
-            <i class="fa-regular fa-rectangle-list"></i> <span>Kit Request List</span>
+            <i class="fa-regular fa-rectangle-list"></i> <span>Kit Request/In-Progress List</span>
+        </a>
+    </li>
+	<li class="nav-item menu-item" data-tab="equipments">
+        <a href="{{ route('dso.sports.verified') }}" 
+           class="nav-link {{ request()->routeIs('dso.sports.verified') ? 'active' : '' }}">
+            <i class="fa-solid fa-circle-check"></i> <span>Kit Verified List</span>
+        </a>
+    </li>
+	<li class="nav-item menu-item" data-tab="equipments">
+        <a href="{{ route('dso.sports.disbursed') }}" 
+           class="nav-link {{ request()->routeIs('dso.sports.disbursed') ? 'active' : '' }}">
+            <i class="fa-solid fa-box-open"></i> <span>Kit Disbursed List</span>
         </a>
     </li>
             {{-- Gradation menu --}}
@@ -32,6 +44,24 @@
         <a href="{{ route('dso.grad.list') }}" 
            class="nav-link {{ request()->routeIs('dso.grad.list') ? 'active' : '' }}">
            <i class="fa-solid fa-address-card"></i> <span>Gradation (C & D) Applications List</span>
+        </a>
+    </li>
+	<li class="nav-item menu-item" data-tab="gradations">
+        <a href="{{ route('dso.approved_grad.list') }}" 
+           class="nav-link {{ request()->routeIs('dso.approved_grad.list') ? 'active' : '' }}">
+           <i class="fa-solid fa-address-card"></i> <span>Approved List</span>
+        </a>
+    </li>
+	<li class="nav-item menu-item" data-tab="gradations">
+        <a href="{{ route('dso.rejected_grad.list') }}" 
+           class="nav-link {{ request()->routeIs('dso.rejected_grad.list') ? 'active' : '' }}">
+           <i class="fa-solid fa-address-card"></i> <span>Rejected List</span>
+        </a>
+    </li>
+	<li class="nav-item menu-item" data-tab="gradations">
+        <a href="{{ route('dso.certificate_issued_grad.list') }}" 
+           class="nav-link {{ request()->routeIs('dso.certificate_issued_grad.list') ? 'active' : '' }}">
+           <i class="fa-solid fa-address-card"></i> <span>Certificate Issued List</span>
         </a>
     </li>
         </ul>
@@ -47,8 +77,15 @@
 								<i class="fa-solid fa-bars"></i>
 							</button>
 							<div class="logo_text">
-								<h1 class="h1-logo">Sports Department , Government of Haryana</h1>								
-							</div>
+    <h1 class="h1-logo">Sports Department , Government of Haryana</h1>
+    @if (!empty(session('district')))
+        <div class="text-white mt-1">
+            ( {{ session('district') }} )
+        </div>
+    @endif
+</div>
+
+							
 						</div>
 						<div class="col-6 text-end">
 							<a href="{{route('login')}}" class="btn btn-danger"><i class="fa-solid fa-power-off"></i> <span>Log Out</span></a>

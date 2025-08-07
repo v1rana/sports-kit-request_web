@@ -1,4 +1,4 @@
-@extends('layouts.dso_main')
+@extends('hq_main')
 
 @section('content')
 @if(session('success'))
@@ -9,7 +9,7 @@
 @endif
 <style>
 	    label.info-label,small.info-label {font-weight: 500;font-size:17px;display: block; margin-bottom:0; line-height:normal}
-	    .modal-body h5{margin:0; margin-left: 16px;}
+	    .modal-body h5{margin:0; margin-left: 16px;font-size: 0.9rem; font-weight: 550;}
 	    .games-authorised-sec .row > div{font-size: 15px;padding:0}
 	    .games-authorised-sec .row > div h6 {
     margin: 0;
@@ -22,58 +22,17 @@
 .games-authorised-sec .row > div:nth-child(-n+4){border-top:0;}
 .games-authorised-sec .row > div p{padding: 5px 10px;font-size:14px;}
 
-  .custom-header-row {
-	background: linear-gradient(135deg, #b63807, #a78f21, #f78b2d);
-    /* background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);  */
-    color: #f8f9fa;
-    font-weight: 700;
-    text-transform: capitalize;
-    letter-spacing: 0.8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-    border-radius: 8px 8px 0 0;
-  }
-
-  .custom-header-row th {
-    padding: 8px;
-	vertical-align: middle;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  }
-
-  table {
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 10px;
-    overflow: hidden;
-    background-color: #ffffff;
-  }
-
-  tbody tr:nth-child(even) {
-    background-color: #f4f6f8;
-  }
-
-  tbody tr:nth-child(odd) {
-    background-color:rgb(230, 230, 230);
-  }
-
-  tbody tr:hover {
-    background-color: #d9e4f5;
-    transition: all 0.3s ease;
-    cursor: pointer;
-  }
-
-  td {
-    padding: 14px;
-    vertical-align: middle;
-    font-size: 15px;
-  }
-
-  /* Optional: Subtle border and shadow on the table */
-  .table-container {
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    /* overflow: hidden; */
-  }
-
+.table td{vertical-align:top}
+.app-id-view-btn {
+    border-width: 0 0 1px;
+    text-align: left;
+    border-style: dotted;
+    width: auto;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    border-color: blue;
+    font-weight: bold;
+}
   .table .btn{font-size: 15px;padding:4px 0 0 0;    margin-top: 2px;}
   ul.list-unstyled li:before {
     position: absolute;
@@ -88,34 +47,9 @@
 ul.list-unstyled li {
     position: relative;
 }
-.table td{vertical-align:top}
-.app-id-view-btn {
-    border-width: 0 0 1px;
-    text-align: left;
-    border-style: dotted;
-    width: auto;
-    margin-bottom: 2px;
-    white-space: nowrap;
-    border-color: blue;
-    font-weight: bold;
-}
-
-a.badge {border:none;
-    height: auto;font-weight:normal;
-    font-size: 11px;
-    line-height: normal;margin-top:4px; padding: 3px;transition:all linear 0.1s 0s;
-    box-shadow:0 4px 0 #193c6b;
-}
-a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 </style>
-<h4 class="d-flex justify-content-between align-items-center">
-  <span>Sports Kit Requisition List</span>
-  <a href="#" class="btn btn-secondary">
-    <i class="fa-solid fa-arrow-left-long"></i> Back
-  </a>
-</h4>
-<!--<button onclick="downloadTableAsExcel()" class="btn btn-success mb-3">Download Excel</button>-->
-<div class=" bg-white shadow mb-5 p-2 table-responsive table-container">
+<h4 class="">Sports Kit Requisition List <a href="" class="btn btn-secondary float-end"><i class="fa-solid fa-arrow-left-long"></i> Back</a></h4>
+<div class=" bg-white shadow mb-5 p-2 table-responsive table-container w-100">
 		<table class="table table-bordered bg-white table-hover">
 				<thead>
 					<tr class="custom-header-row">
@@ -229,6 +163,31 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 											</div>
 										</div>
 
+
+
+										<!-- <div class="row">												
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">1. Name of Applicant</small>
+												<h5>{{ $request->name }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">2. District </small>
+												<h5>{{ $request->district }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">6. Body Type</small>
+												<h5>{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">4. Name Of Designation </small>
+												<h5>{{ $request->specific_designation }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">5. Name Of Municipal Body<br>/ Gram Panchayat/ Ward/ Village </small>
+												<h5>{{ $request->area_name }}</h5>
+											</div>
+											
+										</div> -->
 										
 										<!-- Continue inside your container or card -->
 										<div class="container my-4">
@@ -546,35 +505,12 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 			</tbody>
 		</table>
 							
-		
-</div>			
-		
-
-   
-	 
-    @endsection
-	<script>
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                
-                reader.onload = function (e) {
-                    $('#img-upload').attr('src', e.target.result);
-                }
-                
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        $("#imgInp").change(function(){
-            readURL(this);
-        }); 
-		
-		$(document).ready(function(){
-			$('.navbar-toggler').click(function(){
-				$('aside').toggleClass('main');
-			});
-		
-		});
 			
-	</script>
+	</div>	
+	
+</div>			
+	
+    </div>
+	
+    @endsection
+   

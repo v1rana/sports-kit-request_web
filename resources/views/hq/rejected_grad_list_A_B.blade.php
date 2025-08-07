@@ -117,21 +117,19 @@ ul.list-unstyled li {
 										<h6>
 											<strong> 
 											<div id="approval-section-{{ $certificate->id }}" style="{{ (!empty($certificate->enquiry_pdf) && !empty($certificate->replied_pdf) && $certificate->status != 'Approved' && $certificate->status != 'Rejected') ? '' : 'display:none;' }}">
-											<form action="{{ route('hq.approve', $certificate->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
-												@csrf
-												<button type="submit"  class="btn btn-success">  Approve </button>
-											</form>
-											<a href="javascript:void(0);" id="reject-application" class="btn btn-danger">Reject</a>
-										</div>											
-											
+    <form action="{{ route('hq.approve', $certificate->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
+        @csrf
+        <button type="submit" class="btn btn-success">Approve</button>
+    </form>
+    <a href="javascript:void(0);" id="reject-application-{{ $certificate->id }}" class="btn btn-danger">Reject</a>	
+</div>
 										@if($certificate->status == 'Approved' && empty($certificate->certificate_pdf))
 											<span class="badge rounded-pill bg-success"><i class="fa-solid fa-thumbs-up"></i> Approved</span>
 										@elseif($certificate->status == 'Approved' && !empty($certificate->certificate_pdf))
 											<span class="badge rounded-pill bg-success"><i class="fa-solid fa-thumbs-up"></i> Certificate Issued</span>
 										@elseif($certificate->status == 'Rejected')
 											<span class="badge rounded-pill bg-danger"><i class="fa-solid fa-ban"></i>  Rejected</span>
-										 @elseif(!empty($certificate->enquiry_pdf) && !empty($certificate->replied_pdf))
-											
+										
 										@else
 											
 										@endif
@@ -251,18 +249,14 @@ ul.list-unstyled li {
 											</div>
 
 											@else
-												
-												<form id="enquiry-upload-form-{{ $certificate->id }}" 
-      action="{{ route('hq.enquiry.UploadLetter') }}" 
-      method="POST" 
-      enctype="multipart/form-data">
+												<form id="enquiry-upload-form-{{ $certificate->id }}" action="{{ route('hq.enquiry.UploadLetter') }}" method="POST" enctype="multipart/form-data">
     @csrf
-    <input type="file" name="enquiry_pdf" accept="application/pdf" required class="form-control mb-2">
+    <input type="file" name="enquiry_pdf" accept="application/pdf" required class="form-control">
     <input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
-    <button type="submit" class="btn btn-warning">Upload</button>
+    <button type="submit" class="btn btn-warning mt-2">Upload</button>
 </form>
-
 <div id="upload-status-{{ $certificate->id }}"></div>
+
 											@endif
 
 										</div>
@@ -275,12 +269,11 @@ ul.list-unstyled li {
 												<a href="{{ asset('storage/' . $certificate->replied_pdf) }}" target="_blank" class="btn btn-primary mb-2"> <i class="fa-solid fa-file-lines"></i> View Reply Letter  </a>
 								
 												<p><small  class="mb-0 text-muted text-end">
-													 Date: {{ \Carbon\Carbon::parse($certificate->replied_pdf_datetime)->format('d M Y') }}
+													Date: {{ \Carbon\Carbon::parse($certificate->replied_pdf_datetime)->format('d M Y') }}
 												</small></p>
 											</div>
 
 											@else
-											
 											<form id="reply-upload-form-{{ $certificate->id }}" action="{{ route('hq.enquiry.ReplyLetter') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="file" name="replied_pdf" accept="application/pdf" required class="form-control">
@@ -292,6 +285,7 @@ ul.list-unstyled li {
 										</div>
 										
 										<div class="col-xs-12 col-sm-6 col-md-3">
+										@if(!empty($certificate->enquiry_pdf) && !empty($certificate->replied_pdf) && ($certificate->status == 'Approved'))
 											<label class="info-label text-muted">Download Certificate</label>
 											<form id="pdfForm{{ $certificate->id }}" method="POST" action="{{ route('hq.certificates.downloadPDF') }}" target="_blank">
 												@csrf
@@ -300,6 +294,7 @@ ul.list-unstyled li {
 													<i class="fa-solid fa-file-arrow-down"></i> PDF
 												</button>
 											</form>
+											@endif
 										</div>
 
 										<div class="col-xs-12 col-sm-6 col-md-3">
@@ -584,6 +579,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 </script>
+
 
 
 @endsection
