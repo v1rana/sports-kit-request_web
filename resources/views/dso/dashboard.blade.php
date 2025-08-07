@@ -58,7 +58,7 @@
             <div class="col-8">
                 <div class="row application-details">
                     <div class="col-md-4">
-                        <div class="p-3 rounded  text-center shadow text-white mb-3">
+                        <div class="p-3 rounded  text-center bg-success shadow text-white mb-3">
                             <h2 class="text-white">{{ $totalVerified }}</h2>
                             <small class="text-white">Verified</small>
                             <i class="fa-solid fa-thumbs-up"></i>
@@ -66,20 +66,20 @@
                     </div>
             
                     <div class="col-md-4">
-                        <div class="p-3 rounded text-center bg-warning shadow text-white mb-3">
+                        <div class="p-3 rounded text-center bg-danger shadow text-white mb-3">
                             <h2 class="text-white">{{ $totalNotVerified }}</h2>
                             <small class="text-white">Not Verified</small>
                             <i class="fa-solid fa-xmark"></i>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="p-3 rounded text-center bg-info shadow text-white mb-3">
+                        <div class="p-3 rounded text-center bg-warning shadow text-white mb-3">
                             <h2 class="text-white">{{ $totalPending }}</h2>
                             <small class="text-white">In-Progress</small>
                             <i class="fa-solid fa-hourglass-half"></i>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <!--<div class="col-md-4">
                         <div class="p-3 rounded text-center bg-success shadow text-white mb-3">
                             <h2 class="text-white">{{ $totalApproved }}</h2>
                             <small class="text-white">Approved</small>
@@ -92,10 +92,10 @@
                             <small class="text-white">Rejected</small>
                             <i class="fa-solid fa-ban"></i>
                         </div>
-                    </div>
+                    </div>-->
                    
                     <div class="col-md-4">
-                        <div class="p-3 rounded text-center bg-dispersment  shadow text-white mb-3">
+                        <div class="p-3 rounded text-center bg-info shadow text-white mb-3">
                             <h2 class="text-white">{{ $totalDisbursed }}</h2>
                             <small class="text-white">Total Disbursement</small>
                             <i class="fa-solid fa-table"></i>

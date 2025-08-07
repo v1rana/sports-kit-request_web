@@ -137,17 +137,7 @@ ul.list-unstyled li {
 								</h6>
 							</div>
 								
-							<div class="">
-								<div class="rejection-remarks" style="display:none;">
-									<label class="info-label text-muted ">Rejection Remarks</label>
-									<div class="d-flex">
-										<form action="{{ route('dso.reject', $certificate->id) }}" method="POST" style="display:inline;">
-											@csrf<textarea class="form-control" name="rejection_remark" required></textarea>
-											<button class="btn btn-primary " type="submit">Submit</button>
-										</form>
-									</div>
-								</div>
-							</div>
+							
 								</div>
 								<h3 class="modal-title-details"><i class="fa-solid fa-user-large"></i> Personal Details</h3>
 								<div class="border p-3">

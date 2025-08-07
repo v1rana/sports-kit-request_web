@@ -26,10 +26,29 @@
 				</a>
 			</li>-->
                  {{-- Equipment menu --}}
-    <li class="nav-item menu-item" data-tab="equipments">
+    <!--<li class="nav-item menu-item" data-tab="equipments">
         <a href="{{ route('hq.sports.requests') }}" 
            class="nav-link {{ request()->routeIs('hq.sports.requests') ? 'active' : '' }}" data-tab="equipments">
-            <i class="fa-regular fa-rectangle-list"></i> <span>Kit Request List</span>
+            <i class="fa-regular fa-rectangle-list"></i> <span>Kit Request/In-Progress List</span>
+        </a>
+    </li>-->
+	
+	<li class="nav-item menu-item" data-tab="equipments">
+        <a href="{{ route('hq.sports.verified') }}" 
+           class="nav-link {{ request()->routeIs('hq.sports.verified') ? 'active' : '' }}">
+            <i class="fa-solid fa-circle-check"></i> <span>Kit Verified List</span>
+        </a>
+    </li>
+	<li class="nav-item menu-item" data-tab="equipments">
+        <a href="{{ route('hq.sports.disbursed') }}" 
+           class="nav-link {{ request()->routeIs('hq.sports.disbursed') ? 'active' : '' }}">
+            <i class="fa-solid fa-box-open"></i> <span>Kit Disbursed List</span>
+        </a>
+    </li>
+	<li class="nav-item menu-item" data-tab="equipments">
+        <a href="{{ route('hq.dso') }}" 
+           class="nav-link {{ request()->routeIs('hq.dso') ? 'active' : '' }}">
+            <i class="fa-solid fa-box-open"></i> <span>DSO</span>
         </a>
     </li>
 			
@@ -39,6 +58,24 @@
         <a href="{{ route('hq.grad.list') }}" 
            class="nav-link {{ request()->routeIs('hq.grad.list') ? 'active' : '' }}" data-tab="gradations">
            <i class="fa-solid fa-address-card"></i> <span>Gradation (A & B) Applications List</span>
+        </a>
+    </li>
+	<li class="nav-item menu-item" data-tab="gradations">
+        <a href="{{ route('hq.approved_grad.list') }}" 
+           class="nav-link {{ request()->routeIs('hq.approved_grad.list') ? 'active' : '' }}">
+           <i class="fa-solid fa-address-card"></i> <span>Approved List</span>
+        </a>
+    </li>
+	<li class="nav-item menu-item" data-tab="gradations">
+        <a href="{{ route('hq.rejected_grad.list') }}" 
+           class="nav-link {{ request()->routeIs('hq.rejected_grad.list') ? 'active' : '' }}">
+           <i class="fa-solid fa-address-card"></i> <span>Rejected List</span>
+        </a>
+    </li>
+	<li class="nav-item menu-item" data-tab="gradations">
+        <a href="{{ route('hq.certificate_issued_grad.list') }}" 
+           class="nav-link {{ request()->routeIs('hq.certificate_issued_grad.list') ? 'active' : '' }}">
+           <i class="fa-solid fa-address-card"></i> <span>Certificate Issued List</span>
         </a>
     </li>
 	{{-- OSP menu --}}

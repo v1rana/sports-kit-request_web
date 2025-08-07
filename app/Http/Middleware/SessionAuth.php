@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class SessionAuth
 {
@@ -14,11 +15,15 @@ class SessionAuth
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
-    {
-        if (!session()->has('user_id')) {
-            return redirect()->route('login')->withErrors(['message' => 'Please log in first.']);
-        }
+	{
+		\Log::info('SessionAuth middleware called.');
+\Log::info('Session: ', session()->all());
 
-        return $next($request);
-    }
+		if (!session()->has('user_id')) {
+			return redirect()->route('login')->withErrors(['message' => 'Please log in first.']);
+		}
+
+		return $next($request);
+	}
+
 }

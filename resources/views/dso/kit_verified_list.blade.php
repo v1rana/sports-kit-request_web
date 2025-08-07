@@ -114,7 +114,7 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
     <i class="fa-solid fa-arrow-left-long"></i> Back
   </a>
 </h4>
-<!--<button onclick="downloadTableAsExcel()" class="btn btn-success mb-3">Download Excel</button>-->
+
 <div class=" bg-white shadow mb-5 p-2 table-responsive table-container">
 		<table class="table table-bordered bg-white table-hover">
 				<thead>
@@ -229,6 +229,31 @@ a.badge:hover{box-shadow:0 0; color:#fff; margin-top:7px}
 											</div>
 										</div>
 
+
+
+										<!-- <div class="row">												
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">1. Name of Applicant</small>
+												<h5>{{ $request->name }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">2. District </small>
+												<h5>{{ $request->district }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">6. Body Type</small>
+												<h5>{{ $request->designation === 'gram' ? 'Gram Panchayat' : 'Municipal Body' }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">4. Name Of Designation </small>
+												<h5>{{ $request->specific_designation }}</h5>
+											</div>
+											<div class="col-sm-12 col-sm-6 col-md-3 mb-3">
+												<small class="info-label text-muted">5. Name Of Municipal Body<br>/ Gram Panchayat/ Ward/ Village </small>
+												<h5>{{ $request->area_name }}</h5>
+											</div>
+											
+										</div> -->
 										
 										<!-- Continue inside your container or card -->
 										<div class="container my-4">

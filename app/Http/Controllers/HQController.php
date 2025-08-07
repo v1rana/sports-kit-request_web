@@ -10,6 +10,8 @@ use App\Models\sports_gradation_certificate;
 use App\Models\Vendor;
 use App\Models\Sport;
 use App\Models\User;
+use App\Models\DSO;
+use App\Models\GetDistricts;
 use App\Models\EquipmentVendorAssignment;
 use Illuminate\Support\Facades\DB;
 
@@ -91,12 +93,48 @@ class HQController extends Controller
       // Fetch total rejected applications
       $totalRejected = SportsKitRequisition::where('status', 'Rejected')->count();
       $totalPending = SportsKitRequisition::where('status', 'Pending')->count();
-      $totalVerified = SportsKitRequisition::where('status', 'Verified')->count();
+      $totalVerified = SportsKitRequisition::where('status', 'Verified')->whereNull('sports_kit_requisitions.disbursement_status')->count();
       $totalNotVerified = SportsKitRequisition::where('status', 'Not Verified')->count();
-      $totalDisbursed = SportsKitRequisition::where('status', 'Disbursed')->count();
+      $totalDisbursed = SportsKitRequisition::where('status', 'Verified')->where('disbursement_status', 'Completed')->count();
 
         return view('hq.dashboard', compact('totalApplications','totalsportsCertificatesCount', 'totalApproved', 'totalRejected', 'totalPending', 'totalVerified', 'totalNotVerified', 'totalDisbursed'));
     }
+	
+	public function kit_verified_list()
+	{
+		
+
+		$sportsRequests = DB::table('sports_kit_requisitions')
+			->leftJoin('equipment_vendor_assignments', 'sports_kit_requisitions.id', '=', 'equipment_vendor_assignments.request_id')
+			->leftJoin('vendors', 'equipment_vendor_assignments.vendor_id', '=', 'vendors.id')			
+			->where('sports_kit_requisitions.status', 'Verified')
+			->whereNull('sports_kit_requisitions.disbursement_status')
+			->select(
+				'sports_kit_requisitions.id as requisition_id', 'vendors.id as vend_id',
+				DB::raw('equipment_vendor_assignments.*, vendors.*, sports_kit_requisitions.*')
+			)
+			->get();
+
+		return view('hq.kit_verified_list', compact('sportsRequests'));
+	}
+	
+	public function kit_disbursed_list()
+	{
+		
+
+		$sportsRequests = DB::table('sports_kit_requisitions')
+			->leftJoin('equipment_vendor_assignments', 'sports_kit_requisitions.id', '=', 'equipment_vendor_assignments.request_id')
+			->leftJoin('vendors', 'equipment_vendor_assignments.vendor_id', '=', 'vendors.id')
+			->where('sports_kit_requisitions.status', 'Verified') 
+			->where('sports_kit_requisitions.disbursement_status', '=', 'Completed')
+			->select(
+				'sports_kit_requisitions.id as requisition_id', 'vendors.id as vend_id',
+				DB::raw('equipment_vendor_assignments.*, vendors.*, sports_kit_requisitions.*')
+			)
+			->get();
+
+		return view('hq.kit_disbursed_list', compact('sportsRequests'));
+	}
 
     // Assign HQ to a sports requisition request
     public function assignVendor(Request $request)
@@ -126,6 +164,92 @@ class HQController extends Controller
 		// dd($users->userDetails());
         return view('hq.hosp_requests_list', compact('users'));
     }
+	
+	public function dso_list()
+    {
+	
+		$dsos = DSO::where('status', 'Active')->get();
+        return view('hq.dsos', compact('dsos'));
+    }
+	
+	public function show_dso_form()
+	{
+		$districts = GetDistricts::orderBy('name')->get();
+		return view('hq.add_dso', compact('districts'));
+	}
+	
+	public function dso_create(Request $request)
+	{
+		$validated = $request->validate([
+			'name' => 'required|string|max:255',
+			'email' => 'required|email|unique:dsos,email',
+			'district' => 'required|string|max:255',
+			'mobile' => 'required|string|min:10|max:10'
+		]);
+		
+		$existingDSO = DSO::where('district', $validated['district'])->first();
+		if ($existingDSO) {
+			return redirect()->back()
+				->withInput()
+				->withErrors(['district' => 'DSO already exists for this district.']);
+		}
+
+		$dso = new DSO();
+		$dso->name = $validated['name'];
+		$dso->email = $validated['email'];
+		$dso->district = $validated['district'];
+		$dso->mob = $validated['mobile'];
+		$dso->status = 'Active';
+		$dso->save();
+
+		return redirect()->route('hq.dsos')->with('success', 'DSO added successfully.');
+	}
+	
+	public function edit_dso($id)
+{
+    $dso = DSO::findOrFail($id);
+    $districts = GetDistricts::orderBy('name')->get();
+
+    return view('hq.edit_dso', compact('dso', 'districts'));
+}
+
+public function update_dso(Request $request, $id)
+{
+	// dd($id);
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:dsos,email,' . $id,
+        'district' => 'required|string|max:255',
+        'mobile' => 'required|string|min:10',
+    ]);
+
+    $existingDso = DSO::where('district', $validated['district'])
+        ->where('id', '!=', $id)
+        ->first();
+
+    if ($existingDso) {
+        return back()->withErrors(['district' => 'This district is already assigned to another DSO.']);
+    }
+
+    $dso = DSO::findOrFail($id);
+    $dso->update([
+        'name' => $validated['name'],
+        'email' => $validated['email'],
+        'district' => $validated['district'],
+        'mob' => $validated['mobile'],
+    ]);
+
+    return redirect()->route('hq.dso')->with('success', 'DSO updated successfully.');
+}
+
+public function delete_dso($id)
+{
+    $dso = DSO::findOrFail($id);
+    $dso->delete();
+
+    return redirect()->route('hq.dsos')->with('success', 'DSO deleted successfully.');
+}
+
 	
 	public function vendor_form()
     {
@@ -228,6 +352,83 @@ class HQController extends Controller
 		}
 
         return view('hq.grad_list_A_B', compact('sportsCertificates'));
+
+    }
+	
+	public function approved_list(){
+		
+		
+        $sportsCertificates = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
+         ->whereIn('category_wise_gradations.gradation', ['A', 'B'])
+		 ->where('sports_gradation_certificates.verification_by_sportsperson', '!=', '')
+		->where('sports_gradation_certificates.verify_status', '!=', '')
+		->where('sports_gradation_certificates.status', '=', 'Approved')
+		->whereNull('sports_gradation_certificates.certificate_pdf')
+         ->orderBy('sports_gradation_certificates.created_at', 'desc')
+         ->select('sports_gradation_certificates.*', 'category_wise_gradations.gradation', 'category_wise_gradations.tournament', 'category_wise_gradations.organising_authority as authority')
+         ->get();
+
+         // Format Month-Year after fetching results
+		foreach ($sportsCertificates as $certificate) {
+			if (!empty($certificate->month_year)) {
+				$certificate->formatted_month_year = \Carbon\Carbon::createFromFormat('Y-m-d', $certificate->month_year)->format('F Y');
+			} else {
+				$certificate->formatted_month_year = 'N/A';
+			}
+		}
+
+        return view('hq.approve_grad_list_A_B', compact('sportsCertificates'));
+
+    }
+	
+	public function rejected_list(){
+		
+		
+         $sportsCertificates = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
+         ->whereIn('category_wise_gradations.gradation', ['A', 'B'])
+		 ->where('sports_gradation_certificates.verification_by_sportsperson', '!=', '')
+		->where('sports_gradation_certificates.verify_status', '!=', '')
+		->where('sports_gradation_certificates.status', '=', 'Rejected')
+         ->orderBy('sports_gradation_certificates.created_at', 'desc')
+         ->select('sports_gradation_certificates.*', 'category_wise_gradations.gradation', 'category_wise_gradations.tournament', 'category_wise_gradations.organising_authority as authority')
+         ->get();
+
+         // Format Month-Year after fetching results
+		foreach ($sportsCertificates as $certificate) {
+			if (!empty($certificate->month_year)) {
+				$certificate->formatted_month_year = \Carbon\Carbon::createFromFormat('Y-m-d', $certificate->month_year)->format('F Y');
+			} else {
+				$certificate->formatted_month_year = 'N/A';
+			}
+		}
+
+        return view('hq.rejected_grad_list_A_B', compact('sportsCertificates'));
+
+    }
+	
+	public function certificate_issued_list(){
+		
+		 
+        $sportsCertificates = sports_gradation_certificate::join('category_wise_gradations', 'sports_gradation_certificates.tournament_name', '=', 'category_wise_gradations.id')
+         ->whereIn('category_wise_gradations.gradation', ['A', 'B'])
+		 ->where('sports_gradation_certificates.verification_by_sportsperson', '!=', '')
+		->where('sports_gradation_certificates.verify_status', '!=', '')
+		->where('sports_gradation_certificates.status', '=', 'Approved')
+		->whereNotNull('sports_gradation_certificates.certificate_pdf')
+         ->orderBy('sports_gradation_certificates.created_at', 'desc')
+         ->select('sports_gradation_certificates.*', 'category_wise_gradations.gradation', 'category_wise_gradations.tournament', 'category_wise_gradations.organising_authority as authority')
+         ->get();
+
+         // Format Month-Year after fetching results
+		foreach ($sportsCertificates as $certificate) {
+			if (!empty($certificate->month_year)) {
+				$certificate->formatted_month_year = \Carbon\Carbon::createFromFormat('Y-m-d', $certificate->month_year)->format('F Y');
+			} else {
+				$certificate->formatted_month_year = 'N/A';
+			}
+		}
+
+        return view('hq.certificate_issues_grad_list_A_B', compact('sportsCertificates'));
 
     }
 	

@@ -1,4 +1,4 @@
-@extends('layouts.dso_main')
+@extends('hq_main')
 
 @section('content')
 
@@ -14,7 +14,7 @@
     color: #36454F;
     font-size: 20px;
     text-transform: uppercase;}
-    label.info-label,small.info-label {font-weight: 500;font-size:17px;display: block; margin-bottom:4px; line-height:normal}
+    label.info-label,small.info-label {font-weight: 500;font-size:14px;display: block; margin-bottom:4px; line-height:normal}
 	
 .table td{vertical-align:top}
 .app-id-view-btn {
@@ -117,7 +117,7 @@ ul.list-unstyled li {
 										<h6>
 											<strong> 
 											<div id="approval-section-{{ $certificate->id }}" style="{{ (!empty($certificate->enquiry_pdf) && !empty($certificate->replied_pdf) && $certificate->status != 'Approved' && $certificate->status != 'Rejected') ? '' : 'display:none;' }}">
-    <form action="{{ route('dso.approve', $certificate->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
+    <form action="{{ route('hq.approve', $certificate->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
         @csrf
         <button type="submit" class="btn btn-success">Approve</button>
     </form>
@@ -138,10 +138,10 @@ ul.list-unstyled li {
 							</div>
 								
 							<div class="">
-								<div class="rejection-remarks" style="display:none;">
+								<div class="rejection-remarks">
 									<label class="info-label text-muted ">Rejection Remarks</label>
 									<div class="d-flex">
-										<form action="{{ route('dso.reject', $certificate->id) }}" method="POST" style="display:inline;">
+										<form action="{{ route('hq.reject', $certificate->id) }}" method="POST" style="display:inline;">
 											@csrf<textarea class="form-control" name="rejection_remark" required></textarea>
 											<button class="btn btn-primary " type="submit">Submit</button>
 										</form>
@@ -249,7 +249,7 @@ ul.list-unstyled li {
 											</div>
 
 											@else
-												<form id="enquiry-upload-form-{{ $certificate->id }}" action="{{ route('dso.enquiry.UploadLetter') }}" method="POST" enctype="multipart/form-data">
+												<form id="enquiry-upload-form-{{ $certificate->id }}" action="{{ route('hq.enquiry.UploadLetter') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <input type="file" name="enquiry_pdf" accept="application/pdf" required class="form-control">
     <input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
@@ -274,7 +274,7 @@ ul.list-unstyled li {
 											</div>
 
 											@else
-											<form id="reply-upload-form-{{ $certificate->id }}" action="{{ route('dso.enquiry.ReplyLetter') }}" method="POST" enctype="multipart/form-data">
+											<form id="reply-upload-form-{{ $certificate->id }}" action="{{ route('hq.enquiry.ReplyLetter') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <input type="file" name="replied_pdf" accept="application/pdf" required class="form-control">
             <input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
@@ -287,7 +287,7 @@ ul.list-unstyled li {
 										<div class="col-xs-12 col-sm-6 col-md-3">
 										@if(!empty($certificate->enquiry_pdf) && !empty($certificate->replied_pdf) && ($certificate->status == 'Approved'))
 											<label class="info-label text-muted">Download Certificate</label>
-											<form id="pdfForm{{ $certificate->id }}" method="POST" action="{{ route('dso.certificates.downloadPDF') }}" target="_blank">
+											<form id="pdfForm{{ $certificate->id }}" method="POST" action="{{ route('hq.certificates.downloadPDF') }}" target="_blank">
 												@csrf
 												<input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
 												<button type="submit" class="btn btn-success">
@@ -307,7 +307,7 @@ ul.list-unstyled li {
 									</a>
 								@else
 											<label>Upload Signed Certificate</label>
-									<form action="{{ route('dso.certificates.uploadPDF') }}" method="POST" enctype="multipart/form-data" style="display:inline;">
+									<form action="{{ route('hq.certificates.uploadPDF') }}" method="POST" enctype="multipart/form-data" style="display:inline;">
 										@csrf
 										<input type="file" name="certificate_pdf" accept="application/pdf" required class="form-control mb-2">
 										<input type="hidden" name="certificate_id" value="{{ $certificate->id }}">
@@ -384,7 +384,7 @@ ul.list-unstyled li {
                                 <span class="badge rounded-pill bg-danger"><i class="fa-solid fa-ban"></i>  Rejected</span>
                             @else
 								<span class="badge rounded-pill bg-primary w-100"><i class="fa-solid fa-check"></i> In-Progress</span>
-                               <!-- <form action="{{ route('dso.approve', $certificate->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
+                               <!-- <form action="{{ route('hq.approve', $certificate->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to Approve this?');">
 									@csrf
 									<button type="submit"  class="btn btn-success w-100 mb-2">
 								 Approve
@@ -400,7 +400,7 @@ ul.list-unstyled li {
 <div class="modal fade" id="rejectRemarkModal{{ $certificate->id }}" tabindex="-1" aria-labelledby="rejectRemarkModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <form action="{{ route('dso.reject', $certificate->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to Reject this?');">
+      <form action="{{ route('hq.reject', $certificate->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to Reject this?');">
         @csrf
         <div class="modal-body">
           <h5>Rejection Remarks</h5>
@@ -418,14 +418,14 @@ ul.list-unstyled li {
                             @endif
                         </strong>
                 <!--@if($certificate->status == 'Pending')
-                    <form action="{{ route('dso.approve', $certificate->id) }}" method="POST" style="display:inline;">
+                    <form action="{{ route('hq.approve', $certificate->id) }}" method="POST" style="display:inline;">
                         @csrf
 						<button type="submit"  class="btn btn-success w-100 mb-2">
                      Approved
                 </button>
                     </form>
 
-                    <form action="{{ route('dso.reject', $certificate->id) }}" method="POST" style="display:inline;">
+                    <form action="{{ route('hq.reject', $certificate->id) }}" method="POST" style="display:inline;">
                         @csrf
                         <button type="submit" class="btn btn-danger w-100">
                             Rejected
@@ -440,7 +440,7 @@ ul.list-unstyled li {
             View Certificate
         </a>
     @else
-        <form action="{{ route('dso.certificates.uploadPDF') }}" method="POST" enctype="multipart/form-data" style="display:inline;">
+        <form action="{{ route('hq.certificates.uploadPDF') }}" method="POST" enctype="multipart/form-data" style="display:inline;">
             @csrf
             <input type="file" name="certificate_pdf" accept="application/pdf" required class="form-control mb-2">
             <input type="hidden" name="certificate_id" value="{{ $certificate->id }}">

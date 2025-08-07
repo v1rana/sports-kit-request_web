@@ -164,7 +164,7 @@
 							<p>NOTE - <span class="text-danger fs-16">*</span> marked fields are required to fill. </p>
 							<table class="table table-striped table-bordered">
 								<thead>
-									<tr>
+									<tr style="font-size: 13px;!important">
 										<th width="120px">Sports <sup class="text-danger">*</sup></th>
 										<th>Equipements <sup class="text-danger">*</sup></th>
 										<th width="80px">Quantity <sup class="text-danger">*</sup></th>

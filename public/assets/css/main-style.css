@@ -70,7 +70,9 @@ width: 100%;min-height: 81vh;}
     border-radius: 8px 8px 0 0;}
 
 .table thead tr{
-	background: linear-gradient(135deg, #b63807, #a78f21, #f78b2d) !important;}
+	/*background: linear-gradient(135deg, #b63807, #a78f21, #f78b2d) !important;}*/
+	background: #225395;
+	color: white;
 .card-custom {
     border-radius: 1rem;
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);

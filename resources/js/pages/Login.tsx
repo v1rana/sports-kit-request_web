@@ -10,7 +10,8 @@ import {
 import { toast } from 'react-toastify';
 function Login() {
     
-    const [pppId, setPppId] = useState("1KQP3440");
+    // const [pppId, setPppId] = useState("1KQP3440");
+    const [pppId, setPppId] = useState("");
     const [userId, setUserId] = useState("");
     const [otp_message, setOTPMsg] = useState("");
     const [txn, setTxn] = useState("");

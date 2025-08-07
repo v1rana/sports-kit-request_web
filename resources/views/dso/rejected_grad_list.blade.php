@@ -138,7 +138,7 @@ ul.list-unstyled li {
 							</div>
 								
 							<div class="">
-								<div class="rejection-remarks" style="display:none;">
+								<div class="rejection-remarks">
 									<label class="info-label text-muted ">Rejection Remarks</label>
 									<div class="d-flex">
 										<form action="{{ route('dso.reject', $certificate->id) }}" method="POST" style="display:inline;">

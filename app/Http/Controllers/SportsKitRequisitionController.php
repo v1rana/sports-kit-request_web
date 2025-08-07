@@ -44,6 +44,7 @@ class SportsKitRequisitionController extends Controller {
     // Show the requisition form
   public function create($user_id)
 {
+	// echo $user_id;exit;
     try {
         $userId = Crypt::decryptString($user_id);
         session([
@@ -53,13 +54,13 @@ class SportsKitRequisitionController extends Controller {
         abort(403, 'Invalid or tampered ID.');
     }
     $userId = session('user_id'); // Assuming user ID is stored in session
-    if(empty($userId)){
+    /* if(empty($userId)){
         $userId ='1';
         session(['user_id' => $userId]);
     }else{
 		$userId ='1';
 		session(['user_id' => $userId]);
-	}
+	} */
 	//return $userId;
     // Get the user details
     $userDetail = UserDetails::where('user_id', $userId)->first();
@@ -385,6 +386,7 @@ public function getAreas($type, $district)
 
 public function verifyOTP(Request $request)
 {
+	
     $request->validate([
         'mobile' => 'required|digits:10',
         'otp' => 'required|digits:6'
@@ -392,7 +394,6 @@ public function verifyOTP(Request $request)
 
     $mobile = $request->mobile;
     $otp = $request->otp;
-
     // Check in all user tables
     $user = DSO::where('mob', $mobile)->first()
         ?? ADC::where('mob', $mobile)->first()
@@ -406,21 +407,42 @@ public function verifyOTP(Request $request)
         return response()->json(['success' => false, 'message' => 'Invalid or expired OTP.']);
     }
 
-    // Clear OTP after verification
-    // $user->update([
-        // 'otp' => null,
-        // 'expires_at' => null
-    // ]);
 
-    // Set session or login logic here if needed
+    // ✅ Clear OTP (optional but recommended)
+    $user->update([
+        'otp' => null,
+        'expires_at' => null
+    ]);
 
-    // Determine redirect route based on user role/table
+    // ✅ Set session values based on role
     if ($user instanceof DSO) {
+        session([
+            'role' => 'DSO',
+            'mobile' => $user->mob,
+            'district' => $user->district ?? null, // replace with actual column name
+            'user_id' => $user->id,
+            'status' => 'Active'
+        ]);
         $redirectTo = route('dso.sports_kit.dashboard');
+
     } elseif ($user instanceof ADC) {
+        session([
+            'role' => 'ADC',
+            'mobile' => $user->mob,
+            'district' => $user->district ?? null,
+            'user_id' => $user->id,
+            'status' => 'Active'
+        ]);
         $redirectTo = route('adc.sports_kit.dashboard');
+
     } elseif ($user instanceof HQ) {
+        session([
+            'role' => 'HQ',
+            'mobile' => $user->mob,
+            'user_id' => $user->id
+        ]);
         $redirectTo = route('hq.sports_kit.dashboard');
+
     } else {
         $redirectTo = '/login'; // fallback
     }
@@ -431,6 +453,7 @@ public function verifyOTP(Request $request)
         'redirect_to' => $redirectTo
     ]);
 }
+
 
 
 	

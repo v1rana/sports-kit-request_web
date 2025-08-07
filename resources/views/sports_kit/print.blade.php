@@ -42,16 +42,25 @@
         <h4 class="no-print">Registration Form  </h4>
 
         <div class=" bg-white shadow mb-5">
-            <div class="no-print ">
-				<div class="card-header  bg-primary text-white d-flex justify-content-between align-items-center">
-					<button class="btn btn-light btn-sm no-print" onclick="window.print()"><i class="fa fa-print"></i> Download Unsigned Application Form</button>
-					<form action="{{ route('sports_kit.uploadform') }}" method="POST" enctype="multipart/form-data" class="d-flex gap-2 no-print m-0 align-items-center">
-						@csrf
-						<input type="file" name="signed_document" accept="application/pdf,image/*" class="form-control form-control-sm no-print" required />
-						<button type="submit" class="btn btn-success btn-sm w-75"><i class="fa-solid fa-print me-1"></i> Upload Signed Application Form</button>
-					</form>
-				</div>
-			</div>
+            <div class="no-print">
+	<div class="card-header bg-primary text-white d-flex justify-content-between align-items-start">
+		<button class="btn btn-light btn-sm no-print" onclick="window.print()">
+			<i class="fa fa-print"></i> Download Unsigned Application Form
+		</button>
+
+		<form action="{{ route('sports_kit.uploadform') }}" method="POST" enctype="multipart/form-data" class="d-flex flex-column no-print m-0">
+			@csrf
+			<input type="file" name="signed_document" accept="application/pdf,image/*" class="form-control form-control-sm mb-2" required />
+
+			<button type="submit" class="btn btn-success btn-sm w-100 mb-1">
+				<i class="fa-solid fa-print me-1"></i> Upload Signed Application Form
+			</button>
+
+			<small class="text-light">* Max file size: 2 MB | Allowed: PDF, JPG, PNG</small>
+		</form>
+	</div>
+</div>
+
 			
 			<table width="100%">
 				<thead class="" style="display: table-header-group;">
@@ -158,7 +167,7 @@
 							<h4 class="mt-2 p-0 text-dark">Sports Kit Requisition </h4>
 							<table class="table table-striped table-bordered" style="width:100%;">
 								<thead class="bg-dark text-white">
-									<tr>
+									<tr style="font-size: 13px;!important">
 										<th width="60px">Sr. No.</th>
 										<th>Sports Name</th>
 										<th>Equipment</th>
