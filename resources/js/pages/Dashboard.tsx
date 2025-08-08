@@ -147,7 +147,7 @@ function Dashboard() {
               : "bg-danger"
           }`}
         >
-          {applicant?.status === 0
+          {item?.status === 0
             ? "In-progress"
             : item.status === 1
             ? "Approved"
