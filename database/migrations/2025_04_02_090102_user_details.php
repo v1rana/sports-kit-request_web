@@ -55,6 +55,7 @@ return new class extends Migration
 
             $table->string('organisation_represented')->nullable();
             $table->string('organisation_doc')->nullable();
+            $table->tinyInteger('status')->default(0)->comment('0 for inprogress,1 for approve,2 for reject');;
             $table->timestamps();
         });
     }

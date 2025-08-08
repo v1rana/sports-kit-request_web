@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
-            $table->tinyInteger('status')->default(0)->comment('0 for inprogress,1 for approve,2 for reject');
+            $table->tinyInteger('status')->default(0);
             $table->tinyInteger('is_login')->default(1)->comment('use for gradation and equipment user');
             $table->rememberToken();
             $table->timestamps();

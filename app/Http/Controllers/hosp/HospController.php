@@ -244,7 +244,7 @@ class HospController extends Controller
         'applicationDetails' => function ($query) use ($application_id) {
             $query->where('is_form_completed', 1)->where('application_id',$application_id)
                   ->select([
-                     
+                     'id',
                       'user_id',
                       'application_id',
                       'full_name_en',
@@ -256,7 +256,8 @@ class HospController extends Controller
                       'photo',
                       'organisation_represented',
                       'domicile_doc',
-                      'national_level_doc'
+                      'national_level_doc',
+                      'status'
                       // add other desired columns
                   ])
                   ->with(['sportsDisciplineHosp' => function ($q) {

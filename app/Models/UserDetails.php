@@ -36,6 +36,7 @@ class UserDetails extends Model
         'organisation_represented',
         'national_level_doc',
         'organisation_doc',
+        'status'
         // don't include application_id in fillable since it will be generated
     ];
     protected static function boot()

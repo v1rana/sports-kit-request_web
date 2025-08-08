@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\DSO;
 use App\Models\GetDistricts;
 use App\Models\EquipmentVendorAssignment;
+use App\Models\UserDetails;
 use Illuminate\Support\Facades\DB;
 
 class HQController extends Controller
@@ -160,8 +161,84 @@ class HQController extends Controller
 
 	public function hosp_requests()
     {
-       $users = User::with(['userDetails', 'sportsDisciplineHosp', 'declarationsHosp','educationHosp'])->paginate(10);
-		// dd($users->userDetails());
+       $users = User::with([ 'userDetails' => function ($query) {
+		$query->where('is_form_completed', 1)
+			  ->select([
+				 'id',
+				  'user_id',
+				  'application_id',
+				  'full_name_en',
+				  'date_of_birth',
+				  'played_national_level',
+				  'domicile',
+				  'caste_category',
+				  'aadhaar',
+				  'photo',
+				  'organisation_represented',
+				  'domicile_doc',
+				  'national_level_doc',
+				  'status'
+				  // add other desired columns
+			  ])
+			  ->with(['sportsDisciplineHosp' => function ($q) {
+				  $q->select([
+					  'id',
+					  'application_id',
+					  'medal_won',
+					  'disability_type_id',
+					  'tournament_id',
+					  'game_id',
+					  'tournament_venue',
+					  'achievement_date',
+					  'match_played_by_team',
+					  'match_played_by_me',
+					  'organizing_committee',
+					  'event_type',
+					  'osp_achivement_certificate_path',
+					  'international_achievement_Verification_certificate_path'
+					  // add other desired columns
+				  ])
+				  ->with([
+					'tournament' => function ($t) {
+						$t->select([
+							'id',
+							'tournament', // or whatever columns you want
+							// Add more tournament fields as needed
+						]);
+					},
+					'game' => function ($g) {
+						$g->select([
+							'id',
+							'name', // replace with actual column names
+						]);
+					},
+					'disabilityType' => function ($d) {
+						$d->select([
+							'id',
+							'type', // replace with actual column names
+						]);
+					}
+				]);
+			  }])
+			  ->with(['educationHosp' => function ($q) {
+				$q->select([
+					'id',
+					'application_id',
+					'other_qualification',
+					'qualification',
+					'certificate_path',
+				]);
+			}])
+			->with(['declarationsHosp' => function ($q) {
+				$q->select([
+					'id',
+					'application_id',
+					'declaration_id',
+					'declaration_file'
+				]);
+			}]);
+			},])->paginate(10);
+		// dd($users);
         return view('hq.hosp_requests_list', compact('users'));
     }
 	
@@ -666,7 +743,7 @@ public function delete_dso($id)
 
 	public function approveOspRequest(Request $request,$id)
 {
-    $user = User::find($id);
+    $user = UserDetails::find($id);
 
     if (!$request) {
         return redirect()->back()->with('error', 'Request not found!');
