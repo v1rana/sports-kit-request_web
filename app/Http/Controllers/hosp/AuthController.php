@@ -191,17 +191,22 @@ class AuthController extends Controller
 
     private function getCommonParams(): array
     {
-        return [
-            // stagging
-            'DeptCode' => 'NIC',
-            'Servicecode' => 'TestCred',
-            'DeptKey' => 'o2etc739ut',
-
-            // live server
-                // 'DeptCode' => 'SPT',
-                // 'Servicecode' => 'CAW',
-                // 'DeptKey' => '0A5CDE2406',
-
-        ];
+        if (config('app.env') === 'local') {
+            return [
+                // stagging
+                'DeptCode' => 'NIC',
+                'Servicecode' => 'TestCred',
+                'DeptKey' => 'o2etc739ut',
+            ];
+        }else {
+            return [
+                // live server
+                'DeptCode' => 'SPT',
+                'Servicecode' => 'CAW',
+                'DeptKey' => '0A5CDE2406',
+            ];
+        }
+            
+                
     }
 }
