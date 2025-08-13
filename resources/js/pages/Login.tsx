@@ -284,7 +284,7 @@ function Login() {
                                     }}
                                 />
                                 {errors.pppId && (
-                                    <div className="error">{errors.pppId}</div>
+                                    <div className="text-danger">{errors.pppId}</div>
                                 )}
 
                                 <button
@@ -332,7 +332,7 @@ function Login() {
                                         {/* <!-- Add more members as needed --> */}
                                     </select>
                                     {errors.selectedMember && (
-                                        <p className="error">
+                                        <p className="text-danger">
                                             {errors.selectedMember}
                                         </p>
                                     )}
@@ -363,7 +363,7 @@ function Login() {
                                         required
                                     />
                                     {errors.otp && (
-                                        <p className="error">{errors.otp}</p>
+                                        <p className="text-danger">{errors.otp}</p>
                                     )}
                                     {!otpVerified && (
                                          <div>
@@ -449,7 +449,7 @@ function Login() {
                                 </label>
                             </div>
                             {errors.loginType && (
-                                <div className="error">{errors.loginType}</div>
+                                <div className="text-danger">{errors.loginType}</div>
                             )}
                              <button
                                         className="btn btn-custom mt-1"
