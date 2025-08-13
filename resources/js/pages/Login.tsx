@@ -23,6 +23,7 @@ function Login() {
     const [members, setMembers] = useState<{ value: string; text: string }[]>(
         []
     );
+    const [counter, setCounter] = useState(0); // Countdown in seconds
     const [loginType, setLoginType] = useState("");
     const [btn_disabled, setBtnDisabled] = useState(false);
     const basic_data = {
@@ -100,6 +101,17 @@ function Login() {
             // alert("Login failed. Please try again.");
         }
     };
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+    
+        if (counter > 0) {
+          timer = setTimeout(() => {
+            setCounter(prev => prev - 1);
+          }, 1000);
+        }
+    
+        return () => clearTimeout(timer);
+      }, [counter]);
 
     const getVerificationCode = async (event: React.FormEvent) => {
         event.preventDefault();
@@ -130,6 +142,7 @@ function Login() {
                 setIsOtpVisible(false);
                 setMembers([]);
             }
+            setCounter(60);
             setBtnDisabled(false);
         } catch (error) {
             setBtnDisabled(false);
@@ -353,17 +366,21 @@ function Login() {
                                         <p className="error">{errors.otp}</p>
                                     )}
                                     {!otpVerified && (
-                                        <div>
-                                            Didn't receive OTP?{" "}
-                                            <a
-                                                href="javascript:;"
-                                                className="resendOtp"
-                                                onClick={getVerificationCode}
-                                                
-                                            >
-                                                Resend code
-                                            </a>
-                                        </div>
+                                         <div>
+                                         {!counter ? (
+                                           <a
+                                             href="javascript:;"
+                                             className="resendOtp"
+                                             onClick={getVerificationCode}
+                                           >
+                                             Resend code
+                                           </a>
+                                         ) : (
+                                           <span className="resendOtpDisabled">
+                                             Resend code in {counter}s
+                                           </span>
+                                         )}
+                                       </div>
                                     )}
                                      {!otpVerified && (
                                             <button
