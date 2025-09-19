@@ -194,7 +194,7 @@ class AuthController extends Controller
 
     private function getCommonParams(): array
     {
-        if (config('app.env') === 'local') {
+        if (config('app.env') !== 'local') {
             return [
                 // stagging
                 'DeptCode' => 'NIC',
