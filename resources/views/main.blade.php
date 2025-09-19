@@ -97,7 +97,11 @@
 								'{{ url('storage/' . ($data->domicile_certificate ?? 'default.jpg')) }}', 
 								'{{ url('storage/' . ($data->sports_certificate ?? 'default.jpg')) }}', 
 								'{{ url('storage/' . ($data->more_than25_photo ?? 'default.jpg')) }}',
-                                '{{ url('storage/' . ($data->noc_upload ?? 'default.jpg')) }}'
+                                '{{ url('storage/' . ($data->noc_upload ?? 'default.jpg')) }}',
+                                '{{ url('storage/' . ($data->date_ofbirth_certificate ?? 'default.jpg')) }}',
+                                '{{ url('storage/' . ($data->verif_fron_conc_auth ?? 'default.jpg')) }}',
+                                '{{ url('storage/' . ($data->affidavit_uplod ?? 'default.jpg')) }}',
+                                '{{ url('storage/' . ($data->coach_certif ?? 'default.jpg')) }}'
 							)">
 							👁️ View Details
 						</button>
@@ -234,6 +238,37 @@
                         <div class="col-3 mb-3">
                             <div class="card"><div class="card-body p-0  text-center">
                             <p class="text-muted p-3 mb-0">5. CERTIFICATE FOR AS PROOF FOR PLAYING MORE THAN 25% OF MATCHES. (PDF/JPG)</p><a id="more_than25_photo" class="btn btn-success w-100" href="#" target="_blank">View</a>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr />
+
+                    
+                    <div class="row">
+                        <div class="col-3 mb-3">
+                            <div class="card"><div class="card-body p-0 text-center">
+                            <p class="text-muted p-3 mb-0" style="padding: 3.5rem !important;">Date of Birth Certificate</p><a id="date_ofbirth_certificate" class="btn btn-success w-100" href="#" target="_blank">View</a>
+                            </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="col-3 mb-3">
+                            <div class="card"><div class="card-body p-0 text-center">
+                            <p class="text-muted p-3 mb-0">Verification from Concerned Authority</p> <a id="verif_fron_conc_auth" class="btn btn-success w-100" href="#" target="_blank">View</a>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="col-3 mb-3">
+                            <div class="card"><div class="card-body p-0 text-center">
+                            <p class="text-muted p-3 mb-0" style="padding: 4.5rem !important;">Affidavit Upload</p><a id="affidavit_uplod" class="btn btn-success w-100" href="#" target="_blank">View</a>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="col-3 mb-3">
+                            <div class="card"><div class="card-body p-0  text-center">
+                            <p class="text-muted p-3 mb-0" style="padding: 4.5rem !important;">Coach Certificate</p><a id="coach_certif" class="btn btn-success w-100" href="#" target="_blank">View</a>
                             </div>
                             </div>
                         </div>

@@ -89,6 +89,7 @@ class AuthController extends Controller
 
     public function getMemberbasicdetailsfromFIDUID(Request $request)
     {
+        
         try {
             // $uidfid = $request->input('uidfid', '6vdc9173');
             // $url =  'https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID';
@@ -96,6 +97,7 @@ class AuthController extends Controller
             $parameters = array_merge($this->getCommonParams(), [
                 'UIDFID' => $request->UIDFID,
             ]);
+            // return $parameters;
             $response = Http::post( $url, $parameters );
             if ( $response->successful() ) {
                 $data = $response->json();
@@ -156,6 +158,7 @@ class AuthController extends Controller
 
     public function verifyOTPRequestforMEMID(Request $request)
     {
+        
         try {
             // $uidfid = $request->input('uidfid', '6vdc9173');
             // $url =  'https://pppapi.edisha.gov.in:8443/api/Account/GetMemberbasicdetailsfromFIDUID';

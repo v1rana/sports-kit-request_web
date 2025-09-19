@@ -149,6 +149,30 @@ class SportsGradationCertificateController extends Controller
         if ($request->hasFile('noc_upload')) {
             $noc_upload = $request->file('noc_upload')->store('uploads', 'public');            
         }
+
+        $date_ofbirth_certificate = null; // Default value to prevent "Undefined variable" error
+
+        if ($request->hasFile('date_ofbirth_certificate')) {
+            $date_ofbirth_certificate = $request->file('date_ofbirth_certificate')->store('uploads', 'public');            
+        }
+
+        $verif_fron_conc_auth = null; // Default value to prevent "Undefined variable" error
+
+        if ($request->hasFile('verif_fron_conc_auth')) {
+            $verif_fron_conc_auth = $request->file('verif_fron_conc_auth')->store('uploads', 'public');            
+        }
+
+        $affidavit_uplod = null; // Default value to prevent "Undefined variable" error
+
+        if ($request->hasFile('affidavit_uplod')) {
+            $affidavit_uplod = $request->file('affidavit_uplod')->store('uploads', 'public');            
+        }
+
+        $coach_certif = null; // Default value to prevent "Undefined variable" error
+
+        if ($request->hasFile('coach_certif')) {
+            $coach_certif = $request->file('coach_certif')->store('uploads', 'public');            
+        }
         
         $year = date('y'); // Get last two digits of the year (e.g., 2025 -> 25)
         $districtCode = strtoupper(substr($request->district_sportsperson_belongs, 0, 2)); // First 2 letters of district
@@ -196,6 +220,11 @@ class SportsGradationCertificateController extends Controller
             'terms_conditions' => $request->terms_conditions,
             'user_id' => $user_id,
 			'appl_id' => $applId,
+            'date_ofbirth_certificate' => $date_ofbirth_certificate,
+            'verif_fron_conc_auth' => $verif_fron_conc_auth,
+            'affidavit_uplod' => $affidavit_uplod,
+            'coach_certif' => $coach_certif,
+            'name_of_tournamentN' => $request->name_of_tournamentN,            
             'date' => \Carbon\Carbon::now('Asia/Kolkata')
 
         ]);

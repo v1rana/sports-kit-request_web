@@ -103,9 +103,13 @@ h3 {
       <div class="row mt-4 details-area">         
         <h3><i class="fa-solid fa-trophy"></i> Achievement Details</h3>       
         <div class="col-md-6 mb-3">
-          <small class="info-label text-muted">Name of Tournament</small>
+          <small class="info-label text-muted">Tournament</small>
           <h5>{{ $otpData->tournament }}</h5>
         </div>
+        <div class="col-md-3 mb-3">
+          <small class="info-label text-muted">Name of the Tournament</small>
+          <h5>{{ $otpData->name_of_tournamentN }}</h5>
+        </div>        
         <div class="col-md-3 mb-3"> 
           <small class="info-label text-muted">Date</small>
           <h5>{{ \Carbon\Carbon::parse($otpData->month_year)->format('d-m-Y') }}</h5>
@@ -159,8 +163,35 @@ h3 {
         </div>                          
         @endif 
       </div>
-       <!-- Uploaded Documents Ends -->
-<hr />
+      <hr>
+      <div class="row mt-4 uploaded-doca-area"> 
+    @php
+        $docs = [
+            'date_ofbirth_certificate' => 'Date of Birth Certificate',
+            'verif_fron_conc_auth'    => 'Verification from Concerned Authority',
+            'affidavit_uplod'         => 'Affidavit Upload',
+            'coach_certif'            => 'Coach Certificate',
+        ];
+    @endphp
+
+    @foreach($docs as $field => $label)
+        @php
+            $file = $otpData->$field ?? 'default.jpg';
+            $fileUrl = asset('storage/' . $file);
+            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+        @endphp
+
+        <div class="col-3 mb-3">
+            <small class="info-label text-muted">{{ $label }}</small><br />
+            <a href="{{ $fileUrl }}" target="_blank" class="btn btn-success">
+                <i class="fa-solid fa-file-arrow-down"></i> 
+                {{ $ext === 'pdf' ? 'PDF' : 'View' }}
+            </a>                  
+        </div>
+    @endforeach
+</div>
+
+      <hr />
       <!-- Action Buttons Starts -->
       <div class="row align-items-end">
         <div class="col-md-12">
@@ -366,8 +397,12 @@ h3 {
           
               <tr>
                 <td colspan="3" width="58%">
-                   <small>Name of Tournament</small>
+                   <small>Tournament</small>
                    <h5 style="width: 95%">{{ $otpData->tournament }}</h5>
+                </td>
+                <td width="58%">
+                   <small>Name of the Tournament</small>
+                   <h5 style="width: 95%">{{ $otpData->name_of_tournamentN }}</h5>
                 </td>
                 <td colspan="2">
                   <small>Organizing Authority</small> 
@@ -401,37 +436,48 @@ h3 {
             </table>
           </td>
         </tr>
-        <tr>
-          <td style="padding:10px">
-            <h4>Documents Attached</h4>
-            <div style="display: flex; justify-content:space-between; flex-wrap: nowrap;margin-top: 8px;">
-              <div style="width:22%">
-                <img src="{{ url('storage/' . ($otpData->aadhaar_card ?? 'default.jpg')) }}" width="140" height="140" style="border:5px solid #eee;" />
-                <h5 style="margin-top: 3px; font-weight: 500;font-size: 16px;">1. Aadhaar Card</h5>
-              </div>
-              <div style="width:22%">
-                <img src="{{ url('storage/' . ($otpData->domicile_certificate ?? 'default.jpg')) }}" width="140" height="140" style="border:5px solid #eee;" />
-                <h5 style="margin-top: 3px; font-weight: 500;font-size: 16px;">2. Domicile Certificate</h5>
-              </div>
-              <div style="width:22%">
-                <img src="{{ url('storage/' . ($otpData->sports_certificate ?? 'default.jpg')) }}" width="140" height="140" style="border:5px solid #eee;" />
-                <h5 style="margin-top: 3px; font-weight: 500;font-size: 16px;">3. Achievement Certificate</h5>
-              </div>
-              <div style="width:22%">
-                <img src="{{ url('storage/' . ($otpData->noc_upload ?? 'default.jpg')) }}" width="140" height="140" style="border:5px solid #eee;" />
-                <h5 style="margin-top: 3px; font-weight: 500;font-size: 16px;">4. NOC Upload (for Certifying Played from Other State/UT/Organisation)</h5>
-              </div>
-              @if($otpData->more_than25_photo != "")
-              <div style="width:25%">
-                <img src="{{ url('storage/' . ($otpData->more_than25_photo ?? 'default.jpg')) }}" width="140" height="140" style="border:5px solid #eee;" />
-                <h5 style="margin-top: 3px; font-weight: 500;font-size: 16px;">
-                  5. Certificate for Proof of Playing 25% Matches
-                </h5>
-              </div>
-              @endif
-            </div>
-          </td>
-        </tr>
+        <tr style="page-break-before: always;">
+  <td style="padding:10px">
+    <h4>Documents Attached</h4>
+
+    <!-- Aadhaar Card -->
+    <div style="page-break-after: always; text-align:center">
+      <img src="{{ url('storage/' . ($otpData->aadhaar_card ?? 'default.jpg')) }}" 
+           width="250" height="250" style="border:5px solid #eee;" />
+      <h5 style="margin-top: 10px; font-weight: 500;font-size: 18px;">1. Aadhaar Card</h5>
+    </div>
+
+    <!-- Domicile Certificate -->
+    <div style="page-break-after: always; text-align:center">
+      <img src="{{ url('storage/' . ($otpData->domicile_certificate ?? 'default.jpg')) }}" 
+           width="250" height="250" style="border:5px solid #eee;" />
+      <h5 style="margin-top: 10px; font-weight: 500;font-size: 18px;">2. Domicile Certificate</h5>
+    </div>
+
+    <!-- Achievement Certificate -->
+    <div style="page-break-after: always; text-align:center">
+      <img src="{{ url('storage/' . ($otpData->sports_certificate ?? 'default.jpg')) }}" 
+           width="250" height="250" style="border:5px solid #eee;" />
+      <h5 style="margin-top: 10px; font-weight: 500;font-size: 18px;">3. Achievement Certificate</h5>
+    </div>
+
+    <!-- NOC Upload -->
+    <div style="page-break-after: always; text-align:center">
+      <img src="{{ url('storage/' . ($otpData->noc_upload ?? 'default.jpg')) }}" 
+           width="250" height="250" style="border:5px solid #eee;" />
+      <h5 style="margin-top: 10px; font-weight: 500;font-size: 18px;">4. NOC Upload</h5>
+    </div>
+
+    @if($otpData->more_than25_photo != "")
+    <div style="page-break-after: always; text-align:center">
+      <img src="{{ url('storage/' . ($otpData->more_than25_photo ?? 'default.jpg')) }}" 
+           width="250" height="250" style="border:5px solid #eee;" />
+      <h5 style="margin-top: 10px; font-weight: 500;font-size: 18px;">5. Certificate for Proof of Playing 25% Matches</h5>
+    </div>
+    @endif
+  </td>
+</tr>
+
 
         <tr>
           <td style="padding:10px; background:#eee">
