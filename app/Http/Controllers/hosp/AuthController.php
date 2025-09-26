@@ -97,7 +97,7 @@ class AuthController extends Controller
             $parameters = array_merge($this->getCommonParams(), [
                 'UIDFID' => $request->UIDFID,
             ]);
-            // return $parameters;
+            // return $url;
             $response = Http::post( $url, $parameters );
             if ( $response->successful() ) {
                 $data = $response->json();
