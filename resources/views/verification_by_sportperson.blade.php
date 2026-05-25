@@ -200,7 +200,6 @@ h3 {
                               <div class="modal-footer">
                                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                                   <button type="button" class="btn btn-warning" id="confirmUpload">Yes, Upload</button>
-
                               </div>
                           </div>
                       </div>
@@ -461,31 +460,8 @@ h3 {
         </tr>
         
       </tfoot>
-    </table>
-    
-
-    <!--p><strong>Sportsperson Name:</strong> Rahul Sharma</p>
-    <p><strong>Aadhaar No:</strong> XXXX-XXXX-1234</p>
-    <p><strong>District:</strong> Rohtak</p>
-    <p><strong>Domicile State:</strong> Haryana</p>
-    <p><strong>Sport Discipline:</strong> Athletics</p>
-    <p><strong>Played for:</strong> Haryana State</p>
-
-    <hr>
-
-    <p><strong>Tournament:</strong> National Youth Championship</p>
-    <p><strong>Month & Year:</strong> January 2024</p>
-    <p><strong>Venue:</strong> Delhi</p>
-    <p><strong>Organizing Authority:</strong> Athletics Federation of India</p>
-    <p><strong>Tournament Type:</strong> Senior</p>
-    <p><strong>Medal:</strong> Gold</p>
-    <p><strong>Participation:</strong> More than 25% Matches</p>
-
-    <hr>
-
-    <p><strong>Declaration:</strong></p>
-    <p>I certify that I am a domicile of Haryana and the above details are true and correct to the best of my knowledge.</p-->
-  </div>
+    </table>    
+</div>
 </div>
 
 @endsection
