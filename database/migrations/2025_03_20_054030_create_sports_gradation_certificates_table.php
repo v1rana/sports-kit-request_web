@@ -56,6 +56,11 @@ return new class extends Migration
             $table->string('user_id')->nullable();
             $table->string('verify_status')->nullable();
             $table->string('appl_id')->nullable();
+            $table->string('date_ofbirth_certificate')->nullable();
+            $table->string('verif_fron_conc_auth')->nullable();
+            $table->string('affidavit_uplod')->nullable();
+            $table->string('coach_certif')->nullable();
+            $table->string('name_of_tournamentN')->nullable();
             $table->timestamps();
         });
     }

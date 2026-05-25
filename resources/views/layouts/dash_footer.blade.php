@@ -262,7 +262,7 @@ $(document).ready(function() {
 </script>
 <script>
     function viewDetails(pro_pic,name, adhar_no, phone, belongTo,domiState,organisation,sport_displ,nameOfTounmnt,
-    month_year,vanueOfTournam,ornAthority,tounType,modalMedal,patiLevel,modalAadhaar,modalDomicile,modalSportsCert,more_than25_photo,noc_upload) {
+    month_year,vanueOfTournam,ornAthority,tounType,modalMedal,patiLevel,modalAadhaar,modalDomicile,modalSportsCert,more_than25_photo,noc_upload,date_ofbirth_certificate,verif_fron_conc_auth,affidavit_uplod,coach_certif) {
         document.getElementById("modalProfilePic").src = pro_pic;
         document.getElementById('modalName').textContent = name;
         document.getElementById('adhar_no').textContent = adhar_no;
@@ -282,8 +282,10 @@ $(document).ready(function() {
         document.getElementById("modalDomicile").href = modalDomicile;
         document.getElementById("modalSportsCert").href = modalSportsCert;
         document.getElementById("noc_upload").href = noc_upload;
-        document.getElementById("more_than25_photo").href = more_than25_photo;
-
+        document.getElementById("date_ofbirth_certificate").href = date_ofbirth_certificate;
+        document.getElementById("verif_fron_conc_auth").href = verif_fron_conc_auth;
+        document.getElementById("affidavit_uplod").href = affidavit_uplod;
+        document.getElementById("coach_certif").href = coach_certif;
         var modal = new bootstrap.Modal(document.getElementById('detailsModal'));
         modal.show();
     }

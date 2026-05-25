@@ -48,13 +48,10 @@
 									</div>
 									<div class="col-xs-12 col-sm-6 col-md-6 mb-3">
 										<label for="domicileNo" class="form-label">5. Domicile State <span class="text-danger">*</span></label>
-										<select class="form-control required" id="domicile_state" name="domicile_state" required>
-											<option value="">--Select--</option>
-											@foreach($state as $val)									    
-												<option value="{{ $val->name }}" {{ $val->name == 'Haryana' ? 'selected' : '' }}>
-													{{ $val->name }}
-												</option>
-											@endforeach
+										<select class="form-control required" id="domicile_state" name="domicile_state" required>											
+											{{-- @foreach($state as $val)									     --}}
+												<option value="Haryana">					Haryana</option>
+											{{-- @endforeach --}}
 											
 										</select>
 									</div>
@@ -113,8 +110,8 @@
 
 						<h5 class="mt-4"> Best Sports Achievement</h5>
 						<div class="row mt-2">								
-							<div class="col-xs-12 col-sm-6 col-md-12 mb-3">
-								<label for="tournamentName" class="form-label">i. Name of Tournament <span class="text-danger">*</span></label>
+							<div class="col-xs-8 col-sm-6 col-md-8 mb-3">
+								<label for="tournamentName" class="form-label">i. Tournament <span class="text-danger">*</span></label>
 								<select class="form-control required" id="tournamentName" name="tournament_name" required>
 									<option value="">--Select--</option>
 									@foreach($tournament as $tour)									    
@@ -123,21 +120,25 @@
 								</select>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-4 mb-3">							
-								<label for="monthYear" class="form-label">ii. Date <span class="text-danger">*</span></label>
+								<label for="monthYear" class="form-label">ii. Name of the Tournament <span class="text-danger">*</span></label>
+								<input type="text" class="form-control" required id="name_of_tournamentN" name="name_of_tournamentN" placeholder="">						
+							</div>
+							<div class="col-xs-12 col-sm-6 col-md-4 mb-3">							
+								<label for="monthYear" class="form-label">iii. Date <span class="text-danger">*</span></label>
 								<input type="date" class="form-control" required id="myDate" name="month_year" value="{{ $otpData->month_year ?? '' }}" placeholder="">						
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-4 mb-3">
-								<label for="venueTournament" class="form-label">iii. Venue of Tournament <span class="text-danger">*</span></label>
+								<label for="venueTournament" class="form-label">iv. Venue of Tournament <span class="text-danger">*</span></label>
 								<input type="text" class="form-control" required id="venue-input" name="venue_of_tournament" value="{{ $otpData->venue_of_tournament ?? '' }}" oninput="this.value=this.value.replace(/[^A-Za-z\s]/g,'');">							
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-4 mb-3">
-								<label for="organizingAuthority" class="form-label">iv. Organizing Authority <span class="text-danger">*</span></label>
+								<label for="organizingAuthority" class="form-label">v. Organizing Authority <span class="text-danger">*</span></label>
 								<select class="form-control required" id="organising_authority" name="organising_authority" required>
 																		
 								</select>
 							</div>
 							<div class="col-xs-12 col-sm-6 col-md-4 mb-3">
-								<p>v. Tournament Type <span class="text-danger">*</span></p>
+								<p>vi. Tournament Type <span class="text-danger">*</span></p>
 								<div class="form-check form-check-inline">
 									<input class="form-check-input" required type="radio" name="tournament_type" id="tournamentSenior" value="Senior" 
 										{{ isset($otpData->tournament_type) && $otpData->tournament_type == 'Senior' ? 'checked' : '' }}>
@@ -151,7 +152,7 @@
 							</div>
 
 							<div class="col-xs-12 col-sm-6 col-md-4 mb-3">
-								<p>vi. Medal won (if any)</p>
+								<p>vii. Medal won (if any)</p>
 								<div class="form-check form-check-inline">
 									<input class="form-check-input"  type="radio" name="medal_won" id="medalGold" value="Gold" 
 										{{ isset($otpData->medal_won) && $otpData->medal_won == 'Gold' ? 'checked' : '' }}>
@@ -174,7 +175,7 @@
 							</div>
 
 							<div class="col-xs-12 col-sm-6 col-md-4 mb-3" id="participation_level_section">
-								<p>vii. Participation Level (in case of team game only) <span class="text-danger">*</span></p>
+								<p>viii. Participation Level (in case of team game only) <span class="text-danger">*</span></p>
 								<div class="form-check form-check-inline">
 									<input class="form-check-input" type="radio" name="participation_level" id="inlineRadio1" value="25% or more">
 									<label class="form-check-label" for="inlineRadio1">25% or more</label>
@@ -242,6 +243,38 @@
 								</div>
 								<div class="col-12">
 									<small class="text-danger">NOTE- Upload in format .jpg, .jpeg, .png</small>
+								</div>
+							</div>
+							<hr>
+							<div class="col-12 attachment-upload-area">
+								<!-- Aadhaar Card -->
+								<div class="row">
+									<div class="col mb-3 border-end">
+										<label for="aadhaar_card" class="form-label">Date of Birth Certificate<span class="text-danger">*</span></label>
+										<input type="file" class="form-control" id="date_ofbirth_certificate" name="date_ofbirth_certificate"  required onchange="previewFile(event, 'date_ofbirth_certificate')">
+										<div id="date_ofbirth_certificate" class="preview-container"></div>
+									</div>
+
+								<!-- Domicile Certificate -->
+								<div class="col mb-3 border-end">
+									<label for="domicile_certificate" class="form-label">Verification from Concerned Authority	<span class="text-danger">*</span></label>
+									<input type="file" class="form-control" id="verif_fron_conc_auth" name="verif_fron_conc_auth" accept=".jpg,.jpeg,.png" required onchange="previewFile(event, 'verif_fron_conc_auth')">
+									<div id="verif_fron_conc_auth" class="preview-container"></div>
+									<a href="{{ url('assets/concerned_authority.docx') }}" target="_blank"><span>Download Proforma</span></a>
+								</div>							
+
+								<!-- Sports Achievement Certificate -->
+								<div class="col mb-3 border-end">
+									<label for="sports_certificate" class="form-label">Affidavit Upload  <span class="text-danger">*</span></label>
+									<input type="file" class="form-control" id="affidavit_uplod" name="affidavit_uplod" accept=".jpg,.jpeg,.png" required onchange="previewFile(event, 'affidavit_uplod')">
+									<div id="affidavit_uplod" class="preview-container"></div>
+									<a href="{{ url('assets/Affidavit.docx') }}" target="_blank"><span>Download Proforma</span></a>
+								</div>
+								<div class="col mb-3 border-end">
+									<label for="sports_certificate" class="form-label">Coach Certificate  <span class="text-danger">*</span></label>
+									<input type="file" class="form-control" id="coach_certif" name="coach_certif" accept=".jpg,.jpeg,.png" required onchange="previewFile(event, 'coach_certif')">
+                                    <div id="coach_certif" class="preview-container"></div>
+									<a href="{{ url('assets/coach_certificate.docx') }}" target="_blank"><span>Download Proforma</span></a>
 								</div>
 							</div>
 						<div class="col-12 mt-4 shadow" style="background-color: bisque;padding: 21px 0px;">    
